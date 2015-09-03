@@ -40,7 +40,31 @@ The [latest JIRA REST API documentation](https://docs.atlassian.com/jira/REST/la
 Further a few examples how the API can be used.
 A few more examples are available in the [GoDoc examples section](https://godoc.org/github.com/andygrunwald/go-jira#pkg-examples).
 
-TODO: Provide examples
+### Get a single issue
+
+Lets retrieve [MESOS-3325](https://issues.apache.org/jira/browse/MESOS-3325) from the [Apache Mesos](http://mesos.apache.org/) project.
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/andygrunwald/go-jira"
+)
+
+func main() {
+	jiraClient, _ := jira.NewClient(nil, "https://issues.apache.org/jira/")
+	issue, _, _ := jiraClient.Issue.Get("MESOS-3325")
+
+	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
+	fmt.Printf("Type: %s\n", issue.Fields.Type.Name)
+	fmt.Printf("Priority: %s\n", issue.Fields.Priority.Name)
+
+	// MESOS-3325: Running mesos-slave@0.23 in a container causes slave to be lost after a restart
+	// Type: Bug
+	// Priority: Critical
+}
+```
 
 ### Call a not implemented API endpoint
 
