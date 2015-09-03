@@ -12,7 +12,11 @@ The code structure of this package was inspired by [google/go-github](https://gi
 
 ## Features
 
-TODO: Provide a list of features
+* Authentication (HTTP Basic, OAuth, Session Cookie)
+* Create and receive issues
+* Call every (not implemented) API endpoint of the JIRA
+
+> Attention: This package is not JIRA API complete (yet), but you can call every API endpoint you want. See ["Call a not implemented API endpoint"](#) how to do this. For all possible API endpoints have a look at [latest JIRA REST API documentation](https://docs.atlassian.com/jira/REST/latest/).
 
 ## Installation
 
@@ -37,6 +41,10 @@ Further a few examples how the API can be used.
 A few more examples are available in the [GoDoc examples section](https://godoc.org/github.com/andygrunwald/go-jira#pkg-examples).
 
 TODO: Provide examples
+
+### Call a not implemented API endpoint
+
+TODO: Provide an example to call an endpoint that is not implemented yet
 
 ## Implementations
 
