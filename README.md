@@ -66,9 +66,71 @@ func main() {
 }
 ```
 
+### Authenticate with session cookie
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/andygrunwald/go-jira"
+)
+
+func main() {
+	jiraClient, err := jira.NewClient(nil, "https://your.jira-instance.com/")
+	if err != nil {
+		panic(err)
+	}
+
+	res, err := jiraClient.Authentication.AcquireSessionCookie("username", "password")
+	if err != nil || res == false {
+		fmt.Printf("Result: %v\n", res)
+		panic(err)
+	}
+
+	issue, _, err := jiraClient.Issue.Get("SYS-5156")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
+}
+```
+
 ### Call a not implemented API endpoint
 
-TODO: Provide an example to call an endpoint that is not implemented yet
+Lets get all public projects of [Atlassian`s JIRA instance](https://jira.atlassian.com/).
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/andygrunwald/go-jira"
+)
+
+func main() {
+	jiraClient, _ := jira.NewClient(nil, "https://jira.atlassian.com/")
+	req, _ := jiraClient.NewRequest("GET", "/rest/api/2/project", nil)
+
+	projects := new([]jira.Project)
+	_, err := jiraClient.Do(req, projects)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, project := range *projects {
+		fmt.Printf("%s: %s\n", project.Key, project.Name)
+	}
+
+	// ...
+	// BAM: Bamboo
+	// BAMJ: Bamboo JIRA Plugin
+	// CLOV: Clover
+	// CONF: Confluence
+	// ...
+}
+```
 
 ## Implementations
 
