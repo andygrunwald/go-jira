@@ -45,7 +45,7 @@ type IssueFields struct {
 	//	* "subtasks": [],
 	//	* "environment": null,
 	//	* "duedate": null,
-	IssueType         IssueType    `json:"issuetype"`
+	Type              IssueType    `json:"issuetype"`
 	Project           Project      `json:"project"`
 	Resolution        *Resolution  `json:"resolution,omitempty"`
 	Priority          *Priority    `json:"priority,omitempty"`
