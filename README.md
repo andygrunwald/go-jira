@@ -4,9 +4,9 @@
 [![Build Status](https://travis-ci.org/andygrunwald/go-jira.svg?branch=master)](https://travis-ci.org/andygrunwald/go-jira)
 [![Coverage Status](https://coveralls.io/repos/andygrunwald/go-jira/badge.svg?branch=master&service=github)](https://coveralls.io/github/andygrunwald/go-jira?branch=master)
 
-Go client library for [Atlassian JIRA](https://www.atlassian.com/software/jira).
+[Go](https://golang.org/) client library for [Atlassian JIRA](https://www.atlassian.com/software/jira).
 
-TODO: Add JIRA logo + Gopher
+![Go client library for Atlassian JIRA](./img/go-jira-compressed.png "Go client library for Atlassian JIRA.")
 
 The code structure of this package was inspired by [google/go-github](https://github.com/google/go-github).
 
@@ -28,6 +28,8 @@ It is go gettable
 ## API
 
 Please have a look at the [GoDoc documentation](https://godoc.org/github.com/andygrunwald/go-jira) for a detailed API description.
+
+The [latest JIRA REST API documentation](https://docs.atlassian.com/jira/REST/latest/) was the base document for this package.
 
 ## Examples
 
