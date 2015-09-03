@@ -134,7 +134,7 @@ func main() {
 
 ## Implementations
 
-TODO
+* [andygrunwald/jitic](https://github.com/andygrunwald/jitic) - The JIRA Ticket Checker
 
 ## License
 
