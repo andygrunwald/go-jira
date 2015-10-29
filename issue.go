@@ -46,15 +46,15 @@ type IssueFields struct {
 	//	* "environment": null,
 	//	* "duedate": null,
 	Type              IssueType    `json:"issuetype"`
-	Project           Project      `json:"project"`
+	Project           Project      `json:"project,omitempty"`
 	Resolution        *Resolution  `json:"resolution,omitempty"`
 	Priority          *Priority    `json:"priority,omitempty"`
 	Resolutiondate    string       `json:"resolutiondate,omitempty"`
 	Created           string       `json:"created,omitempty"`
 	Watches           *Watches     `json:"watches,omitempty"`
-	Assignee          *Assignee    `json:"assignee"`
+	Assignee          *Assignee    `json:"assignee,omitempty"`
 	Updated           string       `json:"updated,omitempty"`
-	Description       string       `json:"description"`
+	Description       string       `json:"description,omitempty"`
 	Summary           string       `json:"summary"`
 	Creator           *Assignee    `json:"Creator,omitempty"`
 	Reporter          *Assignee    `json:"reporter,omitempty"`
