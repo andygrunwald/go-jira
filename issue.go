@@ -31,7 +31,6 @@ type Issue struct {
 type IssueFields struct {
 	// TODO Missing fields
 	//	* "timespent": null,
-	//	* "fixVersions": [],
 	//	* "aggregatetimespent": null,
 	//	* "workratio": -1,
 	//	* "lastViewed": null,
@@ -65,6 +64,7 @@ type IssueFields struct {
 	Worklog           []*Worklog   `json:"worklog,omitempty"`
 	IssueLinks        []*IssueLink `json:"issuelinks,omitempty"`
 	Comments          []*Comment   `json:"comment,omitempty"`
+	FixVersions       []*FixVersion `json:"fixVersions,omitempty"`
 }
 
 // IssueType represents a type of a JIRA issue.
@@ -192,6 +192,18 @@ type Comment struct {
 	UpdateAuthor Assignee `json:"updateAuthor"`
 	Updated      string   `json:"updated"`
 	Created      string   `json:"created"`
+}
+
+// FixVersion represents a software release in which an issue is fixed.
+type FixVersion struct {
+	Archived        *bool  `json:"archived,omitempty"`
+	ID              string `json:"id,omitempty"`
+	Name            string `json:"name,omitempty"`
+	ProjectID       int    `json:"projectId,omitempty"`
+	ReleaseDate     string `json:"releaseDate,omitempty"`
+	Released        *bool  `json:"released,omitempty"`
+	Self            string `json:"self,omitempty"`
+	UserReleaseDate string `json:"userReleaseDate,omitempty"`
 }
 
 // Get returns a full representation of the issue for the given issue key.
