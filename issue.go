@@ -171,6 +171,7 @@ type IssueLink struct {
 	Type         IssueLinkType `json:"type"`
 	OutwardIssue Issue         `json:"outwardIssue"`
 	InwardIssue  Issue         `json:"inwardIssue"`
+	Comment      Comment `json:"comment"`
 }
 
 // IssueLinkType represents a type of a link between to issues in JIRA.
@@ -268,7 +269,24 @@ func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *
 	}
 
 	responseComment := new(Comment)
-	resp, _ := s.client.Do(req, responseComment)
+	resp, err := s.client.Do(req, responseComment)
+	if err != nil {
+		return nil, resp, err
+	}
 
 	return responseComment, resp, nil
+}
+
+// AddLink adds a link between two issues.
+//
+// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issueLink
+func (s *IssueService) AddLink(issueLink *IssueLink) (*http.Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issueLink")
+	req, err := s.client.NewRequest("POST", apiEndpoint, issueLink)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	return resp, err
 }
