@@ -28,7 +28,7 @@ type Client struct {
 
 // NewClient returns a new JIRA API client.
 // If a nil httpClient is provided, http.DefaultClient will be used.
-// To use API methods which require authentication you can follow the prefered solution and
+// To use API methods which require authentication you can follow the preferred solution and
 // provide an http.Client that will perform the authentication for you with OAuth and HTTP Basic (such as that provided by the golang.org/x/oauth2 library).
 // As an alternative you can use Session Cookie based authentication provided by this package as well.
 // See https://docs.atlassian.com/jira/REST/latest/#authentication
