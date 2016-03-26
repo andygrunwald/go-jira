@@ -119,7 +119,7 @@ func TestNewRequest(t *testing.T) {
 	// Test that body was JSON encoded
 	body, _ := ioutil.ReadAll(req.Body)
 	if got, want := string(body), outBody; got != want {
-		t.Errorf("NewRequest(%q) Body is %v, want %v", inBody, got, want)
+		t.Errorf("NewRequest(%v) Body is %v, want %v", inBody, got, want)
 	}
 }
 
