@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestAcquireSessionCookie_Success(t *testing.T) {
+func TestAcquireSessionCookie_Fail(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +38,7 @@ func TestAcquireSessionCookie_Success(t *testing.T) {
 	}
 }
 
-func TestAcquireSessionCookie_Fail(t *testing.T) {
+func TestAcquireSessionCookie_Success(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {

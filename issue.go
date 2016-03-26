@@ -53,7 +53,7 @@ type IssueFields struct {
 	Created           string       `json:"created,omitempty"`
 	Watches           *Watches     `json:"watches,omitempty"`
 	Assignee          *Assignee    `json:"assignee,omitempty"`
-	Updated           string       `json:"updated,omitempty"`
+	Updated           int          `json:"updated,omitempty"`
 	Description       string       `json:"description,omitempty"`
 	Summary           string       `json:"summary"`
 	Creator           *Assignee    `json:"Creator,omitempty"`
@@ -62,9 +62,9 @@ type IssueFields struct {
 	Status            *Status      `json:"status,omitempty"`
 	Progress          *Progress    `json:"progress,omitempty"`
 	AggregateProgress *Progress    `json:"aggregateprogress,omitempty"`
-	Worklog           *Worklog     `json:"worklog,omitempty"`
+	Worklog           []*Worklog   `json:"worklog,omitempty"`
 	IssueLinks        []*IssueLink `json:"issuelinks,omitempty"`
-	Comments          *CommentList `json:"comment,omitempty"`
+	Comments          []*Comment   `json:"comment,omitempty"`
 }
 
 // IssueType represents a type of a JIRA issue.
@@ -161,11 +161,7 @@ type Progress struct {
 // Worklog represents the work log of a JIRA issue.
 // JIRA Wiki: https://confluence.atlassian.com/jira/logging-work-on-an-issue-185729605.html
 type Worklog struct {
-	// Missing fields
-	//	* "worklogs": []
-	StartAt    int `json:"startAt"`
-	MaxResults int `json:"maxResults"`
-	Total      int `json:"total"`
+	// TODO Add Worklogs
 }
 
 // IssueLink represents a link between two issues in JIRA.
@@ -196,14 +192,6 @@ type Comment struct {
 	UpdateAuthor Assignee `json:"updateAuthor"`
 	Updated      string   `json:"updated"`
 	Created      string   `json:"created"`
-}
-
-// CommentList represents a list of comments by various persons of an issue in JIRA.
-type CommentList struct {
-	StartAt    int       `json:"startAt"`
-	MaxResults int       `json:"maxResults"`
-	Total      int       `json:"total"`
-	Comments   []Comment `json:"comments"`
 }
 
 // Get returns a full representation of the issue for the given issue key.
