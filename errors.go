@@ -13,7 +13,11 @@ type ErrorResponse struct {
 }
 
 func (r *ErrorResponse) Error() string {
-	return fmt.Sprintf("%v %v: %d %v %+v",
-		r.Response.Request.Method, r.Response.Request.URL,
-		r.Response.StatusCode, r.ErrorMessages, r.Errors)
+	if r.Response == nil {
+		return fmt.Sprintf("%v %+v", r.ErrorMessages, r.Errors)
+	} else {
+		return fmt.Sprintf("%v %v: %d %v %+v",
+			r.Response.Request.Method, r.Response.Request.URL,
+			r.Response.StatusCode, r.ErrorMessages, r.Errors)
+	}
 }
