@@ -45,6 +45,18 @@ func teardown() {
 	testServer.Close()
 }
 
+func testMethod(t *testing.T, r *http.Request, want string) {
+	if got := r.Method; got != want {
+		t.Errorf("Request method: %v, want %v", got, want)
+	}
+}
+
+func testRequestURL(t *testing.T, r *http.Request, want string) {
+	if got := r.URL.String(); got != want {
+		t.Errorf("Request URL: %v, want %v", got, want)
+	}
+}
+
 func TestNewClient_WrongUrl(t *testing.T) {
 	c, err := NewClient(nil, "://issues.apache.org/jira/")
 
