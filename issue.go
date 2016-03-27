@@ -44,26 +44,26 @@ type IssueFields struct {
 	//	* "subtasks": [],
 	//	* "environment": null,
 	//	* "duedate": null,
-	Type              IssueType    `json:"issuetype"`
-	Project           Project      `json:"project,omitempty"`
-	Resolution        *Resolution  `json:"resolution,omitempty"`
-	Priority          *Priority    `json:"priority,omitempty"`
-	Resolutiondate    string       `json:"resolutiondate,omitempty"`
-	Created           string       `json:"created,omitempty"`
-	Watches           *Watches     `json:"watches,omitempty"`
-	Assignee          *Assignee    `json:"assignee,omitempty"`
-	Updated           int          `json:"updated,omitempty"`
-	Description       string       `json:"description,omitempty"`
-	Summary           string       `json:"summary"`
-	Creator           *Assignee    `json:"Creator,omitempty"`
-	Reporter          *Assignee    `json:"reporter,omitempty"`
-	Components        []*Component `json:"components,omitempty"`
-	Status            *Status      `json:"status,omitempty"`
-	Progress          *Progress    `json:"progress,omitempty"`
-	AggregateProgress *Progress    `json:"aggregateprogress,omitempty"`
-	Worklog           []*Worklog   `json:"worklog,omitempty"`
-	IssueLinks        []*IssueLink `json:"issuelinks,omitempty"`
-	Comments          []*Comment   `json:"comment,omitempty"`
+	Type              IssueType     `json:"issuetype"`
+	Project           Project       `json:"project,omitempty"`
+	Resolution        *Resolution   `json:"resolution,omitempty"`
+	Priority          *Priority     `json:"priority,omitempty"`
+	Resolutiondate    string        `json:"resolutiondate,omitempty"`
+	Created           string        `json:"created,omitempty"`
+	Watches           *Watches      `json:"watches,omitempty"`
+	Assignee          *Assignee     `json:"assignee,omitempty"`
+	Updated           int           `json:"updated,omitempty"`
+	Description       string        `json:"description,omitempty"`
+	Summary           string        `json:"summary"`
+	Creator           *Assignee     `json:"Creator,omitempty"`
+	Reporter          *Assignee     `json:"reporter,omitempty"`
+	Components        []*Component  `json:"components,omitempty"`
+	Status            *Status       `json:"status,omitempty"`
+	Progress          *Progress     `json:"progress,omitempty"`
+	AggregateProgress *Progress     `json:"aggregateprogress,omitempty"`
+	Worklog           []*Worklog    `json:"worklog,omitempty"`
+	IssueLinks        []*IssueLink  `json:"issuelinks,omitempty"`
+	Comments          []*Comment    `json:"comment,omitempty"`
 	FixVersions       []*FixVersion `json:"fixVersions,omitempty"`
 }
 
@@ -185,13 +185,14 @@ type IssueLinkType struct {
 
 // Comment represents a comment by a person to an issue in JIRA.
 type Comment struct {
-	Self         string   `json:"self"`
-	Name         string   `json:"name"`
-	Author       Assignee `json:"author"`
-	Body         string   `json:"body"`
-	UpdateAuthor Assignee `json:"updateAuthor"`
-	Updated      string   `json:"updated"`
-	Created      string   `json:"created"`
+	Self         string            `json:"self"`
+	Name         string            `json:"name"`
+	Author       Assignee          `json:"author"`
+	Body         string            `json:"body"`
+	UpdateAuthor Assignee          `json:"updateAuthor"`
+	Updated      string            `json:"updated"`
+	Created      string            `json:"created"`
+	Visibility   CommentVisibility `json:"visibility"`
 }
 
 // FixVersion represents a software release in which an issue is fixed.
@@ -204,6 +205,13 @@ type FixVersion struct {
 	Released        *bool  `json:"released,omitempty"`
 	Self            string `json:"self,omitempty"`
 	UserReleaseDate string `json:"userReleaseDate,omitempty"`
+}
+
+// CommentVisibility represents he visibility of a comment.
+// E.g. Type could be "role" and Value "Administrators"
+type CommentVisibility struct {
+	Type  string `json:"type"`
+	Value string `json:"value"`
 }
 
 // Get returns a full representation of the issue for the given issue key.
@@ -249,22 +257,18 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *http.Response, error) {
 	return responseIssue, resp, nil
 }
 
-func (s *IssueService) AddComment(issueID string, comment string) (*Issue, *http.Response, error) {
+// AddComment adds a new comment to issueID.
+//
+// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-addComment
+func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *http.Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment", issueID)
-
-	type CommentBody struct {
-		Body string `json:"body"`
-	}
-
-	params := CommentBody{Body: comment}
-
-	req, err := s.client.NewRequest("POST", apiEndpoint, params)
+	req, err := s.client.NewRequest("POST", apiEndpoint, comment)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	 responseIssue := new(Issue)
-	 resp, _ := s.client.Do(req, responseIssue)
+	responseComment := new(Comment)
+	resp, _ := s.client.Do(req, responseComment)
 
-	 return responseIssue, resp, nil
+	return responseComment, resp, nil
 }

@@ -25,7 +25,7 @@ func TestIssueGet_Success(t *testing.T) {
 	}
 }
 
-func TestIssueCreate_Success(t *testing.T) {
+func TestIssueCreate(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/", func(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +44,33 @@ func TestIssueCreate_Success(t *testing.T) {
 	issue, _, err := testClient.Issue.Create(i)
 	if issue == nil {
 		t.Errorf("Expected issue. Issue is nil")
+	}
+	if err != nil {
+		t.Error("Error given: %s", err)
+	}
+}
+
+func TestIssueAddComment(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/10000/comment", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, "/rest/api/2/issue/10000/comment")
+
+		w.WriteHeader(http.StatusCreated)
+		fmt.Fprint(w, `{"self":"http://www.example.com/jira/rest/api/2/issue/10010/comment/10000","id":"10000","author":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget venenatis elit. Duis eu justo eget augue iaculis fermentum. Sed semper quam laoreet nisi egestas at posuere augue semper.","updateAuthor":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"created":"2016-03-16T04:22:37.356+0000","updated":"2016-03-16T04:22:37.356+0000","visibility":{"type":"role","value":"Administrators"}}`)
+	})
+
+	c := &Comment{
+		Body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget venenatis elit. Duis eu justo eget augue iaculis fermentum. Sed semper quam laoreet nisi egestas at posuere augue semper.",
+		Visibility: CommentVisibility{
+			Type: "role",
+			Value: "Administrators",
+		},
+	}
+	comment, _, err := testClient.Issue.AddComment("10000", c)
+	if comment == nil {
+		t.Errorf("Expected Comment. Comment is nil")
 	}
 	if err != nil {
 		t.Error("Error given: %s", err)
