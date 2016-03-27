@@ -9,15 +9,17 @@
 
 ![Go client library for Atlassian JIRA](./img/go-jira-compressed.png "Go client library for Atlassian JIRA.")
 
-The code structure of this package was inspired by [google/go-github](https://github.com/google/go-github).
-
 ## Features
 
 * Authentication (HTTP Basic, OAuth, Session Cookie)
 * Create and receive issues
-* Call every (not implemented) API endpoint of the JIRA
+* Call every API endpoint of the JIRA, even it is not directly implemented in this library
 
-> Attention: This package is not JIRA API complete (yet), but you can call every API endpoint you want. See ["Call a not implemented API endpoint"](#call-a-not-implemented-api-endpoint) how to do this. For all possible API endpoints have a look at [latest JIRA REST API documentation](https://docs.atlassian.com/jira/REST/latest/).
+This package is not JIRA API complete (yet), but you can call every API endpoint you want. See ["Call a not implemented API endpoint"](#call-a-not-implemented-api-endpoint) how to do this. For all possible API endpoints of JRIA have a look at [latest JIRA REST API documentation](https://docs.atlassian.com/jira/REST/latest/).
+
+## Compatible JIRA versions
+
+This package was tested against JIRA v6.3.4 and v7.1.2.
 
 ## Installation
 
@@ -28,7 +30,7 @@ It is go gettable
 (optional) to run unit / example tests:
 
     $ cd $GOPATH/src/github.com/andygrunwald/go-jira
-    $ go test -v
+    $ go test -v ./...
 
 ## API
 
@@ -136,6 +138,28 @@ func main() {
 ## Implementations
 
 * [andygrunwald/jitic](https://github.com/andygrunwald/jitic) - The JIRA Ticket Checker
+
+## Code structure
+
+The code structure of this package was inspired by [google/go-github](https://github.com/google/go-github).
+
+There is one main part (the client).
+Based on this main client the other endpoints, like Issues or Authentication are extracted in services. E.g. `IssueService` or `AuthenticationService`.
+These services own a responsibility of the single endpoints / usecases of JIRA.
+
+## Contribution
+
+Contribution, in any kind of way, is highly welcome!
+It doesn't matter if you are not able to write code.
+Creating issues or holding talks and help other people to use [go-jira](https://github.com/andygrunwald/go-jira) is contribution, too!
+A few examples:
+
+* Correct typos in the README / documentation
+* Reporting bugs
+* Implement a new feature or endpoint
+* Sharing the love if [go-jira](https://github.com/andygrunwald/go-jira) and help people to get use to it
+
+If you are new to pull requests, checkout [Collaborating on projects using issues and pull requests / Creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
 
 ## License
 
