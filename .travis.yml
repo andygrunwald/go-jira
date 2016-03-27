@@ -3,14 +3,13 @@ language: go
 sudo: false
 
 go:
-    - 1.4
-    - 1.5
-    - tip
+  - 1.4
+  - 1.5
+  - tip
 
 before_install:
-    - if [[ $TRAVIS_GO_VERSION = 1.6 ]]; then go get github.com/axw/gocov/gocov; fi;
-    - if [[ $TRAVIS_GO_VERSION = 1.6 ]]; then go get github.com/mattn/goveralls; fi;
-    - if [[ $TRAVIS_GO_VERSION = 1.6 ]]; then if ! go get code.google.com/p/go.tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi; fi;
+  - go get github.com/mattn/goveralls
+  - go get golang.org/x/tools/cmd/cover
 
 script:
-    - if [[ $TRAVIS_GO_VERSION = 1.6 ]]; then $HOME/gopath/bin/goveralls -service=travis-ci; fi;
+  - $HOME/gopath/bin/goveralls -service=travis-ci
