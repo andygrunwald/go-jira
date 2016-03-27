@@ -249,29 +249,7 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *http.Response, error) {
 	return responseIssue, resp, nil
 }
 
-func (s *IssueService) UpdateFields(issueID string, fields map[string]string) (*Issue, *http.Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
-
-	type FieldsParams struct {
-		Fields map[string]string `json:"fields"`
-	}
-
-	params := FieldsParams{
-		Fields: fields,
-	}
-
-	req, err := s.client.NewRequest("PUT", apiEndpoint, params)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	responseIssue := new(Issue)
-	resp, _ := s.client.Do(req, responseIssue)
-
-	return responseIssue, resp, nil
-}
-
- func (s *IssueService) AddComment(issueID string, comment string) (*Issue, *http.Response, error) {
+func (s *IssueService) AddComment(issueID string, comment string) (*Issue, *http.Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment", issueID)
 
 	type CommentBody struct {
