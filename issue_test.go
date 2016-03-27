@@ -18,10 +18,10 @@ func TestIssueGet_Success(t *testing.T) {
 
 	issue, _, err := testClient.Issue.Get("10002")
 	if issue == nil {
-		t.Errorf("Expected issue. Issue is nil")
+		t.Error("Expected issue. Issue is nil")
 	}
 	if err != nil {
-		t.Error("Error given: %s", err)
+		t.Errorf("Error given: %s", err)
 	}
 }
 
@@ -43,10 +43,10 @@ func TestIssueCreate(t *testing.T) {
 	}
 	issue, _, err := testClient.Issue.Create(i)
 	if issue == nil {
-		t.Errorf("Expected issue. Issue is nil")
+		t.Error("Expected issue. Issue is nil")
 	}
 	if err != nil {
-		t.Error("Error given: %s", err)
+		t.Errorf("Error given: %s", err)
 	}
 }
 
@@ -70,7 +70,47 @@ func TestIssueAddComment(t *testing.T) {
 	}
 	comment, _, err := testClient.Issue.AddComment("10000", c)
 	if comment == nil {
-		t.Errorf("Expected Comment. Comment is nil")
+		t.Error("Expected Comment. Comment is nil")
+	}
+	if err != nil {
+		t.Error("Error given: %s", err)
+	}
+}
+
+func TestIssueAddLink(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issueLink", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, "/rest/api/2/issueLink")
+
+		w.WriteHeader(http.StatusOK)
+	})
+
+	il := &IssueLink{
+		Type: IssueLinkType{
+			Name: "Duplicate",
+		},
+		InwardIssue: Issue{
+			Key: "HSP-1",
+		},
+		OutwardIssue: Issue{
+			Key: "MKY-1",
+		},
+		Comment: Comment{
+			Body: "Linked related issue!",
+			Visibility: CommentVisibility{
+				Type: "group",
+				Value: "jira-software-users",
+			},
+		},
+	}
+	resp, err := testClient.Issue.AddLink(il)
+	if resp == nil {
+		t.Error("Expected response. Response is nil")
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("Expected Status code 200. Given %d", resp.StatusCode)
 	}
 	if err != nil {
 		t.Error("Error given: %s", err)
