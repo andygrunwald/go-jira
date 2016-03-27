@@ -12,7 +12,7 @@ const (
 
 // IssueService handles Issues for the JIRA instance / API.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#d2e2279
+// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue
 type IssueService struct {
 	client *Client
 }
@@ -220,7 +220,7 @@ type CommentVisibility struct {
 // This can be an issue id, or an issue key.
 // If the issue cannot be found via an exact match, JIRA will also look for the issue in a case-insensitive way, or by looking to see if the issue was moved.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#d2e2609
+// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
 func (s *IssueService) Get(issueID string) (*Issue, *http.Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -241,7 +241,7 @@ func (s *IssueService) Get(issueID string) (*Issue, *http.Response, error) {
 // Creating a sub-task is similar to creating a regular issue, with two important differences:
 // The issueType field must correspond to a sub-task issue type and you must provide a parent field in the issue create request containing the id or key of the parent issue.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#d2e2280
+// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
 func (s *IssueService) Create(issue *Issue) (*Issue, *http.Response, error) {
 	apiEndpoint := "rest/api/2/issue/"
 	req, err := s.client.NewRequest("POST", apiEndpoint, issue)

@@ -33,7 +33,7 @@ type Session struct {
 // Note that it is generally preferrable to use HTTP BASIC authentication with the REST API.
 // However, this resource may be used to mimic the behaviour of JIRA's log-in page (e.g. to display log-in errors to a user).
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#d2e459
+// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 func (s *AuthenticationService) AcquireSessionCookie(username, password string) (bool, error) {
 	apiEndpoint := "rest/auth/1/session"
 	body := struct {
@@ -61,6 +61,6 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 }
 
 // TODO Missing API Call GET (Returns information about the currently authenticated user's session)
-// See https://docs.atlassian.com/jira/REST/latest/#d2e456
+// See https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 // TODO Missing API Call DELETE (Logs the current user out of JIRA, destroying the existing session, if any.)
-// https://docs.atlassian.com/jira/REST/latest/#d2e456
+// See https://docs.atlassian.com/jira/REST/latest/#auth/1/session
