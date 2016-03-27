@@ -73,7 +73,7 @@ func TestIssueAddComment(t *testing.T) {
 		t.Error("Expected Comment. Comment is nil")
 	}
 	if err != nil {
-		t.Error("Error given: %s", err)
+		t.Errorf("Error given: %s", err)
 	}
 }
 
@@ -113,6 +113,6 @@ func TestIssueAddLink(t *testing.T) {
 		t.Errorf("Expected Status code 200. Given %d", resp.StatusCode)
 	}
 	if err != nil {
-		t.Error("Error given: %s", err)
+		t.Errorf("Error given: %s", err)
 	}
 }
