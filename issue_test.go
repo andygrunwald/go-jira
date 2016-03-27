@@ -64,7 +64,7 @@ func TestIssueAddComment(t *testing.T) {
 	c := &Comment{
 		Body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget venenatis elit. Duis eu justo eget augue iaculis fermentum. Sed semper quam laoreet nisi egestas at posuere augue semper.",
 		Visibility: CommentVisibility{
-			Type: "role",
+			Type:  "role",
 			Value: "Administrators",
 		},
 	}
@@ -100,7 +100,7 @@ func TestIssueAddLink(t *testing.T) {
 		Comment: Comment{
 			Body: "Linked related issue!",
 			Visibility: CommentVisibility{
-				Type: "group",
+				Type:  "group",
 				Value: "jira-software-users",
 			},
 		},
