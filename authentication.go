@@ -51,8 +51,11 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 
 	session := new(Session)
 	resp, err := s.client.Do(req, session)
-	if resp.StatusCode != 200 || err != nil {
+	if err != nil {
 		return false, fmt.Errorf("Auth at JIRA instance failed (HTTP(S) request). %s", err)
+	}
+	if resp != nil && resp.StatusCode != 200 {
+		return false, fmt.Errorf("Auth at JIRA instance failed (HTTP(S) request). Status code: %d", resp.StatusCode)
 	}
 
 	s.client.session = session
