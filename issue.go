@@ -1,7 +1,10 @@
 package jira
 
 import (
+	"bytes"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
 )
 
@@ -26,6 +29,19 @@ type Issue struct {
 	Fields *IssueFields `json:"fields,omitempty"`
 }
 
+// Attachment represents a JIRA attachment
+type Attachment struct {
+	Self     string `json:"self,omitempty"`
+	Id       string `json:"id,omitempty"`
+	Filename string `json:"filename,omitempty"`
+	//	TODO Missing fields
+	//Author   string `json:"author,omitempty"`
+	Created  string `json:"created,omitempty"`
+	Size     int    `json:"size,omitempty"`
+	MimeType string `json:"mimeType,omitempty"`
+	Content  string `json:"content,omitempty"`
+}
+
 // IssueFields represents single fields of a JIRA issue.
 // Every JIRA issue has several fields attached.
 type IssueFields struct {
@@ -39,7 +55,6 @@ type IssueFields struct {
 	//	* "aggregatetimeoriginalestimate": null,
 	//	* "timeoriginalestimate": null,
 	//	* "timetracking": {},
-	//	* "attachment": [],
 	//	* "aggregatetimeestimate": null,
 	//	* "subtasks": [],
 	//	* "environment": null,
@@ -65,6 +80,7 @@ type IssueFields struct {
 	IssueLinks        []*IssueLink  `json:"issuelinks,omitempty"`
 	Comments          []*Comment    `json:"comment.comments,omitempty"`
 	FixVersions       []*FixVersion `json:"fixVersions,omitempty"`
+	Attachments       []*Attachment `json:"attachment,omitempty"`
 }
 
 // IssueType represents a type of a JIRA issue.
@@ -186,14 +202,14 @@ type IssueLinkType struct {
 
 // Comment represents a comment by a person to an issue in JIRA.
 type Comment struct {
-	Self         string            `json:"self"`
-	Name         string            `json:"name"`
-	Author       Assignee          `json:"author"`
-	Body         string            `json:"body"`
-	UpdateAuthor Assignee          `json:"updateAuthor"`
-	Updated      string            `json:"updated"`
-	Created      string            `json:"created"`
-	Visibility   CommentVisibility `json:"visibility"`
+	Self         string            `json:"self,omitempty"`
+	Name         string            `json:"name,omitempty"`
+	Author       Assignee          `json:"author,omitempty"`
+	Body         string            `json:"body,omitempty"`
+	UpdateAuthor Assignee          `json:"updateAuthor,omitempty"`
+	Updated      string            `json:"updated,omitempty"`
+	Created      string            `json:"created,omitempty"`
+	Visibility   CommentVisibility `json:"visibility,omitempty"`
 }
 
 // FixVersion represents a software release in which an issue is fixed.
@@ -211,8 +227,8 @@ type FixVersion struct {
 // CommentVisibility represents he visibility of a comment.
 // E.g. Type could be "role" and Value "Administrators"
 type CommentVisibility struct {
-	Type  string `json:"type"`
-	Value string `json:"value"`
+	Type  string `json:"type,omitempty"`
+	Value string `json:"value,omitempty"`
 }
 
 // Get returns a full representation of the issue for the given issue key.
@@ -235,6 +251,60 @@ func (s *IssueService) Get(issueID string) (*Issue, *http.Response, error) {
 	}
 
 	return issue, resp, nil
+}
+
+// DownloadAttachment returns an ioReader of an attachment for a given attachment Id
+// The attachment is in the Body of the response
+// The caller should close resp.Body
+func (s *IssueService) DownloadAttachment(attachmentID string) (*http.Response, error) {
+	apiEndpoint := fmt.Sprintf("secure/attachment/%s/", attachmentID)
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.DoNoClose(req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// PostAttachment uploads an attachment provided as an io.Reader to a given attachment ID
+func (s *IssueService) PostAttachment(attachmentID string, r io.Reader, attachmentName string) (*Issue, *http.Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/attachments", attachmentID)
+
+	b := new(bytes.Buffer)
+	writer := multipart.NewWriter(b)
+
+	fw, err := writer.CreateFormFile("file", attachmentName)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// Copy the file
+	if _, err = io.Copy(fw, r); err != nil {
+		return nil, nil, err
+	}
+
+	writer.Close()
+
+	req, err := s.client.NewMultiPartRequest("POST", apiEndpoint, b)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	issue := new(Issue)
+	resp, err := s.client.Do(req, issue)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return issue, resp, nil
+
 }
 
 // Create creates an issue or a sub-task from a JSON representation.
