@@ -164,14 +164,14 @@ func (c *Client) DoNoClose(req *http.Request, v interface{}) (*http.Response, er
 	return resp, err
 }
 
-// Authenticated reports if the current Client has an authenticated session with JIRA
-func (c *Client) Authenticated() bool {
-	if c != nil {
-		return c.session != nil
-	} else {
-		return false
-	}
-}
+//// Authenticated reports if the current Client has an authenticated session with JIRA
+//func (c *Client) Authenticated() bool {
+//	if c != nil {
+//		return c.session != nil
+//	} else {
+//		return false
+//	}
+//}
 
 // CheckResponse checks the API response for errors, and returns them if present.
 // A response is considered an error if it has a status code outside the 200 range.
