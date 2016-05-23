@@ -62,11 +62,6 @@ func TestAcquireSessionCookie_Success(t *testing.T) {
 		fmt.Fprint(w, `{"session":{"name":"JSESSIONID","value":"12345678901234567890"},"loginInfo":{"failedLoginCount":10,"loginCount":127,"lastFailedLoginTime":"2016-03-16T04:22:35.386+0000","previousLoginTime":"2016-03-16T04:22:35.386+0000"}}`)
 	})
 
-	// Test before we've attempted to authenticate
-	if testClient.Authentication.Authenticated() != false {
-		t.Error("Expected false, but result was true")
-	}
-
 	res, err := testClient.Authentication.AcquireSessionCookie("foo", "bar")
 	if err != nil {
 		t.Errorf("No error expected. Got %s", err)
@@ -77,5 +72,15 @@ func TestAcquireSessionCookie_Success(t *testing.T) {
 
 	if testClient.Authentication.Authenticated() != true {
 		t.Error("Expected true, but result was false")
+	}
+}
+
+func TestAuthenticated_NotInit(t *testing.T) {
+	// Skip setup() because we don't want a fully setup client
+	testClient = new(Client)
+
+	// Test before we've attempted to authenticate
+	if testClient.Authentication.Authenticated() != false {
+		t.Error("Expected false, but result was true")
 	}
 }

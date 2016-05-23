@@ -1,8 +1,6 @@
 package jira
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // AuthenticationService handles authentication for the JIRA instance / API.
 //
