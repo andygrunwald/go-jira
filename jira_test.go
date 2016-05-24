@@ -215,6 +215,33 @@ func TestDo(t *testing.T) {
 	}
 }
 
+func TestDo_HTTPResponse(t *testing.T) {
+	setup()
+	defer teardown()
+
+	type foo struct {
+		A string
+	}
+
+	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if m := "GET"; m != r.Method {
+			t.Errorf("Request method = %v, want %v", r.Method, m)
+		}
+		fmt.Fprint(w, `{"A":"a"}`)
+	})
+
+	req, _ := testClient.NewRequest("GET", "/", nil)
+	body := new(foo)
+	res, _ := testClient.Do(req, body)
+	_, err := ioutil.ReadAll(res.Body)
+
+	if err != nil {
+		t.Errorf("Error on parsing HTTP Response = %v", err.Error())
+	} else if res.StatusCode != 200 {
+		t.Errorf("Response code = %v, want %v", res.StatusCode, 200)
+	}
+}
+
 func TestDo_HTTPError(t *testing.T) {
 	setup()
 	defer teardown()
