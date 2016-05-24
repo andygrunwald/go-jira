@@ -231,8 +231,7 @@ func TestDo_HTTPResponse(t *testing.T) {
 	})
 
 	req, _ := testClient.NewRequest("GET", "/", nil)
-	body := new(foo)
-	res, _ := testClient.Do(req, body)
+	res, _ := testClient.Do(req, nil)
 	_, err := ioutil.ReadAll(res.Body)
 
 	if err != nil {
