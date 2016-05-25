@@ -284,11 +284,12 @@ func (s *IssueService) PostAttachment(attachmentID string, r io.Reader, attachme
 		return nil, nil, err
 	}
 
-	// Copy the file
-	if _, err = io.Copy(fw, r); err != nil {
-		return nil, nil, err
+	if r != nil {
+		// Copy the file
+		if _, err = io.Copy(fw, r); err != nil {
+			return nil, nil, err
+		}
 	}
-
 	writer.Close()
 
 	req, err := s.client.NewMultiPartRequest("POST", apiEndpoint, b)
