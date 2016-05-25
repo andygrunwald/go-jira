@@ -143,7 +143,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 
 // Do sends an API request and returns the API response.
 // The API response is JSON decoded and stored in the value pointed to by v, or returned as an error if an API error has occurred.
-// The caller needs to call Body.Close when the response has been handled
+// The caller is expected to consume the Body, and needs to call Body.Close when the response has been handled
 func (c *Client) DoNoClose(req *http.Request, v interface{}) (*http.Response, error) {
 	resp, err := c.client.Do(req)
 	if err != nil {

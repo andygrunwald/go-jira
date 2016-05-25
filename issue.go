@@ -35,11 +35,12 @@ type Attachment struct {
 	Id       string `json:"id,omitempty"`
 	Filename string `json:"filename,omitempty"`
 	//	TODO Missing fields
-	//Author   string `json:"author,omitempty"`
-	Created  string `json:"created,omitempty"`
-	Size     int    `json:"size,omitempty"`
-	MimeType string `json:"mimeType,omitempty"`
-	Content  string `json:"content,omitempty"`
+	Author    *Assignee `json:"author,omitempty"`
+	Created   string    `json:"created,omitempty"`
+	Size      int       `json:"size,omitempty"`
+	MimeType  string    `json:"mimeType,omitempty"`
+	Content   string    `json:"content,omitempty"`
+	Thumbnail string    `json:"thumbnail,omitempty"`
 }
 
 // IssueFields represents single fields of a JIRA issue.
@@ -272,7 +273,7 @@ func (s *IssueService) DownloadAttachment(attachmentID string) (*http.Response, 
 }
 
 // PostAttachment uploads an attachment provided as an io.Reader to a given attachment ID
-func (s *IssueService) PostAttachment(attachmentID string, r io.Reader, attachmentName string) (*Issue, *http.Response, error) {
+func (s *IssueService) PostAttachment(attachmentID string, r io.Reader, attachmentName string) (*[]Attachment, *http.Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/attachments", attachmentID)
 
 	b := new(bytes.Buffer)
@@ -297,13 +298,14 @@ func (s *IssueService) PostAttachment(attachmentID string, r io.Reader, attachme
 
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 
-	issue := new(Issue)
-	resp, err := s.client.Do(req, issue)
+	// PostAttachment response returns a JSON array (as multiple attachments can be posted)
+	attachment := new([]Attachment)
+	resp, err := s.client.Do(req, attachment)
 	if err != nil {
 		return nil, resp, err
 	}
 
-	return issue, resp, nil
+	return attachment, resp, nil
 
 }
 
