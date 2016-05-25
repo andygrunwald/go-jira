@@ -231,6 +231,49 @@ func TestDo_HTTPError(t *testing.T) {
 	}
 }
 
+func TestDoNoClose(t *testing.T) {
+	setup()
+	defer teardown()
+
+	type foo struct {
+		A string
+	}
+
+	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if m := "GET"; m != r.Method {
+			t.Errorf("Request method = %v, want %v", r.Method, m)
+		}
+		fmt.Fprint(w, `{"A":"a"}`)
+	})
+
+	req, _ := testClient.NewRequest("GET", "/", nil)
+	body := new(foo)
+	resp, _ := testClient.DoNoClose(req, body)
+	defer resp.Body.Close()
+
+	want := &foo{"a"}
+	if !reflect.DeepEqual(body, want) {
+		t.Errorf("Response body = %v, want %v", body, want)
+	}
+}
+
+func TestDoNoClose_HTTPError(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "Bad Request", 400)
+	})
+
+	req, _ := testClient.NewRequest("GET", "/", nil)
+	resp, err := testClient.DoNoClose(req, nil)
+	defer resp.Body.Close()
+
+	if err == nil {
+		t.Error("Expected HTTP 400 error.")
+	}
+}
+
 // Test handling of an error caused by the internal http client's Do() function.
 // A redirect loop is pretty unlikely to occur within the Gerrit API, but does allow us to exercise the right code path.
 func TestDo_RedirectLoop(t *testing.T) {
