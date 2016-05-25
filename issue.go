@@ -52,7 +52,7 @@ type IssueFields struct {
 	Created           string        `json:"created,omitempty"`
 	Watches           *Watches      `json:"watches,omitempty"`
 	Assignee          *Assignee     `json:"assignee,omitempty"`
-	Updated           int           `json:"updated,omitempty"`
+	Updated           string        `json:"updated,omitempty"`
 	Description       string        `json:"description,omitempty"`
 	Summary           string        `json:"summary"`
 	Creator           *Assignee     `json:"Creator,omitempty"`
@@ -61,9 +61,9 @@ type IssueFields struct {
 	Status            *Status       `json:"status,omitempty"`
 	Progress          *Progress     `json:"progress,omitempty"`
 	AggregateProgress *Progress     `json:"aggregateprogress,omitempty"`
-	Worklog           []*Worklog    `json:"worklog,omitempty"`
+	Worklog           []*Worklog    `json:"worklog.worklogs,omitempty"`
 	IssueLinks        []*IssueLink  `json:"issuelinks,omitempty"`
-	Comments          []*Comment    `json:"comment,omitempty"`
+	Comments          []*Comment    `json:"comment.comments,omitempty"`
 	FixVersions       []*FixVersion `json:"fixVersions,omitempty"`
 }
 
