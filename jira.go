@@ -3,7 +3,6 @@ package jira
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -83,7 +82,9 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 
 	// Set session cookie if there is one
 	if c.session != nil {
-		req.Header.Set("Cookie", fmt.Sprintf("%s=%s", c.session.Session.Name, c.session.Session.Value))
+		for _, cookie := range c.session.SetCoockie {
+			req.AddCookie(cookie)
+		}
 	}
 
 	return req, nil
