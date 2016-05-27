@@ -36,6 +36,10 @@ func TestAcquireSessionCookie_Fail(t *testing.T) {
 	if res == true {
 		t.Error("Expected error, but result was true")
 	}
+
+	if testClient.Authentication.Authenticated() != false {
+		t.Error("Expected false, but result was true")
+	}
 }
 
 func TestAcquireSessionCookie_Success(t *testing.T) {
@@ -64,5 +68,19 @@ func TestAcquireSessionCookie_Success(t *testing.T) {
 	}
 	if res == false {
 		t.Error("Expected result was true. Got false")
+	}
+
+	if testClient.Authentication.Authenticated() != true {
+		t.Error("Expected true, but result was false")
+	}
+}
+
+func TestAuthenticated_NotInit(t *testing.T) {
+	// Skip setup() because we don't want a fully setup client
+	testClient = new(Client)
+
+	// Test before we've attempted to authenticate
+	if testClient.Authentication.Authenticated() != false {
+		t.Error("Expected false, but result was true")
 	}
 }

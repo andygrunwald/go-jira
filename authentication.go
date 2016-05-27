@@ -63,6 +63,14 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 	return true, nil
 }
 
+// Authenticated reports if the current Client has an authenticated session with JIRA
+func (s *AuthenticationService) Authenticated() bool {
+	if s != nil {
+		return s.client.session != nil
+	}
+	return false
+}
+
 // TODO Missing API Call GET (Returns information about the currently authenticated user's session)
 // See https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 // TODO Missing API Call DELETE (Logs the current user out of JIRA, destroying the existing session, if any.)
