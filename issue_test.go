@@ -167,7 +167,7 @@ func TestIssueDownloadAttachment(t *testing.T) {
 		t.Error("Expected attachment text", err)
 	}
 	if string(attachment) != testAttachment {
-		t.Errorf("Expecting an attachment", string(attachment))
+		t.Errorf("Expecting an attachment: %s", string(attachment))
 	}
 
 	if resp.StatusCode != 200 {
