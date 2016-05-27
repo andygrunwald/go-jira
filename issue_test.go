@@ -2,8 +2,10 @@ package jira
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -135,6 +137,174 @@ func TestIssueFields(t *testing.T) {
 	if !reflect.DeepEqual(issue.Fields.Labels, []string{"test"}) {
 		t.Error("Expected labels for the returned issue")
 	}
+
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
+func TestIssueDownloadAttachment(t *testing.T) {
+	var testAttachment = "Here is an attachment"
+
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/secure/attachment/", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, "/secure/attachment/10000/")
+
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(testAttachment))
+	})
+
+	resp, err := testClient.Issue.DownloadAttachment("10000")
+	if resp == nil {
+		t.Error("Expected response. Response is nil")
+	}
+	defer resp.Body.Close()
+
+	attachment, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Error("Expected attachment text", err)
+	}
+	if string(attachment) != testAttachment {
+		t.Errorf("Expecting an attachment", string(attachment))
+	}
+
+	if resp.StatusCode != 200 {
+		t.Errorf("Expected Status code 200. Given %d", resp.StatusCode)
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
+func TestIssueDownloadAttachment_BadStatus(t *testing.T) {
+
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/secure/attachment/", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, "/secure/attachment/10000/")
+
+		w.WriteHeader(http.StatusForbidden)
+	})
+
+	resp, err := testClient.Issue.DownloadAttachment("10000")
+	if resp == nil {
+		t.Error("Expected response. Response is nil")
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusForbidden {
+		t.Errorf("Expected Status code %d. Given %d", http.StatusForbidden, resp.StatusCode)
+	}
+	if err == nil {
+		t.Errorf("Error expected")
+	}
+}
+
+func TestIssuePostAttachment(t *testing.T) {
+	var testAttachment = "Here is an attachment"
+
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/10000/attachments", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, "/rest/api/2/issue/10000/attachments")
+		status := http.StatusOK
+
+		file, _, err := r.FormFile("file")
+		if err != nil {
+			status = http.StatusNotAcceptable
+		}
+		if file == nil {
+			status = http.StatusNoContent
+		} else {
+
+			// Read the file into memory
+			data, err := ioutil.ReadAll(file)
+			if err != nil {
+				status = http.StatusInternalServerError
+			}
+			if string(data) != testAttachment {
+				status = http.StatusNotAcceptable
+			}
+
+			w.WriteHeader(status)
+			fmt.Fprint(w, `[{"self":"http://jira/jira/rest/api/2/attachment/228924","id":"228924","filename":"example.jpg","author":{"self":"http://jira/jira/rest/api/2/user?username=test","name":"test","emailAddress":"test@test.com","avatarUrls":{"16x16":"http://jira/jira/secure/useravatar?size=small&avatarId=10082","48x48":"http://jira/jira/secure/useravatar?avatarId=10082"},"displayName":"Tester","active":true},"created":"2016-05-24T00:25:17.000-0700","size":32280,"mimeType":"image/jpeg","content":"http://jira/jira/secure/attachment/228924/example.jpg","thumbnail":"http://jira/jira/secure/thumbnail/228924/_thumb_228924.png"}]`)
+			file.Close()
+		}
+	})
+
+	reader := strings.NewReader(testAttachment)
+
+	issue, resp, err := testClient.Issue.PostAttachment("10000", reader, "attachment")
+
+	if issue == nil {
+		t.Error("Expected response. Response is nil")
+	}
+
+	if resp.StatusCode != 200 {
+		t.Errorf("Expected Status code 200. Given %d", resp.StatusCode)
+	}
+
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
+func TestIssuePostAttachment_NoResponse(t *testing.T) {
+	var testAttachment = "Here is an attachment"
+
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/10000/attachments", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, "/rest/api/2/issue/10000/attachments")
+		w.WriteHeader(http.StatusOK)
+	})
+	reader := strings.NewReader(testAttachment)
+
+	_, _, err := testClient.Issue.PostAttachment("10000", reader, "attachment")
+
+	if err == nil {
+		t.Errorf("Error expected: %s", err)
+	}
+}
+
+func TestIssuePostAttachment_NoFilename(t *testing.T) {
+	var testAttachment = "Here is an attachment"
+
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/10000/attachments", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, "/rest/api/2/issue/10000/attachments")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, `[{"self":"http://jira/jira/rest/api/2/attachment/228924","id":"228924","filename":"example.jpg","author":{"self":"http://jira/jira/rest/api/2/user?username=test","name":"test","emailAddress":"test@test.com","avatarUrls":{"16x16":"http://jira/jira/secure/useravatar?size=small&avatarId=10082","48x48":"http://jira/jira/secure/useravatar?avatarId=10082"},"displayName":"Tester","active":true},"created":"2016-05-24T00:25:17.000-0700","size":32280,"mimeType":"image/jpeg","content":"http://jira/jira/secure/attachment/228924/example.jpg","thumbnail":"http://jira/jira/secure/thumbnail/228924/_thumb_228924.png"}]`)
+	})
+	reader := strings.NewReader(testAttachment)
+
+	_, _, err := testClient.Issue.PostAttachment("10000", reader, "")
+
+	if err != nil {
+		t.Errorf("Error expected: %s", err)
+	}
+}
+
+func TestIssuePostAttachment_NoAttachment(t *testing.T) {
+
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/10000/attachments", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, "/rest/api/2/issue/10000/attachments")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, `[{"self":"http://jira/jira/rest/api/2/attachment/228924","id":"228924","filename":"example.jpg","author":{"self":"http://jira/jira/rest/api/2/user?username=test","name":"test","emailAddress":"test@test.com","avatarUrls":{"16x16":"http://jira/jira/secure/useravatar?size=small&avatarId=10082","48x48":"http://jira/jira/secure/useravatar?avatarId=10082"},"displayName":"Tester","active":true},"created":"2016-05-24T00:25:17.000-0700","size":32280,"mimeType":"image/jpeg","content":"http://jira/jira/secure/attachment/228924/example.jpg","thumbnail":"http://jira/jira/secure/thumbnail/228924/_thumb_228924.png"}]`)
+	})
+
+	_, _, err := testClient.Issue.PostAttachment("10000", nil, "attachment")
+
 	if err != nil {
 		t.Errorf("Error given: %s", err)
 	}
