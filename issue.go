@@ -34,7 +34,6 @@ type Attachment struct {
 	Self     string `json:"self,omitempty"`
 	Id       string `json:"id,omitempty"`
 	Filename string `json:"filename,omitempty"`
-	//	TODO Missing fields
 	Author    *Assignee `json:"author,omitempty"`
 	Created   string    `json:"created,omitempty"`
 	Size      int       `json:"size,omitempty"`
@@ -254,9 +253,10 @@ func (s *IssueService) Get(issueID string) (*Issue, *http.Response, error) {
 	return issue, resp, nil
 }
 
-// DownloadAttachment returns an ioReader of an attachment for a given attachment Id
-// The attachment is in the Body of the response
-// The caller should close resp.Body
+// DownloadAttachment returns a http.Response of an attachment for a given attachmentID.
+// The attachment is in the http.Response.Body of the response.
+// This is an io.ReadCloser.
+// The caller should close the resp.Body.
 func (s *IssueService) DownloadAttachment(attachmentID string) (*http.Response, error) {
 	apiEndpoint := fmt.Sprintf("secure/attachment/%s/", attachmentID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -264,7 +264,7 @@ func (s *IssueService) DownloadAttachment(attachmentID string) (*http.Response, 
 		return nil, err
 	}
 
-	resp, err := s.client.DoNoClose(req, nil)
+	resp, err := s.client.Do(req, nil)
 	if err != nil {
 		return resp, err
 	}
@@ -272,7 +272,7 @@ func (s *IssueService) DownloadAttachment(attachmentID string) (*http.Response, 
 	return resp, nil
 }
 
-// PostAttachment uploads an attachment provided as an io.Reader to a given attachment ID
+// PostAttachment uploads r (io.Reader) as an attachment to a given attachmentID
 func (s *IssueService) PostAttachment(attachmentID string, r io.Reader, attachmentName string) (*[]Attachment, *http.Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/attachments", attachmentID)
 
@@ -307,7 +307,6 @@ func (s *IssueService) PostAttachment(attachmentID string, r io.Reader, attachme
 	}
 
 	return attachment, resp, nil
-
 }
 
 // Create creates an issue or a sub-task from a JSON representation.

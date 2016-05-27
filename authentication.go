@@ -1,6 +1,8 @@
 package jira
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // AuthenticationService handles authentication for the JIRA instance / API.
 //
@@ -65,9 +67,8 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 func (s *AuthenticationService) Authenticated() bool {
 	if s != nil {
 		return s.client.session != nil
-	} else {
-		return false
 	}
+	return false
 }
 
 // TODO Missing API Call GET (Returns information about the currently authenticated user's session)

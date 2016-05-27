@@ -89,10 +89,10 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	return req, nil
 }
 
-// NewMultiPartRequest creates an API request including a multi-part file
+// NewMultiPartRequest creates an API request including a multi-part file.
 // A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
 // Relative URLs should always be specified without a preceding slash.
-// If specified, the value pointed to by buf is a multipart form
+// If specified, the value pointed to by buf is a multipart form.
 func (c *Client) NewMultiPartRequest(method, urlStr string, buf *bytes.Buffer) (*http.Request, error) {
 	rel, err := url.Parse(urlStr)
 	if err != nil {
@@ -110,7 +110,7 @@ func (c *Client) NewMultiPartRequest(method, urlStr string, buf *bytes.Buffer) (
 	req.Header.Set("X-Atlassian-Token", "nocheck")
 
 	// Set session cookie if there is one
-	if c.session != nil {
+	if c.Authentication.Authenticated() {
 		req.Header.Set("Cookie", fmt.Sprintf("%s=%s", c.session.Session.Name, c.session.Session.Value))
 	}
 
@@ -140,38 +140,6 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 
 	return resp, err
 }
-
-// Do sends an API request and returns the API response.
-// The API response is JSON decoded and stored in the value pointed to by v, or returned as an error if an API error has occurred.
-// The caller is expected to consume the Body, and needs to call Body.Close when the response has been handled
-func (c *Client) DoNoClose(req *http.Request, v interface{}) (*http.Response, error) {
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	err = CheckResponse(resp)
-	if err != nil {
-		// Even though there was an error, we still return the response
-		// in case the caller wants to inspect it further
-		return resp, err
-	}
-
-	if v != nil {
-		err = json.NewDecoder(resp.Body).Decode(v)
-	}
-
-	return resp, err
-}
-
-//// Authenticated reports if the current Client has an authenticated session with JIRA
-//func (c *Client) Authenticated() bool {
-//	if c != nil {
-//		return c.session != nil
-//	} else {
-//		return false
-//	}
-//}
 
 // CheckResponse checks the API response for errors, and returns them if present.
 // A response is considered an error if it has a status code outside the 200 range.
