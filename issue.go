@@ -31,9 +31,9 @@ type Issue struct {
 
 // Attachment represents a JIRA attachment
 type Attachment struct {
-	Self     string `json:"self,omitempty"`
-	Id       string `json:"id,omitempty"`
-	Filename string `json:"filename,omitempty"`
+	Self      string    `json:"self,omitempty"`
+	Id        string    `json:"id,omitempty"`
+	Filename  string    `json:"filename,omitempty"`
 	Author    *Assignee `json:"author,omitempty"`
 	Created   string    `json:"created,omitempty"`
 	Size      int       `json:"size,omitempty"`
