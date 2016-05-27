@@ -34,7 +34,6 @@ type IssueFields struct {
 	//	* "aggregatetimespent": null,
 	//	* "workratio": -1,
 	//	* "lastViewed": null,
-	//	* "labels": [],
 	//	* "timeestimate": null,
 	//	* "aggregatetimeoriginalestimate": null,
 	//	* "timeoriginalestimate": null,
@@ -65,6 +64,7 @@ type IssueFields struct {
 	IssueLinks        []*IssueLink  `json:"issuelinks,omitempty"`
 	Comments          []*Comment    `json:"comment.comments,omitempty"`
 	FixVersions       []*FixVersion `json:"fixVersions,omitempty"`
+	Labels            []string      `json:"labels,omitempty"`
 }
 
 // IssueType represents a type of a JIRA issue.

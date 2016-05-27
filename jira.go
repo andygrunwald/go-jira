@@ -98,8 +98,6 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 		return nil, err
 	}
 
-	defer resp.Body.Close()
-
 	err = CheckResponse(resp)
 	if err != nil {
 		// Even though there was an error, we still return the response
@@ -108,6 +106,8 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 	}
 
 	if v != nil {
+		// Open a NewDecoder and defer closing the reader only if there is a provided interface to decode to
+		defer resp.Body.Close()
 		err = json.NewDecoder(resp.Body).Decode(v)
 	}
 
