@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -143,17 +142,13 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 
 // CheckResponse checks the API response for errors, and returns them if present.
 // A response is considered an error if it has a status code outside the 200 range.
-// API error responses are expected to have either no response body, or a JSON response body that maps to ErrorResponse.
-// Any other response body will be silently ignored.
+// The caller is responsible to analyze the response body.
+// The body can contain JSON (if the error is intended) or xml (sometimes JIRA just failes).
 func CheckResponse(r *http.Response) error {
 	if c := r.StatusCode; 200 <= c && c <= 299 {
 		return nil
 	}
 
-	errorResponse := &ErrorResponse{Response: r}
-	data, err := ioutil.ReadAll(r.Body)
-	if err == nil && data != nil {
-		json.Unmarshal(data, errorResponse)
-	}
-	return errorResponse
+	err := fmt.Errorf("Request failed. Please analyze the request body for more details. Status code: %d", r.StatusCode)
+	return err
 }
