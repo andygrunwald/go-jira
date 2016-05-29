@@ -23,6 +23,7 @@ type Client struct {
 	// Services used for talking to different parts of the JIRA API.
 	Authentication *AuthenticationService
 	Issue          *IssueService
+	Project        *ProjectService
 }
 
 // NewClient returns a new JIRA API client.
@@ -48,6 +49,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	}
 	c.Authentication = &AuthenticationService{client: c}
 	c.Issue = &IssueService{client: c}
+	c.Project = &ProjectService{client: c}
 
 	return c, nil
 }

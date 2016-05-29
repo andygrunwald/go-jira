@@ -40,7 +40,6 @@ type IssueFields struct {
 	//	* "timetracking": {},
 	//	* "attachment": [],
 	//	* "aggregatetimeestimate": null,
-	//	* "subtasks": [],
 	//	* "environment": null,
 	//	* "duedate": null,
 	Type              IssueType     `json:"issuetype"`
@@ -60,11 +59,12 @@ type IssueFields struct {
 	Status            *Status       `json:"status,omitempty"`
 	Progress          *Progress     `json:"progress,omitempty"`
 	AggregateProgress *Progress     `json:"aggregateprogress,omitempty"`
-	Worklog           []*Worklog    `json:"worklog.worklogs,omitempty"`
+	Worklog           *Worklog      `json:"worklog,omitempty"`
 	IssueLinks        []*IssueLink  `json:"issuelinks,omitempty"`
 	Comments          []*Comment    `json:"comment.comments,omitempty"`
 	FixVersions       []*FixVersion `json:"fixVersions,omitempty"`
 	Labels            []string      `json:"labels,omitempty"`
+	Subtasks          []*Subtasks   `json:"subtasks,omitempty"`
 }
 
 // IssueType represents a type of a JIRA issue.
@@ -161,7 +161,88 @@ type Progress struct {
 // Worklog represents the work log of a JIRA issue.
 // JIRA Wiki: https://confluence.atlassian.com/jira/logging-work-on-an-issue-185729605.html
 type Worklog struct {
-	// TODO Add Worklogs
+	StartAt    int `json:"startAt"`
+	MaxResults int `json:"maxResults"`
+	Total      int `json:"total"`
+	Worklogs   []struct {
+		Self   string `json:"self"`
+		Author struct {
+			Self         string `json:"self"`
+			Name         string `json:"name"`
+			Key          string `json:"key"`
+			EmailAddress string `json:"emailAddress"`
+			AvatarUrls   struct {
+				Four8X48  string `json:"48x48"`
+				Two4X24   string `json:"24x24"`
+				One6X16   string `json:"16x16"`
+				Three2X32 string `json:"32x32"`
+			} `json:"avatarUrls"`
+			DisplayName string `json:"displayName"`
+			Active      bool   `json:"active"`
+			TimeZone    string `json:"timeZone"`
+		} `json:"author"`
+		UpdateAuthor struct {
+			Self         string `json:"self"`
+			Name         string `json:"name"`
+			Key          string `json:"key"`
+			EmailAddress string `json:"emailAddress"`
+			AvatarUrls   struct {
+				Four8X48  string `json:"48x48"`
+				Two4X24   string `json:"24x24"`
+				One6X16   string `json:"16x16"`
+				Three2X32 string `json:"32x32"`
+			} `json:"avatarUrls"`
+			DisplayName string `json:"displayName"`
+			Active      bool   `json:"active"`
+			TimeZone    string `json:"timeZone"`
+		} `json:"updateAuthor"`
+		Comment          string `json:"comment"`
+		Created          string `json:"created"`
+		Updated          string `json:"updated"`
+		Started          string `json:"started"`
+		TimeSpent        string `json:"timeSpent"`
+		TimeSpentSeconds int    `json:"timeSpentSeconds"`
+		ID               string `json:"id"`
+		IssueID          string `json:"issueId"`
+	} `json:"worklogs"`
+}
+
+type Subtasks struct {
+	ID     string `json:"id"`
+	Key    string `json:"key"`
+	Self   string `json:"self"`
+	Fields struct {
+		Summary string `json:"summary"`
+		Status  struct {
+			Self           string `json:"self"`
+			Description    string `json:"description"`
+			IconURL        string `json:"iconUrl"`
+			Name           string `json:"name"`
+			ID             string `json:"id"`
+			StatusCategory struct {
+				Self      string `json:"self"`
+				ID        int    `json:"id"`
+				Key       string `json:"key"`
+				ColorName string `json:"colorName"`
+				Name      string `json:"name"`
+			} `json:"statusCategory"`
+		} `json:"status"`
+		Priority struct {
+			Self    string `json:"self"`
+			IconURL string `json:"iconUrl"`
+			Name    string `json:"name"`
+			ID      string `json:"id"`
+		} `json:"priority"`
+		Issuetype struct {
+			Self        string `json:"self"`
+			ID          string `json:"id"`
+			Description string `json:"description"`
+			IconURL     string `json:"iconUrl"`
+			Name        string `json:"name"`
+			Subtask     bool   `json:"subtask"`
+			AvatarID    int    `json:"avatarId"`
+		} `json:"issuetype"`
+	} `json:"fields"`
 }
 
 // IssueLink represents a link between two issues in JIRA.
