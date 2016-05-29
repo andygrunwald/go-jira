@@ -3,6 +3,9 @@ package jira
 import (
 	"fmt"
 	"net/http"
+	"net/url"
+	"strings"
+	"time"
 )
 
 const (
@@ -26,6 +29,8 @@ type Issue struct {
 	Fields *IssueFields `json:"fields,omitempty"`
 }
 
+type Issues []*Issue
+
 // IssueFields represents single fields of a JIRA issue.
 // Every JIRA issue has several fields attached.
 type IssueFields struct {
@@ -34,14 +39,12 @@ type IssueFields struct {
 	//	* "aggregatetimespent": null,
 	//	* "workratio": -1,
 	//	* "lastViewed": null,
-	//	* "labels": [],
 	//	* "timeestimate": null,
 	//	* "aggregatetimeoriginalestimate": null,
 	//	* "timeoriginalestimate": null,
 	//	* "timetracking": {},
 	//	* "attachment": [],
 	//	* "aggregatetimeestimate": null,
-	//	* "subtasks": [],
 	//	* "environment": null,
 	//	* "duedate": null,
 	Type              IssueType     `json:"issuetype"`
@@ -61,10 +64,12 @@ type IssueFields struct {
 	Status            *Status       `json:"status,omitempty"`
 	Progress          *Progress     `json:"progress,omitempty"`
 	AggregateProgress *Progress     `json:"aggregateprogress,omitempty"`
-	Worklog           []*Worklog    `json:"worklog.worklogs,omitempty"`
+	WorklogPage       *WorklogPage  `json:"worklog,omitempty"`
 	IssueLinks        []*IssueLink  `json:"issuelinks,omitempty"`
 	Comments          []*Comment    `json:"comment.comments,omitempty"`
 	FixVersions       []*FixVersion `json:"fixVersions,omitempty"`
+	Labels            []string      `json:"labels,omitempty"`
+	SubTasks          Issues        `json:"subtasks,omitempty"`
 }
 
 // IssueType represents a type of a JIRA issue.
@@ -158,10 +163,39 @@ type Progress struct {
 	Total    int `json:"total"`
 }
 
+type WorklogPage struct {
+	StartAt    uint       `json:"startAt"`
+	MaxResults uint       `json:"maxResults"`
+	Total      uint       `json:"total"`
+	Worklogs   []*Worklog `json:"worklogs"`
+}
+
 // Worklog represents the work log of a JIRA issue.
 // JIRA Wiki: https://confluence.atlassian.com/jira/logging-work-on-an-issue-185729605.html
 type Worklog struct {
-	// TODO Add Worklogs
+	ID               string    `json:"id"`
+	Self             string    `json:"self"`
+	IssueId          string    `json:"issueId"`
+	TimeSpent        string    `json:"timeSpent"`
+	TimeSpentSeconds uint64    `json:"timeSpentSeconds"`
+	Comment          string    `json:"comment"`
+	Updated          JiraTime  `json:"updated"`
+	Created          JiraTime  `json:"created"`
+	Started          JiraTime  `json:"started"`
+	Author           *Assignee `json:"author"`
+}
+
+type JiraTime struct {
+	Time time.Time
+}
+
+func (t *JiraTime) UnmarshalJSON(b []byte) error {
+	ti, err := time.Parse("\"2006-01-02T15:04:05.999-0700\"", string(b))
+	if err != nil {
+		return err
+	}
+	*t = JiraTime{ti}
+	return nil
 }
 
 // IssueLink represents a link between two issues in JIRA.
@@ -215,6 +249,10 @@ type CommentVisibility struct {
 	Value string `json:"value"`
 }
 
+type SearchResult struct {
+	Issues Issues `json:"issues"`
+}
+
 // Get returns a full representation of the issue for the given issue key.
 // JIRA will attempt to identify the issue by the issueIdOrKey path parameter.
 // This can be an issue id, or an issue key.
@@ -235,6 +273,38 @@ func (s *IssueService) Get(issueID string) (*Issue, *http.Response, error) {
 	}
 
 	return issue, resp, nil
+}
+
+type CustomFields map[string]string
+
+// Returns a map of customfield_* keys with string values
+func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *http.Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	issue := new(map[string]interface{})
+	resp, err := s.client.Do(req, issue)
+	if err != nil {
+		return nil, resp, err
+	}
+	m := *issue
+	f := m["fields"]
+	cf := make(CustomFields)
+	if f == nil {
+		return cf, resp, nil
+	}
+
+	if rec, ok := f.(map[string]interface{}); ok {
+		for key, val := range rec {
+			if strings.Contains(key, "customfield") {
+				cf[key] = fmt.Sprint(val)
+			}
+		}
+	}
+	return cf, resp, nil
 }
 
 // Create creates an issue or a sub-task from a JSON representation.
@@ -288,5 +358,17 @@ func (s *IssueService) AddLink(issueLink *IssueLink) (*http.Response, error) {
 	}
 
 	resp, err := s.client.Do(req, nil)
+	return resp, err
+}
+
+// Search for tickets
+// JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
+func (s *IssueService) Search(jql string) (*SearchResult, error) {
+	req, err := s.client.NewRequest("GET", "rest/api/2/search?jql="+url.QueryEscape(jql), nil)
+	if err != nil {
+		panic(err)
+	}
+	resp := new(SearchResult)
+	_, err = s.client.Do(req, resp)
 	return resp, err
 }
