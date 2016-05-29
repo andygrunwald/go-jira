@@ -185,16 +185,16 @@ type Worklog struct {
 	Author           *Assignee `json:"author"`
 }
 
-type JiraTime struct {
-	Time time.Time
-}
+type JiraTime time.Time
+
+type CustomFields map[string]string
 
 func (t *JiraTime) UnmarshalJSON(b []byte) error {
 	ti, err := time.Parse("\"2006-01-02T15:04:05.999-0700\"", string(b))
 	if err != nil {
 		return err
 	}
-	*t = JiraTime{ti}
+	*t = JiraTime(ti)
 	return nil
 }
 
@@ -275,7 +275,6 @@ func (s *IssueService) Get(issueID string) (*Issue, *http.Response, error) {
 	return issue, resp, nil
 }
 
-type CustomFields map[string]string
 
 // Returns a map of customfield_* keys with string values
 func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *http.Response, error) {
