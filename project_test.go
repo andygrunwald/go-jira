@@ -54,3 +54,27 @@ func TestProjectGet(t *testing.T) {
 		t.Errorf("Error given: %s", err)
 	}
 }
+
+func TestProjectWrongGet(t *testing.T) {
+	setup()
+	defer teardown()
+	testApiEdpoint := "/rest/api/2/project/99999999"
+
+	testMux.HandleFunc(testApiEdpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, testApiEdpoint)
+		fmt.Fprint(w, nil)
+	})
+
+	projects, resp, err := testClient.Project.Get("12310505")
+	if projects != nil {
+		t.Errorf("Expected nil. Got %s", projects)
+	}
+
+	if resp.Status == "404" {
+		t.Errorf("Expected status 404. Got %s", resp.Status)
+	}
+	if err == nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
