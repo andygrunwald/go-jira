@@ -3,7 +3,6 @@ package jira
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -23,6 +22,7 @@ type Client struct {
 	// Services used for talking to different parts of the JIRA API.
 	Authentication *AuthenticationService
 	Issue          *IssueService
+	Project        *ProjectService
 }
 
 // NewClient returns a new JIRA API client.
@@ -48,6 +48,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	}
 	c.Authentication = &AuthenticationService{client: c}
 	c.Issue = &IssueService{client: c}
+	c.Project = &ProjectService{client: c}
 
 	return c, nil
 }
@@ -82,7 +83,9 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 
 	// Set session cookie if there is one
 	if c.session != nil {
-		req.Header.Set("Cookie", fmt.Sprintf("%s=%s", c.session.Session.Name, c.session.Session.Value))
+		for _, cookie := range c.session.SetCoockie {
+			req.AddCookie(cookie)
+		}
 	}
 
 	return req, nil
