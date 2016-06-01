@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"fmt"
 )
 
 // A Client manages communication with the JIRA API.
