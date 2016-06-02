@@ -3,10 +3,10 @@ package jira
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
-	"fmt"
 )
 
 // A Client manages communication with the JIRA API.
