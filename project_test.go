@@ -55,7 +55,7 @@ func TestProjectGet(t *testing.T) {
 	}
 }
 
-func TestProjectWrongGet(t *testing.T) {
+func TestProjectGet_NoProject(t *testing.T) {
 	setup()
 	defer teardown()
 	testApiEdpoint := "/rest/api/2/project/99999999"
@@ -66,7 +66,7 @@ func TestProjectWrongGet(t *testing.T) {
 		fmt.Fprint(w, nil)
 	})
 
-	projects, resp, err := testClient.Project.Get("12310505")
+	projects, resp, err := testClient.Project.Get("99999999")
 	if projects != nil {
 		t.Errorf("Expected nil. Got %s", projects)
 	}
