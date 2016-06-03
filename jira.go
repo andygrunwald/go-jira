@@ -84,7 +84,7 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 
 	// Set session cookie if there is one
 	if c.session != nil {
-		for _, cookie := range c.session.SetCoockie {
+		for _, cookie := range c.session.Cookies {
 			req.AddCookie(cookie)
 		}
 	}

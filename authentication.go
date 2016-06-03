@@ -14,9 +14,9 @@ type AuthenticationService struct {
 
 // Session represents a Session JSON response by the JIRA API.
 type Session struct {
-	Self    string `json:"self,omitempty"`
-	Name    string `json:"name,omitempty"`
-	Session struct {
+	Self      string `json:"self,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Session   struct {
 		Name  string `json:"name"`
 		Value string `json:"value"`
 	} `json:"session,omitempty"`
@@ -26,7 +26,7 @@ type Session struct {
 		LastFailedLoginTime string `json:"lastFailedLoginTime"`
 		PreviousLoginTime   string `json:"previousLoginTime"`
 	} `json:"loginInfo"`
-	SetCoockie []*http.Cookie
+	Cookies   []*http.Cookie
 }
 
 // AcquireSessionCookie creates a new session for a user in JIRA.
@@ -53,9 +53,7 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 
 	session := new(Session)
 	resp, err := s.client.Do(req, session)
-
-	cookies := resp.Cookies()
-	session.SetCoockie = cookies
+	session.Cookies = resp.Cookies()
 
 	if err != nil {
 		return false, fmt.Errorf("Auth at JIRA instance failed (HTTP(S) request). %s", err)
