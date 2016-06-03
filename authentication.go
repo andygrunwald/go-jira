@@ -14,9 +14,9 @@ type AuthenticationService struct {
 
 // Session represents a Session JSON response by the JIRA API.
 type Session struct {
-	Self      string `json:"self,omitempty"`
-	Name      string `json:"name,omitempty"`
-	Session   struct {
+	Self    string `json:"self,omitempty"`
+	Name    string `json:"name,omitempty"`
+	Session struct {
 		Name  string `json:"name"`
 		Value string `json:"value"`
 	} `json:"session,omitempty"`
@@ -26,7 +26,7 @@ type Session struct {
 		LastFailedLoginTime string `json:"lastFailedLoginTime"`
 		PreviousLoginTime   string `json:"previousLoginTime"`
 	} `json:"loginInfo"`
-	Cookies   []*http.Cookie
+	Cookies []*http.Cookie
 }
 
 // AcquireSessionCookie creates a new session for a user in JIRA.
