@@ -31,15 +31,15 @@ type Issue struct {
 
 // Attachment represents a JIRA attachment
 type Attachment struct {
-	Self      string    `json:"self,omitempty"`
-	ID        string    `json:"id,omitempty"`
-	Filename  string    `json:"filename,omitempty"`
-	Author    *Assignee `json:"author,omitempty"`
-	Created   string    `json:"created,omitempty"`
-	Size      int       `json:"size,omitempty"`
-	MimeType  string    `json:"mimeType,omitempty"`
-	Content   string    `json:"content,omitempty"`
-	Thumbnail string    `json:"thumbnail,omitempty"`
+	Self      string `json:"self,omitempty"`
+	ID        string `json:"id,omitempty"`
+	Filename  string `json:"filename,omitempty"`
+	Author    *User  `json:"author,omitempty"`
+	Created   string `json:"created,omitempty"`
+	Size      int    `json:"size,omitempty"`
+	MimeType  string `json:"mimeType,omitempty"`
+	Content   string `json:"content,omitempty"`
+	Thumbnail string `json:"thumbnail,omitempty"`
 }
 
 // IssueFields represents single fields of a JIRA issue.
@@ -55,7 +55,6 @@ type IssueFields struct {
 	//	* "timeoriginalestimate": null,
 	//	* "timetracking": {},
 	//	* "aggregatetimeestimate": null,
-	//	* "subtasks": [],
 	//	* "environment": null,
 	//	* "duedate": null,
 	Type              IssueType     `json:"issuetype"`
@@ -65,21 +64,22 @@ type IssueFields struct {
 	Resolutiondate    string        `json:"resolutiondate,omitempty"`
 	Created           string        `json:"created,omitempty"`
 	Watches           *Watches      `json:"watches,omitempty"`
-	Assignee          *Assignee     `json:"assignee,omitempty"`
+	Assignee          *User         `json:"assignee,omitempty"`
 	Updated           string        `json:"updated,omitempty"`
 	Description       string        `json:"description,omitempty"`
 	Summary           string        `json:"summary"`
-	Creator           *Assignee     `json:"Creator,omitempty"`
-	Reporter          *Assignee     `json:"reporter,omitempty"`
+	Creator           *User         `json:"Creator,omitempty"`
+	Reporter          *User         `json:"reporter,omitempty"`
 	Components        []*Component  `json:"components,omitempty"`
 	Status            *Status       `json:"status,omitempty"`
 	Progress          *Progress     `json:"progress,omitempty"`
 	AggregateProgress *Progress     `json:"aggregateprogress,omitempty"`
-	Worklog           []*Worklog    `json:"worklog.worklogs,omitempty"`
+	Worklog           *Worklog      `json:"worklog,omitempty"`
 	IssueLinks        []*IssueLink  `json:"issuelinks,omitempty"`
 	Comments          []*Comment    `json:"comment.comments,omitempty"`
 	FixVersions       []*FixVersion `json:"fixVersions,omitempty"`
 	Labels            []string      `json:"labels,omitempty"`
+	Subtasks          []*Subtasks   `json:"subtasks,omitempty"`
 	Attachments       []*Attachment `json:"attachment,omitempty"`
 }
 
@@ -92,15 +92,7 @@ type IssueType struct {
 	IconURL     string `json:"iconUrl,omitempty"`
 	Name        string `json:"name,omitempty"`
 	Subtask     bool   `json:"subtask,omitempty"`
-}
-
-// Project represents a JIRA Project.
-type Project struct {
-	Self       string            `json:"self,omitempty"`
-	ID         string            `json:"id,omitempty"`
-	Key        string            `json:"key,omitempty"`
-	Name       string            `json:"name,omitempty"`
-	AvatarURLs map[string]string `json:"avatarUrls,omitempty"`
+	AvatarID    int    `json:"avatarId,omitempty"`
 }
 
 // Resolution represents a resolution of a JIRA issue.
@@ -128,14 +120,24 @@ type Watches struct {
 	IsWatching bool   `json:"isWatching,omitempty"`
 }
 
-// Assignee represents a user who is this JIRA issue assigned to.
-type Assignee struct {
-	Self         string            `json:"self,omitempty"`
-	Name         string            `json:"name,omitempty"`
-	EmailAddress string            `json:"emailAddress,omitempty"`
-	AvatarURLs   map[string]string `json:"avatarUrls,omitempty"`
-	DisplayName  string            `json:"displayName,omitempty"`
-	Active       bool              `json:"active,omitempty"`
+// User represents a user who is this JIRA issue assigned to.
+type User struct {
+	Self         string     `json:"self,omitempty"`
+	Name         string     `json:"name,omitempty"`
+	Key          string     `json:"key,omitempty"`
+	EmailAddress string     `json:"emailAddress,omitempty"`
+	AvatarUrls   AvatarUrls `json:"avatarUrls,omitempty"`
+	DisplayName  string     `json:"displayName,omitempty"`
+	Active       bool       `json:"active,omitempty"`
+	TimeZone     string     `json:"timeZone,omitempty"`
+}
+
+// AvatarUrls represents different dimensions of avatars / images
+type AvatarUrls struct {
+	Four8X48  string `json:"48x48,omitempty"`
+	Two4X24   string `json:"24x24,omitempty"`
+	One6X16   string `json:"16x16,omitempty"`
+	Three2X32 string `json:"32x32,omitempty"`
 }
 
 // Component represents a "component" of a JIRA issue.
@@ -175,9 +177,36 @@ type Progress struct {
 }
 
 // Worklog represents the work log of a JIRA issue.
+// One Worklog contains zero or n WorklogRecords
 // JIRA Wiki: https://confluence.atlassian.com/jira/logging-work-on-an-issue-185729605.html
 type Worklog struct {
-	// TODO Add Worklogs
+	StartAt    int             `json:"startAt"`
+	MaxResults int             `json:"maxResults"`
+	Total      int             `json:"total"`
+	Worklogs   []WorklogRecord `json:"worklogs"`
+}
+
+// WorklogRecord represents one entry of a Worklog
+type WorklogRecord struct {
+	Self             string `json:"self"`
+	Author           User   `json:"author"`
+	UpdateAuthor     User   `json:"updateAuthor"`
+	Comment          string `json:"comment"`
+	Created          string `json:"created"`
+	Updated          string `json:"updated"`
+	Started          string `json:"started"`
+	TimeSpent        string `json:"timeSpent"`
+	TimeSpentSeconds int    `json:"timeSpentSeconds"`
+	ID               string `json:"id"`
+	IssueID          string `json:"issueId"`
+}
+
+// Subtasks represents all issues of a parent issue.
+type Subtasks struct {
+	ID     string      `json:"id"`
+	Key    string      `json:"key"`
+	Self   string      `json:"self"`
+	Fields IssueFields `json:"fields"`
 }
 
 // IssueLink represents a link between two issues in JIRA.
@@ -204,9 +233,9 @@ type IssueLinkType struct {
 type Comment struct {
 	Self         string            `json:"self,omitempty"`
 	Name         string            `json:"name,omitempty"`
-	Author       Assignee          `json:"author,omitempty"`
+	Author       User              `json:"author,omitempty"`
 	Body         string            `json:"body,omitempty"`
-	UpdateAuthor Assignee          `json:"updateAuthor,omitempty"`
+	UpdateAuthor User              `json:"updateAuthor,omitempty"`
 	Updated      string            `json:"updated,omitempty"`
 	Created      string            `json:"created,omitempty"`
 	Visibility   CommentVisibility `json:"visibility,omitempty"`
