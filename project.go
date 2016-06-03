@@ -66,14 +66,12 @@ type ProjectComponent struct {
 	ProjectID           int    `json:"projectId"`
 }
 
-// Get all projects form jira
+// GetList gets all projects form JIRA
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
 func (s *ProjectService) GetList() (*ProjectList, *http.Response, error) {
-
 	apiEndpoint := "rest/api/2/project"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
-
 	if err != nil {
 		return nil, nil, err
 	}
@@ -94,7 +92,6 @@ func (s *ProjectService) GetList() (*ProjectList, *http.Response, error) {
 func (s *ProjectService) Get(projectID string) (*FullProject, *http.Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/project/%s", projectID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
-
 	if err != nil {
 		return nil, nil, err
 	}

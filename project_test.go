@@ -12,7 +12,7 @@ func TestProjectGetAll(t *testing.T) {
 	defer teardown()
 	testApiEdpoint := "/rest/api/2/project"
 
-	raw, err := ioutil.ReadFile("./json_mocks/all_projects.json")
+	raw, err := ioutil.ReadFile("./mocks/all_projects.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -36,7 +36,7 @@ func TestProjectGet(t *testing.T) {
 	defer teardown()
 	testApiEdpoint := "/rest/api/2/project/12310505"
 
-	raw, err := ioutil.ReadFile("./json_mocks/project.json")
+	raw, err := ioutil.ReadFile("./mocks/project.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
