@@ -95,15 +95,6 @@ type IssueType struct {
 	AvatarID    int    `json:"avatarId,omitempty"`
 }
 
-// Project represents a JIRA Project.
-type Project struct {
-	Self       string            `json:"self,omitempty"`
-	ID         string            `json:"id,omitempty"`
-	Key        string            `json:"key,omitempty"`
-	Name       string            `json:"name,omitempty"`
-	AvatarURLs map[string]string `json:"avatarUrls,omitempty"`
-}
-
 // Resolution represents a resolution of a JIRA issue.
 // Typical types are "Fixed", "Suspended", "Won't Fix", ...
 type Resolution struct {
@@ -129,7 +120,7 @@ type Watches struct {
 	IsWatching bool   `json:"isWatching,omitempty"`
 }
 
-// Assignee represents a user who is this JIRA issue assigned to.
+// User represents a user who is this JIRA issue assigned to.
 type User struct {
 	Self         string     `json:"self,omitempty"`
 	Name         string     `json:"name,omitempty"`
@@ -141,6 +132,7 @@ type User struct {
 	TimeZone     string     `json:"timeZone,omitempty"`
 }
 
+// AvatarUrls represents different dimensions of avatars / images
 type AvatarUrls struct {
 	Four8X48  string `json:"48x48,omitempty"`
 	Two4X24   string `json:"24x24,omitempty"`
@@ -185,6 +177,7 @@ type Progress struct {
 }
 
 // Worklog represents the work log of a JIRA issue.
+// One Worklog contains zero or n WorklogRecords
 // JIRA Wiki: https://confluence.atlassian.com/jira/logging-work-on-an-issue-185729605.html
 type Worklog struct {
 	StartAt    int             `json:"startAt"`
@@ -193,6 +186,7 @@ type Worklog struct {
 	Worklogs   []WorklogRecord `json:"worklogs"`
 }
 
+// WorklogRecord represents one entry of a Worklog
 type WorklogRecord struct {
 	Self             string `json:"self"`
 	Author           User   `json:"author"`
@@ -207,6 +201,7 @@ type WorklogRecord struct {
 	IssueID          string `json:"issueId"`
 }
 
+// Subtasks represents all issues of a parent issue.
 type Subtasks struct {
 	ID     string      `json:"id"`
 	Key    string      `json:"key"`

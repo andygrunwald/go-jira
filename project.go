@@ -5,11 +5,14 @@ import (
 	"net/http"
 )
 
+// ProjectService handles projects for the JIRA instance / API.
+//
+// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project
 type ProjectService struct {
 	client *Client
 }
 
-// Project list type
+// ProjectList represent a list of Projects
 type ProjectList []struct {
 	Expand          string          `json:"expand"`
 	Self            string          `json:"self"`
@@ -21,6 +24,7 @@ type ProjectList []struct {
 	ProjectCategory ProjectCategory `json:"projectCategory,omitempty"`
 }
 
+// ProjectCategory represents a single project category
 type ProjectCategory struct {
 	Self        string `json:"self"`
 	ID          string `json:"id"`
@@ -28,29 +32,29 @@ type ProjectCategory struct {
 	Description string `json:"description"`
 }
 
-// Full project description
-// Can't name it project because it exist in issue
-type FullProject struct {
-	Expand       string             `json:"expand"`
-	Self         string             `json:"self"`
-	ID           string             `json:"id"`
-	Key          string             `json:"key"`
-	Description  string             `json:"description"`
-	Lead         User               `json:"lead"`
-	Components   []ProjectComponent `json:"components"`
-	IssueTypes   []IssueType        `json:"issueTypes"`
-	URL          string             `json:"url"`
-	Email        string             `json:"email"`
-	AssigneeType string             `json:"assigneeType"`
-	Versions     []interface{}      `json:"versions"`
-	Name         string             `json:"name"`
+// Project represents a JIRA Project.
+type Project struct {
+	Expand       string             `json:"expand,omitempty"`
+	Self         string             `json:"self,omitempty"`
+	ID           string             `json:"id,omitempty"`
+	Key          string             `json:"key,omitempty"`
+	Description  string             `json:"description,omitempty"`
+	Lead         User               `json:"lead,omitempty"`
+	Components   []ProjectComponent `json:"components,omitempty"`
+	IssueTypes   []IssueType        `json:"issueTypes,omitempty"`
+	URL          string             `json:"url,omitempty"`
+	Email        string             `json:"email,omitempty"`
+	AssigneeType string             `json:"assigneeType,omitempty"`
+	Versions     []interface{}      `json:"versions,omitempty"`
+	Name         string             `json:"name,omitempty"`
 	Roles        struct {
-		Developers string `json:"Developers"`
-	} `json:"roles"`
-	AvatarUrls      AvatarUrls      `json:"avatarUrls"`
-	ProjectCategory ProjectCategory `json:"projectCategory"`
+		Developers string `json:"Developers,omitempty"`
+	} `json:"roles,omitempty"`
+	AvatarUrls      AvatarUrls      `json:"avatarUrls,omitempty"`
+	ProjectCategory ProjectCategory `json:"projectCategory,omitempty"`
 }
 
+// ProjectComponent represents a single component of a project
 type ProjectComponent struct {
 	Self                string `json:"self"`
 	ID                  string `json:"id"`
@@ -89,14 +93,14 @@ func (s *ProjectService) GetList() (*ProjectList, *http.Response, error) {
 // This can be an project id, or an project key.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
-func (s *ProjectService) Get(projectID string) (*FullProject, *http.Response, error) {
+func (s *ProjectService) Get(projectID string) (*Project, *http.Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/project/%s", projectID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	project := new(FullProject)
+	project := new(Project)
 	resp, err := s.client.Do(req, project)
 	if err != nil {
 		return nil, resp, err
