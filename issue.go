@@ -179,14 +179,17 @@ type Progress struct {
 	Total    int `json:"total"`
 }
 
-type JiraTime time.Time
+// Time represents the Time definition of JIRA as a time.Time of go
+type Time time.Time
 
-func (t *JiraTime) UnmarshalJSON(b []byte) error {
+// UnmarshalJSON will transform the JIRA time into a time.Time
+// during the transformation of the JIRA JSON response
+func (t *Time) UnmarshalJSON(b []byte) error {
 	ti, err := time.Parse("\"2006-01-02T15:04:05.999-0700\"", string(b))
 	if err != nil {
 		return err
 	}
-	*t = JiraTime(ti)
+	*t = Time(ti)
 	return nil
 }
 
@@ -202,17 +205,17 @@ type Worklog struct {
 
 // WorklogRecord represents one entry of a Worklog
 type WorklogRecord struct {
-	Self             string   `json:"self"`
-	Author           User     `json:"author"`
-	UpdateAuthor     User     `json:"updateAuthor"`
-	Comment          string   `json:"comment"`
-	Created          JiraTime `json:"created"`
-	Updated          JiraTime `json:"updated"`
-	Started          string   `json:"started"`
-	TimeSpent        string   `json:"timeSpent"`
-	TimeSpentSeconds int      `json:"timeSpentSeconds"`
-	ID               string   `json:"id"`
-	IssueID          string   `json:"issueId"`
+	Self             string `json:"self"`
+	Author           User   `json:"author"`
+	UpdateAuthor     User   `json:"updateAuthor"`
+	Comment          string `json:"comment"`
+	Created          Time   `json:"created"`
+	Updated          Time   `json:"updated"`
+	Started          string `json:"started"`
+	TimeSpent        string `json:"timeSpent"`
+	TimeSpentSeconds int    `json:"timeSpentSeconds"`
+	ID               string `json:"id"`
+	IssueID          string `json:"issueId"`
 }
 
 // Subtasks represents all issues of a parent issue.
@@ -273,6 +276,16 @@ type CommentVisibility struct {
 	Type  string `json:"type,omitempty"`
 	Value string `json:"value,omitempty"`
 }
+
+// searchResult is only a small wrapper arround the Search (with JQL) method
+// to be able to parse the results
+type searchResult struct {
+	Issues []Issue `json:"issues"`
+}
+
+// CustomFields represents custom fields of JIRA
+// This can heavily differ between JIRA instances
+type CustomFields map[string]string
 
 // Get returns a full representation of the issue for the given issue key.
 // JIRA will attempt to identify the issue by the issueIdOrKey path parameter.
@@ -406,25 +419,22 @@ func (s *IssueService) AddLink(issueLink *IssueLink) (*http.Response, error) {
 	return resp, err
 }
 
-type searchResult struct {
-	Issues []Issue `json:"issues"`
-}
-
-// Search for tickets
+// Search will search for tickets according to the jql
+//
 // JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
-func (s *IssueService) Search(jql string) ([]Issue, error) {
-	req, err := s.client.NewRequest("GET", "rest/api/2/search?jql="+url.QueryEscape(jql), nil)
+func (s *IssueService) Search(jql string) ([]Issue, *http.Response, error) {
+	u := fmt.Sprintf("rest/api/2/search?jql=%s", url.QueryEscape(jql))
+	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
-		panic(err)
+		return []Issue{}, nil, err
 	}
-	resp := new(searchResult)
-	_, err = s.client.Do(req, resp)
-	return resp.Issues, err
+
+	v := new(searchResult)
+	resp, err := s.client.Do(req, v)
+	return v.Issues, resp, err
 }
 
-type CustomFields map[string]string
-
-// Returns a map of customfield_* keys with string values
+// GetCustomFields returns a map of customfield_* keys with string values
 func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *http.Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -437,6 +447,7 @@ func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *http.Resp
 	if err != nil {
 		return nil, resp, err
 	}
+
 	m := *issue
 	f := m["fields"]
 	cf := make(CustomFields)
