@@ -6,6 +6,9 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"net/url"
+	"strings"
+	"time"
 )
 
 const (
@@ -176,6 +179,20 @@ type Progress struct {
 	Total    int `json:"total"`
 }
 
+// Time represents the Time definition of JIRA as a time.Time of go
+type Time time.Time
+
+// UnmarshalJSON will transform the JIRA time into a time.Time
+// during the transformation of the JIRA JSON response
+func (t *Time) UnmarshalJSON(b []byte) error {
+	ti, err := time.Parse("\"2006-01-02T15:04:05.999-0700\"", string(b))
+	if err != nil {
+		return err
+	}
+	*t = Time(ti)
+	return nil
+}
+
 // Worklog represents the work log of a JIRA issue.
 // One Worklog contains zero or n WorklogRecords
 // JIRA Wiki: https://confluence.atlassian.com/jira/logging-work-on-an-issue-185729605.html
@@ -192,8 +209,8 @@ type WorklogRecord struct {
 	Author           User   `json:"author"`
 	UpdateAuthor     User   `json:"updateAuthor"`
 	Comment          string `json:"comment"`
-	Created          string `json:"created"`
-	Updated          string `json:"updated"`
+	Created          Time   `json:"created"`
+	Updated          Time   `json:"updated"`
 	Started          string `json:"started"`
 	TimeSpent        string `json:"timeSpent"`
 	TimeSpentSeconds int    `json:"timeSpentSeconds"`
@@ -259,6 +276,16 @@ type CommentVisibility struct {
 	Type  string `json:"type,omitempty"`
 	Value string `json:"value,omitempty"`
 }
+
+// searchResult is only a small wrapper arround the Search (with JQL) method
+// to be able to parse the results
+type searchResult struct {
+	Issues []Issue `json:"issues"`
+}
+
+// CustomFields represents custom fields of JIRA
+// This can heavily differ between JIRA instances
+type CustomFields map[string]string
 
 // Get returns a full representation of the issue for the given issue key.
 // JIRA will attempt to identify the issue by the issueIdOrKey path parameter.
@@ -390,4 +417,50 @@ func (s *IssueService) AddLink(issueLink *IssueLink) (*http.Response, error) {
 
 	resp, err := s.client.Do(req, nil)
 	return resp, err
+}
+
+// Search will search for tickets according to the jql
+//
+// JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
+func (s *IssueService) Search(jql string) ([]Issue, *http.Response, error) {
+	u := fmt.Sprintf("rest/api/2/search?jql=%s", url.QueryEscape(jql))
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return []Issue{}, nil, err
+	}
+
+	v := new(searchResult)
+	resp, err := s.client.Do(req, v)
+	return v.Issues, resp, err
+}
+
+// GetCustomFields returns a map of customfield_* keys with string values
+func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *http.Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	issue := new(map[string]interface{})
+	resp, err := s.client.Do(req, issue)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	m := *issue
+	f := m["fields"]
+	cf := make(CustomFields)
+	if f == nil {
+		return cf, resp, nil
+	}
+
+	if rec, ok := f.(map[string]interface{}); ok {
+		for key, val := range rec {
+			if strings.Contains(key, "customfield") {
+				cf[key] = fmt.Sprint(val)
+			}
+		}
+	}
+	return cf, resp, nil
 }
