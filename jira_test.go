@@ -215,6 +215,32 @@ func TestDo(t *testing.T) {
 	}
 }
 
+func TestDo_HTTPResponse(t *testing.T) {
+	setup()
+	defer teardown()
+
+	type foo struct {
+		A string
+	}
+
+	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if m := "GET"; m != r.Method {
+			t.Errorf("Request method = %v, want %v", r.Method, m)
+		}
+		fmt.Fprint(w, `{"A":"a"}`)
+	})
+
+	req, _ := testClient.NewRequest("GET", "/", nil)
+	res, _ := testClient.Do(req, nil)
+	_, err := ioutil.ReadAll(res.Body)
+
+	if err != nil {
+		t.Errorf("Error on parsing HTTP Response = %v", err.Error())
+	} else if res.StatusCode != 200 {
+		t.Errorf("Response code = %v, want %v", res.StatusCode, 200)
+	}
+}
+
 func TestDo_HTTPError(t *testing.T) {
 	setup()
 	defer teardown()
@@ -249,5 +275,24 @@ func TestDo_RedirectLoop(t *testing.T) {
 	}
 	if err, ok := err.(*url.Error); !ok {
 		t.Errorf("Expected a URL error; got %+v.", err)
+	}
+}
+
+func TestGetBaseURL_WithURL(t *testing.T) {
+	u, err := url.Parse(testJIRAInstanceURL)
+	if err != nil {
+		t.Errorf("URL parsing -> Got an error: %s", err)
+	}
+
+	c, err := NewClient(nil, testJIRAInstanceURL)
+	if err != nil {
+		t.Errorf("Client creation -> Got an error: %s", err)
+	}
+	if c == nil {
+		t.Error("Expected a client. Got none")
+	}
+
+	if b := c.GetBaseURL(); !reflect.DeepEqual(b, *u) {
+		t.Errorf("Base URLs are not equal. Expected %+v, got %+v", *u, b)
 	}
 }

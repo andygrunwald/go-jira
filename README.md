@@ -71,6 +71,9 @@ func main() {
 
 ### Authenticate with session cookie
 
+Some actions require an authenticated user.
+Here is an example with a session cookie authentification.
+
 ```go
 package main
 
@@ -102,6 +105,8 @@ func main() {
 
 ### Call a not implemented API endpoint
 
+Not all API endpoints of the JIRA API are implemented into *go-jira*.
+But you can call them anyway:
 Lets get all public projects of [Atlassian`s JIRA instance](https://jira.atlassian.com/).
 
 ```go

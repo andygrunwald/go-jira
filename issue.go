@@ -1,7 +1,10 @@
 package jira
 
 import (
+	"bytes"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"strings"
@@ -29,7 +32,18 @@ type Issue struct {
 	Fields *IssueFields `json:"fields,omitempty"`
 }
 
-type Issues []*Issue
+// Attachment represents a JIRA attachment
+type Attachment struct {
+	Self      string `json:"self,omitempty"`
+	ID        string `json:"id,omitempty"`
+	Filename  string `json:"filename,omitempty"`
+	Author    *User  `json:"author,omitempty"`
+	Created   string `json:"created,omitempty"`
+	Size      int    `json:"size,omitempty"`
+	MimeType  string `json:"mimeType,omitempty"`
+	Content   string `json:"content,omitempty"`
+	Thumbnail string `json:"thumbnail,omitempty"`
+}
 
 // IssueFields represents single fields of a JIRA issue.
 // Every JIRA issue has several fields attached.
@@ -43,7 +57,6 @@ type IssueFields struct {
 	//	* "aggregatetimeoriginalestimate": null,
 	//	* "timeoriginalestimate": null,
 	//	* "timetracking": {},
-	//	* "attachment": [],
 	//	* "aggregatetimeestimate": null,
 	//	* "environment": null,
 	//	* "duedate": null,
@@ -54,22 +67,23 @@ type IssueFields struct {
 	Resolutiondate    string        `json:"resolutiondate,omitempty"`
 	Created           string        `json:"created,omitempty"`
 	Watches           *Watches      `json:"watches,omitempty"`
-	Assignee          *Assignee     `json:"assignee,omitempty"`
+	Assignee          *User         `json:"assignee,omitempty"`
 	Updated           string        `json:"updated,omitempty"`
 	Description       string        `json:"description,omitempty"`
 	Summary           string        `json:"summary"`
-	Creator           *Assignee     `json:"Creator,omitempty"`
-	Reporter          *Assignee     `json:"reporter,omitempty"`
+	Creator           *User         `json:"Creator,omitempty"`
+	Reporter          *User         `json:"reporter,omitempty"`
 	Components        []*Component  `json:"components,omitempty"`
 	Status            *Status       `json:"status,omitempty"`
 	Progress          *Progress     `json:"progress,omitempty"`
 	AggregateProgress *Progress     `json:"aggregateprogress,omitempty"`
-	WorklogPage       *WorklogPage  `json:"worklog,omitempty"`
+	Worklog           *Worklog      `json:"worklog,omitempty"`
 	IssueLinks        []*IssueLink  `json:"issuelinks,omitempty"`
 	Comments          []*Comment    `json:"comment.comments,omitempty"`
 	FixVersions       []*FixVersion `json:"fixVersions,omitempty"`
 	Labels            []string      `json:"labels,omitempty"`
-	SubTasks          Issues        `json:"subtasks,omitempty"`
+	Subtasks          []*Subtasks   `json:"subtasks,omitempty"`
+	Attachments       []*Attachment `json:"attachment,omitempty"`
 }
 
 // IssueType represents a type of a JIRA issue.
@@ -81,15 +95,7 @@ type IssueType struct {
 	IconURL     string `json:"iconUrl,omitempty"`
 	Name        string `json:"name,omitempty"`
 	Subtask     bool   `json:"subtask,omitempty"`
-}
-
-// Project represents a JIRA Project.
-type Project struct {
-	Self       string            `json:"self,omitempty"`
-	ID         string            `json:"id,omitempty"`
-	Key        string            `json:"key,omitempty"`
-	Name       string            `json:"name,omitempty"`
-	AvatarURLs map[string]string `json:"avatarUrls,omitempty"`
+	AvatarID    int    `json:"avatarId,omitempty"`
 }
 
 // Resolution represents a resolution of a JIRA issue.
@@ -117,14 +123,24 @@ type Watches struct {
 	IsWatching bool   `json:"isWatching,omitempty"`
 }
 
-// Assignee represents a user who is this JIRA issue assigned to.
-type Assignee struct {
-	Self         string            `json:"self,omitempty"`
-	Name         string            `json:"name,omitempty"`
-	EmailAddress string            `json:"emailAddress,omitempty"`
-	AvatarURLs   map[string]string `json:"avatarUrls,omitempty"`
-	DisplayName  string            `json:"displayName,omitempty"`
-	Active       bool              `json:"active,omitempty"`
+// User represents a user who is this JIRA issue assigned to.
+type User struct {
+	Self         string     `json:"self,omitempty"`
+	Name         string     `json:"name,omitempty"`
+	Key          string     `json:"key,omitempty"`
+	EmailAddress string     `json:"emailAddress,omitempty"`
+	AvatarUrls   AvatarUrls `json:"avatarUrls,omitempty"`
+	DisplayName  string     `json:"displayName,omitempty"`
+	Active       bool       `json:"active,omitempty"`
+	TimeZone     string     `json:"timeZone,omitempty"`
+}
+
+// AvatarUrls represents different dimensions of avatars / images
+type AvatarUrls struct {
+	Four8X48  string `json:"48x48,omitempty"`
+	Two4X24   string `json:"24x24,omitempty"`
+	One6X16   string `json:"16x16,omitempty"`
+	Three2X32 string `json:"32x32,omitempty"`
 }
 
 // Component represents a "component" of a JIRA issue.
@@ -163,31 +179,7 @@ type Progress struct {
 	Total    int `json:"total"`
 }
 
-type WorklogPage struct {
-	StartAt    uint       `json:"startAt"`
-	MaxResults uint       `json:"maxResults"`
-	Total      uint       `json:"total"`
-	Worklogs   []*Worklog `json:"worklogs"`
-}
-
-// Worklog represents the work log of a JIRA issue.
-// JIRA Wiki: https://confluence.atlassian.com/jira/logging-work-on-an-issue-185729605.html
-type Worklog struct {
-	ID               string    `json:"id"`
-	Self             string    `json:"self"`
-	IssueId          string    `json:"issueId"`
-	TimeSpent        string    `json:"timeSpent"`
-	TimeSpentSeconds uint64    `json:"timeSpentSeconds"`
-	Comment          string    `json:"comment"`
-	Updated          JiraTime  `json:"updated"`
-	Created          JiraTime  `json:"created"`
-	Started          JiraTime  `json:"started"`
-	Author           *Assignee `json:"author"`
-}
-
 type JiraTime time.Time
-
-type CustomFields map[string]string
 
 func (t *JiraTime) UnmarshalJSON(b []byte) error {
 	ti, err := time.Parse("\"2006-01-02T15:04:05.999-0700\"", string(b))
@@ -196,6 +188,39 @@ func (t *JiraTime) UnmarshalJSON(b []byte) error {
 	}
 	*t = JiraTime(ti)
 	return nil
+}
+
+// Worklog represents the work log of a JIRA issue.
+// One Worklog contains zero or n WorklogRecords
+// JIRA Wiki: https://confluence.atlassian.com/jira/logging-work-on-an-issue-185729605.html
+type Worklog struct {
+	StartAt    int             `json:"startAt"`
+	MaxResults int             `json:"maxResults"`
+	Total      int             `json:"total"`
+	Worklogs   []WorklogRecord `json:"worklogs"`
+}
+
+// WorklogRecord represents one entry of a Worklog
+type WorklogRecord struct {
+	Self             string   `json:"self"`
+	Author           User     `json:"author"`
+	UpdateAuthor     User     `json:"updateAuthor"`
+	Comment          string   `json:"comment"`
+	Created          JiraTime `json:"created"`
+	Updated          JiraTime `json:"updated"`
+	Started          string   `json:"started"`
+	TimeSpent        string   `json:"timeSpent"`
+	TimeSpentSeconds int      `json:"timeSpentSeconds"`
+	ID               string   `json:"id"`
+	IssueID          string   `json:"issueId"`
+}
+
+// Subtasks represents all issues of a parent issue.
+type Subtasks struct {
+	ID     string      `json:"id"`
+	Key    string      `json:"key"`
+	Self   string      `json:"self"`
+	Fields IssueFields `json:"fields"`
 }
 
 // IssueLink represents a link between two issues in JIRA.
@@ -220,14 +245,14 @@ type IssueLinkType struct {
 
 // Comment represents a comment by a person to an issue in JIRA.
 type Comment struct {
-	Self         string            `json:"self"`
-	Name         string            `json:"name"`
-	Author       Assignee          `json:"author"`
-	Body         string            `json:"body"`
-	UpdateAuthor Assignee          `json:"updateAuthor"`
-	Updated      string            `json:"updated"`
-	Created      string            `json:"created"`
-	Visibility   CommentVisibility `json:"visibility"`
+	Self         string            `json:"self,omitempty"`
+	Name         string            `json:"name,omitempty"`
+	Author       User              `json:"author,omitempty"`
+	Body         string            `json:"body,omitempty"`
+	UpdateAuthor User              `json:"updateAuthor,omitempty"`
+	Updated      string            `json:"updated,omitempty"`
+	Created      string            `json:"created,omitempty"`
+	Visibility   CommentVisibility `json:"visibility,omitempty"`
 }
 
 // FixVersion represents a software release in which an issue is fixed.
@@ -245,12 +270,8 @@ type FixVersion struct {
 // CommentVisibility represents he visibility of a comment.
 // E.g. Type could be "role" and Value "Administrators"
 type CommentVisibility struct {
-	Type  string `json:"type"`
-	Value string `json:"value"`
-}
-
-type SearchResult struct {
-	Issues Issues `json:"issues"`
+	Type  string `json:"type,omitempty"`
+	Value string `json:"value,omitempty"`
 }
 
 // Get returns a full representation of the issue for the given issue key.
@@ -275,35 +296,60 @@ func (s *IssueService) Get(issueID string) (*Issue, *http.Response, error) {
 	return issue, resp, nil
 }
 
-
-// Returns a map of customfield_* keys with string values
-func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *http.Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
+// DownloadAttachment returns a http.Response of an attachment for a given attachmentID.
+// The attachment is in the http.Response.Body of the response.
+// This is an io.ReadCloser.
+// The caller should close the resp.Body.
+func (s *IssueService) DownloadAttachment(attachmentID string) (*http.Response, error) {
+	apiEndpoint := fmt.Sprintf("secure/attachment/%s/", attachmentID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// PostAttachment uploads r (io.Reader) as an attachment to a given attachmentID
+func (s *IssueService) PostAttachment(attachmentID string, r io.Reader, attachmentName string) (*[]Attachment, *http.Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/attachments", attachmentID)
+
+	b := new(bytes.Buffer)
+	writer := multipart.NewWriter(b)
+
+	fw, err := writer.CreateFormFile("file", attachmentName)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	issue := new(map[string]interface{})
-	resp, err := s.client.Do(req, issue)
+	if r != nil {
+		// Copy the file
+		if _, err = io.Copy(fw, r); err != nil {
+			return nil, nil, err
+		}
+	}
+	writer.Close()
+
+	req, err := s.client.NewMultiPartRequest("POST", apiEndpoint, b)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	// PostAttachment response returns a JSON array (as multiple attachments can be posted)
+	attachment := new([]Attachment)
+	resp, err := s.client.Do(req, attachment)
 	if err != nil {
 		return nil, resp, err
 	}
-	m := *issue
-	f := m["fields"]
-	cf := make(CustomFields)
-	if f == nil {
-		return cf, resp, nil
-	}
 
-	if rec, ok := f.(map[string]interface{}); ok {
-		for key, val := range rec {
-			if strings.Contains(key, "customfield") {
-				cf[key] = fmt.Sprint(val)
-			}
-		}
-	}
-	return cf, resp, nil
+	return attachment, resp, nil
 }
 
 // Create creates an issue or a sub-task from a JSON representation.
@@ -360,14 +406,50 @@ func (s *IssueService) AddLink(issueLink *IssueLink) (*http.Response, error) {
 	return resp, err
 }
 
+type searchResult struct {
+	Issues []Issue `json:"issues"`
+}
+
 // Search for tickets
 // JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
-func (s *IssueService) Search(jql string) (*SearchResult, error) {
+func (s *IssueService) Search(jql string) ([]Issue, error) {
 	req, err := s.client.NewRequest("GET", "rest/api/2/search?jql="+url.QueryEscape(jql), nil)
 	if err != nil {
 		panic(err)
 	}
-	resp := new(SearchResult)
+	resp := new(searchResult)
 	_, err = s.client.Do(req, resp)
-	return resp, err
+	return resp.Issues, err
+}
+
+type CustomFields map[string]string
+
+// Returns a map of customfield_* keys with string values
+func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *http.Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	issue := new(map[string]interface{})
+	resp, err := s.client.Do(req, issue)
+	if err != nil {
+		return nil, resp, err
+	}
+	m := *issue
+	f := m["fields"]
+	cf := make(CustomFields)
+	if f == nil {
+		return cf, resp, nil
+	}
+
+	if rec, ok := f.(map[string]interface{}); ok {
+		for key, val := range rec {
+			if strings.Contains(key, "customfield") {
+				cf[key] = fmt.Sprint(val)
+			}
+		}
+	}
+	return cf, resp, nil
 }

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -24,6 +23,7 @@ type Client struct {
 	// Services used for talking to different parts of the JIRA API.
 	Authentication *AuthenticationService
 	Issue          *IssueService
+	Project        *ProjectService
 }
 
 // NewClient returns a new JIRA API client.
@@ -49,6 +49,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	}
 	c.Authentication = &AuthenticationService{client: c}
 	c.Issue = &IssueService{client: c}
+	c.Project = &ProjectService{client: c}
 
 	return c, nil
 }
@@ -83,6 +84,36 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 
 	// Set session cookie if there is one
 	if c.session != nil {
+		for _, cookie := range c.session.Cookies {
+			req.AddCookie(cookie)
+		}
+	}
+
+	return req, nil
+}
+
+// NewMultiPartRequest creates an API request including a multi-part file.
+// A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
+// Relative URLs should always be specified without a preceding slash.
+// If specified, the value pointed to by buf is a multipart form.
+func (c *Client) NewMultiPartRequest(method, urlStr string, buf *bytes.Buffer) (*http.Request, error) {
+	rel, err := url.Parse(urlStr)
+	if err != nil {
+		return nil, err
+	}
+
+	u := c.baseURL.ResolveReference(rel)
+
+	req, err := http.NewRequest(method, u.String(), buf)
+	if err != nil {
+		return nil, err
+	}
+
+	// Set required headers
+	req.Header.Set("X-Atlassian-Token", "nocheck")
+
+	// Set session cookie if there is one
+	if c.Authentication.Authenticated() {
 		req.Header.Set("Cookie", fmt.Sprintf("%s=%s", c.session.Session.Name, c.session.Session.Value))
 	}
 
@@ -97,8 +128,6 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 		return nil, err
 	}
 
-	defer resp.Body.Close()
-
 	err = CheckResponse(resp)
 	if err != nil {
 		// Even though there was an error, we still return the response
@@ -107,6 +136,8 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 	}
 
 	if v != nil {
+		// Open a NewDecoder and defer closing the reader only if there is a provided interface to decode to
+		defer resp.Body.Close()
 		err = json.NewDecoder(resp.Body).Decode(v)
 	}
 
@@ -115,17 +146,19 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 
 // CheckResponse checks the API response for errors, and returns them if present.
 // A response is considered an error if it has a status code outside the 200 range.
-// API error responses are expected to have either no response body, or a JSON response body that maps to ErrorResponse.
-// Any other response body will be silently ignored.
+// The caller is responsible to analyze the response body.
+// The body can contain JSON (if the error is intended) or xml (sometimes JIRA just failes).
 func CheckResponse(r *http.Response) error {
 	if c := r.StatusCode; 200 <= c && c <= 299 {
 		return nil
 	}
 
-	errorResponse := &ErrorResponse{Response: r}
-	data, err := ioutil.ReadAll(r.Body)
-	if err == nil && data != nil {
-		json.Unmarshal(data, errorResponse)
-	}
-	return errorResponse
+	err := fmt.Errorf("Request failed. Please analyze the request body for more details. Status code: %d", r.StatusCode)
+	return err
+}
+
+// GetBaseURL will return you the Base URL.
+// This is the same URL as in the NewClient constructor
+func (c *Client) GetBaseURL() url.URL {
+	return *c.baseURL
 }
