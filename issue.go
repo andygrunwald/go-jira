@@ -211,7 +211,7 @@ type WorklogRecord struct {
 	Comment          string `json:"comment"`
 	Created          Time   `json:"created"`
 	Updated          Time   `json:"updated"`
-	Started          string `json:"started"`
+	Started          Time   `json:"started"`
 	TimeSpent        string `json:"timeSpent"`
 	TimeSpentSeconds int    `json:"timeSpentSeconds"`
 	ID               string `json:"id"`
