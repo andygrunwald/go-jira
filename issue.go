@@ -248,6 +248,7 @@ type IssueLinkType struct {
 
 // Comment represents a comment by a person to an issue in JIRA.
 type Comment struct {
+	ID           string            `json:"id,omitempty"`
 	Self         string            `json:"self,omitempty"`
 	Name         string            `json:"name,omitempty"`
 	Author       User              `json:"author,omitempty"`
