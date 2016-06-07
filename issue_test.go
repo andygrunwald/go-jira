@@ -94,13 +94,13 @@ func TestIssueAddLink(t *testing.T) {
 		Type: IssueLinkType{
 			Name: "Duplicate",
 		},
-		InwardIssue: Issue{
+		InwardIssue: &Issue{
 			Key: "HSP-1",
 		},
-		OutwardIssue: Issue{
+		OutwardIssue: &Issue{
 			Key: "MKY-1",
 		},
-		Comment: Comment{
+		Comment: &Comment{
 			Body: "Linked related issue!",
 			Visibility: CommentVisibility{
 				Type:  "group",
