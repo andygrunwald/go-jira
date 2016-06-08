@@ -231,9 +231,9 @@ type IssueLink struct {
 	ID           string        `json:"id"`
 	Self         string        `json:"self"`
 	Type         IssueLinkType `json:"type"`
-	OutwardIssue Issue         `json:"outwardIssue"`
-	InwardIssue  Issue         `json:"inwardIssue"`
-	Comment      Comment       `json:"comment"`
+	OutwardIssue *Issue        `json:"outwardIssue"`
+	InwardIssue  *Issue        `json:"inwardIssue"`
+	Comment      *Comment      `json:"comment"`
 }
 
 // IssueLinkType represents a type of a link between to issues in JIRA.
@@ -248,6 +248,7 @@ type IssueLinkType struct {
 
 // Comment represents a comment by a person to an issue in JIRA.
 type Comment struct {
+	ID           string            `json:"id,omitempty"`
 	Self         string            `json:"self,omitempty"`
 	Name         string            `json:"name,omitempty"`
 	Author       User              `json:"author,omitempty"`
