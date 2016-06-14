@@ -228,19 +228,19 @@ type Subtasks struct {
 
 // IssueLink represents a link between two issues in JIRA.
 type IssueLink struct {
-	ID           string        `json:"id"`
-	Self         string        `json:"self"`
+	ID           string        `json:"id,omitempty"`
+	Self         string        `json:"self,omitempty"`
 	Type         IssueLinkType `json:"type"`
 	OutwardIssue *Issue        `json:"outwardIssue"`
 	InwardIssue  *Issue        `json:"inwardIssue"`
-	Comment      *Comment      `json:"comment"`
+	Comment      *Comment      `json:"comment,omitempty"`
 }
 
 // IssueLinkType represents a type of a link between to issues in JIRA.
 // Typical issue link types are "Related to", "Duplicate", "Is blocked by", etc.
 type IssueLinkType struct {
-	ID      string `json:"id"`
-	Self    string `json:"self"`
+	ID      string `json:"id,omitempty"`
+	Self    string `json:"self,omitempty"`
 	Name    string `json:"name"`
 	Inward  string `json:"inward"`
 	Outward string `json:"outward"`
