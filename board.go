@@ -48,7 +48,6 @@ type BoardListOptions struct {
 	MaxResults int `url:"maxResults,omitempty"`
 }
 
-
 // Get all boards form jira
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects

@@ -1,6 +1,5 @@
 package jira
 
-
 import (
 	"fmt"
 	"io/ioutil"
@@ -48,12 +47,12 @@ func TestBoardsGetFiltered(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	boardsListOptions := BoardListOptions {
-		BoardType: "scrum",
-		Name: "Test",
+	boardsListOptions := BoardListOptions{
+		BoardType:      "scrum",
+		Name:           "Test",
 		ProjectKeyOrId: "TE",
-		StartAt: 1,
-		MaxResults: 10,
+		StartAt:        1,
+		MaxResults:     10,
 	}
 
 	projects, _, err := testClient.Board.GetList(&boardsListOptions)
@@ -64,4 +63,3 @@ func TestBoardsGetFiltered(t *testing.T) {
 		t.Errorf("Error given: %s", err)
 	}
 }
-

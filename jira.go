@@ -27,7 +27,7 @@ type Client struct {
 	Authentication *AuthenticationService
 	Issue          *IssueService
 	Project        *ProjectService
-	Board 	       *BoardService
+	Board          *BoardService
 }
 
 // NewClient returns a new JIRA API client.
@@ -96,7 +96,6 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 
 	return req, nil
 }
-
 
 // addOptions adds the parameters in opt as URL query parameters to s.  opt
 // must be a struct whose fields may contain "url" tags.
@@ -171,8 +170,6 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 
 	return resp, err
 }
-
-
 
 // CheckResponse checks the API response for errors, and returns them if present.
 // A response is considered an error if it has a status code outside the 200 range.
