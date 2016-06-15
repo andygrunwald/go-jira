@@ -68,7 +68,7 @@ func TestProjectGet_NoProject(t *testing.T) {
 
 	projects, resp, err := testClient.Project.Get("99999999")
 	if projects != nil {
-		t.Errorf("Expected nil. Got %s", projects)
+		t.Errorf("Expected nil. Got %s", err)
 	}
 
 	if resp.Status == "404" {

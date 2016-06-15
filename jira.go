@@ -7,6 +7,9 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"reflect"
+
+	"github.com/google/go-querystring/query"
 )
 
 // A Client manages communication with the JIRA API.
@@ -92,6 +95,41 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	return req, nil
 }
 
+// ListOptions specifies the optional parameters to various List methods that
+// support pagination.
+// Pagination is used for the JIRA REST APIs to conserve server resources and limit
+// response size for resources that return potentially large collection of items.
+// A request to a pages API will result in a values array wrapped in a JSON object with some paging metadata
+type ListOptions struct {
+	// The starting index of the returned projects. Base index: 0.
+	StartAt int `url:"startAt,omitempty"`
+
+	// The maximum number of projects to return per page. Default: 50.
+	MaxResults int `url:"maxResults,omitempty"`
+}
+
+// addOptions adds the parameters in opt as URL query parameters to s.  opt
+// must be a struct whose fields may contain "url" tags.
+func addOptions(s string, opt interface{}) (string, error) {
+	v := reflect.ValueOf(opt)
+	if v.Kind() == reflect.Ptr && v.IsNil() {
+		return s, nil
+	}
+
+	u, err := url.Parse(s)
+	if err != nil {
+		return s, err
+	}
+
+	qs, err := query.Values(opt)
+	if err != nil {
+		return s, err
+	}
+
+	u.RawQuery = qs.Encode()
+	return u.String(), nil
+}
+
 // NewMultiPartRequest creates an API request including a multi-part file.
 // A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
 // Relative URLs should always be specified without a preceding slash.
@@ -143,6 +181,8 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 
 	return resp, err
 }
+
+
 
 // CheckResponse checks the API response for errors, and returns them if present.
 // A response is considered an error if it has a status code outside the 200 range.
