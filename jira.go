@@ -27,6 +27,7 @@ type Client struct {
 	Authentication *AuthenticationService
 	Issue          *IssueService
 	Project        *ProjectService
+	Board 	       *BoardService
 }
 
 // NewClient returns a new JIRA API client.
@@ -53,6 +54,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	c.Authentication = &AuthenticationService{client: c}
 	c.Issue = &IssueService{client: c}
 	c.Project = &ProjectService{client: c}
+	c.Board = &BoardService{client: c}
 
 	return c, nil
 }
@@ -95,18 +97,6 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	return req, nil
 }
 
-// ListOptions specifies the optional parameters to various List methods that
-// support pagination.
-// Pagination is used for the JIRA REST APIs to conserve server resources and limit
-// response size for resources that return potentially large collection of items.
-// A request to a pages API will result in a values array wrapped in a JSON object with some paging metadata
-type ListOptions struct {
-	// The starting index of the returned projects. Base index: 0.
-	StartAt int `url:"startAt,omitempty"`
-
-	// The maximum number of projects to return per page. Default: 50.
-	MaxResults int `url:"maxResults,omitempty"`
-}
 
 // addOptions adds the parameters in opt as URL query parameters to s.  opt
 // must be a struct whose fields may contain "url" tags.
