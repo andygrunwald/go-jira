@@ -87,7 +87,7 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 
 	// Set session cookie if there is one
 	if c.session != nil {
-		for _, cookie := range c.session.SetCoockie {
+		for _, cookie := range c.session.Cookies {
 			req.AddCookie(cookie)
 		}
 	}
@@ -195,4 +195,10 @@ func CheckResponse(r *http.Response) error {
 
 	err := fmt.Errorf("Request failed. Please analyze the request body for more details. Status code: %d", r.StatusCode)
 	return err
+}
+
+// GetBaseURL will return you the Base URL.
+// This is the same URL as in the NewClient constructor
+func (c *Client) GetBaseURL() url.URL {
+	return *c.baseURL
 }

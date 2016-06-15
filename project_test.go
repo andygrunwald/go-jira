@@ -10,15 +10,15 @@ import (
 func TestProjectGetAll(t *testing.T) {
 	setup()
 	defer teardown()
-	testApiEdpoint := "/rest/api/2/project"
+	testAPIEdpoint := "/rest/api/2/project"
 
-	raw, err := ioutil.ReadFile("./json_mocks/all_projects.json")
+	raw, err := ioutil.ReadFile("./mocks/all_projects.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testApiEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testRequestURL(t, r, testApiEdpoint)
+		testRequestURL(t, r, testAPIEdpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
@@ -34,15 +34,15 @@ func TestProjectGetAll(t *testing.T) {
 func TestProjectGet(t *testing.T) {
 	setup()
 	defer teardown()
-	testApiEdpoint := "/rest/api/2/project/12310505"
+	testAPIEdpoint := "/rest/api/2/project/12310505"
 
-	raw, err := ioutil.ReadFile("./json_mocks/project.json")
+	raw, err := ioutil.ReadFile("./mocks/project.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testApiEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testRequestURL(t, r, testApiEdpoint)
+		testRequestURL(t, r, testAPIEdpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
@@ -58,11 +58,11 @@ func TestProjectGet(t *testing.T) {
 func TestProjectGet_NoProject(t *testing.T) {
 	setup()
 	defer teardown()
-	testApiEdpoint := "/rest/api/2/project/99999999"
+	testAPIEdpoint := "/rest/api/2/project/99999999"
 
-	testMux.HandleFunc(testApiEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testRequestURL(t, r, testApiEdpoint)
+		testRequestURL(t, r, testAPIEdpoint)
 		fmt.Fprint(w, nil)
 	})
 

@@ -277,3 +277,22 @@ func TestDo_RedirectLoop(t *testing.T) {
 		t.Errorf("Expected a URL error; got %+v.", err)
 	}
 }
+
+func TestGetBaseURL_WithURL(t *testing.T) {
+	u, err := url.Parse(testJIRAInstanceURL)
+	if err != nil {
+		t.Errorf("URL parsing -> Got an error: %s", err)
+	}
+
+	c, err := NewClient(nil, testJIRAInstanceURL)
+	if err != nil {
+		t.Errorf("Client creation -> Got an error: %s", err)
+	}
+	if c == nil {
+		t.Error("Expected a client. Got none")
+	}
+
+	if b := c.GetBaseURL(); !reflect.DeepEqual(b, *u) {
+		t.Errorf("Base URLs are not equal. Expected %+v, got %+v", *u, b)
+	}
+}
