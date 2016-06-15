@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"mime/multipart"
-	"net/http"
 	"net/url"
 	"strings"
 	"time"
@@ -281,7 +280,10 @@ type CommentVisibility struct {
 // searchResult is only a small wrapper arround the Search (with JQL) method
 // to be able to parse the results
 type searchResult struct {
-	Issues []Issue `json:"issues"`
+	Issues     []Issue `json:"issues"`
+	StartAt    int     `json:"startAt"`
+	MaxResults int     `json:"maxResults"`
+	Total      int     `json:"total"`
 }
 
 // CustomFields represents custom fields of JIRA
@@ -294,7 +296,7 @@ type CustomFields map[string]string
 // If the issue cannot be found via an exact match, JIRA will also look for the issue in a case-insensitive way, or by looking to see if the issue was moved.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
-func (s *IssueService) Get(issueID string) (*Issue, *http.Response, error) {
+func (s *IssueService) Get(issueID string) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -310,11 +312,11 @@ func (s *IssueService) Get(issueID string) (*Issue, *http.Response, error) {
 	return issue, resp, nil
 }
 
-// DownloadAttachment returns a http.Response of an attachment for a given attachmentID.
-// The attachment is in the http.Response.Body of the response.
+// DownloadAttachment returns a Response of an attachment for a given attachmentID.
+// The attachment is in the Response.Body of the response.
 // This is an io.ReadCloser.
 // The caller should close the resp.Body.
-func (s *IssueService) DownloadAttachment(attachmentID string) (*http.Response, error) {
+func (s *IssueService) DownloadAttachment(attachmentID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("secure/attachment/%s/", attachmentID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -330,7 +332,7 @@ func (s *IssueService) DownloadAttachment(attachmentID string) (*http.Response, 
 }
 
 // PostAttachment uploads r (io.Reader) as an attachment to a given attachmentID
-func (s *IssueService) PostAttachment(attachmentID string, r io.Reader, attachmentName string) (*[]Attachment, *http.Response, error) {
+func (s *IssueService) PostAttachment(attachmentID string, r io.Reader, attachmentName string) (*[]Attachment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/attachments", attachmentID)
 
 	b := new(bytes.Buffer)
@@ -371,7 +373,7 @@ func (s *IssueService) PostAttachment(attachmentID string, r io.Reader, attachme
 // The issueType field must correspond to a sub-task issue type and you must provide a parent field in the issue create request containing the id or key of the parent issue.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
-func (s *IssueService) Create(issue *Issue) (*Issue, *http.Response, error) {
+func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 	apiEndpoint := "rest/api/2/issue/"
 	req, err := s.client.NewRequest("POST", apiEndpoint, issue)
 	if err != nil {
@@ -390,7 +392,7 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *http.Response, error) {
 // AddComment adds a new comment to issueID.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-addComment
-func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *http.Response, error) {
+func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment", issueID)
 	req, err := s.client.NewRequest("POST", apiEndpoint, comment)
 	if err != nil {
@@ -409,7 +411,7 @@ func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *
 // AddLink adds a link between two issues.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issueLink
-func (s *IssueService) AddLink(issueLink *IssueLink) (*http.Response, error) {
+func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLink")
 	req, err := s.client.NewRequest("POST", apiEndpoint, issueLink)
 	if err != nil {
@@ -423,7 +425,7 @@ func (s *IssueService) AddLink(issueLink *IssueLink) (*http.Response, error) {
 // Search will search for tickets according to the jql
 //
 // JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
-func (s *IssueService) Search(jql string) ([]Issue, *http.Response, error) {
+func (s *IssueService) Search(jql string) ([]Issue, *Response, error) {
 	u := fmt.Sprintf("rest/api/2/search?jql=%s", url.QueryEscape(jql))
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
@@ -436,7 +438,7 @@ func (s *IssueService) Search(jql string) ([]Issue, *http.Response, error) {
 }
 
 // GetCustomFields returns a map of customfield_* keys with string values
-func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *http.Response, error) {
+func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {

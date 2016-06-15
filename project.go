@@ -2,7 +2,6 @@ package jira
 
 import (
 	"fmt"
-	"net/http"
 )
 
 // ProjectService handles projects for the JIRA instance / API.
@@ -73,7 +72,7 @@ type ProjectComponent struct {
 // GetList gets all projects form JIRA
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
-func (s *ProjectService) GetList() (*ProjectList, *http.Response, error) {
+func (s *ProjectService) GetList() (*ProjectList, *Response, error) {
 	apiEndpoint := "rest/api/2/project"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -93,7 +92,7 @@ func (s *ProjectService) GetList() (*ProjectList, *http.Response, error) {
 // This can be an project id, or an project key.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
-func (s *ProjectService) Get(projectID string) (*Project, *http.Response, error) {
+func (s *ProjectService) Get(projectID string) (*Project, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/project/%s", projectID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {

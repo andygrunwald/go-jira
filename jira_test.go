@@ -296,3 +296,24 @@ func TestGetBaseURL_WithURL(t *testing.T) {
 		t.Errorf("Base URLs are not equal. Expected %+v, got %+v", *u, b)
 	}
 }
+
+func TestPagingInfoEmptyByDefault(t *testing.T) {
+	c, _ := NewClient(nil, testJIRAInstanceURL)
+	req, _ := c.NewRequest("GET", "/", nil)
+	type foo struct {
+		A string
+	}
+	body := new(foo)
+
+	resp, _ := c.Do(req, body)
+
+	if resp.StartAt != 0 {
+		t.Errorf("StartAt not equal to 0")
+	}
+	if resp.MaxResults != 0 {
+		t.Errorf("StartAt not equal to 0")
+	}
+	if resp.Total != 0 {
+		t.Errorf("StartAt not equal to 0")
+	}
+}
