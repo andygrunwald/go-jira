@@ -75,7 +75,7 @@ func TestBoardGet(t *testing.T) {
 		fmt.Fprint(w, `{"id":4,"self":"https://test.jira.org/rest/agile/1.0/board/1","name":"Test Weekly","type":"scrum"}`)
 	})
 
-	board, _, err := testClient.Board.Get("1")
+	board, _, err := testClient.Board.Get(1)
 	if board == nil {
 		t.Error("Expected board list. Board list is nil")
 	}
@@ -95,7 +95,7 @@ func TestBoardGet_NoBoard(t *testing.T) {
 		fmt.Fprint(w, nil)
 	})
 
-	board, resp, err := testClient.Board.Get("99999999")
+	board, resp, err := testClient.Board.Get(99999999)
 	if board != nil {
 		t.Errorf("Expected nil. Got %s", err)
 	}
@@ -127,6 +127,26 @@ func TestBoardCreate(t *testing.T) {
 	issue, _, err := testClient.Board.Create(b)
 	if issue == nil {
 		t.Error("Expected board. Board is nil")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
+func TestBoardDelete(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/agile/1.0/board/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+		testRequestURL(t, r, "/rest/agile/1.0/board/1")
+
+		w.WriteHeader(http.StatusNoContent)
+		fmt.Fprint(w, `{}`)
+	})
+
+	_, resp, err := testClient.Board.Delete(1)
+	if resp.StatusCode != 204 {
+		t.Error("Expected board not deleted.")
 	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)

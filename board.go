@@ -21,11 +21,11 @@ type BoardsList struct {
 
 // Board represents a JIRA board
 type Board struct {
-	ID   int    `json:"id",omitempty"`
-	Self string `json:"self",omitempty"`
-	Name string `json:"name",omitempty"`
-	Type string `json:"type",omitempty"`
-	FilterId int `omitempty`
+	ID       int    `json:"id",omitempty"`
+	Self     string `json:"self",omitempty"`
+	Name     string `json:"name",omitempty"`
+	Type     string `json:"type",omitempty"`
+	FilterId int    `omitempty`
 }
 
 // BoardListOptions specifies the optional parameters to the BoardService.GetList
@@ -71,8 +71,8 @@ func (s *BoardService) GetList(opt *BoardListOptions) (*BoardsList, *http.Respon
 }
 
 // Returns the board for the given board Id. This board will only be returned if the user has permission to view it.
-func (s *BoardService) Get(boardID string) (*Board, *http.Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%s", boardID)
+func (s *BoardService) Get(boardID int) (*Board, *http.Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%v", boardID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
@@ -92,7 +92,7 @@ func (s *BoardService) Get(boardID string) (*Board, *http.Response, error) {
 // filterId - Id of a filter that the user has permissions to view.
 // Note, if the user does not have the 'Create shared objects' permission and tries to create a shared board, a private
 // board will be created instead (remember that board sharing depends on the filter sharing).
-
+//
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-createBoard
 func (s *BoardService) Create(board *Board) (*Board, *http.Response, error) {
 
@@ -108,4 +108,18 @@ func (s *BoardService) Create(board *Board) (*Board, *http.Response, error) {
 		return nil, resp, err
 	}
 	return responseBoard, resp, nil
+}
+
+// Deletes the board.
+//
+// https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-deleteBoard
+func (s *BoardService) Delete(boardID int) (*Board, *http.Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%v", boardID)
+	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	return nil, resp, err
 }
