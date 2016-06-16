@@ -2,6 +2,7 @@ package jira
 
 import (
 	//"fmt"
+	"fmt"
 	"net/http"
 )
 
@@ -15,14 +16,16 @@ type BoardsList struct {
 	StartAt    int     `json:"startAt"`
 	Total      int     `json:"total"`
 	IsLast     bool    `json:"isLast"`
-	Values     []Value `json:"values"`
+	Values     []Board `json:"values"`
 }
 
-type Value struct {
-	ID   int    `json:"id"`
-	Self string `json:"self"`
-	Name string `json:"name"`
-	Type string `json:"type"`
+// Board represents a JIRA board
+type Board struct {
+	ID   int    `json:"id",omitempty"`
+	Self string `json:"self",omitempty"`
+	Name string `json:"name",omitempty"`
+	Type string `json:"type",omitempty"`
+	FilterId int `omitempty`
 }
 
 // BoardListOptions specifies the optional parameters to the BoardService.GetList
@@ -40,7 +43,6 @@ type BoardListOptions struct {
 	// Pagination is used for the JIRA REST APIs to conserve server resources and limit
 	// response size for resources that return potentially large collection of items.
 	// A request to a pages API will result in a values array wrapped in a JSON object with some paging metadata
-	// Works only for 1.0 endpoints
 	// Default Pagination options
 	// The starting index of the returned projects. Base index: 0.
 	StartAt int `url:"startAt,omitempty"`
@@ -52,7 +54,7 @@ type BoardListOptions struct {
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
 func (s *BoardService) GetList(opt *BoardListOptions) (*BoardsList, *http.Response, error) {
-	apiEndpoint := "/rest/agile/1.0/board"
+	apiEndpoint := "rest/agile/1.0/board"
 	url, err := addOptions(apiEndpoint, opt)
 	req, err := s.client.NewRequest("GET", url, nil)
 	if err != nil {
@@ -66,4 +68,44 @@ func (s *BoardService) GetList(opt *BoardListOptions) (*BoardsList, *http.Respon
 	}
 
 	return boards, resp, err
+}
+
+// Returns the board for the given board Id. This board will only be returned if the user has permission to view it.
+func (s *BoardService) Get(boardID string) (*Board, *http.Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%s", boardID)
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	board := new(Board)
+	resp, err := s.client.Do(req, board)
+	if err != nil {
+		return nil, resp, err
+	}
+	return board, resp, nil
+}
+
+// Creates a new board. Board name, type and filter Id is required.
+// name - Must be less than 255 characters.
+// type - Valid values: scrum, kanban
+// filterId - Id of a filter that the user has permissions to view.
+// Note, if the user does not have the 'Create shared objects' permission and tries to create a shared board, a private
+// board will be created instead (remember that board sharing depends on the filter sharing).
+
+// JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-createBoard
+func (s *BoardService) Create(board *Board) (*Board, *http.Response, error) {
+
+	apiEndpoint := "rest/agile/1.0/board"
+	req, err := s.client.NewRequest("POST", apiEndpoint, board)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	responseBoard := new(Board)
+	resp, err := s.client.Do(req, responseBoard)
+	if err != nil {
+		return nil, resp, err
+	}
+	return responseBoard, resp, nil
 }
