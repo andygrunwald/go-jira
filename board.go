@@ -1,7 +1,6 @@
 package jira
 
 import (
-	//"fmt"
 	"fmt"
 	"net/http"
 )
