@@ -277,6 +277,11 @@ type CommentVisibility struct {
 	Value string `json:"value,omitempty"`
 }
 
+type SearchOptions struct {
+	StartAt    int
+	MaxResults int
+}
+
 // searchResult is only a small wrapper arround the Search (with JQL) method
 // to be able to parse the results
 type searchResult struct {
@@ -425,8 +430,15 @@ func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
 // Search will search for tickets according to the jql
 //
 // JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
-func (s *IssueService) Search(jql string) ([]Issue, *Response, error) {
-	u := fmt.Sprintf("rest/api/2/search?jql=%s", url.QueryEscape(jql))
+func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Response, error) {
+	var u string
+	if options == nil {
+		u = fmt.Sprintf("rest/api/2/search?jql=%s", url.QueryEscape(jql))
+	} else {
+		u = fmt.Sprintf("rest/api/2/search?jql=%s&startAt=%d&maxResults=%d", url.QueryEscape(jql),
+			options.StartAt, options.MaxResults)
+	}
+
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return []Issue{}, nil, err
