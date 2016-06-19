@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 )
@@ -52,7 +53,7 @@ func testMethod(t *testing.T, r *http.Request, want string) {
 }
 
 func testRequestURL(t *testing.T, r *http.Request, want string) {
-	if got := r.URL.String(); got != want {
+	if got := r.URL.String(); !strings.HasPrefix(got, want) {
 		t.Errorf("Request URL: %v, want %v", got, want)
 	}
 }

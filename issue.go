@@ -277,11 +277,17 @@ type CommentVisibility struct {
 	Value string `json:"value,omitempty"`
 }
 
-// SearchOptions represents options you can apply
-// at a Search functionality (JQL in JIRA).
+// SearchOptions specifies the optional parameters to various List methods that
+// support pagination.
+// Pagination is used for the JIRA REST APIs to conserve server resources and limit
+// response size for resources that return potentially large collection of items.
+// A request to a pages API will result in a values array wrapped in a JSON object with some paging metadata
+// Default Pagination options
 type SearchOptions struct {
-	StartAt    int
-	MaxResults int
+	// StartAt: The starting index of the returned projects. Base index: 0.
+	StartAt int `url:"startAt,omitempty"`
+	// MaxResults: The maximum number of projects to return per page. Default: 50.
+	MaxResults int `url:"maxResults,omitempty"`
 }
 
 // searchResult is only a small wrapper arround the Search (with JQL) method
