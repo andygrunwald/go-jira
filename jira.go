@@ -122,25 +122,26 @@ func (c *Client) NewMultiPartRequest(method, urlStr string, buf *bytes.Buffer) (
 
 // Do sends an API request and returns the API response.
 // The API response is JSON decoded and stored in the value pointed to by v, or returned as an error if an API error has occurred.
-func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
-	resp, err := c.client.Do(req)
+func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
+	httpResp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 
-	err = CheckResponse(resp)
+	err = CheckResponse(httpResp)
 	if err != nil {
 		// Even though there was an error, we still return the response
 		// in case the caller wants to inspect it further
-		return resp, err
+		return newResponse(httpResp, nil), err
 	}
 
 	if v != nil {
 		// Open a NewDecoder and defer closing the reader only if there is a provided interface to decode to
-		defer resp.Body.Close()
-		err = json.NewDecoder(resp.Body).Decode(v)
+		defer httpResp.Body.Close()
+		err = json.NewDecoder(httpResp.Body).Decode(v)
 	}
 
+	resp := newResponse(httpResp, v)
 	return resp, err
 }
 
@@ -161,4 +162,32 @@ func CheckResponse(r *http.Response) error {
 // This is the same URL as in the NewClient constructor
 func (c *Client) GetBaseURL() url.URL {
 	return *c.baseURL
+}
+
+// Response represents JIRA API response. It wraps http.Response returned from
+// API and provides information about paging.
+type Response struct {
+	*http.Response
+
+	StartAt    int
+	MaxResults int
+	Total      int
+}
+
+func newResponse(r *http.Response, v interface{}) *Response {
+	resp := &Response{Response: r}
+	resp.populatePageValues(v)
+	return resp
+}
+
+// Sets paging values if response json was parsed to searchResult type
+// (can be extended with other types if they also need paging info)
+func (r *Response) populatePageValues(v interface{}) {
+	switch value := v.(type) {
+	case *searchResult:
+		r.StartAt = value.StartAt
+		r.MaxResults = value.MaxResults
+		r.Total = value.Total
+	}
+	return
 }
