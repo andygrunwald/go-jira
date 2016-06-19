@@ -50,10 +50,10 @@ func TestBoardsGetFiltered(t *testing.T) {
 	boardsListOptions := &BoardListOptions{
 		BoardType:      "scrum",
 		Name:           "Test",
-		ProjectKeyOrId: "TE",
-		StartAt:        1,
-		MaxResults:     10,
+		ProjectKeyOrID: "TE",
 	}
+	boardsListOptions.StartAt = 1
+	boardsListOptions.MaxResults = 10
 
 	projects, _, err := testClient.Board.GetList(boardsListOptions)
 	if projects == nil {
@@ -122,7 +122,7 @@ func TestBoardCreate(t *testing.T) {
 	b := &Board{
 		Name:     "Test",
 		Type:     "kanban",
-		FilterId: 17,
+		FilterID: 17,
 	}
 	issue, _, err := testClient.Board.Create(b)
 	if issue == nil {
