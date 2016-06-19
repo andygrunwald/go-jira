@@ -277,6 +277,8 @@ type CommentVisibility struct {
 	Value string `json:"value,omitempty"`
 }
 
+// SearchOptions represents options you can apply
+// at a Search functionality (JQL in JIRA).
 type SearchOptions struct {
 	StartAt    int
 	MaxResults int
