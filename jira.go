@@ -7,6 +7,9 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"reflect"
+
+	"github.com/google/go-querystring/query"
 )
 
 // A Client manages communication with the JIRA API.
@@ -24,6 +27,7 @@ type Client struct {
 	Authentication *AuthenticationService
 	Issue          *IssueService
 	Project        *ProjectService
+	Board          *BoardService
 }
 
 // NewClient returns a new JIRA API client.
@@ -50,6 +54,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	c.Authentication = &AuthenticationService{client: c}
 	c.Issue = &IssueService{client: c}
 	c.Project = &ProjectService{client: c}
+	c.Board = &BoardService{client: c}
 
 	return c, nil
 }
@@ -90,6 +95,28 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	}
 
 	return req, nil
+}
+
+// addOptions adds the parameters in opt as URL query parameters to s.  opt
+// must be a struct whose fields may contain "url" tags.
+func addOptions(s string, opt interface{}) (string, error) {
+	v := reflect.ValueOf(opt)
+	if v.Kind() == reflect.Ptr && v.IsNil() {
+		return s, nil
+	}
+
+	u, err := url.Parse(s)
+	if err != nil {
+		return s, err
+	}
+
+	qs, err := query.Values(opt)
+	if err != nil {
+		return s, err
+	}
+
+	u.RawQuery = qs.Encode()
+	return u.String(), nil
 }
 
 // NewMultiPartRequest creates an API request including a multi-part file.
