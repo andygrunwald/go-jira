@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
 	"testing"
 )
 
@@ -64,7 +63,7 @@ func TestTransitionCreate(t *testing.T) {
 			t.Error("Got error: %v", err)
 		}
 
-		if strings.Compare(payload.Transition.ID, transitionID) != 0 {
+		if payload.Transition.ID != transitionID {
 			t.Errorf("Expected %s to be in payload, got %s instead", transitionID, payload.Transition.ID)
 		}
 	})
