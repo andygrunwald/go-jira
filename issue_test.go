@@ -138,6 +138,10 @@ func TestIssueFields(t *testing.T) {
 		t.Error("Expected labels for the returned issue")
 	}
 
+	if len(issue.Fields.Comments.Comments) != 1 {
+		t.Errorf("Expected one comment, %v found", len(issue.Fields.Comments.Comments))
+	}
+
 	if err != nil {
 		t.Errorf("Error given: %s", err)
 	}

@@ -78,7 +78,7 @@ type IssueFields struct {
 	AggregateProgress *Progress     `json:"aggregateprogress,omitempty"`
 	Worklog           *Worklog      `json:"worklog,omitempty"`
 	IssueLinks        []*IssueLink  `json:"issuelinks,omitempty"`
-	Comments          []*Comment    `json:"comment.comments,omitempty"`
+	Comments          *Comments     `json:"comment,omitempty"`
 	FixVersions       []*FixVersion `json:"fixVersions,omitempty"`
 	Labels            []string      `json:"labels,omitempty"`
 	Subtasks          []*Subtasks   `json:"subtasks,omitempty"`
@@ -243,6 +243,11 @@ type IssueLinkType struct {
 	Name    string `json:"name"`
 	Inward  string `json:"inward"`
 	Outward string `json:"outward"`
+}
+
+// Comments represents a list of Comment.
+type Comments struct {
+	Comments []*Comment `json:"comments,omitempty"`
 }
 
 // Comment represents a comment by a person to an issue in JIRA.
