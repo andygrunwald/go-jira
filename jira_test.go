@@ -97,9 +97,18 @@ func TestNewClient_WithServices(t *testing.T) {
 	if c.Issue == nil {
 		t.Error("No IssueService provided")
 	}
+	if c.Project == nil {
+		t.Error("No ProjectService provided")
+	}
+	if c.Board == nil {
+		t.Error("No BoardService provided")
+	}
+	if c.Sprint == nil {
+		t.Error("No SprintService provided")
+	}
 }
 
-func TestCheckResponse_GoodResults(t *testing.T) {
+func TestCheckResponse(t *testing.T) {
 	codes := []int{
 		http.StatusOK, http.StatusPartialContent, 299,
 	}
@@ -114,7 +123,7 @@ func TestCheckResponse_GoodResults(t *testing.T) {
 	}
 }
 
-func TestNewRequest(t *testing.T) {
+func TestClient_NewRequest(t *testing.T) {
 	c, err := NewClient(nil, testJIRAInstanceURL)
 	if err != nil {
 		t.Errorf("An error occured. Expected nil. Got %+v.", err)
@@ -136,7 +145,7 @@ func TestNewRequest(t *testing.T) {
 	}
 }
 
-func TestNewRequest_InvalidJSON(t *testing.T) {
+func TestClient_NewRequest_InvalidJSON(t *testing.T) {
 	c, err := NewClient(nil, testJIRAInstanceURL)
 	if err != nil {
 		t.Errorf("An error occured. Expected nil. Got %+v.", err)
@@ -164,7 +173,7 @@ func testURLParseError(t *testing.T, err error) {
 	}
 }
 
-func TestNewRequest_BadURL(t *testing.T) {
+func TestClient_NewRequest_BadURL(t *testing.T) {
 	c, err := NewClient(nil, testJIRAInstanceURL)
 	if err != nil {
 		t.Errorf("An error occured. Expected nil. Got %+v.", err)
@@ -177,7 +186,7 @@ func TestNewRequest_BadURL(t *testing.T) {
 // In most cases, passing an io.Reader that returns no content is fine,
 // since there is no difference between an HTTP request body that is an empty string versus one that is not set at all.
 // However in certain cases, intermediate systems may treat these differently resulting in subtle errors.
-func TestNewRequest_EmptyBody(t *testing.T) {
+func TestClient_NewRequest_EmptyBody(t *testing.T) {
 	c, err := NewClient(nil, testJIRAInstanceURL)
 	if err != nil {
 		t.Errorf("An error occured. Expected nil. Got %+v.", err)
@@ -191,7 +200,7 @@ func TestNewRequest_EmptyBody(t *testing.T) {
 	}
 }
 
-func TestDo(t *testing.T) {
+func TestClient_Do(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -216,7 +225,7 @@ func TestDo(t *testing.T) {
 	}
 }
 
-func TestDo_HTTPResponse(t *testing.T) {
+func TestClient_Do_HTTPResponse(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -242,7 +251,7 @@ func TestDo_HTTPResponse(t *testing.T) {
 	}
 }
 
-func TestDo_HTTPError(t *testing.T) {
+func TestClient_Do_HTTPError(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -260,7 +269,7 @@ func TestDo_HTTPError(t *testing.T) {
 
 // Test handling of an error caused by the internal http client's Do() function.
 // A redirect loop is pretty unlikely to occur within the Gerrit API, but does allow us to exercise the right code path.
-func TestDo_RedirectLoop(t *testing.T) {
+func TestClient_Do_RedirectLoop(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -279,7 +288,7 @@ func TestDo_RedirectLoop(t *testing.T) {
 	}
 }
 
-func TestGetBaseURL_WithURL(t *testing.T) {
+func TestClient_GetBaseURL_WithURL(t *testing.T) {
 	u, err := url.Parse(testJIRAInstanceURL)
 	if err != nil {
 		t.Errorf("URL parsing -> Got an error: %s", err)
@@ -298,7 +307,7 @@ func TestGetBaseURL_WithURL(t *testing.T) {
 	}
 }
 
-func TestPagingInfoEmptyByDefault(t *testing.T) {
+func TestClient_Do_PagingInfoEmptyByDefault(t *testing.T) {
 	c, _ := NewClient(nil, testJIRAInstanceURL)
 	req, _ := c.NewRequest("GET", "/", nil)
 	type foo struct {

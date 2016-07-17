@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestProjectGetAll(t *testing.T) {
+func TestProjectService_GetList(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEdpoint := "/rest/api/2/project"
@@ -31,7 +31,7 @@ func TestProjectGetAll(t *testing.T) {
 	}
 }
 
-func TestProjectGet(t *testing.T) {
+func TestProjectService_Get(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEdpoint := "/rest/api/2/project/12310505"
@@ -55,7 +55,7 @@ func TestProjectGet(t *testing.T) {
 	}
 }
 
-func TestProjectGet_NoProject(t *testing.T) {
+func TestProjectService_Get_NoProject(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEdpoint := "/rest/api/2/project/99999999"

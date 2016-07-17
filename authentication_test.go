@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestAcquireSessionCookie_Fail(t *testing.T) {
+func TestAuthenticationService_AcquireSessionCookie_Failure(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +42,7 @@ func TestAcquireSessionCookie_Fail(t *testing.T) {
 	}
 }
 
-func TestAcquireSessionCookie_Success(t *testing.T) {
+func TestAuthenticationService_AcquireSessionCookie_Success(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
@@ -75,7 +75,7 @@ func TestAcquireSessionCookie_Success(t *testing.T) {
 	}
 }
 
-func TestAuthenticated_NotInit(t *testing.T) {
+func TestAuthenticationService_Authenticated(t *testing.T) {
 	// Skip setup() because we don't want a fully setup client
 	testClient = new(Client)
 

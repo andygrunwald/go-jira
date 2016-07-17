@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestIssueGet_Success(t *testing.T) {
+func TestIssueService_Get_Success(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10002", func(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +29,7 @@ func TestIssueGet_Success(t *testing.T) {
 	}
 }
 
-func TestIssueCreate(t *testing.T) {
+func TestIssueService_Create(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/", func(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +54,7 @@ func TestIssueCreate(t *testing.T) {
 	}
 }
 
-func TestIssueAddComment(t *testing.T) {
+func TestIssueService_AddComment(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10000/comment", func(w http.ResponseWriter, r *http.Request) {
@@ -81,7 +81,7 @@ func TestIssueAddComment(t *testing.T) {
 	}
 }
 
-func TestIssueAddLink(t *testing.T) {
+func TestIssueService_AddLink(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issueLink", func(w http.ResponseWriter, r *http.Request) {
@@ -121,7 +121,7 @@ func TestIssueAddLink(t *testing.T) {
 	}
 }
 
-func TestIssueFields(t *testing.T) {
+func TestIssueService_Get_Fields(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10002", func(w http.ResponseWriter, r *http.Request) {
@@ -148,7 +148,7 @@ func TestIssueFields(t *testing.T) {
 	}
 }
 
-func TestIssueDownloadAttachment(t *testing.T) {
+func TestIssueService_DownloadAttachment(t *testing.T) {
 	var testAttachment = "Here is an attachment"
 
 	setup()
@@ -183,7 +183,7 @@ func TestIssueDownloadAttachment(t *testing.T) {
 	}
 }
 
-func TestIssueDownloadAttachment_BadStatus(t *testing.T) {
+func TestIssueService_DownloadAttachment_BadStatus(t *testing.T) {
 
 	setup()
 	defer teardown()
@@ -208,7 +208,7 @@ func TestIssueDownloadAttachment_BadStatus(t *testing.T) {
 	}
 }
 
-func TestIssuePostAttachment(t *testing.T) {
+func TestIssueService_PostAttachment(t *testing.T) {
 	var testAttachment = "Here is an attachment"
 
 	setup()
@@ -258,7 +258,7 @@ func TestIssuePostAttachment(t *testing.T) {
 	}
 }
 
-func TestIssuePostAttachment_NoResponse(t *testing.T) {
+func TestIssueService_PostAttachment_NoResponse(t *testing.T) {
 	var testAttachment = "Here is an attachment"
 
 	setup()
@@ -277,7 +277,7 @@ func TestIssuePostAttachment_NoResponse(t *testing.T) {
 	}
 }
 
-func TestIssuePostAttachment_NoFilename(t *testing.T) {
+func TestIssueService_PostAttachment_NoFilename(t *testing.T) {
 	var testAttachment = "Here is an attachment"
 
 	setup()
@@ -297,8 +297,7 @@ func TestIssuePostAttachment_NoFilename(t *testing.T) {
 	}
 }
 
-func TestIssuePostAttachment_NoAttachment(t *testing.T) {
-
+func TestIssueService_PostAttachment_NoAttachment(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10000/attachments", func(w http.ResponseWriter, r *http.Request) {
@@ -315,8 +314,7 @@ func TestIssuePostAttachment_NoAttachment(t *testing.T) {
 	}
 }
 
-func TestIssue_Search(t *testing.T) {
-
+func TestIssueService_Search(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/search", func(w http.ResponseWriter, r *http.Request) {
@@ -347,8 +345,7 @@ func TestIssue_Search(t *testing.T) {
 	}
 }
 
-func TestIssue_SearchWithoutPaging(t *testing.T) {
-
+func TestIssueService_Search_WithoutPaging(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/search", func(w http.ResponseWriter, r *http.Request) {
@@ -378,7 +375,7 @@ func TestIssue_SearchWithoutPaging(t *testing.T) {
 	}
 }
 
-func Test_CustomFields(t *testing.T) {
+func TestIssueService_GetCustomFields(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10002", func(w http.ResponseWriter, r *http.Request) {
