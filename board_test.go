@@ -22,7 +22,7 @@ func TestBoardsGetAll(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	projects, _, err := testClient.Board.GetList(nil)
+	projects, _, err := testClient.Board.GetAllBoards(nil)
 	if projects == nil {
 		t.Error("Expected boards list. Boards list is nil")
 	}
@@ -55,7 +55,7 @@ func TestBoardsGetFiltered(t *testing.T) {
 	boardsListOptions.StartAt = 1
 	boardsListOptions.MaxResults = 10
 
-	projects, _, err := testClient.Board.GetList(boardsListOptions)
+	projects, _, err := testClient.Board.GetAllBoards(boardsListOptions)
 	if projects == nil {
 		t.Error("Expected boards list. Boards list is nil")
 	}
@@ -75,7 +75,7 @@ func TestBoardGet(t *testing.T) {
 		fmt.Fprint(w, `{"id":4,"self":"https://test.jira.org/rest/agile/1.0/board/1","name":"Test Weekly","type":"scrum"}`)
 	})
 
-	board, _, err := testClient.Board.Get(1)
+	board, _, err := testClient.Board.GetBoard(1)
 	if board == nil {
 		t.Error("Expected board list. Board list is nil")
 	}
@@ -95,7 +95,7 @@ func TestBoardGet_NoBoard(t *testing.T) {
 		fmt.Fprint(w, nil)
 	})
 
-	board, resp, err := testClient.Board.Get(99999999)
+	board, resp, err := testClient.Board.GetBoard(99999999)
 	if board != nil {
 		t.Errorf("Expected nil. Got %s", err)
 	}
@@ -124,7 +124,7 @@ func TestBoardCreate(t *testing.T) {
 		Type:     "kanban",
 		FilterID: 17,
 	}
-	issue, _, err := testClient.Board.Create(b)
+	issue, _, err := testClient.Board.CreateBoard(b)
 	if issue == nil {
 		t.Error("Expected board. Board is nil")
 	}
@@ -144,7 +144,7 @@ func TestBoardDelete(t *testing.T) {
 		fmt.Fprint(w, `{}`)
 	})
 
-	_, resp, err := testClient.Board.Delete(1)
+	_, resp, err := testClient.Board.DeleteBoard(1)
 	if resp.StatusCode != 204 {
 		t.Error("Expected board not deleted.")
 	}

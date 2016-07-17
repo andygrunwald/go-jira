@@ -41,10 +41,10 @@ type BoardListOptions struct {
 	SearchOptions
 }
 
-// GetList will return all boards from JIRA
+// GetAllBoards will returns all boards. This only includes boards that the user has permission to view.
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-getAllBoards
-func (s *BoardService) GetList(opt *BoardListOptions) (*BoardsList, *Response, error) {
+func (s *BoardService) GetAllBoards(opt *BoardListOptions) (*BoardsList, *Response, error) {
 	apiEndpoint := "rest/agile/1.0/board"
 	url, err := addOptions(apiEndpoint, opt)
 	req, err := s.client.NewRequest("GET", url, nil)
@@ -61,11 +61,11 @@ func (s *BoardService) GetList(opt *BoardListOptions) (*BoardsList, *Response, e
 	return boards, resp, err
 }
 
-// Get will return the board for the given boardID.
+// GetBoard will returns the board for the given boardID.
 // This board will only be returned if the user has permission to view it.
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-getBoard
-func (s *BoardService) Get(boardID int) (*Board, *Response, error) {
+func (s *BoardService) GetBoard(boardID int) (*Board, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%v", boardID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -88,7 +88,7 @@ func (s *BoardService) Get(boardID int) (*Board, *Response, error) {
 // board will be created instead (remember that board sharing depends on the filter sharing).
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-createBoard
-func (s *BoardService) Create(board *Board) (*Board, *Response, error) {
+func (s *BoardService) CreateBoard(board *Board) (*Board, *Response, error) {
 	apiEndpoint := "rest/agile/1.0/board"
 	req, err := s.client.NewRequest("POST", apiEndpoint, board)
 	if err != nil {
@@ -106,8 +106,8 @@ func (s *BoardService) Create(board *Board) (*Board, *Response, error) {
 
 // Delete will delete an agile board.
 //
-// https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-deleteBoard
-func (s *BoardService) Delete(boardID int) (*Board, *Response, error) {
+// JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-deleteBoard
+func (s *BoardService) DeleteBoard(boardID int) (*Board, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%v", boardID)
 	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
 	if err != nil {
