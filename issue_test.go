@@ -1,13 +1,13 @@
 package jira
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"reflect"
 	"strings"
 	"testing"
-	"encoding/json"
 )
 
 func TestIssueGet_Success(t *testing.T) {
