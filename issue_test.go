@@ -452,7 +452,7 @@ func TestIssueService_DoTransition(t *testing.T) {
 		var payload CreateTransitionPayload
 		err := decoder.Decode(&payload)
 		if err != nil {
-			t.Error("Got error: %v", err)
+			t.Errorf("Got error: %v", err)
 		}
 
 		if payload.Transition.ID != transitionID {
@@ -462,6 +462,6 @@ func TestIssueService_DoTransition(t *testing.T) {
 	_, err := testClient.Issue.DoTransition("123", transitionID)
 
 	if err != nil {
-		t.Error("Got error: %v", err)
+		t.Errorf("Got error: %v", err)
 	}
 }

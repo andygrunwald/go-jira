@@ -183,7 +183,7 @@ type Time time.Time
 
 // Wrapper struct for search result
 type transitionResult struct {
-	Transitions []Transition `json:transitions`
+	Transitions []Transition `json:"transitions"`
 }
 
 // Transition represents an issue transition in JIRA
@@ -193,15 +193,17 @@ type Transition struct {
 	Fields map[string]TransitionField `json:"fields"`
 }
 
+// TransitionField represents the value of one Transistion
 type TransitionField struct {
 	Required bool `json:"required"`
 }
 
-// CreatePayload is used for creating new issue transitions
+// CreateTransitionPayload is used for creating new issue transitions
 type CreateTransitionPayload struct {
 	Transition TransitionPayload `json:"transition"`
 }
 
+// TransitionPayload represents the request payload of Transistion calls like DoTransition
 type TransitionPayload struct {
 	ID string `json:"id"`
 }

@@ -100,7 +100,7 @@ func (s *BoardService) GetBoard(boardID int) (*Board, *Response, error) {
 	return board, resp, nil
 }
 
-// Create creates a new board. Board name, type and filter Id is required.
+// CreateBoard creates a new board. Board name, type and filter Id is required.
 // name - Must be less than 255 characters.
 // type - Valid values: scrum, kanban
 // filterId - Id of a filter that the user has permissions to view.
@@ -124,7 +124,7 @@ func (s *BoardService) CreateBoard(board *Board) (*Board, *Response, error) {
 	return responseBoard, resp, nil
 }
 
-// Delete will delete an agile board.
+// DeleteBoard will delete an agile board.
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-deleteBoard
 func (s *BoardService) DeleteBoard(boardID int) (*Board, *Response, error) {

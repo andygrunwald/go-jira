@@ -22,7 +22,7 @@ func TestSprintService_MoveIssuesToSprint(t *testing.T) {
 		var payload IssuesWrapper
 		err := decoder.Decode(&payload)
 		if err != nil {
-			t.Error("Got error: %v", err)
+			t.Errorf("Got error: %v", err)
 		}
 
 		if payload.Issues[0] != issuesToMove[0] {
@@ -32,6 +32,6 @@ func TestSprintService_MoveIssuesToSprint(t *testing.T) {
 	_, err := testClient.Sprint.MoveIssuesToSprint(123, issuesToMove)
 
 	if err != nil {
-		t.Error("Got error: %v", err)
+		t.Errorf("Got error: %v", err)
 	}
 }
