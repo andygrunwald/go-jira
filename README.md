@@ -13,6 +13,7 @@
 
 * Authentication (HTTP Basic, OAuth, Session Cookie)
 * Create and receive issues
+* Create and retrieve issue transitions (status updates)
 * Call every API endpoint of the JIRA, even it is not directly implemented in this library
 
 This package is not JIRA API complete (yet), but you can call every API endpoint you want. See [Call a not implemented API endpoint](#call-a-not-implemented-api-endpoint) how to do this. For all possible API endpoints of JRIA have a look at [latest JIRA REST API documentation](https://docs.atlassian.com/jira/REST/latest/).
