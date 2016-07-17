@@ -1,6 +1,9 @@
 package jira
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 // BoardService handles Agile Boards for the JIRA instance / API.
 //
@@ -39,6 +42,23 @@ type BoardListOptions struct {
 	ProjectKeyOrID string `url:"projectKeyOrId,omitempty"`
 
 	SearchOptions
+}
+
+// Wrapper struct for search result
+type sprintsResult struct {
+	Sprints []Sprint `json:"values"`
+}
+
+// Sprint represents a sprint on JIRA agile board
+type Sprint struct {
+	ID            int        `json:"id"`
+	Name          string     `json:"name"`
+	CompleteDate  *time.Time `json:"completeDate"`
+	EndDate       *time.Time `json:"endDate"`
+	StartDate     *time.Time `json:"startDate"`
+	OriginBoardID int        `json:"originBoardId"`
+	Self          string     `json:"self"`
+	State         string     `json:"state"`
 }
 
 // GetAllBoards will returns all boards. This only includes boards that the user has permission to view.
@@ -116,4 +136,20 @@ func (s *BoardService) DeleteBoard(boardID int) (*Board, *Response, error) {
 
 	resp, err := s.client.Do(req, nil)
 	return nil, resp, err
+}
+
+// GetAllSprints will returns all sprints from a board, for a given board Id.
+// This only includes sprints that the user has permission to view.
+//
+// JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board/{boardId}/sprint
+func (s *BoardService) GetAllSprints(boardID string) ([]Sprint, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%s/sprint", boardID)
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	result := new(sprintsResult)
+	resp, err := s.client.Do(req, result)
+	return result.Sprints, resp, err
 }

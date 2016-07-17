@@ -2,45 +2,11 @@ package jira
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"net/http"
 	"testing"
 )
 
-func TestSprintGetList(t *testing.T) {
-	setup()
-	defer teardown()
-
-	testAPIEndpoint := "/rest/agile/1.0/board/123/sprint"
-
-	raw, err := ioutil.ReadFile("./mocks/sprints.json")
-	if err != nil {
-		t.Error(err.Error())
-	}
-
-	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
-		testRequestURL(t, r, testAPIEndpoint)
-		fmt.Fprint(w, string(raw))
-	})
-
-	sprints, _, err := testClient.Sprint.GetList("123")
-
-	if err != nil {
-		t.Errorf("Got error: %v", err)
-	}
-
-	if sprints == nil {
-		t.Error("Expected sprint list. Got nil.")
-	}
-
-	if len(sprints) != 4 {
-		t.Errorf("Expected 4 transitions. Got %d", len(sprints))
-	}
-}
-
-func TestMoveIssueToSprint(t *testing.T) {
+func TestSprintService_MoveIssuesToSprint(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -63,7 +29,7 @@ func TestMoveIssueToSprint(t *testing.T) {
 			t.Errorf("Expected %s to be in payload, got %s instead", issuesToMove[0], payload.Issues[0])
 		}
 	})
-	_, err := testClient.Sprint.AddIssuesToSprint(123, issuesToMove)
+	_, err := testClient.Sprint.MoveIssuesToSprint(123, issuesToMove)
 
 	if err != nil {
 		t.Error("Got error: %v", err)

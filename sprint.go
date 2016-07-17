@@ -2,52 +2,25 @@ package jira
 
 import (
 	"fmt"
-	"time"
 )
 
 // SprintService handles sprints in JIRA Agile API.
+// See https://docs.atlassian.com/jira-software/REST/cloud/
 type SprintService struct {
 	client *Client
 }
 
-// Wrapper struct for search result
-type sprintsResult struct {
-	Sprints []Sprint `json:"values"`
-}
-
-// Sprint represents a sprint on JIRA agile board
-type Sprint struct {
-	ID            int        `json:"id"`
-	Name          string     `json:"name"`
-	CompleteDate  *time.Time `json:"completeDate"`
-	EndDate       *time.Time `json:"endDate"`
-	StartDate     *time.Time `json:"startDate"`
-	OriginBoardID int        `json:"originBoardId"`
-	Self          string     `json:"self"`
-	State         string     `json:"state"`
-}
-
-// Wrapper struct for moving issues to sprint
+// IssuesWrapper represents a wrapper struct for moving issues to sprint
 type IssuesWrapper struct {
 	Issues []string `json:"issues"`
 }
 
-// GetList gets sprints for given board
+// MoveIssuesToSprint moves issues to a sprint, for a given sprint Id.
+// Issues can only be moved to open or active sprints.
+// The maximum number of issues that can be moved in one operation is 50.
 //
-// JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board/{boardId}/sprint
-func (s *SprintService) GetList(boardID string) ([]Sprint, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%s/sprint", boardID)
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	result := new(sprintsResult)
-	resp, err := s.client.Do(req, result)
-	return result.Sprints, resp, err
-}
-
-func (s *SprintService) AddIssuesToSprint(sprintID int, issueIDs []string) (*Response, error) {
+// JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/sprint-moveIssuesToSprint
+func (s *SprintService) MoveIssuesToSprint(sprintID int, issueIDs []string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/sprint/%d/issue", sprintID)
 
 	payload := IssuesWrapper{Issues: issueIDs}

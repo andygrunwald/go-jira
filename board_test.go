@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestBoardsGetAll(t *testing.T) {
+func TestBoardService_GetAllBoards(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEdpoint := "/rest/agile/1.0/board"
@@ -32,7 +32,7 @@ func TestBoardsGetAll(t *testing.T) {
 }
 
 // Test with params
-func TestBoardsGetFiltered(t *testing.T) {
+func TestBoardService_GetAllBoards_WithFilter(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEdpoint := "/rest/agile/1.0/board"
@@ -64,7 +64,7 @@ func TestBoardsGetFiltered(t *testing.T) {
 	}
 }
 
-func TestBoardGet(t *testing.T) {
+func TestBoardService_GetBoard(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEdpoint := "/rest/agile/1.0/board/1"
@@ -84,7 +84,7 @@ func TestBoardGet(t *testing.T) {
 	}
 }
 
-func TestBoardGet_NoBoard(t *testing.T) {
+func TestBoardService_GetBoard_WrongID(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEndpoint := "/rest/api/2/board/99999999"
@@ -108,7 +108,7 @@ func TestBoardGet_NoBoard(t *testing.T) {
 	}
 }
 
-func TestBoardCreate(t *testing.T) {
+func TestBoardService_CreateBoard(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/agile/1.0/board", func(w http.ResponseWriter, r *http.Request) {
@@ -133,7 +133,7 @@ func TestBoardCreate(t *testing.T) {
 	}
 }
 
-func TestBoardDelete(t *testing.T) {
+func TestBoardService_DeleteBoard(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/agile/1.0/board/1", func(w http.ResponseWriter, r *http.Request) {
@@ -150,5 +150,37 @@ func TestBoardDelete(t *testing.T) {
 	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)
+	}
+}
+
+func TestBoardService_GetAllSprints(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testAPIEndpoint := "/rest/agile/1.0/board/123/sprint"
+
+	raw, err := ioutil.ReadFile("./mocks/sprints.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, testAPIEndpoint)
+		fmt.Fprint(w, string(raw))
+	})
+
+	sprints, _, err := testClient.Board.GetAllSprints("123")
+
+	if err != nil {
+		t.Errorf("Got error: %v", err)
+	}
+
+	if sprints == nil {
+		t.Error("Expected sprint list. Got nil.")
+	}
+
+	if len(sprints) != 4 {
+		t.Errorf("Expected 4 transitions. Got %d", len(sprints))
 	}
 }
