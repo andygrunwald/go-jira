@@ -44,6 +44,17 @@ type Attachment struct {
 	Thumbnail string `json:"thumbnail,omitempty"`
 }
 
+// Epic represents the epic to which an issue is associated
+// Not that this struct does not process the returned "color" value
+type Epic struct {
+	ID      int    `json:"id"`
+	Key     string `json:"key"`
+	Self    string `json:"self"`
+	Name    string `json:"name"`
+	Summary string `json:"summary"`
+	Done    bool   `json:"done"`
+}
+
 // IssueFields represents single fields of a JIRA issue.
 // Every JIRA issue has several fields attached.
 type IssueFields struct {
@@ -83,6 +94,7 @@ type IssueFields struct {
 	Labels            []string      `json:"labels,omitempty"`
 	Subtasks          []*Subtasks   `json:"subtasks,omitempty"`
 	Attachments       []*Attachment `json:"attachment,omitempty"`
+	Epic              *Epic         `json:"epic,omitempty"`
 }
 
 // IssueType represents a type of a JIRA issue.
