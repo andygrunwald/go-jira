@@ -2,10 +2,10 @@ package jira
 
 import (
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"testing"
-	"io/ioutil"
-	"fmt"
 )
 
 func TestSprintService_MoveIssuesToSprint(t *testing.T) {
