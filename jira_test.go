@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -182,6 +183,34 @@ func TestClient_NewRequest_BadURL(t *testing.T) {
 	testURLParseError(t, err)
 }
 
+func TestClient_NewRequest_SessionCookies(t *testing.T) {
+	c, err := NewClient(nil, testJIRAInstanceURL)
+	if err != nil {
+		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+	}
+
+	cookie := &http.Cookie{Name: "testcookie", Value: "testvalue"}
+	c.session = &Session{Cookies: []*http.Cookie{cookie}}
+
+	inURL := "rest/api/2/issue/"
+	inBody := &Issue{Key: "MESOS"}
+	req, err := c.NewRequest("GET", inURL, inBody)
+
+	if err != nil {
+		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+	}
+
+	if len(req.Cookies()) != len(c.session.Cookies) {
+		t.Errorf("An error occured. Expected %d cookie(s). Got %d.", len(c.session.Cookies), len(req.Cookies()))
+	}
+
+	for i, v := range req.Cookies() {
+		if v.String() != c.session.Cookies[i].String() {
+			t.Errorf("An error occured. Unexpected cookie. Expected %s, actual %s.", v.String(), c.session.Cookies[i].String())
+		}
+	}
+}
+
 // If a nil body is passed to gerrit.NewRequest, make sure that nil is also passed to http.NewRequest.
 // In most cases, passing an io.Reader that returns no content is fine,
 // since there is no difference between an HTTP request body that is an empty string versus one that is not set at all.
@@ -197,6 +226,38 @@ func TestClient_NewRequest_EmptyBody(t *testing.T) {
 	}
 	if req.Body != nil {
 		t.Fatalf("constructed request contains a non-nil Body")
+	}
+}
+
+func TestClient_NewMultiPartRequest(t *testing.T) {
+	c, err := NewClient(nil, testJIRAInstanceURL)
+	if err != nil {
+		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+	}
+
+	cookie := &http.Cookie{Name: "testcookie", Value: "testvalue"}
+	c.session = &Session{Cookies: []*http.Cookie{cookie}}
+
+	inURL := "rest/api/2/issue/"
+	inBuf := bytes.NewBufferString("teststring")
+	req, err := c.NewMultiPartRequest("GET", inURL, inBuf)
+
+	if err != nil {
+		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+	}
+
+	if len(req.Cookies()) != len(c.session.Cookies) {
+		t.Errorf("An error occured. Expected %d cookie(s). Got %d.", len(c.session.Cookies), len(req.Cookies()))
+	}
+
+	for i, v := range req.Cookies() {
+		if v.String() != c.session.Cookies[i].String() {
+			t.Errorf("An error occured. Unexpected cookie. Expected %s, actual %s.", v.String(), c.session.Cookies[i].String())
+		}
+	}
+
+	if req.Header.Get("X-Atlassian-Token") != "nocheck" {
+		t.Errorf("An error occured. Unexpected X-Atlassian-Token header value. Expected nocheck, actual %s.", req.Header.Get("X-Atlassian-Token"))
 	}
 }
 
