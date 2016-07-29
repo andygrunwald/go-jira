@@ -142,8 +142,10 @@ func (c *Client) NewMultiPartRequest(method, urlStr string, buf *bytes.Buffer) (
 	req.Header.Set("X-Atlassian-Token", "nocheck")
 
 	// Set session cookie if there is one
-	if c.Authentication.Authenticated() {
-		req.Header.Set("Cookie", fmt.Sprintf("%s=%s", c.session.Session.Name, c.session.Session.Value))
+	if c.session != nil {
+		for _, cookie := range c.session.Cookies {
+			req.AddCookie(cookie)
+		}
 	}
 
 	return req, nil
