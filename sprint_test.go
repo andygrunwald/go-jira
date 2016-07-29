@@ -38,7 +38,7 @@ func TestSprintService_MoveIssuesToSprint(t *testing.T) {
 	}
 }
 
-func TestSprintService_GetIssuesInSprint(t *testing.T) {
+func TestSprintService_GetIssuesForSprint(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEdpoint := "/rest/agile/1.0/sprint/123/issue"
@@ -53,7 +53,7 @@ func TestSprintService_GetIssuesInSprint(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	issues, _, err := testClient.Sprint.GetIssuesInSprint(123)
+	issues, _, err := testClient.Sprint.GetIssuesForSprint(123)
 	if err != nil {
 		t.Errorf("Error given: %v", err)
 	}

@@ -15,7 +15,7 @@ type IssuesWrapper struct {
 	Issues []string `json:"issues"`
 }
 
-// Wrapper struct for search result
+// IssuesInSprintResult represents a wrapper struct for search result
 type IssuesInSprintResult struct {
 	Issues []Issue `json:"issues"`
 }
@@ -40,10 +40,12 @@ func (s *SprintService) MoveIssuesToSprint(sprintID int, issueIDs []string) (*Re
 	return resp, err
 }
 
-// For a given sprint Id, return all issues currently associated with that sprint
+// GetIssuesForSprint returns all issues in a sprint, for a given sprint Id.
+// This only includes issues that the user has permission to view.
+// By default, the returned issues are ordered by rank.
 //
-//  JIRA API Docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board/{boardId}/sprint-getIssuesForSprint
-func (s *SprintService) GetIssuesInSprint(sprintID int) ([]Issue, *Response, error) {
+//  JIRA API Docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/sprint-getIssuesForSprint
+func (s *SprintService) GetIssuesForSprint(sprintID int) ([]Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/sprint/%d/issue", sprintID)
 
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
