@@ -142,7 +142,7 @@ func TestIssueService_Get_Fields(t *testing.T) {
 	if len(issue.Fields.Comments.Comments) != 1 {
 		t.Errorf("Expected one comment, %v found", len(issue.Fields.Comments.Comments))
 	}
-	if (issue.Fields.Epic == nil) {
+	if issue.Fields.Epic == nil {
 		t.Error("Epic expected but not found")
 	}
 
