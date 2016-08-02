@@ -44,13 +44,25 @@ type Project struct {
 	URL          string             `json:"url,omitempty"`
 	Email        string             `json:"email,omitempty"`
 	AssigneeType string             `json:"assigneeType,omitempty"`
-	Versions     []interface{}      `json:"versions,omitempty"`
+	Versions     []Version          `json:"versions,omitempty"`
 	Name         string             `json:"name,omitempty"`
 	Roles        struct {
 		Developers string `json:"Developers,omitempty"`
 	} `json:"roles,omitempty"`
 	AvatarUrls      AvatarUrls      `json:"avatarUrls,omitempty"`
 	ProjectCategory ProjectCategory `json:"projectCategory,omitempty"`
+}
+
+// Version represents a single release version of a project
+type Version struct {
+	Self            string `json:"self"`
+	ID              string `json:"id"`
+	Name            string `json:"name"`
+	Archived        bool   `json:"archived"`
+	Released        bool   `json:"released"`
+	ReleaseDate     string `json:"releaseDate"`
+	UserReleaseDate string `json:"userReleaseDate"`
+	ProjectID       int    `json:"projectId"`  // Unlike other IDs, this is returned as a number
 }
 
 // ProjectComponent represents a single component of a project
