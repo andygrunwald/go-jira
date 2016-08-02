@@ -44,7 +44,7 @@ type Project struct {
 	URL          string             `json:"url,omitempty"`
 	Email        string             `json:"email,omitempty"`
 	AssigneeType string             `json:"assigneeType,omitempty"`
-	Versions     []interface{}      `json:"versions,omitempty"`
+	Versions     []Version      `json:"versions,omitempty"`
 	Name         string             `json:"name,omitempty"`
 	Roles        struct {
 		Developers string `json:"Developers,omitempty"`
