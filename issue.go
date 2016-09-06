@@ -525,6 +525,11 @@ func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *Response,
 	if rec, ok := f.(map[string]interface{}); ok {
 		for key, val := range rec {
 			if strings.Contains(key, "customfield") {
+				if valMap, ok := val.(map[string]interface{}); ok {
+					if v, ok := valMap["value"]; ok {
+						val = v
+					}
+				}
 				cf[key] = fmt.Sprint(val)
 			}
 		}
