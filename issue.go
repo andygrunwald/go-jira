@@ -345,7 +345,7 @@ type searchResult struct {
 
 // CustomFields represents custom fields of JIRA
 // This can heavily differ between JIRA instances
-type CustomFields map[string]string
+type CustomFields map[string]interface{}
 
 // Get returns a full representation of the issue for the given issue key.
 // JIRA will attempt to identify the issue by the issueIdOrKey path parameter.
@@ -525,7 +525,7 @@ func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *Response,
 	if rec, ok := f.(map[string]interface{}); ok {
 		for key, val := range rec {
 			if strings.Contains(key, "customfield") {
-				cf[key] = fmt.Sprint(val)
+				cf[key] = val
 			}
 		}
 	}
