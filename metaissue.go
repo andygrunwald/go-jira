@@ -2,6 +2,7 @@ package jira
 
 import (
 	"fmt"
+	"github.com/trivago/tgo/tcontainer"
 	"strings"
 )
 
@@ -29,14 +30,14 @@ type MetaProject struct {
 // expect these for a general way. This will be returning a map.
 // Further processing must be done depending on what is required.
 type MetaIssueTypes struct {
-	Self        string                 `json:"expand,omitempty"`
-	Id          string                 `json:"id,omitempty"`
-	Description string                 `json:"description,omitempty"`
-	IconUrl     string                 `json:"iconurl,omitempty"`
-	Name        string                 `json:"name,omitempty"`
-	Subtasks    bool                   `json:"subtask,omitempty"`
-	Expand      string                 `json:"expand,omitempty"`
-	Fields      map[string]interface{} `json:"fields,omitempty"`
+	Self        string                `json:"expand,omitempty"`
+	Id          string                `json:"id,omitempty"`
+	Description string                `json:"description,omitempty"`
+	IconUrl     string                `json:"iconurl,omitempty"`
+	Name        string                `json:"name,omitempty"`
+	Subtasks    bool                  `json:"subtask,omitempty"`
+	Expand      string                `json:"expand,omitempty"`
+	Fields      tcontainer.MarshalMap `json:"fields,omitempty"`
 }
 
 // GetCreateMeta makes the api call to get the meta information required to create a ticket
@@ -98,24 +99,35 @@ func (p *MetaProject) GetIssueTypeWithName(name string) *MetaIssueTypes {
 //				}
 // the returned map would have "Epic Link" as the key and "customfield_10806" as value.
 // This choice has been made so that the it is easier to generate the create api request later.
-func (t *MetaIssueTypes) GetMandatoryFields() map[string]string {
+func (t *MetaIssueTypes) GetMandatoryFields() (map[string]string, error) {
 	ret := make(map[string]string)
-	for key, obj := range t.Fields {
-		details := obj.(map[string]interface{})
-		if details["required"] == true {
-			ret[details["name"].(string)] = key
+	for key, _ := range t.Fields {
+		required, err := t.Fields.Bool(key + "/required")
+		if err != nil {
+			return nil, err
+		}
+		if required {
+			name, err := t.Fields.String(key + "/name")
+			if err != nil {
+				return nil, err
+			}
+			ret[name] = key
 		}
 	}
-	return nil
+	return ret, nil
 }
 
 // GetAllFields returns a map of all the fields for an IssueType. This includes all required and not required.
 // The key of the returned map is what you see in the form and the value is how it is representated in the jira schema.
-func (t *MetaIssueTypes) GetAllFields() map[string]string {
+func (t *MetaIssueTypes) GetAllFields() (map[string]string, error) {
 	ret := make(map[string]string)
-	for key, obj := range t.Fields {
-		details := obj.(map[string]interface{})
-		ret[details["name"].(string)] = key
+	for key, _ := range t.Fields {
+
+		name, err := t.Fields.String(key + "/name")
+		if err != nil {
+			return nil, err
+		}
+		ret[name] = key
 	}
-	return ret
+	return ret, nil
 }

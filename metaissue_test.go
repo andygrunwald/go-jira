@@ -377,3 +377,68 @@ func TestIssueService_GetCreateMeta_Success(t *testing.T) {
 	}
 
 }
+
+func TestMetaIssueTypes_GetMandatoryFields(t *testing.T) {
+	data := make(map[string]interface{})
+
+	data["summary"] = map[string]interface{}{
+		"required": true,
+		"name":     "Summary",
+	}
+
+	data["components"] = map[string]interface{}{
+		"required": true,
+		"name":     "Components",
+	}
+
+	data["epicLink"] = map[string]interface{}{
+		"required": false,
+		"name":     "Epic Link",
+	}
+
+	m := new(MetaIssueTypes)
+	m.Fields = data
+
+	mandatory, err := m.GetMandatoryFields()
+	if err != nil {
+		t.Errorf("Expected nil error, recieved %s", err)
+	}
+
+	if len(mandatory) != 2 {
+		t.Errorf("Expected 2 recieved %d", mandatory)
+	}
+
+}
+
+func TestMetaIssueTypes_GetAllFields(t *testing.T) {
+	data := make(map[string]interface{})
+
+	data["summary"] = map[string]interface{}{
+		"required": true,
+		"name":     "Summary",
+	}
+
+	data["components"] = map[string]interface{}{
+		"required": true,
+		"name":     "Components",
+	}
+
+	data["epicLink"] = map[string]interface{}{
+		"required": false,
+		"name":     "Epic Link",
+	}
+
+	m := new(MetaIssueTypes)
+	m.Fields = data
+
+	mandatory, err := m.GetAllFields()
+
+	if err != nil {
+		t.Errorf("Expected nil err, recieved %s", err)
+	}
+
+	if len(mandatory) != 3 {
+		t.Errorf("Expected 3 recieved %d", mandatory)
+	}
+
+}

@@ -13,72 +13,72 @@ type ProjectService struct {
 
 // ProjectList represent a list of Projects
 type ProjectList []struct {
-	Expand          string          `json:"expand"`
-	Self            string          `json:"self"`
-	ID              string          `json:"id"`
-	Key             string          `json:"key"`
-	Name            string          `json:"name"`
-	AvatarUrls      AvatarUrls      `json:"avatarUrls"`
-	ProjectTypeKey  string          `json:"projectTypeKey"`
-	ProjectCategory ProjectCategory `json:"projectCategory,omitempty"`
+	Expand          string          `json:"expand" structs:"expand"`
+	Self            string          `json:"self" structs:"self"`
+	ID              string          `json:"id" structs:"id"`
+	Key             string          `json:"key" structs:"key"`
+	Name            string          `json:"name" structs:"name"`
+	AvatarUrls      AvatarUrls      `json:"avatarUrls" structs:"avatarUrls"`
+	ProjectTypeKey  string          `json:"projectTypeKey" structs:"projectTypeKey"`
+	ProjectCategory ProjectCategory `json:"projectCategory,omitempty" structs:"projectsCategory,omitempty"`
 }
 
 // ProjectCategory represents a single project category
 type ProjectCategory struct {
-	Self        string `json:"self"`
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	Self        string `json:"self" structs:"self"`
+	ID          string `json:"id" structs:"id"`
+	Name        string `json:"name" structs:"name"`
+	Description string `json:"description" structs:"description"`
 }
 
 // Project represents a JIRA Project.
 type Project struct {
-	Expand       string             `json:"expand,omitempty"`
-	Self         string             `json:"self,omitempty"`
-	ID           string             `json:"id,omitempty"`
-	Key          string             `json:"key,omitempty"`
-	Description  string             `json:"description,omitempty"`
-	Lead         User               `json:"lead,omitempty"`
-	Components   []ProjectComponent `json:"components,omitempty"`
-	IssueTypes   []IssueType        `json:"issueTypes,omitempty"`
-	URL          string             `json:"url,omitempty"`
-	Email        string             `json:"email,omitempty"`
-	AssigneeType string             `json:"assigneeType,omitempty"`
-	Versions     []Version          `json:"versions,omitempty"`
-	Name         string             `json:"name,omitempty"`
+	Expand       string             `json:"expand,omitempty" structs:"expand,omitempty"`
+	Self         string             `json:"self,omitempty" structs:"self,omitempty"`
+	ID           string             `json:"id,omitempty" structs:"id,omitempty"`
+	Key          string             `json:"key,omitempty" structs:"key,omitempty"`
+	Description  string             `json:"description,omitempty" structs:"description,omitempty"`
+	Lead         User               `json:"lead,omitempty" structs:"lead,omitempty"`
+	Components   []ProjectComponent `json:"components,omitempty" structs:"components,omitempty"`
+	IssueTypes   []IssueType        `json:"issueTypes,omitempty" structs:"issueTypes,omitempty"`
+	URL          string             `json:"url,omitempty" structs:"url,omitempty"`
+	Email        string             `json:"email,omitempty" structs:"email,omitempty"`
+	AssigneeType string             `json:"assigneeType,omitempty" structs:"assigneeType,omitempty"`
+	Versions     []Version          `json:"versions,omitempty" structs:"versions,omitempty"`
+	Name         string             `json:"name,omitempty" structs:"name,omitempty"`
 	Roles        struct {
-		Developers string `json:"Developers,omitempty"`
-	} `json:"roles,omitempty"`
-	AvatarUrls      AvatarUrls      `json:"avatarUrls,omitempty"`
-	ProjectCategory ProjectCategory `json:"projectCategory,omitempty"`
+		Developers string `json:"Developers,omitempty" structs:"Developers,omitempty"`
+	} `json:"roles,omitempty" structs:"roles,omitempty"`
+	AvatarUrls      AvatarUrls      `json:"avatarUrls,omitempty" structs:"avatarUrls,omitempty"`
+	ProjectCategory ProjectCategory `json:"projectCategory,omitempty" structs:"projectCategory,omitempty"`
 }
 
 // Version represents a single release version of a project
 type Version struct {
-	Self            string `json:"self"`
-	ID              string `json:"id"`
-	Name            string `json:"name"`
-	Archived        bool   `json:"archived"`
-	Released        bool   `json:"released"`
-	ReleaseDate     string `json:"releaseDate"`
-	UserReleaseDate string `json:"userReleaseDate"`
-	ProjectID       int    `json:"projectId"`  // Unlike other IDs, this is returned as a number
+	Self            string `json:"self" structs:"self"`
+	ID              string `json:"id" structs:"id"`
+	Name            string `json:"name" structs:"name"`
+	Archived        bool   `json:"archived" structs:"archived"`
+	Released        bool   `json:"released" structs:"released"`
+	ReleaseDate     string `json:"releaseDate" structs:"releaseDate"`
+	UserReleaseDate string `json:"userReleaseDate" structs:"userReleaseDate"`
+	ProjectID       int    `json:"projectId" structs:"projectId"` // Unlike other IDs, this is returned as a number
 }
 
 // ProjectComponent represents a single component of a project
 type ProjectComponent struct {
-	Self                string `json:"self"`
-	ID                  string `json:"id"`
-	Name                string `json:"name"`
-	Description         string `json:"description"`
-	Lead                User   `json:"lead"`
-	AssigneeType        string `json:"assigneeType"`
-	Assignee            User   `json:"assignee"`
-	RealAssigneeType    string `json:"realAssigneeType"`
-	RealAssignee        User   `json:"realAssignee"`
-	IsAssigneeTypeValid bool   `json:"isAssigneeTypeValid"`
-	Project             string `json:"project"`
-	ProjectID           int    `json:"projectId"`
+	Self                string `json:"self" structs:"self"`
+	ID                  string `json:"id" structs:"id"`
+	Name                string `json:"name" structs:"name"`
+	Description         string `json:"description" structs:"description"`
+	Lead                User   `json:"lead" structs:"lead"`
+	AssigneeType        string `json:"assigneeType" structs:"assigneeType"`
+	Assignee            User   `json:"assignee" structs:"assignee"`
+	RealAssigneeType    string `json:"realAssigneeType" structs:"realAssigneeType"`
+	RealAssignee        User   `json:"realAssignee" structs:"realAssignee"`
+	IsAssigneeTypeValid bool   `json:"isAssigneeTypeValid" structs:"isAssigneeTypeValid"`
+	Project             string `json:"project" structs:"project"`
+	ProjectID           int    `json:"projectId" structs:"projectId"`
 }
 
 // GetList gets all projects form JIRA
