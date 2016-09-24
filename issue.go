@@ -95,8 +95,21 @@ type IssueFields struct {
 	Subtasks          []*Subtasks   `json:"subtasks,omitempty"`
 	Attachments       []*Attachment `json:"attachment,omitempty"`
 	Epic              *Epic         `json:"epic,omitempty"`
+	ServiceDesk       IssueServiceDesk `json:"customfield_10000,omitempty"`
+
 }
 
+type IssueServiceDesk struct {
+	RequestType        ServiceDeskRequestType `json:"requestType,omitempty"`
+}
+
+type ServiceDeskRequestType struct {
+	Id        int `json:"id,omitempty"`
+	Name		string `json:"name,omitempty"`
+	Description		string `json:"description,omitempty"`
+	HelpText		string `json:"helpText,omitempty"`
+	ServiceDeskId		int `json:"serviceDeskId,omitempty"`
+}
 // IssueType represents a type of a JIRA issue.
 // Typical types are "Request", "Bug", "Story", ...
 type IssueType struct {

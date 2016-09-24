@@ -29,6 +29,7 @@ type Client struct {
 	Project        *ProjectService
 	Board          *BoardService
 	Sprint         *SprintService
+	Group		*GroupService
 }
 
 // NewClient returns a new JIRA API client.
@@ -57,6 +58,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	c.Project = &ProjectService{client: c}
 	c.Board = &BoardService{client: c}
 	c.Sprint = &SprintService{client: c}
+	c.Group = &GroupService{client: c}
 
 	return c, nil
 }
@@ -88,6 +90,7 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	}
 
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-ExperimentalApi", "opt-in")
 
 	// Set session cookie if there is one
 	if c.session != nil {
