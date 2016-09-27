@@ -410,6 +410,40 @@ func TestMetaIssueTypes_GetMandatoryFields(t *testing.T) {
 
 }
 
+func TestMetaIssueTypes_GetMandatoryFields_NonExistentRequiredKey_Fail(t *testing.T) {
+	data := make(map[string]interface{})
+
+	data["summary"] = map[string]interface{}{
+		"name": "Summary",
+	}
+
+	m := new(MetaIssueTypes)
+	m.Fields = data
+
+	_, err := m.GetMandatoryFields()
+	if err == nil {
+		t.Error("Expected non nil errpr, recieved nil")
+	}
+
+}
+
+func TestMetaIssueTypes_GetMandatoryFields_NonExistentNameKey_Fail(t *testing.T) {
+	data := make(map[string]interface{})
+
+	data["summary"] = map[string]interface{}{
+		"required": true,
+	}
+
+	m := new(MetaIssueTypes)
+	m.Fields = data
+
+	_, err := m.GetMandatoryFields()
+	if err == nil {
+		t.Error("Expected non nil errpr, recieved nil")
+	}
+
+}
+
 func TestMetaIssueTypes_GetAllFields(t *testing.T) {
 	data := make(map[string]interface{})
 
@@ -439,6 +473,23 @@ func TestMetaIssueTypes_GetAllFields(t *testing.T) {
 
 	if len(mandatory) != 3 {
 		t.Errorf("Expected 3 recieved %d", mandatory)
+	}
+
+}
+
+func TestMetaIssueTypes_GetAllFields_NonExistingNameKey_Fail(t *testing.T) {
+	data := make(map[string]interface{})
+
+	data["summary"] = map[string]interface{}{
+		"required": true,
+	}
+
+	m := new(MetaIssueTypes)
+	m.Fields = data
+
+	_, err := m.GetAllFields()
+	if err == nil {
+		t.Error("Expected non nil error, recieved nil")
 	}
 
 }

@@ -86,6 +86,44 @@ func TestAuthenticationService_Authenticated(t *testing.T) {
 	}
 }
 
+func TestAithenticationService_GetUserInfo_AccessForbidden_Fail(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "POST" {
+			testMethod(t, r, "POST")
+			testRequestURL(t, r, "/rest/auth/1/session")
+			b, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				t.Errorf("Error in read body: %s", err)
+			}
+			if bytes.Index(b, []byte(`"username":"foo"`)) < 0 {
+				t.Error("No username found")
+			}
+			if bytes.Index(b, []byte(`"password":"bar"`)) < 0 {
+				t.Error("No password found")
+			}
+
+			fmt.Fprint(w, `{"session":{"name":"JSESSIONID","value":"12345678901234567890"},"loginInfo":{"failedLoginCount":10,"loginCount":127,"lastFailedLoginTime":"2016-03-16T04:22:35.386+0000","previousLoginTime":"2016-03-16T04:22:35.386+0000"}}`)
+		}
+
+		if r.Method == "GET" {
+			testMethod(t, r, "GET")
+			testRequestURL(t, r, "/rest/auth/1/session")
+
+			w.WriteHeader(http.StatusForbidden)
+		}
+	})
+
+	testClient.Authentication.AcquireSessionCookie("foo", "bar")
+
+	_, err := testClient.Authentication.GetCurrentUser()
+	if err == nil {
+		t.Errorf("Non nil error expect, recieved nil")
+	}
+
+}
+
 func TestAuthenticationService_GetUserInfo_NonOkStatusCode_Fail(t *testing.T) {
 	setup()
 	defer teardown()
@@ -111,7 +149,8 @@ func TestAuthenticationService_GetUserInfo_NonOkStatusCode_Fail(t *testing.T) {
 		if r.Method == "GET" {
 			testMethod(t, r, "GET")
 			testRequestURL(t, r, "/rest/auth/1/session")
-			w.WriteHeader(http.StatusForbidden)
+			//any status but 200
+			w.WriteHeader(240)
 		}
 	})
 
@@ -233,10 +272,8 @@ func TestAuthenticationService_Logout_FailWithoutLogin(t *testing.T) {
 		}
 
 	})
-
 	err := testClient.Authentication.Logout()
 	if err == nil {
 		t.Error("Expected not nil, got nil")
 	}
-
 }

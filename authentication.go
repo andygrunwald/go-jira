@@ -133,6 +133,9 @@ func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Error sending request to get user info : %s", err)
 	}
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("Getting user info failed with status : %d", resp.StatusCode)
+	}
 
 	defer resp.Body.Close()
 	ret := new(Session)
