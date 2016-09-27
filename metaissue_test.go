@@ -442,3 +442,31 @@ func TestMetaIssueTypes_GetAllFields(t *testing.T) {
 	}
 
 }
+
+func TestCreateMetaInfo_GetProjectName_Success(t *testing.T) {
+	metainfo := new(CreateMetaInfo)
+	metainfo.Projects = append(metainfo.Projects, &MetaProject{
+		Name: "SOP",
+	})
+
+	project := metainfo.GetProjectWithName("SOP")
+	if project == nil {
+		t.Errorf("Expected non nil value, recieved nil")
+		return
+	}
+
+}
+
+func TestMetaProject_GetIssueTypeWithName_CaseMismatch_Success(t *testing.T) {
+	m := new(MetaProject)
+	m.IssueTypes = append(m.IssueTypes, &MetaIssueTypes{
+		Name: "Bug",
+	})
+
+	issuetype := m.GetIssueTypeWithName("BUG")
+
+	if issuetype == nil {
+		t.Errorf("Expected non nil value, recieved nil")
+		return
+	}
+}
