@@ -2,7 +2,6 @@ package jira
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -143,25 +142,6 @@ func TestClient_NewRequest(t *testing.T) {
 	body, _ := ioutil.ReadAll(req.Body)
 	if got, want := string(body), outBody; got != want {
 		t.Errorf("NewRequest(%v) Body is %v, want %v", inBody, got, want)
-	}
-}
-
-func TestClient_NewRequest_InvalidJSON(t *testing.T) {
-	c, err := NewClient(nil, testJIRAInstanceURL)
-	if err != nil {
-		t.Errorf("An error occured. Expected nil. Got %+v.", err)
-	}
-
-	type T struct {
-		A map[int]interface{}
-	}
-	_, err = c.NewRequest("GET", "/", &T{})
-
-	if err == nil {
-		t.Error("Expected error to be returned.")
-	}
-	if err, ok := err.(*json.UnsupportedTypeError); !ok {
-		t.Errorf("Expected a JSON error; got %+v.", err)
 	}
 }
 
