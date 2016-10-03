@@ -494,59 +494,59 @@ func TestIssueFields_TestMarshalJSON_PopulateUnknownsSuccess(t *testing.T) {
 	data := `{
 			"customfield_123":"test",
 			"description":"example bug report",
-			"project":{  
+			"project":{
 				"self":"http://www.example.com/jira/rest/api/2/project/EX",
 				"id":"10000",
 				"key":"EX",
 				"name":"Example",
-				"avatarUrls":{  
+				"avatarUrls":{
 					"48x48":"http://www.example.com/jira/secure/projectavatar?size=large&pid=10000",
 					"24x24":"http://www.example.com/jira/secure/projectavatar?size=small&pid=10000",
 					"16x16":"http://www.example.com/jira/secure/projectavatar?size=xsmall&pid=10000",
 					"32x32":"http://www.example.com/jira/secure/projectavatar?size=medium&pid=10000"
 				},
-				"projectCategory":{  
+				"projectCategory":{
 					"self":"http://www.example.com/jira/rest/api/2/projectCategory/10000",
 					"id":"10000",
 					"name":"FIRST",
 					"description":"First Project Category"
 				}
 			},
-			"issuelinks":[  
-				{  
+			"issuelinks":[
+				{
 					"id":"10001",
-					"type":{  
+					"type":{
 					"id":"10000",
 					"name":"Dependent",
 					"inward":"depends on",
 					"outward":"is depended by"
 					},
-					"outwardIssue":{  
+					"outwardIssue":{
 					"id":"10004L",
 					"key":"PRJ-2",
 					"self":"http://www.example.com/jira/rest/api/2/issue/PRJ-2",
-					"fields":{  
-						"status":{  
+					"fields":{
+						"status":{
 							"iconUrl":"http://www.example.com/jira//images/icons/statuses/open.png",
 							"name":"Open"
 						}
 					}
 					}
 				},
-				{  
+				{
 					"id":"10002",
-					"type":{  
+					"type":{
 					"id":"10000",
 					"name":"Dependent",
 					"inward":"depends on",
 					"outward":"is depended by"
 					},
-					"inwardIssue":{  
+					"inwardIssue":{
 					"id":"10004",
 					"key":"PRJ-3",
 					"self":"http://www.example.com/jira/rest/api/2/issue/PRJ-3",
-					"fields":{  
-						"status":{  
+					"fields":{
+						"status":{
 							"iconUrl":"http://www.example.com/jira//images/icons/statuses/open.png",
 							"name":"Open"
 						}
@@ -554,7 +554,7 @@ func TestIssueFields_TestMarshalJSON_PopulateUnknownsSuccess(t *testing.T) {
 					}
 				}
 			]
-	
+
    }`
 
 	i := new(IssueFields)
@@ -573,18 +573,6 @@ func TestIssueFields_TestMarshalJSON_PopulateUnknownsSuccess(t *testing.T) {
 }
 
 func TestIssueFields_MarshalJSON_Success(t *testing.T) {
-	/*
-		{
-				"customfield_123":"test",
-				"description":"example bug report",
-				"project":{
-					"self":"http://www.example.com/jira/rest/api/2/project/EX",
-					"id":"10000",
-					"key":"EX"
-				}
-		}
-	*/
-
 	i := &IssueFields{
 		Description: "example bug report",
 		Unknowns: tcontainer.MarshalMap{
@@ -612,5 +600,4 @@ func TestIssueFields_MarshalJSON_Success(t *testing.T) {
 	if !reflect.DeepEqual(i, recieved) {
 		t.Errorf("Recieved object different from expected")
 	}
-
 }

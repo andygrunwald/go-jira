@@ -4,14 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/fatih/structs"
-	"github.com/trivago/tgo/tcontainer"
 	"io"
 	"mime/multipart"
 	"net/url"
 	"reflect"
 	"strings"
 	"time"
+
+	"github.com/fatih/structs"
+	"github.com/trivago/tgo/tcontainer"
 )
 
 const (
@@ -102,6 +103,8 @@ type IssueFields struct {
 	Unknowns          tcontainer.MarshalMap
 }
 
+// MarshalJSON is a custom JSON marshal function for the IssueFields structs.
+// It handles JIRA custom fields and maps those from / to "Unknowns" key.
 func (i *IssueFields) MarshalJSON() ([]byte, error) {
 	m := structs.Map(i)
 	unknowns, okay := m["Unknowns"]
@@ -115,6 +118,8 @@ func (i *IssueFields) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m)
 }
 
+// UnmarshalJSON is a custom JSON marshal function for the IssueFields structs.
+// It handles JIRA custom fields and maps those from / to "Unknowns" key.
 func (i *IssueFields) UnmarshalJSON(data []byte) error {
 
 	// Do the normal unmarshalling first

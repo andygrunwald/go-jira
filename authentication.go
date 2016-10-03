@@ -84,9 +84,6 @@ func (s *AuthenticationService) Authenticated() bool {
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 func (s *AuthenticationService) Logout() error {
-	if s == nil {
-		return fmt.Errorf("Authenticaiton Service is not instantiated")
-	}
 	if s.client.session == nil {
 		return fmt.Errorf("No user is authenticated yet.")
 	}
@@ -96,7 +93,7 @@ func (s *AuthenticationService) Logout() error {
 	if err != nil {
 		return fmt.Errorf("Creating the request to log the user out failed : %s", err)
 	}
-	//var dump interface{}
+
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
 		return fmt.Errorf("Error sending the logout request: %s", err)
@@ -105,7 +102,7 @@ func (s *AuthenticationService) Logout() error {
 		return fmt.Errorf("The logout was unsuccessful with status %d", resp.StatusCode)
 	}
 
-	// if logout successfull, delete session
+	// If logout successfull, delete session
 	s.client.session = nil
 
 	return nil
@@ -151,5 +148,4 @@ func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 	}
 
 	return ret, nil
-
 }

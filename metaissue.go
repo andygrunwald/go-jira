@@ -2,8 +2,9 @@ package jira
 
 import (
 	"fmt"
-	"github.com/trivago/tgo/tcontainer"
 	"strings"
+
+	"github.com/trivago/tgo/tcontainer"
 )
 
 // CreateMeta contains information about fields and their attributed to create a ticket.
@@ -49,7 +50,7 @@ func (s *IssueService) GetCreateMeta(projectkey string) (*CreateMetaInfo, *Respo
 	if err != nil {
 		return nil, nil, err
 	}
-	fmt.Println(req.URL)
+
 	meta := new(CreateMetaInfo)
 	resp, err := s.client.Do(req, meta)
 

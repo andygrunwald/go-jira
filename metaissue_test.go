@@ -10,31 +10,31 @@ func TestIssueService_GetCreateMeta_Success(t *testing.T) {
 	setup()
 	defer teardown()
 
-	testApiEndpoint := "/rest/api/2/issue/createmeta"
+	testAPIEndpoint := "/rest/api/2/issue/createmeta"
 
-	testMux.HandleFunc(testApiEndpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testRequestURL(t, r, testApiEndpoint)
+		testRequestURL(t, r, testAPIEndpoint)
 
 		fmt.Fprint(w, `{
 	"expand": "projects",
 	"projects": [{
 		"expand": "issuetypes",
-		"self": "https://tasks.trivago.com/rest/api/2/project/11300",
+		"self": "https://my.jira.com/rest/api/2/project/11300",
 		"id": "11300",
-		"key": "SOP",
-		"name": "DSE - Software Operations",
+		"key": "SPN",
+		"name": "Super Project Name",
 		"avatarUrls": {
-			"48x48": "https://tasks.trivago.com/secure/projectavatar?pid=11300&avatarId=14405",
-			"24x24": "https://tasks.trivago.com/secure/projectavatar?size=small&pid=11300&avatarId=14405",
-			"16x16": "https://tasks.trivago.com/secure/projectavatar?size=xsmall&pid=11300&avatarId=14405",
-			"32x32": "https://tasks.trivago.com/secure/projectavatar?size=medium&pid=11300&avatarId=14405"
+			"48x48": "https://my.jira.com/secure/projectavatar?pid=11300&avatarId=14405",
+			"24x24": "https://my.jira.com/secure/projectavatar?size=small&pid=11300&avatarId=14405",
+			"16x16": "https://my.jira.com/secure/projectavatar?size=xsmall&pid=11300&avatarId=14405",
+			"32x32": "https://my.jira.com/secure/projectavatar?size=medium&pid=11300&avatarId=14405"
 		},
 		"issuetypes": [{
-			"self": "https://tasks.trivago.com/rest/api/2/issuetype/6",
+			"self": "https://my.jira.com/rest/api/2/issuetype/6",
 			"id": "6",
 			"description": "An issue which ideally should be able to be completed in one step",
-			"iconUrl": "https://tasks.trivago.com/secure/viewavatar?size=xsmall&avatarId=14006&avatarType=issuetype",
+			"iconUrl": "https://my.jira.com/secure/viewavatar?size=xsmall&avatarId=14006&avatarType=issuetype",
 			"name": "Request",
 			"subtask": false,
 			"expand": "fields",
@@ -63,10 +63,10 @@ func TestIssueService_GetCreateMeta_Success(t *testing.T) {
 
 					],
 					"allowedValues": [{
-						"self": "https://tasks.trivago.com/rest/api/2/issuetype/6",
+						"self": "https://my.jira.com/rest/api/2/issuetype/6",
 						"id": "6",
 						"description": "An issue which ideally should be able to be completed in one step",
-						"iconUrl": "https://tasks.trivago.com/secure/viewavatar?size=xsmall&avatarId=14006&avatarType=issuetype",
+						"iconUrl": "https://my.jira.com/secure/viewavatar?size=xsmall&avatarId=14006&avatarType=issuetype",
 						"name": "Request",
 						"subtask": false,
 						"avatarId": 14006
@@ -87,106 +87,106 @@ func TestIssueService_GetCreateMeta_Success(t *testing.T) {
 						"remove"
 					],
 					"allowedValues": [{
-						"self": "https://tasks.trivago.com/rest/api/2/component/14144",
+						"self": "https://my.jira.com/rest/api/2/component/14144",
 						"id": "14144",
 						"name": "Build automation",
 						"description": "Jenkins, webhooks, etc."
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14149",
+						"self": "https://my.jira.com/rest/api/2/component/14149",
 						"id": "14149",
 						"name": "Caches and noSQL",
 						"description": "Cassandra, Memcached, Redis, Twemproxy, Xcache"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14152",
+						"self": "https://my.jira.com/rest/api/2/component/14152",
 						"id": "14152",
 						"name": "Cloud services",
 						"description": "AWS and similiar services"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14147",
+						"self": "https://my.jira.com/rest/api/2/component/14147",
 						"id": "14147",
 						"name": "Code quality tools",
-						"description": "Code sniffer, Arqtig, Sonar"
+						"description": "Code sniffer, Sonar"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14156",
+						"self": "https://my.jira.com/rest/api/2/component/14156",
 						"id": "14156",
 						"name": "Configuration management and provisioning",
 						"description": "Apache/PHP modules, Consul, Salt"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/13606",
+						"self": "https://my.jira.com/rest/api/2/component/13606",
 						"id": "13606",
 						"name": "Cronjobs",
 						"description": "Cronjobs in general"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14150",
+						"self": "https://my.jira.com/rest/api/2/component/14150",
 						"id": "14150",
 						"name": "Data pipelines and queues",
-						"description": "Gollum, Kafka, RabbitMq"
+						"description": "Kafka, RabbitMq"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14159",
+						"self": "https://my.jira.com/rest/api/2/component/14159",
 						"id": "14159",
 						"name": "Database",
 						"description": "MySQL related problems"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14314",
+						"self": "https://my.jira.com/rest/api/2/component/14314",
 						"id": "14314",
 						"name": "Documentation"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14151",
+						"self": "https://my.jira.com/rest/api/2/component/14151",
 						"id": "14151",
 						"name": "Git",
 						"description": "Bitbucket, GitHub, GitLab, Git in general"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14155",
+						"self": "https://my.jira.com/rest/api/2/component/14155",
 						"id": "14155",
 						"name": "HTTP services",
 						"description": "CDN, HaProxy, HTTP, Varnish"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14154",
+						"self": "https://my.jira.com/rest/api/2/component/14154",
 						"id": "14154",
 						"name": "Job and service scheduling",
 						"description": "Chronos, Docker, Marathon, Mesos"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14158",
+						"self": "https://my.jira.com/rest/api/2/component/14158",
 						"id": "14158",
 						"name": "Legacy",
 						"description": "Everything related to legacy"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14157",
+						"self": "https://my.jira.com/rest/api/2/component/14157",
 						"id": "14157",
 						"name": "Monitoring",
 						"description": "Collectd, Nagios, Monitoring in general"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14148",
+						"self": "https://my.jira.com/rest/api/2/component/14148",
 						"id": "14148",
 						"name": "Other services"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/13602",
+						"self": "https://my.jira.com/rest/api/2/component/13602",
 						"id": "13602",
 						"name": "Package management",
 						"description": "Composer, Medusa, Satis"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14145",
+						"self": "https://my.jira.com/rest/api/2/component/14145",
 						"id": "14145",
 						"name": "Release",
 						"description": "Directory config, release queries, rewrite rules"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14146",
+						"self": "https://my.jira.com/rest/api/2/component/14146",
 						"id": "14146",
 						"name": "Staging systems and VMs",
 						"description": "Stage, QA machines, KVMs,Vagrant"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14153",
+						"self": "https://my.jira.com/rest/api/2/component/14153",
 						"id": "14153",
-						"name": "Techblog"
+						"name": "Blog"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14143",
+						"self": "https://my.jira.com/rest/api/2/component/14143",
 						"id": "14143",
 						"name": "Test automation",
 						"description": "Testing infrastructure in general"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/component/14221",
+						"self": "https://my.jira.com/rest/api/2/component/14221",
 						"id": "14221",
-						"name": "Zup"
+						"name": "Internal Infrastructure"
 					}]
 				},
 				"attachment": {
@@ -251,18 +251,18 @@ func TestIssueService_GetCreateMeta_Success(t *testing.T) {
 						"set"
 					],
 					"allowedValues": [{
-						"self": "https://tasks.trivago.com/rest/api/2/project/11300",
+						"self": "https://my.jira.com/rest/api/2/project/11300",
 						"id": "11300",
-						"key": "SOP",
-						"name": "DSE - Software Operations",
+						"key": "SPN",
+						"name": "Super Project Name",
 						"avatarUrls": {
-							"48x48": "https://tasks.trivago.com/secure/projectavatar?pid=11300&avatarId=14405",
-							"24x24": "https://tasks.trivago.com/secure/projectavatar?size=small&pid=11300&avatarId=14405",
-							"16x16": "https://tasks.trivago.com/secure/projectavatar?size=xsmall&pid=11300&avatarId=14405",
-							"32x32": "https://tasks.trivago.com/secure/projectavatar?size=medium&pid=11300&avatarId=14405"
+							"48x48": "https://my.jira.com/secure/projectavatar?pid=11300&avatarId=14405",
+							"24x24": "https://my.jira.com/secure/projectavatar?size=small&pid=11300&avatarId=14405",
+							"16x16": "https://my.jira.com/secure/projectavatar?size=xsmall&pid=11300&avatarId=14405",
+							"32x32": "https://my.jira.com/secure/projectavatar?size=medium&pid=11300&avatarId=14405"
 						},
 						"projectCategory": {
-							"self": "https://tasks.trivago.com/rest/api/2/projectCategory/10100",
+							"self": "https://my.jira.com/rest/api/2/projectCategory/10100",
 							"id": "10100",
 							"description": "",
 							"name": "Product & Development"
@@ -276,7 +276,7 @@ func TestIssueService_GetCreateMeta_Success(t *testing.T) {
 						"system": "assignee"
 					},
 					"name": "Assignee",
-					"autoCompleteUrl": "https://tasks.trivago.com/rest/api/latest/user/assignable/search?issueKey=null&username=",
+					"autoCompleteUrl": "https://my.jira.com/rest/api/latest/user/assignable/search?issueKey=null&username=",
 					"hasDefaultValue": true,
 					"operations": [
 						"set"
@@ -294,33 +294,33 @@ func TestIssueService_GetCreateMeta_Success(t *testing.T) {
 						"set"
 					],
 					"allowedValues": [{
-						"self": "https://tasks.trivago.com/rest/api/2/priority/1",
-						"iconUrl": "https://tasks.trivago.com/images/icons/priorities/blocker.svg",
+						"self": "https://my.jira.com/rest/api/2/priority/1",
+						"iconUrl": "https://my.jira.com/images/icons/priorities/blocker.svg",
 						"name": "Immediate",
 						"id": "1"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/priority/2",
-						"iconUrl": "https://tasks.trivago.com/images/icons/priorities/critical.svg",
+						"self": "https://my.jira.com/rest/api/2/priority/2",
+						"iconUrl": "https://my.jira.com/images/icons/priorities/critical.svg",
 						"name": "Urgent",
 						"id": "2"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/priority/3",
-						"iconUrl": "https://tasks.trivago.com/images/icons/priorities/major.svg",
+						"self": "https://my.jira.com/rest/api/2/priority/3",
+						"iconUrl": "https://my.jira.com/images/icons/priorities/major.svg",
 						"name": "High",
 						"id": "3"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/priority/6",
-						"iconUrl": "https://tasks.trivago.com/images/icons/priorities/moderate.svg",
+						"self": "https://my.jira.com/rest/api/2/priority/6",
+						"iconUrl": "https://my.jira.com/images/icons/priorities/moderate.svg",
 						"name": "Moderate",
 						"id": "6"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/priority/4",
-						"iconUrl": "https://tasks.trivago.com/images/icons/priorities/minor.svg",
+						"self": "https://my.jira.com/rest/api/2/priority/4",
+						"iconUrl": "https://my.jira.com/images/icons/priorities/minor.svg",
 						"name": "Normal",
 						"id": "4"
 					}, {
-						"self": "https://tasks.trivago.com/rest/api/2/priority/5",
-						"iconUrl": "https://tasks.trivago.com/images/icons/priorities/trivial.svg",
+						"self": "https://my.jira.com/rest/api/2/priority/5",
+						"iconUrl": "https://my.jira.com/images/icons/priorities/trivial.svg",
 						"name": "Low",
 						"id": "5"
 					}]
@@ -333,7 +333,7 @@ func TestIssueService_GetCreateMeta_Success(t *testing.T) {
 						"system": "labels"
 					},
 					"name": "Labels",
-					"autoCompleteUrl": "https://tasks.trivago.com/rest/api/1.0/labels/suggest?query=",
+					"autoCompleteUrl": "https://my.jira.com/rest/api/1.0/labels/suggest?query=",
 					"hasDefaultValue": false,
 					"operations": [
 						"add",
@@ -347,7 +347,7 @@ func TestIssueService_GetCreateMeta_Success(t *testing.T) {
     }`)
 	})
 
-	issue, _, err := testClient.Issue.GetCreateMeta("SOP")
+	issue, _, err := testClient.Issue.GetCreateMeta("SPN")
 	if err != nil {
 		t.Errorf("Expected nil error but got %s", err)
 	}
@@ -405,9 +405,8 @@ func TestMetaIssueTypes_GetMandatoryFields(t *testing.T) {
 	}
 
 	if len(mandatory) != 2 {
-		t.Errorf("Expected 2 recieved %d", mandatory)
+		t.Errorf("Expected 2 recieved %+v", mandatory)
 	}
-
 }
 
 func TestMetaIssueTypes_GetMandatoryFields_NonExistentRequiredKey_Fail(t *testing.T) {
@@ -424,7 +423,6 @@ func TestMetaIssueTypes_GetMandatoryFields_NonExistentRequiredKey_Fail(t *testin
 	if err == nil {
 		t.Error("Expected non nil errpr, recieved nil")
 	}
-
 }
 
 func TestMetaIssueTypes_GetMandatoryFields_NonExistentNameKey_Fail(t *testing.T) {
@@ -441,7 +439,6 @@ func TestMetaIssueTypes_GetMandatoryFields_NonExistentNameKey_Fail(t *testing.T)
 	if err == nil {
 		t.Error("Expected non nil errpr, recieved nil")
 	}
-
 }
 
 func TestMetaIssueTypes_GetAllFields(t *testing.T) {
@@ -472,9 +469,8 @@ func TestMetaIssueTypes_GetAllFields(t *testing.T) {
 	}
 
 	if len(mandatory) != 3 {
-		t.Errorf("Expected 3 recieved %d", mandatory)
+		t.Errorf("Expected 3 recieved %+v", mandatory)
 	}
-
 }
 
 func TestMetaIssueTypes_GetAllFields_NonExistingNameKey_Fail(t *testing.T) {
@@ -491,21 +487,18 @@ func TestMetaIssueTypes_GetAllFields_NonExistingNameKey_Fail(t *testing.T) {
 	if err == nil {
 		t.Error("Expected non nil error, recieved nil")
 	}
-
 }
 
 func TestCreateMetaInfo_GetProjectName_Success(t *testing.T) {
 	metainfo := new(CreateMetaInfo)
 	metainfo.Projects = append(metainfo.Projects, &MetaProject{
-		Name: "SOP",
+		Name: "SPN",
 	})
 
-	project := metainfo.GetProjectWithName("SOP")
+	project := metainfo.GetProjectWithName("SPN")
 	if project == nil {
 		t.Errorf("Expected non nil value, recieved nil")
-		return
 	}
-
 }
 
 func TestMetaProject_GetIssueTypeWithName_CaseMismatch_Success(t *testing.T) {
@@ -518,6 +511,5 @@ func TestMetaProject_GetIssueTypeWithName_CaseMismatch_Success(t *testing.T) {
 
 	if issuetype == nil {
 		t.Errorf("Expected non nil value, recieved nil")
-		return
 	}
 }
