@@ -8,6 +8,8 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/trivago/tgo/tcontainer"
 )
 
 func TestIssueService_Get_Success(t *testing.T) {
@@ -486,4 +488,129 @@ func TestIssueService_DoTransition(t *testing.T) {
 	if err != nil {
 		t.Errorf("Got error: %v", err)
 	}
+}
+
+func TestIssueFields_TestMarshalJSON_PopulateUnknownsSuccess(t *testing.T) {
+	data := `{
+			"customfield_123":"test",
+			"description":"example bug report",
+			"project":{  
+				"self":"http://www.example.com/jira/rest/api/2/project/EX",
+				"id":"10000",
+				"key":"EX",
+				"name":"Example",
+				"avatarUrls":{  
+					"48x48":"http://www.example.com/jira/secure/projectavatar?size=large&pid=10000",
+					"24x24":"http://www.example.com/jira/secure/projectavatar?size=small&pid=10000",
+					"16x16":"http://www.example.com/jira/secure/projectavatar?size=xsmall&pid=10000",
+					"32x32":"http://www.example.com/jira/secure/projectavatar?size=medium&pid=10000"
+				},
+				"projectCategory":{  
+					"self":"http://www.example.com/jira/rest/api/2/projectCategory/10000",
+					"id":"10000",
+					"name":"FIRST",
+					"description":"First Project Category"
+				}
+			},
+			"issuelinks":[  
+				{  
+					"id":"10001",
+					"type":{  
+					"id":"10000",
+					"name":"Dependent",
+					"inward":"depends on",
+					"outward":"is depended by"
+					},
+					"outwardIssue":{  
+					"id":"10004L",
+					"key":"PRJ-2",
+					"self":"http://www.example.com/jira/rest/api/2/issue/PRJ-2",
+					"fields":{  
+						"status":{  
+							"iconUrl":"http://www.example.com/jira//images/icons/statuses/open.png",
+							"name":"Open"
+						}
+					}
+					}
+				},
+				{  
+					"id":"10002",
+					"type":{  
+					"id":"10000",
+					"name":"Dependent",
+					"inward":"depends on",
+					"outward":"is depended by"
+					},
+					"inwardIssue":{  
+					"id":"10004",
+					"key":"PRJ-3",
+					"self":"http://www.example.com/jira/rest/api/2/issue/PRJ-3",
+					"fields":{  
+						"status":{  
+							"iconUrl":"http://www.example.com/jira//images/icons/statuses/open.png",
+							"name":"Open"
+						}
+					}
+					}
+				}
+			]
+	
+   }`
+
+	i := new(IssueFields)
+	err := json.Unmarshal([]byte(data), i)
+	if err != nil {
+		t.Errorf("Expected nil error, recieved %s", err)
+	}
+
+	if len(i.Unknowns) != 1 {
+		t.Errorf("Expected 1 unknown field to be present, recieved %d", len(i.Unknowns))
+	}
+	if i.Description != "example bug report" {
+		t.Errorf("Expected description to be \"%s\", recieved \"%s\"", "example bug report", i.Description)
+	}
+
+}
+
+func TestIssueFields_MarshalJSON_Success(t *testing.T) {
+	/*
+		{
+				"customfield_123":"test",
+				"description":"example bug report",
+				"project":{
+					"self":"http://www.example.com/jira/rest/api/2/project/EX",
+					"id":"10000",
+					"key":"EX"
+				}
+		}
+	*/
+
+	i := &IssueFields{
+		Description: "example bug report",
+		Unknowns: tcontainer.MarshalMap{
+			"customfield_123": "test",
+		},
+		Project: Project{
+			Self: "http://www.example.com/jira/rest/api/2/project/EX",
+			ID:   "10000",
+			Key:  "EX",
+		},
+	}
+
+	bytes, err := json.Marshal(i)
+	if err != nil {
+		t.Errorf("Expected nil err, recieved %s", err)
+	}
+
+	recieved := new(IssueFields)
+	// the order of json might be different. so unmarshal it again and comapre objects
+	err = json.Unmarshal(bytes, recieved)
+	if err != nil {
+		t.Errorf("Expected nil err, recieved %s", err)
+	}
+
+	if !reflect.DeepEqual(i, recieved) {
+		t.Errorf("Recieved object different from expected")
+	}
+
 }

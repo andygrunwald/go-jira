@@ -2,10 +2,14 @@ package jira
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"github.com/fatih/structs"
+	"github.com/trivago/tgo/tcontainer"
 	"io"
 	"mime/multipart"
 	"net/url"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -24,35 +28,35 @@ type IssueService struct {
 
 // Issue represents a JIRA issue.
 type Issue struct {
-	Expand string       `json:"expand,omitempty"`
-	ID     string       `json:"id,omitempty"`
-	Self   string       `json:"self,omitempty"`
-	Key    string       `json:"key,omitempty"`
-	Fields *IssueFields `json:"fields,omitempty"`
+	Expand string       `json:"expand,omitempty" structs:"expand,omitempty"`
+	ID     string       `json:"id,omitempty" structs:"id,omitempty"`
+	Self   string       `json:"self,omitempty" structs:"self,omitempty"`
+	Key    string       `json:"key,omitempty" structs:"key,omitempty"`
+	Fields *IssueFields `json:"fields,omitempty" structs:"fields,omitempty"`
 }
 
 // Attachment represents a JIRA attachment
 type Attachment struct {
-	Self      string `json:"self,omitempty"`
-	ID        string `json:"id,omitempty"`
-	Filename  string `json:"filename,omitempty"`
-	Author    *User  `json:"author,omitempty"`
-	Created   string `json:"created,omitempty"`
-	Size      int    `json:"size,omitempty"`
-	MimeType  string `json:"mimeType,omitempty"`
-	Content   string `json:"content,omitempty"`
-	Thumbnail string `json:"thumbnail,omitempty"`
+	Self      string `json:"self,omitempty" structs:"self,omitempty"`
+	ID        string `json:"id,omitempty" structs:"id,omitempty"`
+	Filename  string `json:"filename,omitempty" structs:"filename,omitempty"`
+	Author    *User  `json:"author,omitempty" structs:"author,omitempty"`
+	Created   string `json:"created,omitempty" structs:"created,omitempty"`
+	Size      int    `json:"size,omitempty" structs:"size,omitempty"`
+	MimeType  string `json:"mimeType,omitempty" structs:"mimeType,omitempty"`
+	Content   string `json:"content,omitempty" structs:"content,omitempty"`
+	Thumbnail string `json:"thumbnail,omitempty" structs:"thumbnail,omitempty"`
 }
 
 // Epic represents the epic to which an issue is associated
 // Not that this struct does not process the returned "color" value
 type Epic struct {
-	ID      int    `json:"id"`
-	Key     string `json:"key"`
-	Self    string `json:"self"`
-	Name    string `json:"name"`
-	Summary string `json:"summary"`
-	Done    bool   `json:"done"`
+	ID      int    `json:"id" structs:"id"`
+	Key     string `json:"key" structs:"key"`
+	Self    string `json:"self" structs:"self"`
+	Name    string `json:"name" structs:"name"`
+	Summary string `json:"summary" structs:"summary"`
+	Done    bool   `json:"done" structs:"done"`
 }
 
 // IssueFields represents single fields of a JIRA issue.
@@ -70,124 +74,185 @@ type IssueFields struct {
 	//	* "aggregatetimeestimate": null,
 	//	* "environment": null,
 	//	* "duedate": null,
-	Type              IssueType     `json:"issuetype"`
-	Project           Project       `json:"project,omitempty"`
-	Resolution        *Resolution   `json:"resolution,omitempty"`
-	Priority          *Priority     `json:"priority,omitempty"`
-	Resolutiondate    string        `json:"resolutiondate,omitempty"`
-	Created           string        `json:"created,omitempty"`
-	Watches           *Watches      `json:"watches,omitempty"`
-	Assignee          *User         `json:"assignee,omitempty"`
-	Updated           string        `json:"updated,omitempty"`
-	Description       string        `json:"description,omitempty"`
-	Summary           string        `json:"summary"`
-	Creator           *User         `json:"Creator,omitempty"`
-	Reporter          *User         `json:"reporter,omitempty"`
-	Components        []*Component  `json:"components,omitempty"`
-	Status            *Status       `json:"status,omitempty"`
-	Progress          *Progress     `json:"progress,omitempty"`
-	AggregateProgress *Progress     `json:"aggregateprogress,omitempty"`
-	Worklog           *Worklog      `json:"worklog,omitempty"`
-	IssueLinks        []*IssueLink  `json:"issuelinks,omitempty"`
-	Comments          *Comments     `json:"comment,omitempty"`
-	FixVersions       []*FixVersion `json:"fixVersions,omitempty"`
-	Labels            []string      `json:"labels,omitempty"`
-	Subtasks          []*Subtasks   `json:"subtasks,omitempty"`
-	Attachments       []*Attachment `json:"attachment,omitempty"`
-	Epic              *Epic         `json:"epic,omitempty"`
+	Type              IssueType     `json:"issuetype" structs:"issuetype"`
+	Project           Project       `json:"project,omitempty" structs:"project,omitempty"`
+	Resolution        *Resolution   `json:"resolution,omitempty" structs:"resolution,omitempty"`
+	Priority          *Priority     `json:"priority,omitempty" structs:"priority,omitempty"`
+	Resolutiondate    string        `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
+	Created           string        `json:"created,omitempty" structs:"created,omitempty"`
+	Watches           *Watches      `json:"watches,omitempty" structs:"watches,omitempty"`
+	Assignee          *User         `json:"assignee,omitempty" structs:"assignee,omitempty"`
+	Updated           string        `json:"updated,omitempty" structs:"updated,omitempty"`
+	Description       string        `json:"description,omitempty" structs:"description,omitempty"`
+	Summary           string        `json:"summary" structs:"summary"`
+	Creator           *User         `json:"Creator,omitempty" structs:"Creator,omitempty"`
+	Reporter          *User         `json:"reporter,omitempty" structs:"reporter,omitempty"`
+	Components        []*Component  `json:"components,omitempty" structs:"components,omitempty"`
+	Status            *Status       `json:"status,omitempty" structs:"status,omitempty"`
+	Progress          *Progress     `json:"progress,omitempty" structs:"progress,omitempty"`
+	AggregateProgress *Progress     `json:"aggregateprogress,omitempty" structs:"aggregateprogress,omitempty"`
+	Worklog           *Worklog      `json:"worklog,omitempty" structs:"worklog,omitempty"`
+	IssueLinks        []*IssueLink  `json:"issuelinks,omitempty" structs:"issuelinks,omitempty"`
+	Comments          *Comments     `json:"comment,omitempty" structs:"comment,omitempty"`
+	FixVersions       []*FixVersion `json:"fixVersions,omitempty" structs:"fixVersions,omitempty"`
+	Labels            []string      `json:"labels,omitempty" structs:"labels,omitempty"`
+	Subtasks          []*Subtasks   `json:"subtasks,omitempty" structs:"subtasks,omitempty"`
+	Attachments       []*Attachment `json:"attachment,omitempty" structs:"attachment,omitempty"`
+	Epic              *Epic         `json:"epic,omitempty" structs:"epic,omitempty"`
+	Unknowns          tcontainer.MarshalMap
+}
+
+func (i *IssueFields) MarshalJSON() ([]byte, error) {
+	m := structs.Map(i)
+	unknowns, okay := m["Unknowns"]
+	if okay {
+		// if unknowns present, shift all key value from unkown to a level up
+		for key, value := range unknowns.(tcontainer.MarshalMap) {
+			m[key] = value
+		}
+		delete(m, "Unknowns")
+	}
+	return json.Marshal(m)
+}
+
+func (i *IssueFields) UnmarshalJSON(data []byte) error {
+
+	// Do the normal unmarshalling first
+	// Details for this way: http://choly.ca/post/go-json-marshalling/
+	type Alias IssueFields
+	aux := &struct {
+		*Alias
+	}{
+		Alias: (*Alias)(i),
+	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	totalMap := tcontainer.NewMarshalMap()
+	err := json.Unmarshal(data, &totalMap)
+	if err != nil {
+		return err
+	}
+
+	t := reflect.TypeOf(*i)
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+		tagDetail := field.Tag.Get("json")
+		if tagDetail == "" {
+			// ignore if there are no tags
+			continue
+		}
+		options := strings.Split(tagDetail, ",")
+
+		if len(options) == 0 {
+			return fmt.Errorf("No tags options found for %s", field.Name)
+		}
+		// the first one is the json tag
+		key := options[0]
+		if _, okay := totalMap.Value(key); okay {
+			delete(totalMap, key)
+		}
+
+	}
+	i = (*IssueFields)(aux.Alias)
+	// all the tags found in the struct were removed. Whatever is left are unknowns to struct
+	i.Unknowns = totalMap
+	return nil
+
 }
 
 // IssueType represents a type of a JIRA issue.
 // Typical types are "Request", "Bug", "Story", ...
 type IssueType struct {
-	Self        string `json:"self,omitempty"`
-	ID          string `json:"id,omitempty"`
-	Description string `json:"description,omitempty"`
-	IconURL     string `json:"iconUrl,omitempty"`
-	Name        string `json:"name,omitempty"`
-	Subtask     bool   `json:"subtask,omitempty"`
-	AvatarID    int    `json:"avatarId,omitempty"`
+	Self        string `json:"self,omitempty" structs:"self,omitempty"`
+	ID          string `json:"id,omitempty" struct:"id,omitempty"`
+	Description string `json:"description,omitempty" struct:"description,omitempty"`
+	IconURL     string `json:"iconUrl,omitempty" struct:"iconUrl,omitempty"`
+	Name        string `json:"name,omitempty" struct:"name,omitempty"`
+	Subtask     bool   `json:"subtask,omitempty" struct:"subtask,omitempty"`
+	AvatarID    int    `json:"avatarId,omitempty" struct:"avatarId,omitempty"`
 }
 
 // Resolution represents a resolution of a JIRA issue.
 // Typical types are "Fixed", "Suspended", "Won't Fix", ...
 type Resolution struct {
-	Self        string `json:"self"`
-	ID          string `json:"id"`
-	Description string `json:"description"`
-	Name        string `json:"name"`
+	Self        string `json:"self" structs:"self"`
+	ID          string `json:"id" structs:"id"`
+	Description string `json:"description" structs:"description"`
+	Name        string `json:"name" structs:"name"`
 }
 
 // Priority represents a priority of a JIRA issue.
 // Typical types are "Normal", "Moderate", "Urgent", ...
 type Priority struct {
-	Self    string `json:"self,omitempty"`
-	IconURL string `json:"iconUrl,omitempty"`
-	Name    string `json:"name,omitempty"`
-	ID      string `json:"id,omitempty"`
+	Self    string `json:"self,omitempty" structs:"self,omitempty"`
+	IconURL string `json:"iconUrl,omitempty" structs:"iconUrl,omitempty"`
+	Name    string `json:"name,omitempty" structs:"name,omitempty"`
+	ID      string `json:"id,omitempty" structs:"id,omitempty"`
 }
 
 // Watches represents a type of how many user are "observing" a JIRA issue to track the status / updates.
 type Watches struct {
-	Self       string `json:"self,omitempty"`
-	WatchCount int    `json:"watchCount,omitempty"`
-	IsWatching bool   `json:"isWatching,omitempty"`
+	Self       string `json:"self,omitempty" structs:"self,omitempty"`
+	WatchCount int    `json:"watchCount,omitempty" structs:"watchCount,omitempty"`
+	IsWatching bool   `json:"isWatching,omitempty" structs:"isWatching,omitempty"`
 }
 
 // User represents a user who is this JIRA issue assigned to.
 type User struct {
-	Self         string     `json:"self,omitempty"`
-	Name         string     `json:"name,omitempty"`
-	Key          string     `json:"key,omitempty"`
-	EmailAddress string     `json:"emailAddress,omitempty"`
-	AvatarUrls   AvatarUrls `json:"avatarUrls,omitempty"`
-	DisplayName  string     `json:"displayName,omitempty"`
-	Active       bool       `json:"active,omitempty"`
-	TimeZone     string     `json:"timeZone,omitempty"`
+	Self         string     `json:"self,omitempty" structs:"self,omitempty"`
+	Name         string     `json:"name,omitempty" structs:"name,omitempty"`
+	Key          string     `json:"key,omitempty" structs:"key,omitempty"`
+	EmailAddress string     `json:"emailAddress,omitempty" structs:"emailAddress,omitempty"`
+	AvatarUrls   AvatarUrls `json:"avatarUrls,omitempty" structs:"avatarUrls,omitempty"`
+	DisplayName  string     `json:"displayName,omitempty" structs:"displayName,omitempty"`
+	Active       bool       `json:"active,omitempty" structs:"active,omitempty"`
+	TimeZone     string     `json:"timeZone,omitempty" structs:"timeZone,omitempty"`
 }
 
 // AvatarUrls represents different dimensions of avatars / images
 type AvatarUrls struct {
-	Four8X48  string `json:"48x48,omitempty"`
-	Two4X24   string `json:"24x24,omitempty"`
-	One6X16   string `json:"16x16,omitempty"`
-	Three2X32 string `json:"32x32,omitempty"`
+	Four8X48  string `json:"48x48,omitempty" structs:"48x48,omitempty"`
+	Two4X24   string `json:"24x24,omitempty" structs:"24x24,omitempty"`
+	One6X16   string `json:"16x16,omitempty" structs:"16x16,omitempty"`
+	Three2X32 string `json:"32x32,omitempty" structs:"32x32,omitempty"`
 }
 
 // Component represents a "component" of a JIRA issue.
 // Components can be user defined in every JIRA instance.
 type Component struct {
-	Self string `json:"self,omitempty"`
-	ID   string `json:"id,omitempty"`
-	Name string `json:"name,omitempty"`
+	Self string `json:"self,omitempty" structs:"self,omitempty"`
+	ID   string `json:"id,omitempty" structs:"id,omitempty"`
+	Name string `json:"name,omitempty" structs:"name,omitempty"`
 }
 
 // Status represents the current status of a JIRA issue.
 // Typical status are "Open", "In Progress", "Closed", ...
 // Status can be user defined in every JIRA instance.
 type Status struct {
-	Self           string         `json:"self"`
-	Description    string         `json:"description"`
-	IconURL        string         `json:"iconUrl"`
-	Name           string         `json:"name"`
-	ID             string         `json:"id"`
-	StatusCategory StatusCategory `json:"statusCategory"`
+	Self           string         `json:"self" structs:"self"`
+	Description    string         `json:"description" structs:"description"`
+	IconURL        string         `json:"iconUrl" structs:"iconUrl"`
+	Name           string         `json:"name" structs:"name"`
+	ID             string         `json:"id" structs:"id"`
+	StatusCategory StatusCategory `json:"statusCategory" structs:"statusCategory"`
 }
 
 // StatusCategory represents the category a status belongs to.
 // Those categories can be user defined in every JIRA instance.
 type StatusCategory struct {
-	Self      string `json:"self"`
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	Key       string `json:"key"`
-	ColorName string `json:"colorName"`
+	Self      string `json:"self" structs:"self"`
+	ID        int    `json:"id" structs:"id"`
+	Name      string `json:"name" structs:"name"`
+	Key       string `json:"key" structs:"key"`
+	ColorName string `json:"colorName" structs:"colorName"`
 }
 
 // Progress represents the progress of a JIRA issue.
 type Progress struct {
-	Progress int `json:"progress"`
-	Total    int `json:"total"`
+	Progress int `json:"progress" structs:"progress"`
+	Total    int `json:"total" structs:"total"`
 }
 
 // Time represents the Time definition of JIRA as a time.Time of go
@@ -195,29 +260,29 @@ type Time time.Time
 
 // Wrapper struct for search result
 type transitionResult struct {
-	Transitions []Transition `json:"transitions"`
+	Transitions []Transition `json:"transitions" structs:"transitions"`
 }
 
 // Transition represents an issue transition in JIRA
 type Transition struct {
-	ID     string                     `json:"id"`
-	Name   string                     `json:"name"`
-	Fields map[string]TransitionField `json:"fields"`
+	ID     string                     `json:"id" structs:"id"`
+	Name   string                     `json:"name" structs:"name"`
+	Fields map[string]TransitionField `json:"fields" structs:"fields"`
 }
 
 // TransitionField represents the value of one Transistion
 type TransitionField struct {
-	Required bool `json:"required"`
+	Required bool `json:"required" structs:"required"`
 }
 
 // CreateTransitionPayload is used for creating new issue transitions
 type CreateTransitionPayload struct {
-	Transition TransitionPayload `json:"transition"`
+	Transition TransitionPayload `json:"transition" structs:"transition"`
 }
 
 // TransitionPayload represents the request payload of Transistion calls like DoTransition
 type TransitionPayload struct {
-	ID string `json:"id"`
+	ID string `json:"id" structs:"id"`
 }
 
 // UnmarshalJSON will transform the JIRA time into a time.Time
@@ -235,90 +300,90 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 // One Worklog contains zero or n WorklogRecords
 // JIRA Wiki: https://confluence.atlassian.com/jira/logging-work-on-an-issue-185729605.html
 type Worklog struct {
-	StartAt    int             `json:"startAt"`
-	MaxResults int             `json:"maxResults"`
-	Total      int             `json:"total"`
-	Worklogs   []WorklogRecord `json:"worklogs"`
+	StartAt    int             `json:"startAt" structs:"startAt"`
+	MaxResults int             `json:"maxResults" structs:"maxResults"`
+	Total      int             `json:"total" structs:"total"`
+	Worklogs   []WorklogRecord `json:"worklogs" structs:"worklogs"`
 }
 
 // WorklogRecord represents one entry of a Worklog
 type WorklogRecord struct {
-	Self             string `json:"self"`
-	Author           User   `json:"author"`
-	UpdateAuthor     User   `json:"updateAuthor"`
-	Comment          string `json:"comment"`
-	Created          Time   `json:"created"`
-	Updated          Time   `json:"updated"`
-	Started          Time   `json:"started"`
-	TimeSpent        string `json:"timeSpent"`
-	TimeSpentSeconds int    `json:"timeSpentSeconds"`
-	ID               string `json:"id"`
-	IssueID          string `json:"issueId"`
+	Self             string `json:"self" structs:"self"`
+	Author           User   `json:"author" structs:"author"`
+	UpdateAuthor     User   `json:"updateAuthor" structs:"updateAuthor"`
+	Comment          string `json:"comment" structs:"comment"`
+	Created          Time   `json:"created" structs:"created"`
+	Updated          Time   `json:"updated" structs:"updated"`
+	Started          Time   `json:"started" structs:"started"`
+	TimeSpent        string `json:"timeSpent" structs:"timeSpent"`
+	TimeSpentSeconds int    `json:"timeSpentSeconds" structs:"timeSpentSeconds"`
+	ID               string `json:"id" structs:"id"`
+	IssueID          string `json:"issueId" structs:"issueId"`
 }
 
 // Subtasks represents all issues of a parent issue.
 type Subtasks struct {
-	ID     string      `json:"id"`
-	Key    string      `json:"key"`
-	Self   string      `json:"self"`
-	Fields IssueFields `json:"fields"`
+	ID     string      `json:"id" structs:"id"`
+	Key    string      `json:"key" structs:"key"`
+	Self   string      `json:"self" structs:"self"`
+	Fields IssueFields `json:"fields" structs:"fields"`
 }
 
 // IssueLink represents a link between two issues in JIRA.
 type IssueLink struct {
-	ID           string        `json:"id,omitempty"`
-	Self         string        `json:"self,omitempty"`
-	Type         IssueLinkType `json:"type"`
-	OutwardIssue *Issue        `json:"outwardIssue"`
-	InwardIssue  *Issue        `json:"inwardIssue"`
-	Comment      *Comment      `json:"comment,omitempty"`
+	ID           string        `json:"id,omitempty" structs:"id,omitempty"`
+	Self         string        `json:"self,omitempty" structs:"self,omitempty"`
+	Type         IssueLinkType `json:"type" structs:"type"`
+	OutwardIssue *Issue        `json:"outwardIssue" structs:"outwardIssue"`
+	InwardIssue  *Issue        `json:"inwardIssue" structs:"inwardIssue"`
+	Comment      *Comment      `json:"comment,omitempty" structs:"comment,omitempty"`
 }
 
 // IssueLinkType represents a type of a link between to issues in JIRA.
 // Typical issue link types are "Related to", "Duplicate", "Is blocked by", etc.
 type IssueLinkType struct {
-	ID      string `json:"id,omitempty"`
-	Self    string `json:"self,omitempty"`
-	Name    string `json:"name"`
-	Inward  string `json:"inward"`
-	Outward string `json:"outward"`
+	ID      string `json:"id,omitempty" structs:"id,omitempty"`
+	Self    string `json:"self,omitempty" structs:"self,omitempty"`
+	Name    string `json:"name" structs:"name"`
+	Inward  string `json:"inward" structs:"inward"`
+	Outward string `json:"outward" structs:"outward"`
 }
 
 // Comments represents a list of Comment.
 type Comments struct {
-	Comments []*Comment `json:"comments,omitempty"`
+	Comments []*Comment `json:"comments,omitempty" structs:"comments,omitempty"`
 }
 
 // Comment represents a comment by a person to an issue in JIRA.
 type Comment struct {
-	ID           string            `json:"id,omitempty"`
-	Self         string            `json:"self,omitempty"`
-	Name         string            `json:"name,omitempty"`
-	Author       User              `json:"author,omitempty"`
-	Body         string            `json:"body,omitempty"`
-	UpdateAuthor User              `json:"updateAuthor,omitempty"`
-	Updated      string            `json:"updated,omitempty"`
-	Created      string            `json:"created,omitempty"`
-	Visibility   CommentVisibility `json:"visibility,omitempty"`
+	ID           string            `json:"id,omitempty" structs:"id,omitempty"`
+	Self         string            `json:"self,omitempty" structs:"self,omitempty"`
+	Name         string            `json:"name,omitempty" structs:name,omitempty"`
+	Author       User              `json:"author,omitempty" structs:"author,omitempty"`
+	Body         string            `json:"body,omitempty" structs:"body,omitempty"`
+	UpdateAuthor User              `json:"updateAuthor,omitempty" structs:"updateAuthor,omitempty"`
+	Updated      string            `json:"updated,omitempty" structs:"updated,omitempty"`
+	Created      string            `json:"created,omitempty" structs:"created,omitempty"`
+	Visibility   CommentVisibility `json:"visibility,omitempty" structs:"visibility,omitempty"`
 }
 
 // FixVersion represents a software release in which an issue is fixed.
 type FixVersion struct {
-	Archived        *bool  `json:"archived,omitempty"`
-	ID              string `json:"id,omitempty"`
-	Name            string `json:"name,omitempty"`
-	ProjectID       int    `json:"projectId,omitempty"`
-	ReleaseDate     string `json:"releaseDate,omitempty"`
-	Released        *bool  `json:"released,omitempty"`
-	Self            string `json:"self,omitempty"`
-	UserReleaseDate string `json:"userReleaseDate,omitempty"`
+	Archived        *bool  `json:"archived,omitempty" structs:"archived,omitempty"`
+	ID              string `json:"id,omitempty" structs:"id,omitempty"`
+	Name            string `json:"name,omitempty" structs:"name,omitempty"`
+	ProjectID       int    `json:"projectId,omitempty" structs:"projectId,omitempty"`
+	ReleaseDate     string `json:"releaseDate,omitempty" structs:"releaseDate,omitempty"`
+	Released        *bool  `json:"released,omitempty" structs:"released,omitempty"`
+	Self            string `json:"self,omitempty" structs:"self,omitempty"`
+	UserReleaseDate string `json:"userReleaseDate,omitempty" structs:"userReleaseDate,omitempty"`
 }
 
 // CommentVisibility represents he visibility of a comment.
 // E.g. Type could be "role" and Value "Administrators"
 type CommentVisibility struct {
-	Type  string `json:"type,omitempty"`
-	Value string `json:"value,omitempty"`
+	Type  string `json:"type,omitempty" structs:"type,omitempty"`
+	Value string `json:"value,omitempty" structs:"value,omitempty"`
 }
 
 // SearchOptions specifies the optional parameters to various List methods that
@@ -337,10 +402,10 @@ type SearchOptions struct {
 // searchResult is only a small wrapper arround the Search (with JQL) method
 // to be able to parse the results
 type searchResult struct {
-	Issues     []Issue `json:"issues"`
-	StartAt    int     `json:"startAt"`
-	MaxResults int     `json:"maxResults"`
-	Total      int     `json:"total"`
+	Issues     []Issue `json:"issues" structs:"issues"`
+	StartAt    int     `json:"startAt" structs:"startAt"`
+	MaxResults int     `json:"maxResults" structs:"maxResults"`
+	Total      int     `json:"total" structs:"total"`
 }
 
 // CustomFields represents custom fields of JIRA
