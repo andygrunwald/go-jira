@@ -20,7 +20,7 @@ type MetaProject struct {
 	Key    string `json:"key,omitempty"`
 	Name   string `json:"name,omitempty"`
 	// omitted avatarUrls
-	IssueTypes []*MetaIssueTypes `json:"issuetypes,omitempty"`
+	IssueTypes []*MetaIssueType `json:"issuetypes,omitempty"`
 }
 
 // metaIssueTypes represents the different issue types a project has.
@@ -29,7 +29,7 @@ type MetaProject struct {
 // have arbitraty keys related to customfields. It is not possible to
 // expect these for a general way. This will be returning a map.
 // Further processing must be done depending on what is required.
-type MetaIssueTypes struct {
+type MetaIssueType struct {
 	Self        string                `json:"expand,omitempty"`
 	Id          string                `json:"id,omitempty"`
 	Description string                `json:"description,omitempty"`
@@ -73,7 +73,7 @@ func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {
 
 // GetIssueWithName returns an IssueType with name from a given MetaProject. If not found, this returns nil.
 // The comparision of the name is case insensitive
-func (p *MetaProject) GetIssueTypeWithName(name string) *MetaIssueTypes {
+func (p *MetaProject) GetIssueTypeWithName(name string) *MetaIssueType {
 	for _, m := range p.IssueTypes {
 		if strings.ToLower(m.Name) == strings.ToLower(name) {
 			return m
@@ -99,7 +99,7 @@ func (p *MetaProject) GetIssueTypeWithName(name string) *MetaIssueTypes {
 //				}
 // the returned map would have "Epic Link" as the key and "customfield_10806" as value.
 // This choice has been made so that the it is easier to generate the create api request later.
-func (t *MetaIssueTypes) GetMandatoryFields() (map[string]string, error) {
+func (t *MetaIssueType) GetMandatoryFields() (map[string]string, error) {
 	ret := make(map[string]string)
 	for key, _ := range t.Fields {
 		required, err := t.Fields.Bool(key + "/required")
@@ -119,7 +119,7 @@ func (t *MetaIssueTypes) GetMandatoryFields() (map[string]string, error) {
 
 // GetAllFields returns a map of all the fields for an IssueType. This includes all required and not required.
 // The key of the returned map is what you see in the form and the value is how it is representated in the jira schema.
-func (t *MetaIssueTypes) GetAllFields() (map[string]string, error) {
+func (t *MetaIssueType) GetAllFields() (map[string]string, error) {
 	ret := make(map[string]string)
 	for key, _ := range t.Fields {
 
