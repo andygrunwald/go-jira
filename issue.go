@@ -700,7 +700,6 @@ func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIss
 		case "string":
 			issueFields.Unknowns[jiraKey] = value
 		case "date":
-			// TODO format the value into proper jira date string
 			issueFields.Unknowns[jiraKey] = value
 		case "any":
 			// Treat any as string
@@ -727,6 +726,5 @@ func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIss
 
 	issue.Fields = issueFields
 
-	// maybe do unmarshall and marshall so that the real fields are set in issue
 	return issue, nil
 }
