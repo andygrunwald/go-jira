@@ -601,3 +601,299 @@ func TestIssueFields_MarshalJSON_Success(t *testing.T) {
 		t.Errorf("Recieved object different from expected")
 	}
 }
+
+func TestInitIssueWithMetaAndFields_Success(t *testing.T) {
+	metaProject := MetaProject{
+		Name: "Engineering - Dept",
+		Id:   "ENG",
+	}
+
+	fields := tcontainer.NewMarshalMap()
+	fields["summary"] = map[string]interface{}{
+		"name": "Summary",
+		"schema": map[string]interface{}{
+			"type": "string",
+		},
+	}
+
+	metaIssueType := MetaIssueType{
+		Fields: fields,
+	}
+	expectedSummary := "Issue Summary"
+	fieldConfig := map[string]string{
+		"Summary": "Issue Summary",
+	}
+
+	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
+	if err != nil {
+		t.Errorf("Expected nil error, recieved %s", err)
+	}
+
+	gotSummary, found := issue.Fields.Unknowns["summary"]
+	if !found {
+		t.Errorf("Expected summary to be set in issue. Not set.")
+	}
+
+	if gotSummary != expectedSummary {
+		t.Errorf("Expected %s recieved %s", expectedSummary, gotSummary)
+	}
+}
+
+func TestInitIssueWithMetaAndFields_ArrayValueType(t *testing.T) {
+	metaProject := MetaProject{
+		Name: "Engineering - Dept",
+		Id:   "ENG",
+	}
+
+	fields := tcontainer.NewMarshalMap()
+	fields["component"] = map[string]interface{}{
+		"name": "Component/s",
+		"schema": map[string]interface{}{
+			"type":  "array",
+			"items": "component",
+		},
+	}
+
+	metaIssueType := MetaIssueType{
+		Fields: fields,
+	}
+
+	expectedComponent := "Jira automation"
+	fieldConfig := map[string]string{
+		"Component/s": expectedComponent,
+	}
+
+	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
+	if err != nil {
+		t.Errorf("Expected nil error, recieved %s", err)
+	}
+
+	c, isArray := issue.Fields.Unknowns["component"].([]Component)
+	if isArray == false {
+		t.Error("Expected array, non array object recieved")
+	}
+
+	if len(c) != 1 {
+		t.Errorf("Expected recieved array to be of length 1. Got %d", len(c))
+	}
+
+	gotComponent := c[0].Name
+
+	if err != nil {
+		t.Errorf("Expected err to be nil, recieved %s", err)
+	}
+
+	if gotComponent != expectedComponent {
+		t.Errorf("Expected %s recieved %s", expectedComponent, gotComponent)
+	}
+}
+
+func TestInitIssueWithMetaAndFields_DateValueType(t *testing.T) {
+	metaProject := MetaProject{
+		Name: "Engineering - Dept",
+		Id:   "ENG",
+	}
+
+	fields := tcontainer.NewMarshalMap()
+	fields["created"] = map[string]interface{}{
+		"name": "Created",
+		"schema": map[string]interface{}{
+			"type": "date",
+		},
+	}
+
+	metaIssueType := MetaIssueType{
+		Fields: fields,
+	}
+
+	expectedCreated := "19 oct 2012"
+	fieldConfig := map[string]string{
+		"Created": expectedCreated,
+	}
+
+	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
+	if err != nil {
+		t.Errorf("Expected nil error, recieved %s", err)
+	}
+
+	gotCreated, err := issue.Fields.Unknowns.String("created")
+	if err != nil {
+		t.Errorf("Expected err to be nil, recieved %s", err)
+	}
+
+	if gotCreated != expectedCreated {
+		t.Errorf("Expected %s recieved %s", expectedCreated, gotCreated)
+	}
+}
+
+func TestInitIssueWithMetaAndFields_UserValueType(t *testing.T) {
+	metaProject := MetaProject{
+		Name: "Engineering - Dept",
+		Id:   "ENG",
+	}
+
+	fields := tcontainer.NewMarshalMap()
+	fields["assignee"] = map[string]interface{}{
+		"name": "Assignee",
+		"schema": map[string]interface{}{
+			"type": "user",
+		},
+	}
+
+	metaIssueType := MetaIssueType{
+		Fields: fields,
+	}
+
+	expectedAssignee := "jdoe"
+	fieldConfig := map[string]string{
+		"Assignee": expectedAssignee,
+	}
+
+	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
+	if err != nil {
+		t.Errorf("Expected nil error, recieved %s", err)
+	}
+
+	a, _ := issue.Fields.Unknowns.Value("assignee")
+	gotAssignee := a.(User).Name
+
+	if gotAssignee != expectedAssignee {
+		t.Errorf("Expected %s recieved %s", expectedAssignee, gotAssignee)
+	}
+}
+
+func TestInitIssueWithMetaAndFields_ProjectValueType(t *testing.T) {
+	metaProject := MetaProject{
+		Name: "Engineering - Dept",
+		Id:   "ENG",
+	}
+
+	fields := tcontainer.NewMarshalMap()
+	fields["project"] = map[string]interface{}{
+		"name": "Project",
+		"schema": map[string]interface{}{
+			"type": "project",
+		},
+	}
+
+	metaIssueType := MetaIssueType{
+		Fields: fields,
+	}
+
+	setProject := "somewhere"
+	fieldConfig := map[string]string{
+		"Project": setProject,
+	}
+
+	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
+	if err != nil {
+		t.Errorf("Expected nil error, recieved %s", err)
+	}
+
+	a, _ := issue.Fields.Unknowns.Value("project")
+	gotProject := a.(Project).Name
+
+	if gotProject != metaProject.Name {
+		t.Errorf("Expected %s recieved %s", metaProject.Name, gotProject)
+	}
+}
+
+func TestInitIssueWithMetaAndFields_PriorityValueType(t *testing.T) {
+	metaProject := MetaProject{
+		Name: "Engineering - Dept",
+		Id:   "ENG",
+	}
+
+	fields := tcontainer.NewMarshalMap()
+	fields["priority"] = map[string]interface{}{
+		"name": "Priority",
+		"schema": map[string]interface{}{
+			"type": "priority",
+		},
+	}
+
+	metaIssueType := MetaIssueType{
+		Fields: fields,
+	}
+
+	expectedPriority := "Normal"
+	fieldConfig := map[string]string{
+		"Priority": expectedPriority,
+	}
+
+	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
+	if err != nil {
+		t.Errorf("Expected nil error, recieved %s", err)
+	}
+
+	a, _ := issue.Fields.Unknowns.Value("priority")
+	gotPriority := a.(Priority).Name
+
+	if gotPriority != expectedPriority {
+		t.Errorf("Expected %s recieved %s", expectedPriority, gotPriority)
+	}
+}
+
+func TestInitIssueWithMetaAndFields_IssuetypeValueType(t *testing.T) {
+	metaProject := MetaProject{
+		Name: "Engineering - Dept",
+		Id:   "ENG",
+	}
+
+	fields := tcontainer.NewMarshalMap()
+	fields["issuetype"] = map[string]interface{}{
+		"name": "Issue type",
+		"schema": map[string]interface{}{
+			"type": "issuetype",
+		},
+	}
+
+	metaIssueType := MetaIssueType{
+		Fields: fields,
+	}
+
+	expectedIssuetype := "Bug"
+	fieldConfig := map[string]string{
+		"Issue type": expectedIssuetype,
+	}
+
+	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
+	if err != nil {
+		t.Errorf("Expected nil error, recieved %s", err)
+	}
+
+	a, _ := issue.Fields.Unknowns.Value("issuetype")
+	gotIssuetype := a.(IssueType).Name
+
+	if gotIssuetype != expectedIssuetype {
+		t.Errorf("Expected %s recieved %s", expectedIssuetype, gotIssuetype)
+	}
+}
+
+func TestInitIssueWithmetaAndFields_FailureWithUnknownValueType(t *testing.T) {
+	metaProject := MetaProject{
+		Name: "Engineering - Dept",
+		Id:   "ENG",
+	}
+
+	fields := tcontainer.NewMarshalMap()
+	fields["issuetype"] = map[string]interface{}{
+		"name": "Issue type",
+		"schema": map[string]interface{}{
+			"type": "randomType",
+		},
+	}
+
+	metaIssueType := MetaIssueType{
+		Fields: fields,
+	}
+
+	fieldConfig := map[string]string{
+		"Issue tyoe": "sometype",
+	}
+	_, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
+	if err == nil {
+		t.Error("Expected non nil error, recieved nil")
+	}
+
+}
