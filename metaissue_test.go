@@ -489,6 +489,95 @@ func TestMetaIssueType_GetAllFields_NonExistingNameKey_Fail(t *testing.T) {
 	}
 }
 
+func TestMetaIssueType_CheckCompleteAndAvailable_MandatoryMissing(t *testing.T) {
+	data := make(map[string]interface{})
+
+	data["summary"] = map[string]interface{}{
+		"required": true,
+		"name":     "Summary",
+	}
+
+	data["someKey"] = map[string]interface{}{
+		"required": false,
+		"name":     "SomeKey",
+	}
+
+	config := map[string]string{
+		"SomeKey": "somevalue",
+	}
+
+	m := new(MetaIssueType)
+	m.Fields = data
+
+	ok, err := m.CheckCompleteAndAvailable(config)
+	if err == nil {
+		t.Error("Expected non nil error. Recieved nil")
+	}
+
+	if ok != false {
+		t.Error("Expected false, got true")
+	}
+
+}
+
+func TestMetaIssueType_CheckCompleteAndAvailable_NotAvailable(t *testing.T) {
+	data := make(map[string]interface{})
+
+	data["summary"] = map[string]interface{}{
+		"required": true,
+		"name":     "Summary",
+	}
+
+	config := map[string]string{
+		"SomeKey": "somevalue",
+	}
+
+	m := new(MetaIssueType)
+	m.Fields = data
+
+	ok, err := m.CheckCompleteAndAvailable(config)
+	if err == nil {
+		t.Error("Expected non nil error. Recieved nil")
+	}
+
+	if ok != false {
+		t.Error("Expected false, got true")
+	}
+
+}
+
+func TestMetaIssueType_CheckCompleteAndAvailable_Success(t *testing.T) {
+	data := make(map[string]interface{})
+
+	data["summary"] = map[string]interface{}{
+		"required": true,
+		"name":     "Summary",
+	}
+
+	data["someKey"] = map[string]interface{}{
+		"required": false,
+		"name":     "SomeKey",
+	}
+
+	config := map[string]string{
+		"SomeKey": "somevalue",
+		"Summary": "Issue summary",
+	}
+
+	m := new(MetaIssueType)
+	m.Fields = data
+
+	ok, err := m.CheckCompleteAndAvailable(config)
+	if err != nil {
+		t.Error("Expected nil error. Recieved %s", err)
+	}
+
+	if ok != true {
+		t.Error("Expected true, got false")
+	}
+
+}
+
 func TestCreateMetaInfo_GetProjectWithName_Success(t *testing.T) {
 	metainfo := new(CreateMetaInfo)
 	metainfo.Projects = append(metainfo.Projects, &MetaProject{
