@@ -121,7 +121,6 @@ func TestAithenticationService_GetUserInfo_AccessForbidden_Fail(t *testing.T) {
 	if err == nil {
 		t.Errorf("Non nil error expect, recieved nil")
 	}
-
 }
 
 func TestAuthenticationService_GetUserInfo_NonOkStatusCode_Fail(t *testing.T) {
@@ -178,7 +177,7 @@ func TestAuthenticationService_GetUserInfo_Success(t *testing.T) {
 
 	testUserInfo := new(Session)
 	testUserInfo.Name = "foo"
-	testUserInfo.Self = "https://tasks.trivago.com/rest/api/latest/user?username=foo"
+	testUserInfo.Self = "https://my.jira.com/rest/api/latest/user?username=foo"
 	testUserInfo.LoginInfo.FailedLoginCount = 12
 	testUserInfo.LoginInfo.LastFailedLoginTime = "2016-09-06T16:41:23.949+0200"
 	testUserInfo.LoginInfo.LoginCount = 357
@@ -205,9 +204,8 @@ func TestAuthenticationService_GetUserInfo_Success(t *testing.T) {
 		if r.Method == "GET" {
 			testMethod(t, r, "GET")
 			testRequestURL(t, r, "/rest/auth/1/session")
-			fmt.Fprint(w, `{"self":"https://tasks.trivago.com/rest/api/latest/user?username=foo","name":"foo","loginInfo":{"failedLoginCount":12,"loginCount":357,"lastFailedLoginTime":"2016-09-06T16:41:23.949+0200","previousLoginTime":"2016-09-07T11:36:23.476+0200"}}`)
+			fmt.Fprint(w, `{"self":"https://my.jira.com/rest/api/latest/user?username=foo","name":"foo","loginInfo":{"failedLoginCount":12,"loginCount":357,"lastFailedLoginTime":"2016-09-06T16:41:23.949+0200","previousLoginTime":"2016-09-07T11:36:23.476+0200"}}`)
 		}
-
 	})
 
 	testClient.Authentication.AcquireSessionCookie("foo", "bar")
@@ -249,7 +247,6 @@ func TestAuthenticationService_Logout_Success(t *testing.T) {
 			// return 204
 			w.WriteHeader(http.StatusNoContent)
 		}
-
 	})
 
 	testClient.Authentication.AcquireSessionCookie("foo", "bar")
@@ -258,7 +255,6 @@ func TestAuthenticationService_Logout_Success(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected nil error, got %s", err)
 	}
-
 }
 
 func TestAuthenticationService_Logout_FailWithoutLogin(t *testing.T) {
@@ -270,7 +266,6 @@ func TestAuthenticationService_Logout_FailWithoutLogin(t *testing.T) {
 			// 401
 			w.WriteHeader(http.StatusUnauthorized)
 		}
-
 	})
 	err := testClient.Authentication.Logout()
 	if err == nil {
