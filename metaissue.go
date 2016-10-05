@@ -71,6 +71,17 @@ func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {
 	return nil
 }
 
+// GetProjectWithName returns a project with "name" from the meta information recieved. If not found, this returns nil.
+// The comparision of the name is case insensitive.
+func (m *CreateMetaInfo) GetProjectWithKey(key string) *MetaProject {
+	for _, m := range m.Projects {
+		if strings.ToLower(m.Key) == strings.ToLower(key) {
+			return m
+		}
+	}
+	return nil
+}
+
 // GetIssueWithName returns an IssueType with name from a given MetaProject. If not found, this returns nil.
 // The comparision of the name is case insensitive
 func (p *MetaProject) GetIssueTypeWithName(name string) *MetaIssueType {
