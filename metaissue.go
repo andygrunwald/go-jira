@@ -24,7 +24,7 @@ type MetaProject struct {
 	IssueTypes []*MetaIssueType `json:"issuetypes,omitempty"`
 }
 
-// metaIssueTypes represents the different issue types a project has.
+// MetaIssueType represents the different issue types a project has.
 //
 // Note: Fields is interface because this is an object which can
 // have arbitraty keys related to customfields. It is not possible to
