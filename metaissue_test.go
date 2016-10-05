@@ -378,7 +378,7 @@ func TestIssueService_GetCreateMeta_Success(t *testing.T) {
 
 }
 
-func TestMetaIssueTypes_GetMandatoryFields(t *testing.T) {
+func TestMetaIssueType_GetMandatoryFields(t *testing.T) {
 	data := make(map[string]interface{})
 
 	data["summary"] = map[string]interface{}{
@@ -396,7 +396,7 @@ func TestMetaIssueTypes_GetMandatoryFields(t *testing.T) {
 		"name":     "Epic Link",
 	}
 
-	m := new(MetaIssueTypes)
+	m := new(MetaIssueType)
 	m.Fields = data
 
 	mandatory, err := m.GetMandatoryFields()
@@ -409,14 +409,14 @@ func TestMetaIssueTypes_GetMandatoryFields(t *testing.T) {
 	}
 }
 
-func TestMetaIssueTypes_GetMandatoryFields_NonExistentRequiredKey_Fail(t *testing.T) {
+func TestMetaIssueType_GetMandatoryFields_NonExistentRequiredKey_Fail(t *testing.T) {
 	data := make(map[string]interface{})
 
 	data["summary"] = map[string]interface{}{
 		"name": "Summary",
 	}
 
-	m := new(MetaIssueTypes)
+	m := new(MetaIssueType)
 	m.Fields = data
 
 	_, err := m.GetMandatoryFields()
@@ -425,14 +425,14 @@ func TestMetaIssueTypes_GetMandatoryFields_NonExistentRequiredKey_Fail(t *testin
 	}
 }
 
-func TestMetaIssueTypes_GetMandatoryFields_NonExistentNameKey_Fail(t *testing.T) {
+func TestMetaIssueType_GetMandatoryFields_NonExistentNameKey_Fail(t *testing.T) {
 	data := make(map[string]interface{})
 
 	data["summary"] = map[string]interface{}{
 		"required": true,
 	}
 
-	m := new(MetaIssueTypes)
+	m := new(MetaIssueType)
 	m.Fields = data
 
 	_, err := m.GetMandatoryFields()
@@ -441,7 +441,7 @@ func TestMetaIssueTypes_GetMandatoryFields_NonExistentNameKey_Fail(t *testing.T)
 	}
 }
 
-func TestMetaIssueTypes_GetAllFields(t *testing.T) {
+func TestMetaIssueType_GetAllFields(t *testing.T) {
 	data := make(map[string]interface{})
 
 	data["summary"] = map[string]interface{}{
@@ -459,7 +459,7 @@ func TestMetaIssueTypes_GetAllFields(t *testing.T) {
 		"name":     "Epic Link",
 	}
 
-	m := new(MetaIssueTypes)
+	m := new(MetaIssueType)
 	m.Fields = data
 
 	mandatory, err := m.GetAllFields()
@@ -473,14 +473,14 @@ func TestMetaIssueTypes_GetAllFields(t *testing.T) {
 	}
 }
 
-func TestMetaIssueTypes_GetAllFields_NonExistingNameKey_Fail(t *testing.T) {
+func TestMetaIssueType_GetAllFields_NonExistingNameKey_Fail(t *testing.T) {
 	data := make(map[string]interface{})
 
 	data["summary"] = map[string]interface{}{
 		"required": true,
 	}
 
-	m := new(MetaIssueTypes)
+	m := new(MetaIssueType)
 	m.Fields = data
 
 	_, err := m.GetAllFields()
@@ -489,7 +489,7 @@ func TestMetaIssueTypes_GetAllFields_NonExistingNameKey_Fail(t *testing.T) {
 	}
 }
 
-func TestCreateMetaInfo_GetProjectName_Success(t *testing.T) {
+func TestCreateMetaInfo_GetProjectWithName_Success(t *testing.T) {
 	metainfo := new(CreateMetaInfo)
 	metainfo.Projects = append(metainfo.Projects, &MetaProject{
 		Name: "SPN",
@@ -503,7 +503,7 @@ func TestCreateMetaInfo_GetProjectName_Success(t *testing.T) {
 
 func TestMetaProject_GetIssueTypeWithName_CaseMismatch_Success(t *testing.T) {
 	m := new(MetaProject)
-	m.IssueTypes = append(m.IssueTypes, &MetaIssueTypes{
+	m.IssueTypes = append(m.IssueTypes, &MetaIssueType{
 		Name: "Bug",
 	})
 
@@ -511,5 +511,29 @@ func TestMetaProject_GetIssueTypeWithName_CaseMismatch_Success(t *testing.T) {
 
 	if issuetype == nil {
 		t.Errorf("Expected non nil value, recieved nil")
+	}
+}
+
+func TestCreateMetaInfo_GetProjectWithKey_Success(t *testing.T) {
+	metainfo := new(CreateMetaInfo)
+	metainfo.Projects = append(metainfo.Projects, &MetaProject{
+		Key: "SPNKEY",
+	})
+
+	project := metainfo.GetProjectWithKey("SPNKEY")
+	if project == nil {
+		t.Errorf("Expected non nil value, recieved nil")
+	}
+}
+
+func TestCreateMetaInfo_GetProjectWithKey_NilForNonExistent(t *testing.T) {
+	metainfo := new(CreateMetaInfo)
+	metainfo.Projects = append(metainfo.Projects, &MetaProject{
+		Key: "SPNKEY",
+	})
+
+	project := metainfo.GetProjectWithKey("SPN")
+	if project != nil {
+		t.Errorf("Expected nil, recieved value")
 	}
 }
