@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"mime/multipart"
 	"net/url"
 	"reflect"
@@ -506,13 +507,22 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-
-	responseIssue := new(Issue)
-	resp, err := s.client.Do(req, responseIssue)
+	resp, err := s.client.Do(req, nil)
 	if err != nil {
+		// incase of error return the resp for further inspection
 		return nil, resp, err
 	}
 
+	responseIssue := new(Issue)
+	defer resp.Body.Close()
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, resp, fmt.Errorf("Could not read the returned data")
+	}
+	err = json.Unmarshal(data, responseIssue)
+	if err != nil {
+		return nil, resp, fmt.Errorf("Could not unmarshall the data into struct")
+	}
 	return responseIssue, resp, nil
 }
 
