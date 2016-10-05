@@ -529,6 +529,7 @@ func TestMetaIssueType_CheckCompleteAndAvailable_NotAvailable(t *testing.T) {
 	}
 
 	config := map[string]string{
+		"Summary": "Issue Summary",
 		"SomeKey": "somevalue",
 	}
 
