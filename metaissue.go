@@ -143,3 +143,40 @@ func (t *MetaIssueType) GetAllFields() (map[string]string, error) {
 	}
 	return ret, nil
 }
+
+// CheckCompleteAndAvailable checks if the given fields satisfies the mandatory field required to create a issue for the given type
+// And also if the given fields are available.
+func (t *MetaIssueType) CheckCompleteAndAvailable(config map[string]string) (bool, error) {
+	mandatory, err := t.GetMandatoryFields()
+	if err != nil {
+		return false, err
+	}
+	all, err := t.GetAllFields()
+	if err != nil {
+		return false, err
+	}
+
+	// check templateconfig against mandatory fields
+	for key := range mandatory {
+		if _, okay := config[key]; !okay {
+			var requiredFields []string
+			for name := range mandatory {
+				requiredFields = append(requiredFields, name)
+			}
+			return false, fmt.Errorf("Required field not found in provided jira.fields. Required are: %#v", requiredFields)
+		}
+	}
+
+	// check templateConfig against all fields to verify they are available
+	for key := range config {
+		if _, okay := all[key]; !okay {
+			var availableFields []string
+			for name := range all {
+				availableFields = append(availableFields, name)
+			}
+			return false, fmt.Errorf("Fields in jira.fields are not available in jira. Available are: %#v", availableFields)
+		}
+	}
+
+	return true, nil
+}

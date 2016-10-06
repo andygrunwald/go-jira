@@ -657,3 +657,74 @@ func (s *IssueService) DoTransition(ticketID, transitionID string) (*Response, e
 
 	return resp, nil
 }
+
+// InitIssueWithMetaAndFields returns Issue with with values from fieldsConfig properly set.
+//  * metaProject should contain metaInformation about the project where the issue should be created.
+//  * metaIssuetype is the MetaInformation about the Issuetype that needs to be created.
+//  * fieldsConfig is a key->value pair where key represents the name of the field as seen in the UI
+// 		And value is the string value for that particular key.
+// Note: This method doesn't verify that the fieldsConfig is complete with mandatory fields. The fieldsConfig is
+//		 supposed to be already verified with MetaIssueType.CheckCompleteAndAvailable. It will however return
+//		 error if the key is not found.
+//		 All values will be packed into Unknowns. This is much convenient. If the struct fields needs to be
+//		 configured as well, marshalling and unmarshalling will set the proper fields.
+func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIssueType, fieldsConfig map[string]string) (*Issue, error) {
+	issue := new(Issue)
+	issueFields := new(IssueFields)
+	issueFields.Unknowns = tcontainer.NewMarshalMap()
+
+	// map the field names the User presented to jira's internal key
+	allFields, _ := metaIssuetype.GetAllFields()
+	for key, value := range fieldsConfig {
+		jiraKey, found := allFields[key]
+		if !found {
+			return nil, fmt.Errorf("Key %s is not found in the list of fields.", key)
+		}
+
+		valueType, err := metaIssuetype.Fields.String(jiraKey + "/schema/type")
+		if err != nil {
+			return nil, err
+		}
+		switch valueType {
+		case "array":
+			elemType, err := metaIssuetype.Fields.String(jiraKey + "/schema/items")
+			if err != nil {
+				return nil, err
+			}
+			switch elemType {
+			case "component":
+				issueFields.Unknowns[jiraKey] = []Component{Component{Name: value}}
+			default:
+				issueFields.Unknowns[jiraKey] = []string{value}
+			}
+		case "string":
+			issueFields.Unknowns[jiraKey] = value
+		case "date":
+			issueFields.Unknowns[jiraKey] = value
+		case "any":
+			// Treat any as string
+			issueFields.Unknowns[jiraKey] = value
+		case "project":
+			issueFields.Unknowns[jiraKey] = Project{
+				Name: metaProject.Name,
+				ID:   metaProject.Id,
+			}
+		case "priority":
+			issueFields.Unknowns[jiraKey] = Priority{Name: value}
+		case "user":
+			issueFields.Unknowns[jiraKey] = User{
+				Name: value,
+			}
+		case "issuetype":
+			issueFields.Unknowns[jiraKey] = IssueType{
+				Name: value,
+			}
+		default:
+			return nil, fmt.Errorf("Unknown issue type encountered: %s for %s", valueType, key)
+		}
+	}
+
+	issue.Fields = issueFields
+
+	return issue, nil
+}
