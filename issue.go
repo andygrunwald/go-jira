@@ -172,12 +172,12 @@ func (i *IssueFields) UnmarshalJSON(data []byte) error {
 // Typical types are "Request", "Bug", "Story", ...
 type IssueType struct {
 	Self        string `json:"self,omitempty" structs:"self,omitempty"`
-	ID          string `json:"id,omitempty" struct:"id,omitempty"`
-	Description string `json:"description,omitempty" struct:"description,omitempty"`
-	IconURL     string `json:"iconUrl,omitempty" struct:"iconUrl,omitempty"`
-	Name        string `json:"name,omitempty" struct:"name,omitempty"`
-	Subtask     bool   `json:"subtask,omitempty" struct:"subtask,omitempty"`
-	AvatarID    int    `json:"avatarId,omitempty" struct:"avatarId,omitempty"`
+	ID          string `json:"id,omitempty" structs:"id,omitempty"`
+	Description string `json:"description,omitempty" structs:"description,omitempty"`
+	IconURL     string `json:"iconUrl,omitempty" structs:"iconUrl,omitempty"`
+	Name        string `json:"name,omitempty" structs:"name,omitempty"`
+	Subtask     bool   `json:"subtask,omitempty" structs:"subtask,omitempty"`
+	AvatarID    int    `json:"avatarId,omitempty" structs:"avatarId,omitempty"`
 }
 
 // Resolution represents a resolution of a JIRA issue.
