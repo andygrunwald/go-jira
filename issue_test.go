@@ -572,6 +572,44 @@ func TestIssueFields_TestMarshalJSON_PopulateUnknownsSuccess(t *testing.T) {
 
 }
 
+func TestIssueFields_MarshalJSON_OmitsEmptyFields(t *testing.T) {
+	i := &IssueFields{
+		Description: "blahblah",
+		Type: IssueType{
+			Name: "Story",
+		},
+		Labels: []string{"aws-docker"},
+	}
+
+	rawdata, err := json.Marshal(i)
+	if err != nil {
+		t.Errorf("Expected nil err, recieved %s", err)
+	}
+
+	// convert json to map and see if unset keys are there
+	issuef := tcontainer.NewMarshalMap()
+	err = json.Unmarshal(rawdata, &issuef)
+	if err != nil {
+		t.Errorf("Expected nil err, received %s", err)
+	}
+
+	_, err = issuef.Int("issuetype/avatarId")
+	if err == nil {
+		t.Error("Expected non nil error, recieved nil")
+	}
+
+	// verify that the field that should be there, is.
+	name, err := issuef.String("issuetype/name")
+	if err != nil {
+		t.Errorf("Expected nil err, received %s", err)
+	}
+
+	if name != "Story" {
+		t.Errorf("Expected Story, received %s", name)
+	}
+
+}
+
 func TestIssueFields_MarshalJSON_Success(t *testing.T) {
 	i := &IssueFields{
 		Description: "example bug report",
