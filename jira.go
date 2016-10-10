@@ -61,6 +61,35 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	return c, nil
 }
 
+// NewRawRequest creates an API request.
+// A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
+// Relative URLs should always be specified without a preceding slash.
+// Allows using an optional native io.Reader for sourcing the request body.
+func (c *Client) NewRawRequest(method, urlStr string, body io.Reader) (*http.Request, error) {
+	rel, err := url.Parse(urlStr)
+	if err != nil {
+		return nil, err
+	}
+
+	u := c.baseURL.ResolveReference(rel)
+
+	req, err := http.NewRequest(method, u.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	// Set session cookie if there is one
+	if c.session != nil {
+		for _, cookie := range c.session.Cookies {
+			req.AddCookie(cookie)
+		}
+	}
+
+	return req, nil
+}
+
 // NewRequest creates an API request.
 // A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
 // Relative URLs should always be specified without a preceding slash.
