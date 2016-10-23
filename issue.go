@@ -72,7 +72,6 @@ type IssueFields struct {
 	//	* "timeestimate": null,
 	//	* "aggregatetimeoriginalestimate": null,
 	//	* "timeoriginalestimate": null,
-	//	* "timetracking": {},
 	//	* "aggregatetimeestimate": null,
 	//	* "environment": null,
 	//	* "duedate": null,
@@ -93,6 +92,7 @@ type IssueFields struct {
 	Status            *Status       `json:"status,omitempty" structs:"status,omitempty"`
 	Progress          *Progress     `json:"progress,omitempty" structs:"progress,omitempty"`
 	AggregateProgress *Progress     `json:"aggregateprogress,omitempty" structs:"aggregateprogress,omitempty"`
+	Timetracking      *Timetracking `json:"timetracking,omitempty" structs:"timetracking,omitempty"`
 	Worklog           *Worklog      `json:"worklog,omitempty" structs:"worklog,omitempty"`
 	IssueLinks        []*IssueLink  `json:"issuelinks,omitempty" structs:"issuelinks,omitempty"`
 	Comments          *Comments     `json:"comment,omitempty" structs:"comment,omitempty"`
@@ -327,6 +327,16 @@ type WorklogRecord struct {
 	IssueID          string `json:"issueId" structs:"issueId"`
 }
 
+// Timetracking represents the timetracking fields of a JIRA issue.
+type Timetracking struct {
+	OriginalEstimate         string `json:"originalEstimate,omitempty" structs:"originalEstimate,omitempty"`
+	RemainingEstimate        string `json:"remainingEstimate,omitempty" structs:"remainingEstimate,omitempty"`
+	TimeSpent                string `json:"timeSpent,omitempty" structs:"timeSpent,omitempty"`
+	OriginalEstimateSeconds  int    `json:"originalEstimateSeconds,omitempty" structs:"originalEstimateSeconds,omitempty"`
+	RemainingEstimateSeconds int    `json:"remainingEstimateSeconds,omitempty" structs:"remainingEstimateSeconds,omitempty"`
+	TimeSpentSeconds         int    `json:"timeSpentSeconds,omitempty" structs:"timeSpentSeconds,omitempty"`
+}
+
 // Subtasks represents all issues of a parent issue.
 type Subtasks struct {
 	ID     string      `json:"id" structs:"id"`
@@ -364,7 +374,7 @@ type Comments struct {
 type Comment struct {
 	ID           string            `json:"id,omitempty" structs:"id,omitempty"`
 	Self         string            `json:"self,omitempty" structs:"self,omitempty"`
-	Name         string            `json:"name,omitempty" structs:name,omitempty"`
+	Name         string            `json:"name,omitempty" structs:"name,omitempty"`
 	Author       User              `json:"author,omitempty" structs:"author,omitempty"`
 	Body         string            `json:"body,omitempty" structs:"body,omitempty"`
 	UpdateAuthor User              `json:"updateAuthor,omitempty" structs:"updateAuthor,omitempty"`
