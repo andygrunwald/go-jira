@@ -570,7 +570,7 @@ func TestMetaIssueType_CheckCompleteAndAvailable_Success(t *testing.T) {
 
 	ok, err := m.CheckCompleteAndAvailable(config)
 	if err != nil {
-		t.Error("Expected nil error. Recieved %s", err)
+		t.Errorf("Expected nil error. Recieved %s", err)
 	}
 
 	if ok != true {
