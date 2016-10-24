@@ -65,16 +65,16 @@ type Epic struct {
 // Every JIRA issue has several fields attached.
 type IssueFields struct {
 	// TODO Missing fields
-	//	* "timespent": null,
-	//	* "aggregatetimespent": null,
-	//	* "workratio": -1,
-	//	* "lastViewed": null,
-	//	* "timeestimate": null,
-	//	* "aggregatetimeoriginalestimate": null,
-	//	* "timeoriginalestimate": null,
-	//	* "aggregatetimeestimate": null,
-	//	* "environment": null,
-	//	* "duedate": null,
+	//      * "timespent": null,
+	//      * "aggregatetimespent": null,
+	//      * "workratio": -1,
+	//      * "lastViewed": null,
+	//      * "timeestimate": null,
+	//      * "aggregatetimeoriginalestimate": null,
+	//      * "timeoriginalestimate": null,
+	//      * "aggregatetimeestimate": null,
+	//      * "environment": null,
+	//      * "duedate": null,
 	Type              IssueType     `json:"issuetype" structs:"issuetype"`
 	Project           Project       `json:"project,omitempty" structs:"project,omitempty"`
 	Resolution        *Resolution   `json:"resolution,omitempty" structs:"resolution,omitempty"`
@@ -92,7 +92,7 @@ type IssueFields struct {
 	Status            *Status       `json:"status,omitempty" structs:"status,omitempty"`
 	Progress          *Progress     `json:"progress,omitempty" structs:"progress,omitempty"`
 	AggregateProgress *Progress     `json:"aggregateprogress,omitempty" structs:"aggregateprogress,omitempty"`
-	Timetracking      *Timetracking `json:"timetracking,omitempty" structs:"timetracking,omitempty"`
+	TimeTracking      *TimeTracking `json:"timetracking,omitempty" structs:"timetracking,omitempty"`
 	Worklog           *Worklog      `json:"worklog,omitempty" structs:"worklog,omitempty"`
 	IssueLinks        []*IssueLink  `json:"issuelinks,omitempty" structs:"issuelinks,omitempty"`
 	Comments          *Comments     `json:"comment,omitempty" structs:"comment,omitempty"`
@@ -327,8 +327,8 @@ type WorklogRecord struct {
 	IssueID          string `json:"issueId" structs:"issueId"`
 }
 
-// Timetracking represents the timetracking fields of a JIRA issue.
-type Timetracking struct {
+// TimeTracking represents the timetracking fields of a JIRA issue.
+type TimeTracking struct {
 	OriginalEstimate         string `json:"originalEstimate,omitempty" structs:"originalEstimate,omitempty"`
 	RemainingEstimate        string `json:"remainingEstimate,omitempty" structs:"remainingEstimate,omitempty"`
 	TimeSpent                string `json:"timeSpent,omitempty" structs:"timeSpent,omitempty"`
