@@ -7,7 +7,7 @@ import (
 	"github.com/trivago/tgo/tcontainer"
 )
 
-// CreateMeta contains information about fields and their attributed to create a ticket.
+// CreateMetaInfo contains information about fields and their attributed to create a ticket.
 type CreateMetaInfo struct {
 	Expand   string         `json:"expand,omitempty"`
 	Projects []*MetaProject `json:"projects,omitempty"`
@@ -72,7 +72,7 @@ func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {
 	return nil
 }
 
-// GetProjectWithName returns a project with "name" from the meta information recieved. If not found, this returns nil.
+// GetProjectWithKey returns a project with "name" from the meta information recieved. If not found, this returns nil.
 // The comparision of the name is case insensitive.
 func (m *CreateMetaInfo) GetProjectWithKey(key string) *MetaProject {
 	for _, m := range m.Projects {
@@ -83,7 +83,7 @@ func (m *CreateMetaInfo) GetProjectWithKey(key string) *MetaProject {
 	return nil
 }
 
-// GetIssueWithName returns an IssueType with name from a given MetaProject. If not found, this returns nil.
+// GetIssueTypeWithName returns an IssueType with name from a given MetaProject. If not found, this returns nil.
 // The comparision of the name is case insensitive
 func (p *MetaProject) GetIssueTypeWithName(name string) *MetaIssueType {
 	for _, m := range p.IssueTypes {
@@ -113,7 +113,7 @@ func (p *MetaProject) GetIssueTypeWithName(name string) *MetaIssueType {
 // This choice has been made so that the it is easier to generate the create api request later.
 func (t *MetaIssueType) GetMandatoryFields() (map[string]string, error) {
 	ret := make(map[string]string)
-	for key, _ := range t.Fields {
+	for key := range t.Fields {
 		required, err := t.Fields.Bool(key + "/required")
 		if err != nil {
 			return nil, err
@@ -133,7 +133,7 @@ func (t *MetaIssueType) GetMandatoryFields() (map[string]string, error) {
 // The key of the returned map is what you see in the form and the value is how it is representated in the jira schema.
 func (t *MetaIssueType) GetAllFields() (map[string]string, error) {
 	ret := make(map[string]string)
-	for key, _ := range t.Fields {
+	for key := range t.Fields {
 
 		name, err := t.Fields.String(key + "/name")
 		if err != nil {
