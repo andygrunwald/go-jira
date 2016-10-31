@@ -29,6 +29,7 @@ type Client struct {
 	Project        *ProjectService
 	Board          *BoardService
 	Sprint         *SprintService
+	User           *UserService
 }
 
 // NewClient returns a new JIRA API client.
@@ -57,6 +58,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	c.Project = &ProjectService{client: c}
 	c.Board = &BoardService{client: c}
 	c.Sprint = &SprintService{client: c}
+	c.User = &UserService{client: c}
 
 	return c, nil
 }
