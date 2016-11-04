@@ -636,7 +636,7 @@ func TestIssueFields_MarshalJSON_Success(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(i, recieved) {
-		t.Errorf("Recieved object different from expected")
+		t.Errorf("Recieved object different from expected. Expected %+v, recieved %+v", i, recieved)
 	}
 }
 
