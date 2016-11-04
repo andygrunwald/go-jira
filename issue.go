@@ -101,7 +101,7 @@ type IssueFields struct {
 	Subtasks             []*Subtasks   `json:"subtasks,omitempty" structs:"subtasks,omitempty"`
 	Attachments          []*Attachment `json:"attachment,omitempty" structs:"attachment,omitempty"`
 	Epic                 *Epic         `json:"epic,omitempty" structs:"epic,omitempty"`
-	Parent               *Parent       `json:"parent,omitempty" structs:"parent,omitempty`
+	Parent               *Parent       `json:"parent,omitempty" structs:"parent,omitempty"`
 	Unknowns             tcontainer.MarshalMap
 }
 
@@ -264,8 +264,8 @@ type Progress struct {
 
 // Parent represents the parent of a JIRA issue, to be used with subtask issue types.
 type Parent struct {
-	ID  string `json:"id,omitempty" structs:id"`
-	Key string `json:"key,omitempty" structs:key"`
+	ID  string `json:"id,omitempty" structs:"id"`
+	Key string `json:"key,omitempty" structs:"key"`
 }
 
 // Time represents the Time definition of JIRA as a time.Time of go
