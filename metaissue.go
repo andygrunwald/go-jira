@@ -95,7 +95,7 @@ func (p *MetaProject) GetIssueTypeWithName(name string) *MetaIssueType {
 }
 
 // GetMandatoryFields returns a map of all the required fields from the MetaIssueTypes.
-// if a frield returned by the api was:
+// if a field returned by the api was:
 // "customfield_10806": {
 //					"required": true,
 //					"schema": {
