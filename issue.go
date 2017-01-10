@@ -122,7 +122,7 @@ type IssueFields struct {
 	Attachments          []*Attachment `json:"attachment,omitempty" structs:"attachment,omitempty"`
 	Epic                 *Epic         `json:"epic,omitempty" structs:"epic,omitempty"`
 	Parent               *Parent       `json:"parent,omitempty" structs:"parent,omitempty"`
-	Changelog            Changelog `json:"changelog,omitemopty" structs:"changelog,omitempty"`
+	Changelog            *Changelog `json:"changelog,omitemopty" structs:"changelog,omitempty"`
 	Unknowns             tcontainer.MarshalMap
 }
 
