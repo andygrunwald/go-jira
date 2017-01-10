@@ -429,6 +429,8 @@ type SearchOptions struct {
 	StartAt int `url:"startAt,omitempty"`
 	// MaxResults: The maximum number of projects to return per page. Default: 50.
 	MaxResults int `url:"maxResults,omitempty"`
+	// Expand: Expand specific sections in the returned issues
+	Expand string `url:expand,omitempty"`
 }
 
 // searchResult is only a small wrapper arround the Search (with JQL) method
