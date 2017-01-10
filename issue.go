@@ -61,6 +61,26 @@ type Epic struct {
 	Done    bool   `json:"done" structs:"done"`
 }
 
+type ChangelogItems struct {
+	Field      string `json:"field" structs:"field"`
+	FieldType  string `json:"fieldtype" structs:"fieldtype"`
+	From       interface{} `json:"from" structs:"from"`
+	FromString string `json:"fromString" structs:"fromString"`
+	To         interface{} `json:"to" structs:"to"`
+	ToString   string `json:"toString" structs:"toString"`
+}
+
+type ChangelogHistory struct {
+	Id      string `json:"id" structs:"id"`
+	Author  User `json:"author" structs:"author"`
+	Created string `json:"created" structs:"created"`
+	Items   []ChangelogItems `json:"items" structs:"items"`
+}
+
+type Changelog struct {
+	Histories []ChangelogHistory `json:"histories"`
+}
+
 // IssueFields represents single fields of a JIRA issue.
 // Every JIRA issue has several fields attached.
 type IssueFields struct {
@@ -102,6 +122,7 @@ type IssueFields struct {
 	Attachments          []*Attachment `json:"attachment,omitempty" structs:"attachment,omitempty"`
 	Epic                 *Epic         `json:"epic,omitempty" structs:"epic,omitempty"`
 	Parent               *Parent       `json:"parent,omitempty" structs:"parent,omitempty"`
+	Changelog            Changelog `json:"changelog,omitemopty" structs:"changelog,omitempty"`
 	Unknowns             tcontainer.MarshalMap
 }
 
