@@ -451,9 +451,15 @@ type CustomFields map[string]string
 // This can be an issue id, or an issue key.
 // If the issue cannot be found via an exact match, JIRA will also look for the issue in a case-insensitive way, or by looking to see if the issue was moved.
 //
+// The given options will be appended to the query string
+//
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
-func (s *IssueService) Get(issueID string) (*Issue, *Response, error) {
+func (s *IssueService) Get(issueID string, queryOptions... string) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
+	if len(queryOptions) > 0 {
+		apiEndpoint = fmt.Sprintf("%s?%s", queryOptions)
+	}
+	
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
