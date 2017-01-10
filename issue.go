@@ -454,16 +454,22 @@ type CustomFields map[string]string
 // The given options will be appended to the query string
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
-func (s *IssueService) Get(issueID string, queryOptions... string) (*Issue, *Response, error) {
+func (s *IssueService) Get(issueID string, queryOptions... map[string]string) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
-	if len(queryOptions) > 0 {
-		apiEndpoint = fmt.Sprintf("%s?%s", queryOptions)
-	}
-	
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	if len(queryOptions) > 0 {
+		q := req.URL.Query()
+		for _, opts := range queryOptions {
+			for k,v := range opts {
+				q.Add(k, v)
+			}
+		}
+	}
+
 
 	issue := new(Issue)
 	resp, err := s.client.Do(req, issue)
