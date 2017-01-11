@@ -30,11 +30,12 @@ type IssueService struct {
 
 // Issue represents a JIRA issue.
 type Issue struct {
-	Expand string       `json:"expand,omitempty" structs:"expand,omitempty"`
-	ID     string       `json:"id,omitempty" structs:"id,omitempty"`
-	Self   string       `json:"self,omitempty" structs:"self,omitempty"`
-	Key    string       `json:"key,omitempty" structs:"key,omitempty"`
-	Fields *IssueFields `json:"fields,omitempty" structs:"fields,omitempty"`
+	Expand    string       `json:"expand,omitempty" structs:"expand,omitempty"`
+	ID        string       `json:"id,omitempty" structs:"id,omitempty"`
+	Self      string       `json:"self,omitempty" structs:"self,omitempty"`
+	Key       string       `json:"key,omitempty" structs:"key,omitempty"`
+	Fields    *IssueFields `json:"fields,omitempty" structs:"fields,omitempty"`
+	Changelog *Changelog    `json:"changelog,omitempty" structs:"changelog,omitempty"`
 }
 
 // Attachment represents a JIRA attachment
@@ -78,7 +79,7 @@ type ChangelogHistory struct {
 }
 
 type Changelog struct {
-	Histories []ChangelogHistory `json:"histories"`
+	Histories []ChangelogHistory `json:"histories,omitempty"`
 }
 
 // IssueFields represents single fields of a JIRA issue.
@@ -91,6 +92,7 @@ type IssueFields struct {
 	//      * "aggregatetimeoriginalestimate": null,
 	//      * "aggregatetimeestimate": null,
 	//      * "environment": null,
+	Expand               string        `json:"expand"`
 	Type                 IssueType     `json:"issuetype" structs:"issuetype"`
 	Project              Project       `json:"project,omitempty" structs:"project,omitempty"`
 	Resolution           *Resolution   `json:"resolution,omitempty" structs:"resolution,omitempty"`
@@ -122,7 +124,6 @@ type IssueFields struct {
 	Attachments          []*Attachment `json:"attachment,omitempty" structs:"attachment,omitempty"`
 	Epic                 *Epic         `json:"epic,omitempty" structs:"epic,omitempty"`
 	Parent               *Parent       `json:"parent,omitempty" structs:"parent,omitempty"`
-	Changelog            *Changelog `json:"changelog,omitemopty" structs:"changelog,omitempty"`
 	Unknowns             tcontainer.MarshalMap
 }
 
@@ -454,7 +455,7 @@ type CustomFields map[string]string
 // The given options will be appended to the query string
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
-func (s *IssueService) Get(issueID string, queryOptions... map[string]string) (*Issue, *Response, error) {
+func (s *IssueService) Get(issueID string, queryOptions ... map[string]string) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -464,12 +465,12 @@ func (s *IssueService) Get(issueID string, queryOptions... map[string]string) (*
 	if len(queryOptions) > 0 {
 		q := req.URL.Query()
 		for _, opts := range queryOptions {
-			for k,v := range opts {
+			for k, v := range opts {
 				q.Add(k, v)
 			}
 		}
+		req.URL.RawQuery = q.Encode()
 	}
-
 
 	issue := new(Issue)
 	resp, err := s.client.Do(req, issue)
