@@ -9,9 +9,9 @@ import (
 func TestUserService_Get_Success(t *testing.T) {
 	setup()
 	defer teardown()
-	testMux.HandleFunc("/rest/api/2/user/fred", func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc("/rest/api/2/user", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testRequestURL(t, r, "/rest/api/2/user/fred")
+		testRequestURL(t, r, "/rest/api/2/user?username=fred")
 
 		fmt.Fprint(w, `{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","key":"fred",
         "name":"fred","emailAddress":"fred@example.com","avatarUrls":{"48x48":"http://www.example.com/jira/secure/useravatar?size=large&ownerId=fred",
