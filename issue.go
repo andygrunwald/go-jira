@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/fatih/structs"
+	"github.com/google/go-querystring/query"
 	"github.com/trivago/tgo/tcontainer"
 )
 
@@ -30,11 +31,35 @@ type IssueService struct {
 
 // Issue represents a JIRA issue.
 type Issue struct {
-	Expand string       `json:"expand,omitempty" structs:"expand,omitempty"`
-	ID     string       `json:"id,omitempty" structs:"id,omitempty"`
-	Self   string       `json:"self,omitempty" structs:"self,omitempty"`
-	Key    string       `json:"key,omitempty" structs:"key,omitempty"`
-	Fields *IssueFields `json:"fields,omitempty" structs:"fields,omitempty"`
+	Expand    string       `json:"expand,omitempty" structs:"expand,omitempty"`
+	ID        string       `json:"id,omitempty" structs:"id,omitempty"`
+	Self      string       `json:"self,omitempty" structs:"self,omitempty"`
+	Key       string       `json:"key,omitempty" structs:"key,omitempty"`
+	Fields    *IssueFields `json:"fields,omitempty" structs:"fields,omitempty"`
+	Changelog *Changelog   `json:"changelog,omitempty" structs:"changelog,omitempty"`
+}
+
+// ChangelogItems reflects one single changelog item of a history item
+type ChangelogItems struct {
+	Field      string      `json:"field" structs:"field"`
+	FieldType  string      `json:"fieldtype" structs:"fieldtype"`
+	From       interface{} `json:"from" structs:"from"`
+	FromString string      `json:"fromString" structs:"fromString"`
+	To         interface{} `json:"to" structs:"to"`
+	ToString   string      `json:"toString" structs:"toString"`
+}
+
+// ChangelogHistory reflects one single changelog history entry
+type ChangelogHistory struct {
+	Id      string           `json:"id" structs:"id"`
+	Author  User             `json:"author" structs:"author"`
+	Created string           `json:"created" structs:"created"`
+	Items   []ChangelogItems `json:"items" structs:"items"`
+}
+
+// Changelog reflects the change log of an issue
+type Changelog struct {
+	Histories []ChangelogHistory `json:"histories,omitempty"`
 }
 
 // Attachment represents a JIRA attachment
@@ -71,6 +96,7 @@ type IssueFields struct {
 	//      * "aggregatetimeoriginalestimate": null,
 	//      * "aggregatetimeestimate": null,
 	//      * "environment": null,
+	Expand               string        `json:"expand,omitempty" structs:"expand,omitempty"`
 	Type                 IssueType     `json:"issuetype" structs:"issuetype"`
 	Project              Project       `json:"project,omitempty" structs:"project,omitempty"`
 	Resolution           *Resolution   `json:"resolution,omitempty" structs:"resolution,omitempty"`
@@ -408,6 +434,8 @@ type SearchOptions struct {
 	StartAt int `url:"startAt,omitempty"`
 	// MaxResults: The maximum number of projects to return per page. Default: 50.
 	MaxResults int `url:"maxResults,omitempty"`
+	// Expand: Expand specific sections in the returned issues
+	Expand string `url:expand,omitempty"`
 }
 
 // searchResult is only a small wrapper arround the Search (with JQL) method
@@ -419,6 +447,18 @@ type searchResult struct {
 	Total      int     `json:"total" structs:"total"`
 }
 
+// GetQueryOptions specifies the optional parameters for the Get Issue methods
+type GetQueryOptions struct {
+	// Fields is the list of fields to return for the issue. By default, all fields are returned.
+	Fields string `url:"fields,omitempty"`
+	Expand string `url:"expand,omitempty"`
+	// Properties is the list of properties to return for the issue. By default no properties are returned.
+	Properties string `url:"properties,omitempty"`
+	// FieldsByKeys if true then fields in issues will be referenced by keys instead of ids
+	FieldsByKeys  bool `url:"fieldsByKeys,omitempty"`
+	UpdateHistory bool `url:"updateHistory,omitempty"`
+}
+
 // CustomFields represents custom fields of JIRA
 // This can heavily differ between JIRA instances
 type CustomFields map[string]string
@@ -428,12 +468,22 @@ type CustomFields map[string]string
 // This can be an issue id, or an issue key.
 // If the issue cannot be found via an exact match, JIRA will also look for the issue in a case-insensitive way, or by looking to see if the issue was moved.
 //
+// The given options will be appended to the query string
+//
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
-func (s *IssueService) Get(issueID string) (*Issue, *Response, error) {
+func (s *IssueService) Get(issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
+	}
+
+	if options != nil {
+		q, err := query.Values(options)
+		if err != nil {
+			return nil, nil, err
+		}
+		req.URL.RawQuery = q.Encode()
 	}
 
 	issue := new(Issue)
