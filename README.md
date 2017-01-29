@@ -58,7 +58,7 @@ import (
 
 func main() {
 	jiraClient, _ := jira.NewClient(nil, "https://issues.apache.org/jira/")
-	issue, _, _ := jiraClient.Issue.Get("MESOS-3325")
+	issue, _, _ := jiraClient.Issue.Get("MESOS-3325", nil)
 
 	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
 	fmt.Printf("Type: %s\n", issue.Fields.Type.Name)
@@ -95,7 +95,7 @@ func main() {
 		panic(err)
 	}
 
-	issue, _, err := jiraClient.Issue.Get("SYS-5156")
+	issue, _, err := jiraClient.Issue.Get("SYS-5156", nil)
 	if err != nil {
 		panic(err)
 	}
