@@ -106,6 +106,12 @@ func TestNewClient_WithServices(t *testing.T) {
 	if c.Sprint == nil {
 		t.Error("No SprintService provided")
 	}
+	if c.User == nil {
+		t.Error("No UserService provided")
+	}
+	if c.Group == nil {
+		t.Error("No GroupService provided")
+	}
 }
 
 func TestCheckResponse(t *testing.T) {

@@ -438,7 +438,7 @@ type SearchOptions struct {
 	Expand string `url:expand,omitempty"`
 }
 
-// searchResult is only a small wrapper arround the Search (with JQL) method
+// searchResult is only a small wrapper around the Search (with JQL) method
 // to be able to parse the results
 type searchResult struct {
 	Issues     []Issue `json:"issues" structs:"issues"`
