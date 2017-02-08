@@ -109,6 +109,30 @@ func TestAuthenticationService_Authenticated(t *testing.T) {
 	}
 }
 
+func TestAuthenticationService_Authenticated_WithBasicAuth(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testClient.Authentication.SetBasicAuth("test-user", "test-password")
+
+	// Test before we've attempted to authenticate
+	if testClient.Authentication.Authenticated() != true {
+		t.Error("Expected true, but result was false")
+	}
+}
+
+func TestAuthenticationService_Authenticated_WithBasicAuthButNoUsername(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testClient.Authentication.SetBasicAuth("", "test-password")
+
+	// Test before we've attempted to authenticate
+	if testClient.Authentication.Authenticated() != false {
+		t.Error("Expected false, but result was true")
+	}
+}
+
 func TestAithenticationService_GetUserInfo_AccessForbidden_Fail(t *testing.T) {
 	setup()
 	defer teardown()
