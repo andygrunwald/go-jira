@@ -81,8 +81,8 @@ func TestAuthenticationService_AcquireSessionCookie_Success(t *testing.T) {
 }
 
 func TestAuthenticationService_SetBasicAuth(t *testing.T) {
-	// Skip setup() because we don't want a fully setup client
-	testClient = new(Client)
+	setup()
+	defer teardown()
 
 	testClient.Authentication.SetBasicAuth("test-user", "test-password")
 
