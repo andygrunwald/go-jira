@@ -74,6 +74,29 @@ func TestAuthenticationService_AcquireSessionCookie_Success(t *testing.T) {
 	if testClient.Authentication.Authenticated() != true {
 		t.Error("Expected true, but result was false")
 	}
+
+	if testClient.Authentication.authType != authTypeSession {
+		t.Error("Expected authType %d. Got %d", authTypeSession, testClient.Authentication.authType)
+	}
+}
+
+func TestAuthenticationService_SetBasicAuth(t *testing.T) {
+	// Skip setup() because we don't want a fully setup client
+	testClient = new(Client)
+
+	testClient.Authentication.SetBasicAuth("test-user", "test-password")
+
+	if testClient.Authentication.username != "test-user" {
+		t.Error("Expected username test-user. Got %s", testClient.Authentication.username)
+	}
+
+	if testClient.Authentication.password != "test-password" {
+		t.Error("Expected password test-password. Got %s", testClient.Authentication.password)
+	}
+
+	if testClient.Authentication.authType != authTypeBasic {
+		t.Error("Expected authType %d. Got %d", authTypeBasic, testClient.Authentication.authType)
+	}
 }
 
 func TestAuthenticationService_Authenticated(t *testing.T) {
