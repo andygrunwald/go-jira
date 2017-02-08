@@ -70,9 +70,41 @@ func main() {
 }
 ```
 
-### Authenticate with session cookie
+### Authenticate with jira
 
 Some actions require an authenticated user.
+
+#### Authenticate with basic auth
+
+Here is an example with a basic auth authentification.
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/andygrunwald/go-jira"
+)
+
+func main() {
+	jiraClient, err := jira.NewClient(nil, "https://your.jira-instance.com/")
+	if err != nil {
+		panic(err)
+	}
+	jiraClient.Authentication.SetBasicAuth("username", "password")
+
+	issue, _, err := jiraClient.Issue.Get("SYS-5156", nil)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
+}
+```
+
+
+#### Authenticate with session cookie
+
 Here is an example with a session cookie authentification.
 
 ```go
