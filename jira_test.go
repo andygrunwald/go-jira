@@ -201,6 +201,7 @@ func TestClient_NewRequest_SessionCookies(t *testing.T) {
 
 	cookie := &http.Cookie{Name: "testcookie", Value: "testvalue"}
 	c.session = &Session{Cookies: []*http.Cookie{cookie}}
+	c.Authentication.authType = authTypeSession
 
 	inURL := "rest/api/2/issue/"
 	inBody := &Issue{Key: "MESOS"}
@@ -218,6 +219,28 @@ func TestClient_NewRequest_SessionCookies(t *testing.T) {
 		if v.String() != c.session.Cookies[i].String() {
 			t.Errorf("An error occured. Unexpected cookie. Expected %s, actual %s.", v.String(), c.session.Cookies[i].String())
 		}
+	}
+}
+
+func TestClient_NewRequest_BasicAuth(t *testing.T) {
+	c, err := NewClient(nil, testJIRAInstanceURL)
+	if err != nil {
+		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+	}
+
+	c.Authentication.SetBasicAuth("test-user", "test-password")
+
+	inURL := "rest/api/2/issue/"
+	inBody := &Issue{Key: "MESOS"}
+	req, err := c.NewRequest("GET", inURL, inBody)
+
+	if err != nil {
+		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+	}
+
+	username, password, ok := req.BasicAuth()
+	if !ok || username != "test-user" || password != "test-password" {
+		t.Errorf("An error occured. Expected basic auth username %s and password %s. Got username %s and password %s.", "test-user", "test-password", username, password)
 	}
 }
 
@@ -247,6 +270,7 @@ func TestClient_NewMultiPartRequest(t *testing.T) {
 
 	cookie := &http.Cookie{Name: "testcookie", Value: "testvalue"}
 	c.session = &Session{Cookies: []*http.Cookie{cookie}}
+	c.Authentication.authType = authTypeSession
 
 	inURL := "rest/api/2/issue/"
 	inBuf := bytes.NewBufferString("teststring")
@@ -264,6 +288,32 @@ func TestClient_NewMultiPartRequest(t *testing.T) {
 		if v.String() != c.session.Cookies[i].String() {
 			t.Errorf("An error occured. Unexpected cookie. Expected %s, actual %s.", v.String(), c.session.Cookies[i].String())
 		}
+	}
+
+	if req.Header.Get("X-Atlassian-Token") != "nocheck" {
+		t.Errorf("An error occured. Unexpected X-Atlassian-Token header value. Expected nocheck, actual %s.", req.Header.Get("X-Atlassian-Token"))
+	}
+}
+
+func TestClient_NewMultiPartRequest_BasicAuth(t *testing.T) {
+	c, err := NewClient(nil, testJIRAInstanceURL)
+	if err != nil {
+		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+	}
+
+	c.Authentication.SetBasicAuth("test-user", "test-password")
+
+	inURL := "rest/api/2/issue/"
+	inBuf := bytes.NewBufferString("teststring")
+	req, err := c.NewMultiPartRequest("GET", inURL, inBuf)
+
+	if err != nil {
+		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+	}
+
+	username, password, ok := req.BasicAuth()
+	if !ok || username != "test-user" || password != "test-password" {
+		t.Errorf("An error occured. Expected basic auth username %s and password %s. Got username %s and password %s.", "test-user", "test-password", username, password)
 	}
 
 	if req.Header.Get("X-Atlassian-Token") != "nocheck" {

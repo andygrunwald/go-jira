@@ -84,10 +84,18 @@ func (c *Client) NewRawRequest(method, urlStr string, body io.Reader) (*http.Req
 
 	req.Header.Set("Content-Type", "application/json")
 
-	// Set session cookie if there is one
-	if c.session != nil {
-		for _, cookie := range c.session.Cookies {
-			req.AddCookie(cookie)
+	// Set authentication information
+	if c.Authentication.authType == authTypeSession {
+		// Set session cookie if there is one
+		if c.session != nil {
+			for _, cookie := range c.session.Cookies {
+				req.AddCookie(cookie)
+			}
+		}
+	} else if c.Authentication.authType == authTypeBasic {
+		// Set basic auth information
+		if c.Authentication.username != "" {
+			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
 		}
 	}
 
@@ -122,10 +130,18 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 
 	req.Header.Set("Content-Type", "application/json")
 
-	// Set session cookie if there is one
-	if c.session != nil {
-		for _, cookie := range c.session.Cookies {
-			req.AddCookie(cookie)
+	// Set authentication information
+	if c.Authentication.authType == authTypeSession {
+		// Set session cookie if there is one
+		if c.session != nil {
+			for _, cookie := range c.session.Cookies {
+				req.AddCookie(cookie)
+			}
+		}
+	} else if c.Authentication.authType == authTypeBasic {
+		// Set basic auth information
+		if c.Authentication.username != "" {
+			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
 		}
 	}
 
@@ -174,10 +190,18 @@ func (c *Client) NewMultiPartRequest(method, urlStr string, buf *bytes.Buffer) (
 	// Set required headers
 	req.Header.Set("X-Atlassian-Token", "nocheck")
 
-	// Set session cookie if there is one
-	if c.session != nil {
-		for _, cookie := range c.session.Cookies {
-			req.AddCookie(cookie)
+	// Set authentication information
+	if c.Authentication.authType == authTypeSession {
+		// Set session cookie if there is one
+		if c.session != nil {
+			for _, cookie := range c.session.Cookies {
+				req.AddCookie(cookie)
+			}
+		}
+	} else if c.Authentication.authType == authTypeBasic {
+		// Set basic auth information
+		if c.Authentication.username != "" {
+			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
 		}
 	}
 

@@ -7,11 +7,27 @@ import (
 	"net/http"
 )
 
+const (
+	// HTTP Basic Authentication
+	authTypeBasic = 1
+	// HTTP Session Authentication
+	authTypeSession = 2
+)
+
 // AuthenticationService handles authentication for the JIRA instance / API.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#authentication
 type AuthenticationService struct {
 	client *Client
+
+	// Authentication type
+	authType int
+
+	// Basic auth username
+	username string
+
+	// Basic auth password
+	password string
 }
 
 // Session represents a Session JSON response by the JIRA API.
@@ -68,14 +84,26 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 	}
 
 	s.client.session = session
+	s.authType = authTypeSession
 
 	return true, nil
 }
 
-// Authenticated reports if the current Client has an authenticated session with JIRA
+func (s *AuthenticationService) SetBasicAuth(username, password string) {
+	s.username = username;
+	s.password = password;
+	s.authType = authTypeBasic;
+}
+
+// Authenticated reports if the current Client has authentication details for JIRA
 func (s *AuthenticationService) Authenticated() bool {
 	if s != nil {
-		return s.client.session != nil
+		if s.authType == authTypeSession {
+			return s.client.session != nil
+		} else if s.authType == authTypeBasic {
+			return s.username != ""
+		}
+
 	}
 	return false
 }
@@ -84,7 +112,7 @@ func (s *AuthenticationService) Authenticated() bool {
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 func (s *AuthenticationService) Logout() error {
-	if s.client.session == nil {
+	if s.authType != authTypeSession || s.client.session == nil {
 		return fmt.Errorf("No user is authenticated yet.")
 	}
 
@@ -116,7 +144,7 @@ func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 	if s == nil {
 		return nil, fmt.Errorf("AUthenticaiton Service is not instantiated")
 	}
-	if s.client.session == nil {
+	if s.authType != authTypeSession || s.client.session == nil {
 		return nil, fmt.Errorf("No user is authenticated yet")
 	}
 
