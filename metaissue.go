@@ -44,7 +44,7 @@ type MetaIssueType struct {
 // GetCreateMeta makes the api call to get the meta information required to create a ticket
 func (s *IssueService) GetCreateMeta(projectkey string) (*CreateMetaInfo, *Response, error) {
 
-	apiEndpoint := fmt.Sprintf("/rest/api/2/issue/createmeta?projectKeys=%s&expand=projects.issuetypes.fields", projectkey)
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/createmeta?projectKeys=%s&expand=projects.issuetypes.fields", projectkey)
 
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
