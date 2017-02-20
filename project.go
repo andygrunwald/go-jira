@@ -105,7 +105,7 @@ func (s *ProjectService) GetList() (*ProjectList, *Response, error) {
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
 func (s *ProjectService) Get(projectID string) (*Project, *Response, error) {
-	apiEndpoint := fmt.Sprintf("/rest/api/2/project/%s", projectID)
+	apiEndpoint := fmt.Sprintf("rest/api/2/project/%s", projectID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
