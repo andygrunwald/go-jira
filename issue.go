@@ -622,8 +622,8 @@ func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Res
 	if options == nil {
 		u = fmt.Sprintf("rest/api/2/search?jql=%s", url.QueryEscape(jql))
 	} else {
-		u = fmt.Sprintf("rest/api/2/search?jql=%s&startAt=%d&maxResults=%d", url.QueryEscape(jql),
-			options.StartAt, options.MaxResults)
+		u = fmt.Sprintf("rest/api/2/search?jql=%s&startAt=%d&maxResults=%d&expand=%s", url.QueryEscape(jql),
+			options.StartAt, options.MaxResults, options.Expand)
 	}
 
 	req, err := s.client.NewRequest("GET", u, nil)
