@@ -957,3 +957,23 @@ func TestInitIssueWithmetaAndFields_FailureWithUnknownValueType(t *testing.T) {
 	}
 
 }
+
+func TestIssueService_Delete(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/10002", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+		testRequestURL(t, r, "/rest/api/2/issue/10002")
+
+		w.WriteHeader(http.StatusNoContent)
+		fmt.Fprint(w, `{}`)
+	})
+
+	resp, err := testClient.Issue.Delete("10002")
+	if resp.StatusCode != 204 {
+		t.Error("Expected issue not deleted.")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
