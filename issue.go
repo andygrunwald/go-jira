@@ -435,7 +435,7 @@ type SearchOptions struct {
 	// MaxResults: The maximum number of projects to return per page. Default: 50.
 	MaxResults int `url:"maxResults,omitempty"`
 	// Expand: Expand specific sections in the returned issues
-	Expand string `url:expand,omitempty"`
+	Expand string `url:"expand,omitempty"`
 }
 
 // searchResult is only a small wrapper around the Search (with JQL) method
@@ -782,4 +782,22 @@ func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIss
 	issue.Fields = issueFields
 
 	return issue, nil
+}
+
+// Delete will delete a specified issue.
+func (s *IssueService) Delete(issueID string) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
+
+	// to enable deletion of subtasks; without this, the request will fail if the issue has subtasks
+	deletePayload := make(map[string]interface{})
+	deletePayload["deleteSubtasks"] = "true"
+	content, _ := json.Marshal(deletePayload)
+
+	req, err := s.client.NewRequest("DELETE", apiEndpoint, content)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	return resp, err
 }

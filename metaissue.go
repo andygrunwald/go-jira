@@ -37,7 +37,7 @@ type MetaIssueType struct {
 	IconUrl     string                `json:"iconurl,omitempty"`
 	Name        string                `json:"name,omitempty"`
 	Subtasks    bool                  `json:"subtask,omitempty"`
-	Expand      string                `json:"expand,omitempty"`
+	Expand      string                `json:",omitempty"`
 	Fields      tcontainer.MarshalMap `json:"fields,omitempty"`
 }
 
