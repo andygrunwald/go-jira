@@ -89,6 +89,7 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 	return true, nil
 }
 
+// SetBasicAuth sets username and password for the basic auth against the JIRA instance.
 func (s *AuthenticationService) SetBasicAuth(username, password string) {
 	s.username = username
 	s.password = password
