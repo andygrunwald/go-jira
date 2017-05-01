@@ -401,11 +401,11 @@ func TestMetaIssueType_GetMandatoryFields(t *testing.T) {
 
 	mandatory, err := m.GetMandatoryFields()
 	if err != nil {
-		t.Errorf("Expected nil error, recieved %s", err)
+		t.Errorf("Expected nil error, received %s", err)
 	}
 
 	if len(mandatory) != 2 {
-		t.Errorf("Expected 2 recieved %+v", mandatory)
+		t.Errorf("Expected 2 received %+v", mandatory)
 	}
 }
 
@@ -421,7 +421,7 @@ func TestMetaIssueType_GetMandatoryFields_NonExistentRequiredKey_Fail(t *testing
 
 	_, err := m.GetMandatoryFields()
 	if err == nil {
-		t.Error("Expected non nil errpr, recieved nil")
+		t.Error("Expected non nil errpr, received nil")
 	}
 }
 
@@ -437,7 +437,7 @@ func TestMetaIssueType_GetMandatoryFields_NonExistentNameKey_Fail(t *testing.T) 
 
 	_, err := m.GetMandatoryFields()
 	if err == nil {
-		t.Error("Expected non nil errpr, recieved nil")
+		t.Error("Expected non nil errpr, received nil")
 	}
 }
 
@@ -465,11 +465,11 @@ func TestMetaIssueType_GetAllFields(t *testing.T) {
 	mandatory, err := m.GetAllFields()
 
 	if err != nil {
-		t.Errorf("Expected nil err, recieved %s", err)
+		t.Errorf("Expected nil err, received %s", err)
 	}
 
 	if len(mandatory) != 3 {
-		t.Errorf("Expected 3 recieved %+v", mandatory)
+		t.Errorf("Expected 3 received %+v", mandatory)
 	}
 }
 
@@ -485,7 +485,7 @@ func TestMetaIssueType_GetAllFields_NonExistingNameKey_Fail(t *testing.T) {
 
 	_, err := m.GetAllFields()
 	if err == nil {
-		t.Error("Expected non nil error, recieved nil")
+		t.Error("Expected non nil error, received nil")
 	}
 }
 
@@ -511,7 +511,7 @@ func TestMetaIssueType_CheckCompleteAndAvailable_MandatoryMissing(t *testing.T) 
 
 	ok, err := m.CheckCompleteAndAvailable(config)
 	if err == nil {
-		t.Error("Expected non nil error. Recieved nil")
+		t.Error("Expected non nil error. Received nil")
 	}
 
 	if ok != false {
@@ -538,7 +538,7 @@ func TestMetaIssueType_CheckCompleteAndAvailable_NotAvailable(t *testing.T) {
 
 	ok, err := m.CheckCompleteAndAvailable(config)
 	if err == nil {
-		t.Error("Expected non nil error. Recieved nil")
+		t.Error("Expected non nil error. Received nil")
 	}
 
 	if ok != false {
@@ -570,7 +570,7 @@ func TestMetaIssueType_CheckCompleteAndAvailable_Success(t *testing.T) {
 
 	ok, err := m.CheckCompleteAndAvailable(config)
 	if err != nil {
-		t.Errorf("Expected nil error. Recieved %s", err)
+		t.Errorf("Expected nil error. Received %s", err)
 	}
 
 	if ok != true {
@@ -587,7 +587,7 @@ func TestCreateMetaInfo_GetProjectWithName_Success(t *testing.T) {
 
 	project := metainfo.GetProjectWithName("SPN")
 	if project == nil {
-		t.Errorf("Expected non nil value, recieved nil")
+		t.Errorf("Expected non nil value, received nil")
 	}
 }
 
@@ -600,7 +600,7 @@ func TestMetaProject_GetIssueTypeWithName_CaseMismatch_Success(t *testing.T) {
 	issuetype := m.GetIssueTypeWithName("BUG")
 
 	if issuetype == nil {
-		t.Errorf("Expected non nil value, recieved nil")
+		t.Errorf("Expected non nil value, received nil")
 	}
 }
 
@@ -612,7 +612,7 @@ func TestCreateMetaInfo_GetProjectWithKey_Success(t *testing.T) {
 
 	project := metainfo.GetProjectWithKey("SPNKEY")
 	if project == nil {
-		t.Errorf("Expected non nil value, recieved nil")
+		t.Errorf("Expected non nil value, received nil")
 	}
 }
 
@@ -624,6 +624,6 @@ func TestCreateMetaInfo_GetProjectWithKey_NilForNonExistent(t *testing.T) {
 
 	project := metainfo.GetProjectWithKey("SPN")
 	if project != nil {
-		t.Errorf("Expected nil, recieved value")
+		t.Errorf("Expected nil, received value")
 	}
 }

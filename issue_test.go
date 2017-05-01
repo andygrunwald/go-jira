@@ -582,14 +582,14 @@ func TestIssueFields_TestMarshalJSON_PopulateUnknownsSuccess(t *testing.T) {
 	i := new(IssueFields)
 	err := json.Unmarshal([]byte(data), i)
 	if err != nil {
-		t.Errorf("Expected nil error, recieved %s", err)
+		t.Errorf("Expected nil error, received %s", err)
 	}
 
 	if len(i.Unknowns) != 1 {
-		t.Errorf("Expected 1 unknown field to be present, recieved %d", len(i.Unknowns))
+		t.Errorf("Expected 1 unknown field to be present, received %d", len(i.Unknowns))
 	}
 	if i.Description != "example bug report" {
-		t.Errorf("Expected description to be \"%s\", recieved \"%s\"", "example bug report", i.Description)
+		t.Errorf("Expected description to be \"%s\", received \"%s\"", "example bug report", i.Description)
 	}
 
 }
@@ -605,7 +605,7 @@ func TestIssueFields_MarshalJSON_OmitsEmptyFields(t *testing.T) {
 
 	rawdata, err := json.Marshal(i)
 	if err != nil {
-		t.Errorf("Expected nil err, recieved %s", err)
+		t.Errorf("Expected nil err, received %s", err)
 	}
 
 	// convert json to map and see if unset keys are there
@@ -617,7 +617,7 @@ func TestIssueFields_MarshalJSON_OmitsEmptyFields(t *testing.T) {
 
 	_, err = issuef.Int("issuetype/avatarId")
 	if err == nil {
-		t.Error("Expected non nil error, recieved nil")
+		t.Error("Expected non nil error, received nil")
 	}
 
 	// verify that the field that should be there, is.
@@ -647,18 +647,18 @@ func TestIssueFields_MarshalJSON_Success(t *testing.T) {
 
 	bytes, err := json.Marshal(i)
 	if err != nil {
-		t.Errorf("Expected nil err, recieved %s", err)
+		t.Errorf("Expected nil err, received %s", err)
 	}
 
-	recieved := new(IssueFields)
+	received := new(IssueFields)
 	// the order of json might be different. so unmarshal it again and comapre objects
-	err = json.Unmarshal(bytes, recieved)
+	err = json.Unmarshal(bytes, received)
 	if err != nil {
-		t.Errorf("Expected nil err, recieved %s", err)
+		t.Errorf("Expected nil err, received %s", err)
 	}
 
-	if !reflect.DeepEqual(i, recieved) {
-		t.Errorf("Recieved object different from expected. Expected %+v, recieved %+v", i, recieved)
+	if !reflect.DeepEqual(i, received) {
+		t.Errorf("Received object different from expected. Expected %+v, received %+v", i, received)
 	}
 }
 
@@ -686,7 +686,7 @@ func TestInitIssueWithMetaAndFields_Success(t *testing.T) {
 
 	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
 	if err != nil {
-		t.Errorf("Expected nil error, recieved %s", err)
+		t.Errorf("Expected nil error, received %s", err)
 	}
 
 	gotSummary, found := issue.Fields.Unknowns["summary"]
@@ -695,7 +695,7 @@ func TestInitIssueWithMetaAndFields_Success(t *testing.T) {
 	}
 
 	if gotSummary != expectedSummary {
-		t.Errorf("Expected %s recieved %s", expectedSummary, gotSummary)
+		t.Errorf("Expected %s received %s", expectedSummary, gotSummary)
 	}
 }
 
@@ -725,26 +725,26 @@ func TestInitIssueWithMetaAndFields_ArrayValueType(t *testing.T) {
 
 	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
 	if err != nil {
-		t.Errorf("Expected nil error, recieved %s", err)
+		t.Errorf("Expected nil error, received %s", err)
 	}
 
 	c, isArray := issue.Fields.Unknowns["component"].([]Component)
 	if isArray == false {
-		t.Error("Expected array, non array object recieved")
+		t.Error("Expected array, non array object received")
 	}
 
 	if len(c) != 1 {
-		t.Errorf("Expected recieved array to be of length 1. Got %d", len(c))
+		t.Errorf("Expected received array to be of length 1. Got %d", len(c))
 	}
 
 	gotComponent := c[0].Name
 
 	if err != nil {
-		t.Errorf("Expected err to be nil, recieved %s", err)
+		t.Errorf("Expected err to be nil, received %s", err)
 	}
 
 	if gotComponent != expectedComponent {
-		t.Errorf("Expected %s recieved %s", expectedComponent, gotComponent)
+		t.Errorf("Expected %s received %s", expectedComponent, gotComponent)
 	}
 }
 
@@ -773,16 +773,16 @@ func TestInitIssueWithMetaAndFields_DateValueType(t *testing.T) {
 
 	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
 	if err != nil {
-		t.Errorf("Expected nil error, recieved %s", err)
+		t.Errorf("Expected nil error, received %s", err)
 	}
 
 	gotCreated, err := issue.Fields.Unknowns.String("created")
 	if err != nil {
-		t.Errorf("Expected err to be nil, recieved %s", err)
+		t.Errorf("Expected err to be nil, received %s", err)
 	}
 
 	if gotCreated != expectedCreated {
-		t.Errorf("Expected %s recieved %s", expectedCreated, gotCreated)
+		t.Errorf("Expected %s received %s", expectedCreated, gotCreated)
 	}
 }
 
@@ -811,14 +811,14 @@ func TestInitIssueWithMetaAndFields_UserValueType(t *testing.T) {
 
 	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
 	if err != nil {
-		t.Errorf("Expected nil error, recieved %s", err)
+		t.Errorf("Expected nil error, received %s", err)
 	}
 
 	a, _ := issue.Fields.Unknowns.Value("assignee")
 	gotAssignee := a.(User).Name
 
 	if gotAssignee != expectedAssignee {
-		t.Errorf("Expected %s recieved %s", expectedAssignee, gotAssignee)
+		t.Errorf("Expected %s received %s", expectedAssignee, gotAssignee)
 	}
 }
 
@@ -847,14 +847,14 @@ func TestInitIssueWithMetaAndFields_ProjectValueType(t *testing.T) {
 
 	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
 	if err != nil {
-		t.Errorf("Expected nil error, recieved %s", err)
+		t.Errorf("Expected nil error, received %s", err)
 	}
 
 	a, _ := issue.Fields.Unknowns.Value("project")
 	gotProject := a.(Project).Name
 
 	if gotProject != metaProject.Name {
-		t.Errorf("Expected %s recieved %s", metaProject.Name, gotProject)
+		t.Errorf("Expected %s received %s", metaProject.Name, gotProject)
 	}
 }
 
@@ -883,14 +883,14 @@ func TestInitIssueWithMetaAndFields_PriorityValueType(t *testing.T) {
 
 	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
 	if err != nil {
-		t.Errorf("Expected nil error, recieved %s", err)
+		t.Errorf("Expected nil error, received %s", err)
 	}
 
 	a, _ := issue.Fields.Unknowns.Value("priority")
 	gotPriority := a.(Priority).Name
 
 	if gotPriority != expectedPriority {
-		t.Errorf("Expected %s recieved %s", expectedPriority, gotPriority)
+		t.Errorf("Expected %s received %s", expectedPriority, gotPriority)
 	}
 }
 
@@ -919,14 +919,14 @@ func TestInitIssueWithMetaAndFields_SelectList(t *testing.T) {
 
 	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
 	if err != nil {
-		t.Errorf("Expected nil error, recieved %s", err)
+		t.Errorf("Expected nil error, received %s", err)
 	}
 
 	a, _ := issue.Fields.Unknowns.Value("someitem")
 	gotVal := a.(Option).Value
 
 	if gotVal != expectedVal {
-		t.Errorf("Expected %s recieved %s", expectedVal, gotVal)
+		t.Errorf("Expected %s received %s", expectedVal, gotVal)
 	}
 }
 
@@ -955,14 +955,14 @@ func TestInitIssueWithMetaAndFields_IssuetypeValueType(t *testing.T) {
 
 	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
 	if err != nil {
-		t.Errorf("Expected nil error, recieved %s", err)
+		t.Errorf("Expected nil error, received %s", err)
 	}
 
 	a, _ := issue.Fields.Unknowns.Value("issuetype")
 	gotIssuetype := a.(IssueType).Name
 
 	if gotIssuetype != expectedIssuetype {
-		t.Errorf("Expected %s recieved %s", expectedIssuetype, gotIssuetype)
+		t.Errorf("Expected %s received %s", expectedIssuetype, gotIssuetype)
 	}
 }
 
@@ -989,7 +989,7 @@ func TestInitIssueWithmetaAndFields_FailureWithUnknownValueType(t *testing.T) {
 	}
 	_, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
 	if err == nil {
-		t.Error("Expected non nil error, recieved nil")
+		t.Error("Expected non nil error, received nil")
 	}
 
 }

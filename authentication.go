@@ -90,9 +90,9 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 }
 
 func (s *AuthenticationService) SetBasicAuth(username, password string) {
-	s.username = username;
-	s.password = password;
-	s.authType = authTypeBasic;
+	s.username = username
+	s.password = password
+	s.authType = authTypeBasic
 }
 
 // Authenticated reports if the current Client has authentication details for JIRA
@@ -172,7 +172,7 @@ func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 	err = json.Unmarshal(data, &ret)
 
 	if err != nil {
-		return nil, fmt.Errorf("Could not unmarshall recieved user info : %s", err)
+		return nil, fmt.Errorf("Could not unmarshall received user info : %s", err)
 	}
 
 	return ret, nil

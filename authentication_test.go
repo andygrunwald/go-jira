@@ -166,7 +166,7 @@ func TestAithenticationService_GetUserInfo_AccessForbidden_Fail(t *testing.T) {
 
 	_, err := testClient.Authentication.GetCurrentUser()
 	if err == nil {
-		t.Errorf("Non nil error expect, recieved nil")
+		t.Errorf("Non nil error expect, received nil")
 	}
 }
 
@@ -204,7 +204,7 @@ func TestAuthenticationService_GetUserInfo_NonOkStatusCode_Fail(t *testing.T) {
 
 	_, err := testClient.Authentication.GetCurrentUser()
 	if err == nil {
-		t.Errorf("Non nil error expect, recieved nil")
+		t.Errorf("Non nil error expect, received nil")
 	}
 }
 
@@ -259,7 +259,7 @@ func TestAuthenticationService_GetUserInfo_Success(t *testing.T) {
 
 	userinfo, err := testClient.Authentication.GetCurrentUser()
 	if err != nil {
-		t.Errorf("Nil error expect, recieved %s", err)
+		t.Errorf("Nil error expect, received %s", err)
 	}
 	equal := reflect.DeepEqual(*testUserInfo, *userinfo)
 

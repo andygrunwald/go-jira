@@ -61,7 +61,7 @@ func (s *IssueService) GetCreateMeta(projectkey string) (*CreateMetaInfo, *Respo
 	return meta, resp, nil
 }
 
-// GetProjectWithName returns a project with "name" from the meta information recieved. If not found, this returns nil.
+// GetProjectWithName returns a project with "name" from the meta information received. If not found, this returns nil.
 // The comparision of the name is case insensitive.
 func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {
 	for _, m := range m.Projects {
@@ -72,7 +72,7 @@ func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {
 	return nil
 }
 
-// GetProjectWithKey returns a project with "name" from the meta information recieved. If not found, this returns nil.
+// GetProjectWithKey returns a project with "name" from the meta information received. If not found, this returns nil.
 // The comparision of the name is case insensitive.
 func (m *CreateMetaInfo) GetProjectWithKey(key string) *MetaProject {
 	for _, m := range m.Projects {
