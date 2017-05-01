@@ -132,7 +132,7 @@ func TestCheckResponse(t *testing.T) {
 func TestClient_NewRequest(t *testing.T) {
 	c, err := NewClient(nil, testJIRAInstanceURL)
 	if err != nil {
-		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
 
 	inURL, outURL := "rest/api/2/issue/", testJIRAInstanceURL+"rest/api/2/issue/"
@@ -154,7 +154,7 @@ func TestClient_NewRequest(t *testing.T) {
 func TestClient_NewRawRequest(t *testing.T) {
 	c, err := NewClient(nil, testJIRAInstanceURL)
 	if err != nil {
-		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
 
 	inURL, outURL := "rest/api/2/issue/", testJIRAInstanceURL+"rest/api/2/issue/"
@@ -187,7 +187,7 @@ func testURLParseError(t *testing.T, err error) {
 func TestClient_NewRequest_BadURL(t *testing.T) {
 	c, err := NewClient(nil, testJIRAInstanceURL)
 	if err != nil {
-		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
 	_, err = c.NewRequest("GET", ":", nil)
 	testURLParseError(t, err)
@@ -196,7 +196,7 @@ func TestClient_NewRequest_BadURL(t *testing.T) {
 func TestClient_NewRequest_SessionCookies(t *testing.T) {
 	c, err := NewClient(nil, testJIRAInstanceURL)
 	if err != nil {
-		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
 
 	cookie := &http.Cookie{Name: "testcookie", Value: "testvalue"}
@@ -208,16 +208,16 @@ func TestClient_NewRequest_SessionCookies(t *testing.T) {
 	req, err := c.NewRequest("GET", inURL, inBody)
 
 	if err != nil {
-		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
 
 	if len(req.Cookies()) != len(c.session.Cookies) {
-		t.Errorf("An error occured. Expected %d cookie(s). Got %d.", len(c.session.Cookies), len(req.Cookies()))
+		t.Errorf("An error occurred. Expected %d cookie(s). Got %d.", len(c.session.Cookies), len(req.Cookies()))
 	}
 
 	for i, v := range req.Cookies() {
 		if v.String() != c.session.Cookies[i].String() {
-			t.Errorf("An error occured. Unexpected cookie. Expected %s, actual %s.", v.String(), c.session.Cookies[i].String())
+			t.Errorf("An error occurred. Unexpected cookie. Expected %s, actual %s.", v.String(), c.session.Cookies[i].String())
 		}
 	}
 }
@@ -225,7 +225,7 @@ func TestClient_NewRequest_SessionCookies(t *testing.T) {
 func TestClient_NewRequest_BasicAuth(t *testing.T) {
 	c, err := NewClient(nil, testJIRAInstanceURL)
 	if err != nil {
-		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
 
 	c.Authentication.SetBasicAuth("test-user", "test-password")
@@ -235,12 +235,12 @@ func TestClient_NewRequest_BasicAuth(t *testing.T) {
 	req, err := c.NewRequest("GET", inURL, inBody)
 
 	if err != nil {
-		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
 
 	username, password, ok := req.BasicAuth()
 	if !ok || username != "test-user" || password != "test-password" {
-		t.Errorf("An error occured. Expected basic auth username %s and password %s. Got username %s and password %s.", "test-user", "test-password", username, password)
+		t.Errorf("An error occurred. Expected basic auth username %s and password %s. Got username %s and password %s.", "test-user", "test-password", username, password)
 	}
 }
 
@@ -251,7 +251,7 @@ func TestClient_NewRequest_BasicAuth(t *testing.T) {
 func TestClient_NewRequest_EmptyBody(t *testing.T) {
 	c, err := NewClient(nil, testJIRAInstanceURL)
 	if err != nil {
-		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
 	req, err := c.NewRequest("GET", "/", nil)
 	if err != nil {
@@ -265,7 +265,7 @@ func TestClient_NewRequest_EmptyBody(t *testing.T) {
 func TestClient_NewMultiPartRequest(t *testing.T) {
 	c, err := NewClient(nil, testJIRAInstanceURL)
 	if err != nil {
-		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
 
 	cookie := &http.Cookie{Name: "testcookie", Value: "testvalue"}
@@ -277,28 +277,28 @@ func TestClient_NewMultiPartRequest(t *testing.T) {
 	req, err := c.NewMultiPartRequest("GET", inURL, inBuf)
 
 	if err != nil {
-		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
 
 	if len(req.Cookies()) != len(c.session.Cookies) {
-		t.Errorf("An error occured. Expected %d cookie(s). Got %d.", len(c.session.Cookies), len(req.Cookies()))
+		t.Errorf("An error occurred. Expected %d cookie(s). Got %d.", len(c.session.Cookies), len(req.Cookies()))
 	}
 
 	for i, v := range req.Cookies() {
 		if v.String() != c.session.Cookies[i].String() {
-			t.Errorf("An error occured. Unexpected cookie. Expected %s, actual %s.", v.String(), c.session.Cookies[i].String())
+			t.Errorf("An error occurred. Unexpected cookie. Expected %s, actual %s.", v.String(), c.session.Cookies[i].String())
 		}
 	}
 
 	if req.Header.Get("X-Atlassian-Token") != "nocheck" {
-		t.Errorf("An error occured. Unexpected X-Atlassian-Token header value. Expected nocheck, actual %s.", req.Header.Get("X-Atlassian-Token"))
+		t.Errorf("An error occurred. Unexpected X-Atlassian-Token header value. Expected nocheck, actual %s.", req.Header.Get("X-Atlassian-Token"))
 	}
 }
 
 func TestClient_NewMultiPartRequest_BasicAuth(t *testing.T) {
 	c, err := NewClient(nil, testJIRAInstanceURL)
 	if err != nil {
-		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
 
 	c.Authentication.SetBasicAuth("test-user", "test-password")
@@ -308,16 +308,16 @@ func TestClient_NewMultiPartRequest_BasicAuth(t *testing.T) {
 	req, err := c.NewMultiPartRequest("GET", inURL, inBuf)
 
 	if err != nil {
-		t.Errorf("An error occured. Expected nil. Got %+v.", err)
+		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
 
 	username, password, ok := req.BasicAuth()
 	if !ok || username != "test-user" || password != "test-password" {
-		t.Errorf("An error occured. Expected basic auth username %s and password %s. Got username %s and password %s.", "test-user", "test-password", username, password)
+		t.Errorf("An error occurred. Expected basic auth username %s and password %s. Got username %s and password %s.", "test-user", "test-password", username, password)
 	}
 
 	if req.Header.Get("X-Atlassian-Token") != "nocheck" {
-		t.Errorf("An error occured. Unexpected X-Atlassian-Token header value. Expected nocheck, actual %s.", req.Header.Get("X-Atlassian-Token"))
+		t.Errorf("An error occurred. Unexpected X-Atlassian-Token header value. Expected nocheck, actual %s.", req.Header.Get("X-Atlassian-Token"))
 	}
 }
 

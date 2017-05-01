@@ -62,7 +62,7 @@ func (s *IssueService) GetCreateMeta(projectkey string) (*CreateMetaInfo, *Respo
 }
 
 // GetProjectWithName returns a project with "name" from the meta information received. If not found, this returns nil.
-// The comparision of the name is case insensitive.
+// The comparison of the name is case insensitive.
 func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {
 	for _, m := range m.Projects {
 		if strings.ToLower(m.Name) == strings.ToLower(name) {
@@ -73,7 +73,7 @@ func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {
 }
 
 // GetProjectWithKey returns a project with "name" from the meta information received. If not found, this returns nil.
-// The comparision of the name is case insensitive.
+// The comparison of the name is case insensitive.
 func (m *CreateMetaInfo) GetProjectWithKey(key string) *MetaProject {
 	for _, m := range m.Projects {
 		if strings.ToLower(m.Key) == strings.ToLower(key) {
@@ -84,7 +84,7 @@ func (m *CreateMetaInfo) GetProjectWithKey(key string) *MetaProject {
 }
 
 // GetIssueTypeWithName returns an IssueType with name from a given MetaProject. If not found, this returns nil.
-// The comparision of the name is case insensitive
+// The comparison of the name is case insensitive
 func (p *MetaProject) GetIssueTypeWithName(name string) *MetaIssueType {
 	for _, m := range p.IssueTypes {
 		if strings.ToLower(m.Name) == strings.ToLower(name) {

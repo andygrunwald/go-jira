@@ -130,7 +130,7 @@ func (s *AuthenticationService) Logout() error {
 		return fmt.Errorf("The logout was unsuccessful with status %d", resp.StatusCode)
 	}
 
-	// If logout successfull, delete session
+	// If logout successful, delete session
 	s.client.session = nil
 
 	return nil

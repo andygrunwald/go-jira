@@ -651,7 +651,7 @@ func TestIssueFields_MarshalJSON_Success(t *testing.T) {
 	}
 
 	received := new(IssueFields)
-	// the order of json might be different. so unmarshal it again and comapre objects
+	// the order of json might be different. so unmarshal it again and compare objects
 	err = json.Unmarshal(bytes, received)
 	if err != nil {
 		t.Errorf("Expected nil err, received %s", err)

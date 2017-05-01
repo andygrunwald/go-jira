@@ -137,7 +137,7 @@ func (i *IssueFields) MarshalJSON() ([]byte, error) {
 	m := structs.Map(i)
 	unknowns, okay := m["Unknowns"]
 	if okay {
-		// if unknowns present, shift all key value from unkown to a level up
+		// if unknowns present, shift all key value from unknown to a level up
 		for key, value := range unknowns.(tcontainer.MarshalMap) {
 			m[key] = value
 		}
@@ -297,7 +297,7 @@ type Transition struct {
 	Fields map[string]TransitionField `json:"fields" structs:"fields"`
 }
 
-// TransitionField represents the value of one Transistion
+// TransitionField represents the value of one Transition
 type TransitionField struct {
 	Required bool `json:"required" structs:"required"`
 }
@@ -307,7 +307,7 @@ type CreateTransitionPayload struct {
 	Transition TransitionPayload `json:"transition" structs:"transition"`
 }
 
-// TransitionPayload represents the request payload of Transistion calls like DoTransition
+// TransitionPayload represents the request payload of Transition calls like DoTransition
 type TransitionPayload struct {
 	ID string `json:"id" structs:"id"`
 }

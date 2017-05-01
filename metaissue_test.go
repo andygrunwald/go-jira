@@ -100,7 +100,7 @@ func TestIssueService_GetCreateMeta_Success(t *testing.T) {
 						"self": "https://my.jira.com/rest/api/2/component/14152",
 						"id": "14152",
 						"name": "Cloud services",
-						"description": "AWS and similiar services"
+						"description": "AWS and similar services"
 					}, {
 						"self": "https://my.jira.com/rest/api/2/component/14147",
 						"id": "14147",
