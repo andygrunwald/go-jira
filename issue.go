@@ -312,6 +312,12 @@ type TransitionPayload struct {
 	ID string `json:"id" structs:"id"`
 }
 
+// Option represents an option value in a SelectList or MultiSelect
+// custom issue field
+type Option struct {
+	Value string `json:"value" structs:"value"`
+}
+
 // UnmarshalJSON will transform the JIRA time into a time.Time
 // during the transformation of the JIRA JSON response
 func (t *Time) UnmarshalJSON(b []byte) error {
@@ -718,7 +724,7 @@ func (s *IssueService) DoTransition(ticketID, transitionID string) (*Response, e
 //  * metaProject should contain metaInformation about the project where the issue should be created.
 //  * metaIssuetype is the MetaInformation about the Issuetype that needs to be created.
 //  * fieldsConfig is a key->value pair where key represents the name of the field as seen in the UI
-// 		And value is the string value for that particular key.
+//		And value is the string value for that particular key.
 // Note: This method doesn't verify that the fieldsConfig is complete with mandatory fields. The fieldsConfig is
 //		 supposed to be already verified with MetaIssueType.CheckCompleteAndAvailable. It will however return
 //		 error if the key is not found.
@@ -774,6 +780,10 @@ func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIss
 		case "issuetype":
 			issueFields.Unknowns[jiraKey] = IssueType{
 				Name: value,
+			}
+		case "option":
+			issueFields.Unknowns[jiraKey] = Option{
+				Value: value,
 			}
 		default:
 			return nil, fmt.Errorf("Unknown issue type encountered: %s for %s", valueType, key)

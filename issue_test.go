@@ -894,6 +894,42 @@ func TestInitIssueWithMetaAndFields_PriorityValueType(t *testing.T) {
 	}
 }
 
+func TestInitIssueWithMetaAndFields_SelectList(t *testing.T) {
+	metaProject := MetaProject{
+		Name: "Engineering - Dept",
+		Id:   "ENG",
+	}
+
+	fields := tcontainer.NewMarshalMap()
+	fields["someitem"] = map[string]interface{}{
+		"name": "A Select Item",
+		"schema": map[string]interface{}{
+			"type": "option",
+		},
+	}
+
+	metaIssueType := MetaIssueType{
+		Fields: fields,
+	}
+
+	expectedVal := "Value"
+	fieldConfig := map[string]string{
+		"A Select Item": expectedVal,
+	}
+
+	issue, err := InitIssueWithMetaAndFields(&metaProject, &metaIssueType, fieldConfig)
+	if err != nil {
+		t.Errorf("Expected nil error, recieved %s", err)
+	}
+
+	a, _ := issue.Fields.Unknowns.Value("someitem")
+	gotVal := a.(Option).Value
+
+	if gotVal != expectedVal {
+		t.Errorf("Expected %s recieved %s", expectedVal, gotVal)
+	}
+}
+
 func TestInitIssueWithMetaAndFields_IssuetypeValueType(t *testing.T) {
 	metaProject := MetaProject{
 		Name: "Engineering - Dept",
