@@ -521,9 +521,9 @@ func (s *IssueService) DownloadAttachment(attachmentID string) (*Response, error
 	return resp, nil
 }
 
-// PostAttachment uploads r (io.Reader) as an attachment to a given attachmentID
-func (s *IssueService) PostAttachment(attachmentID string, r io.Reader, attachmentName string) (*[]Attachment, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/attachments", attachmentID)
+// PostAttachment uploads r (io.Reader) as an attachment to a given issueID
+func (s *IssueService) PostAttachment(issueID string, r io.Reader, attachmentName string) (*[]Attachment, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/attachments", issueID)
 
 	b := new(bytes.Buffer)
 	writer := multipart.NewWriter(b)
