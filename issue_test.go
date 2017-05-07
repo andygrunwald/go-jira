@@ -512,6 +512,65 @@ func TestIssueService_DoTransition(t *testing.T) {
 	}
 }
 
+func TestIssueService_DoTransitionWithPayload(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testAPIEndpoint := "/rest/api/2/issue/123/transitions"
+
+	transitionID := "22"
+
+	customPayload := map[string]interface{}{
+		"update": map[string]interface{}{
+			"comment": []map[string]interface{}{
+				map[string]interface{}{
+					"add": map[string]string{
+						"body": "Hello World",
+					},
+				},
+			},
+		},
+		"transition": TransitionPayload{
+			ID: transitionID,
+		},
+	}
+
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, testAPIEndpoint)
+
+		decoder := json.NewDecoder(r.Body)
+		payload := map[string]interface{}{}
+		err := decoder.Decode(&payload)
+		if err != nil {
+			t.Errorf("Got error: %v", err)
+		}
+
+		contains := func(key string) bool {
+			_, ok := payload[key]
+			return ok
+		}
+
+		if !contains("update") || !contains("transition") {
+			t.Fatalf("Excpected update, transition to be in payload, got %s instead", payload)
+		}
+
+		transition, ok := payload["transition"].(map[string]interface{})
+		if !ok {
+			t.Fatalf("Excpected transition to be in payload, got %s instead", payload["transition"])
+		}
+
+		if transition["id"].(string) != transitionID {
+			t.Errorf("Expected %s to be in payload, got %s instead", transitionID, transition["id"])
+		}
+	})
+	_, err := testClient.Issue.DoTransitionWithPayload("123", customPayload)
+
+	if err != nil {
+		t.Errorf("Got error: %v", err)
+	}
+}
+
 func TestIssueFields_TestMarshalJSON_PopulateUnknownsSuccess(t *testing.T) {
 	data := `{
 			"customfield_123":"test",
