@@ -169,10 +169,10 @@ func main() {
 			},
 			Description: "Test Issue",
 			Type: jira.IssueType{
-				ID: "60",
+				Name: "Bug",
 			},
 			Project: jira.Project{
-				Name: "PROJ1",
+				Key: "PROJ1",
 			},
 			Summary: "Just a demo issue",
 		},
