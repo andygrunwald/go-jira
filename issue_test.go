@@ -78,6 +78,31 @@ func TestIssueService_Create(t *testing.T) {
 	}
 }
 
+func TestIssueService_Update(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/10002", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+		testRequestURL(t, r, "/rest/api/2/issue/10002")
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	i := &Issue{
+		ID: "10002",
+		Fields: &IssueFields{
+			Description: "example bug report",
+		},
+	}
+	issue, _, err := testClient.Issue.Update(i)
+	if issue == nil {
+		t.Error("Expected issue. Issue is nil")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
 func TestIssueService_AddComment(t *testing.T) {
 	setup()
 	defer teardown()
