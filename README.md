@@ -138,7 +138,7 @@ func main() {
 
 If you want to connect via OAuth to your JIRA Cloud instance checkout the [example of using OAuth authentication with JIRA in Go](https://gist.github.com/Lupus/edafe9a7c5c6b13407293d795442fe67) by [@Lupus](https://github.com/Lupus).
 
-For more details have a look at the issue #56.
+For more details have a look at the [issue #56](https://github.com/andygrunwald/go-jira/issues/56).
 
 ### Create an issue
 
