@@ -548,7 +548,7 @@ func TestIssueService_DoTransitionWithPayload(t *testing.T) {
 	customPayload := map[string]interface{}{
 		"update": map[string]interface{}{
 			"comment": []map[string]interface{}{
-				map[string]interface{}{
+				{
 					"add": map[string]string{
 						"body": "Hello World",
 					},
