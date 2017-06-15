@@ -101,7 +101,6 @@ func main() {
 }
 ```
 
-
 #### Authenticate with session cookie
 
 Here is an example with a session cookie authentification.
@@ -134,6 +133,12 @@ func main() {
 	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
 }
 ```
+
+#### Authenticate with OAuth
+
+If you want to connect via OAuth to your JIRA Cloud instance checkout the [example of using OAuth authentication with JIRA in Go](https://gist.github.com/Lupus/edafe9a7c5c6b13407293d795442fe67) by [@Lupus](https://github.com/Lupus).
+
+For more details have a look at the issue https://github.com/andygrunwald/go-jira/issues/56.
 
 ### Create an issue
 
