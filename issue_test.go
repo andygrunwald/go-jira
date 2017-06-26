@@ -81,15 +81,15 @@ func TestIssueService_Create(t *testing.T) {
 func TestIssueService_Update(t *testing.T) {
 	setup()
 	defer teardown()
-	testMux.HandleFunc("/rest/api/2/issue/10002", func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc("/rest/api/2/issue/PROJ-9001", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "PUT")
-		testRequestURL(t, r, "/rest/api/2/issue/10002")
+		testRequestURL(t, r, "/rest/api/2/issue/PROJ-9001")
 
 		w.WriteHeader(http.StatusNoContent)
 	})
 
 	i := &Issue{
-		ID: "10002",
+		Key: "PROJ-9001",
 		Fields: &IssueFields{
 			Description: "example bug report",
 		},
