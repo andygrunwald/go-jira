@@ -588,11 +588,11 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 	return responseIssue, resp, nil
 }
 
-// Update updates an issue from a JSON representation.
+// Update updates an issue from a JSON representation. The issue is found by key.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
 func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", issue.ID)
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", issue.Key)
 	req, err := s.client.NewRequest("PUT", apiEndpoint, issue)
 	if err != nil {
 		return nil, nil, err
