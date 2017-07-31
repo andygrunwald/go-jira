@@ -791,6 +791,8 @@ func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIss
 			issueFields.Unknowns[jiraKey] = value
 		case "date":
 			issueFields.Unknowns[jiraKey] = value
+		case "datetime":
+			issueFields.Unknowns[jiraKey] = value
 		case "any":
 			// Treat any as string
 			issueFields.Unknowns[jiraKey] = value
