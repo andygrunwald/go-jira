@@ -608,6 +608,27 @@ func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
 	return &ret, resp, nil
 }
 
+// Update updates an issue from a JSON representation. The issue is found by key.
+//
+// https://docs.atlassian.com/jira/REST/7.4.0/#api/2/issue-editIssue
+func (s *IssueService) UpdateIssue(jiraId string, data map[string]interface{}) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", jiraId)
+	req, err := s.client.NewRequest("PUT", apiEndpoint, data)
+	fmt.Println(apiEndpoint, req, err)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := s.client.Do(req, nil)
+	fmt.Println(resp, err)
+	if err != nil {
+		return resp, err
+	}
+
+	// This is just to follow the rest of the API's convention of returning an issue.
+	// Returning the same pointer here is pointless, so we return a copy instead.
+	return resp, nil
+}
+
 // AddComment adds a new comment to issueID.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-addComment
