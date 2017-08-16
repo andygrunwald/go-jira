@@ -614,12 +614,10 @@ func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
 func (s *IssueService) UpdateIssue(jiraId string, data map[string]interface{}) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", jiraId)
 	req, err := s.client.NewRequest("PUT", apiEndpoint, data)
-	fmt.Println(apiEndpoint, req, err)
 	if err != nil {
 		return nil, err
 	}
 	resp, err := s.client.Do(req, nil)
-	fmt.Println(resp, err)
 	if err != nil {
 		return resp, err
 	}
