@@ -103,6 +103,29 @@ func TestIssueService_Update(t *testing.T) {
 	}
 }
 
+func TestIssueService_UpdateIssue(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/PROJ-9001", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+		testRequestURL(t, r, "/rest/api/2/issue/PROJ-9001")
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+	jId := "PROJ-9001"
+	i := make(map[string]interface{})
+	fields := make(map[string]interface{})
+	i["fields"] = fields
+	resp, err := testClient.Issue.UpdateIssue(jId, i)
+	if resp == nil {
+		t.Error("Expected resp. resp is nil")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+
+}
+
 func TestIssueService_AddComment(t *testing.T) {
 	setup()
 	defer teardown()
