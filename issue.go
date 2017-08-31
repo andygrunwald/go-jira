@@ -646,6 +646,30 @@ func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *
 	return responseComment, resp, nil
 }
 
+// UpdateComment updates the body of a comment, identified by comment.ID, on the issueID.
+//
+// JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/comment-updateComment
+func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment, *Response, error) {
+	reqBody := struct {
+		Body string `json:"body"`
+	}{
+		Body: comment.Body,
+	}
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, comment.ID)
+	req, err := s.client.NewRequest("POST", apiEndpoint, reqBody)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	responseComment := new(Comment)
+	resp, err := s.client.Do(req, responseComment)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return responseComment, resp, nil
+}
+
 // AddLink adds a link between two issues.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issueLink
