@@ -1148,3 +1148,31 @@ func TestIssueService_Delete(t *testing.T) {
 		t.Errorf("Error given: %s", err)
 	}
 }
+
+func TestIssueService_GetWorklogs(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/10002/worklog", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, "/rest/api/2/issue/10002/worklog")
+
+		fmt.Fprint(w, `{"startAt": 1,"maxResults": 40,"total": 1,"worklogs": [{"id": "3","self": "http://kelpie9:8081/rest/api/2/issue/10002/worklog/3","author":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"updateAuthor":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"created":"2016-03-16T04:22:37.356+0000","updated":"2016-03-16T04:22:37.356+0000","comment":"","started":"2016-03-16T04:22:37.356+0000","timeSpent": "1h","timeSpentSeconds": 3600,"issueId":"10002"}]}`)
+	})
+
+	worklog, _, err := testClient.Issue.GetWorklogs("10002")
+	if worklog == nil {
+		t.Error("Expected worklog. Worklog is nil")
+	}
+
+	if len(worklog.Worklogs) != 1 {
+		t.Error("Expected 1 worklog")
+	}
+
+	if worklog.Worklogs[0].Author.Name != "fred" {
+		t.Error("Expected worklog author to be fred")
+	}
+
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
