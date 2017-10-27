@@ -11,9 +11,9 @@
 ## Features
 
 * Authentication (HTTP Basic, OAuth, Session Cookie)
-* Create and receive issues
+* Create and retrieve issues
 * Create and retrieve issue transitions (status updates)
-* Call every API endpoint of the JIRA, even it is not directly implemented in this library
+* Call every API endpoint of the JIRA, even if it is not directly implemented in this library
 
 This package is not JIRA API complete (yet), but you can call every API endpoint you want. See [Call a not implemented API endpoint](#call-a-not-implemented-api-endpoint) how to do this. For all possible API endpoints of JRIA have a look at [latest JIRA REST API documentation](https://docs.atlassian.com/jira/REST/latest/).
 
@@ -86,7 +86,7 @@ Some actions require an authenticated user.
 
 #### Authenticate with basic auth
 
-Here is an example with a basic auth authentification.
+Here is an example with basic auth authentication.
 
 ```go
 package main
@@ -114,7 +114,7 @@ func main() {
 
 #### Authenticate with session cookie
 
-Here is an example with a session cookie authentification.
+Here is an example with session cookie authentication.
 
 ```go
 package main
