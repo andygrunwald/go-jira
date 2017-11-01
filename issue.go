@@ -558,6 +558,23 @@ func (s *IssueService) PostAttachment(issueID string, r io.Reader, attachmentNam
 	return attachment, resp, nil
 }
 
+// GetWorklogs gets all the worklogs for an issue.
+// This method is especially important if you need to read all the worklogs, not just the first page.
+//
+// https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/worklog-getIssueWorklog
+func (s *IssueService) GetWorklogs(issueID string) (*Worklog, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
+
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	v := new(Worklog)
+	resp, err := s.client.Do(req, v)
+	return v, resp, err
+}
+
 // Create creates an issue or a sub-task from a JSON representation.
 // Creating a sub-task is similar to creating a regular issue, with two important differences:
 // The issueType field must correspond to a sub-task issue type and you must provide a parent field in the issue create request containing the id or key of the parent issue.
