@@ -723,6 +723,46 @@ func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Res
 	return v.Issues, resp, err
 }
 
+// SearchPages will get issues from all pages in a search
+//
+// JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
+func (s *IssueService) SearchPages(jql string, options *SearchOptions, f func(Issue) error) error {
+	if options == nil {
+		options = &SearchOptions{
+			StartAt:    0,
+			MaxResults: 50,
+		}
+	}
+
+	if options.MaxResults == 0 {
+		options.MaxResults = 50
+	}
+
+	issues, resp, err := s.Search(jql, options)
+	if err != nil {
+		return err
+	}
+
+	for {
+		for _, issue := range issues {
+			err = f(issue)
+			if err != nil {
+				return err
+			}
+		}
+
+		if resp.StartAt+resp.MaxResults >= resp.Total {
+			return nil
+		}
+
+		options.StartAt += resp.MaxResults
+		issues, resp, err = s.Search(jql, options)
+		if err != nil {
+			return err
+		}
+	}
+}
+
 // GetCustomFields returns a map of customfield_* keys with string values
 func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
