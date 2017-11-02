@@ -363,7 +363,7 @@ func (s *IssueService) Get(issueID string) (*Issue, *Response, error) {
 	issue := new(Issue)
 	resp, err := s.client.Do(req, issue)
 	if err != nil {
-		jerr := NewJiraError(resp.Response, err)
+		jerr := NewJiraError(resp, err)
 		return nil, resp, jerr
 	}
 

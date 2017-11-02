@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/http"
 
 	"github.com/pkg/errors"
 )
@@ -19,7 +18,7 @@ type Error struct {
 }
 
 // NewJiraError creates a new jira Error
-func NewJiraError(resp *http.Response, httpError error) error {
+func NewJiraError(resp *Response, httpError error) error {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

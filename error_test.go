@@ -2,26 +2,30 @@ package jira
 
 import (
 	"errors"
-	"io"
+	"fmt"
 	"net/http"
-	"net/http/httptest"
 	"strings"
 	"testing"
 )
 
 func TestError_NewJiraError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, `{"errorMessages":["Issue does not exist or you do not have permission to see it."],"errors":{}}`)
-	}
+	setup()
+	defer teardown()
 
-	req := httptest.NewRequest("GET", "http://example.com/foo", nil)
-	w := httptest.NewRecorder()
-	handler(w, req)
-	resp := w.Result()
+	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, `{"errorMessages":["Issue does not exist or you do not have permission to see it."],"errors":{}}`)
+	})
+
+	req, _ := testClient.NewRequest("GET", "/", nil)
+	resp, _ := testClient.Do(req, nil)
 
 	err := NewJiraError(resp, errors.New("Original http error"))
 	if err, ok := err.(*Error); !ok {
 		t.Errorf("Expected jira Error. Got %s", err.Error())
+	}
+
+	if !strings.Contains(err.Error(), "Issue does not exist") {
+		t.Errorf("Expected issue message. Got: %s", err.Error())
 	}
 }
 
