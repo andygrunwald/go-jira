@@ -2,7 +2,6 @@ package jira
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -21,10 +20,9 @@ func TestError_NewJiraError(t *testing.T) {
 	resp := w.Result()
 
 	err := NewJiraError(resp, errors.New("Original http error"))
-	if err, ok := err.(*Error); ok {
+	if err, ok := err.(*Error); !ok {
 		t.Errorf("Expected jira Error. Got %s", err.Error())
 	}
-	fmt.Println(err.Error())
 }
 
 func TestError_NilOriginalMessage(t *testing.T) {
