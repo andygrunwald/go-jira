@@ -94,7 +94,7 @@ func TestError_ShortMessage(t *testing.T) {
 	}
 
 	err = mapErr.Error()
-	if err != "issuetype - issue type is required: Original http error" {
+	if !(strings.Contains(err, "issue type is required") || strings.Contains(err, "title is required")) {
 		t.Errorf("Expected short message. Got %s", err)
 	}
 
