@@ -841,11 +841,7 @@ func (s *IssueService) DoTransitionWithPayload(ticketID, payload interface{}) (*
 	}
 
 	resp, err := s.client.Do(req, nil)
-	if err != nil {
-		return resp, err
-	}
-
-	return resp, nil
+	return resp, err
 }
 
 // InitIssueWithMetaAndFields returns Issue with with values from fieldsConfig properly set.
