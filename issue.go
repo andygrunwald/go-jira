@@ -383,7 +383,8 @@ func (s *IssueService) DownloadAttachment(attachmentID string) (*Response, error
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return resp, err
+		jerr := NewJiraError(resp, err)
+		return resp, jerr
 	}
 
 	return resp, nil
@@ -420,7 +421,8 @@ func (s *IssueService) PostAttachment(attachmentID string, r io.Reader, attachme
 	attachment := new([]Attachment)
 	resp, err := s.client.Do(req, attachment)
 	if err != nil {
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
 
 	return attachment, resp, nil
@@ -441,7 +443,8 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 	responseIssue := new(Issue)
 	resp, err := s.client.Do(req, responseIssue)
 	if err != nil {
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
 
 	return responseIssue, resp, nil
@@ -460,7 +463,8 @@ func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *
 	responseComment := new(Comment)
 	resp, err := s.client.Do(req, responseComment)
 	if err != nil {
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
 
 	return responseComment, resp, nil
@@ -477,6 +481,10 @@ func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
 	}
 
 	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+
 	return resp, err
 }
 
@@ -499,6 +507,9 @@ func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Res
 
 	v := new(searchResult)
 	resp, err := s.client.Do(req, v)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
 	return v.Issues, resp, err
 }
 
@@ -513,7 +524,8 @@ func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *Response,
 	issue := new(map[string]interface{})
 	resp, err := s.client.Do(req, issue)
 	if err != nil {
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
 
 	m := *issue
@@ -546,6 +558,9 @@ func (s *IssueService) GetTransitions(id string) ([]Transition, *Response, error
 
 	result := new(transitionResult)
 	resp, err := s.client.Do(req, result)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
 	return result.Transitions, resp, err
 }
 
@@ -568,8 +583,8 @@ func (s *IssueService) DoTransition(ticketID, transitionID string) (*Response, e
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return nil, err
+		err = NewJiraError(resp, err)
 	}
 
-	return resp, nil
+	return resp, err
 }

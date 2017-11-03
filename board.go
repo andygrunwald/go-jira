@@ -75,7 +75,8 @@ func (s *BoardService) GetAllBoards(opt *BoardListOptions) (*BoardsList, *Respon
 	boards := new(BoardsList)
 	resp, err := s.client.Do(req, boards)
 	if err != nil {
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
 
 	return boards, resp, err
@@ -95,8 +96,10 @@ func (s *BoardService) GetBoard(boardID int) (*Board, *Response, error) {
 	board := new(Board)
 	resp, err := s.client.Do(req, board)
 	if err != nil {
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
+
 	return board, resp, nil
 }
 
@@ -118,7 +121,8 @@ func (s *BoardService) CreateBoard(board *Board) (*Board, *Response, error) {
 	responseBoard := new(Board)
 	resp, err := s.client.Do(req, responseBoard)
 	if err != nil {
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
 
 	return responseBoard, resp, nil
@@ -135,6 +139,9 @@ func (s *BoardService) DeleteBoard(boardID int) (*Board, *Response, error) {
 	}
 
 	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
 	return nil, resp, err
 }
 
@@ -151,5 +158,9 @@ func (s *BoardService) GetAllSprints(boardID string) ([]Sprint, *Response, error
 
 	result := new(sprintsResult)
 	resp, err := s.client.Do(req, result)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+
 	return result.Sprints, resp, err
 }

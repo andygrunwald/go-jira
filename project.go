@@ -62,7 +62,7 @@ type Version struct {
 	Released        bool   `json:"released"`
 	ReleaseDate     string `json:"releaseDate"`
 	UserReleaseDate string `json:"userReleaseDate"`
-	ProjectID       int    `json:"projectId"`  // Unlike other IDs, this is returned as a number
+	ProjectID       int    `json:"projectId"` // Unlike other IDs, this is returned as a number
 }
 
 // ProjectComponent represents a single component of a project
@@ -94,8 +94,10 @@ func (s *ProjectService) GetList() (*ProjectList, *Response, error) {
 	projectList := new(ProjectList)
 	resp, err := s.client.Do(req, projectList)
 	if err != nil {
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
+
 	return projectList, resp, nil
 }
 
@@ -114,7 +116,9 @@ func (s *ProjectService) Get(projectID string) (*Project, *Response, error) {
 	project := new(Project)
 	resp, err := s.client.Do(req, project)
 	if err != nil {
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
+
 	return project, resp, nil
 }
