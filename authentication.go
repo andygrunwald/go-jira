@@ -1,8 +1,17 @@
 package jira
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+)
+
+const (
+	// HTTP Basic Authentication
+	authTypeBasic = 1
+	// HTTP Session Authentication
+	authTypeSession = 2
 )
 
 // AuthenticationService handles authentication for the JIRA instance / API.
@@ -10,6 +19,15 @@ import (
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#authentication
 type AuthenticationService struct {
 	client *Client
+
+	// Authentication type
+	authType int
+
+	// Basic auth username
+	username string
+
+	// Basic auth password
+	password string
 }
 
 // Session represents a Session JSON response by the JIRA API.
@@ -54,9 +72,9 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 	session := new(Session)
 	resp, err := s.client.Do(req, session)
 
-        if resp != nil {
-   	    session.Cookies = resp.Cookies()
-        }
+	if resp != nil {
+		session.Cookies = resp.Cookies()
+	}
 
 	if err != nil {
 		return false, fmt.Errorf("Auth at JIRA instance failed (HTTP(S) request). %s", err)
@@ -66,19 +84,97 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 	}
 
 	s.client.session = session
+	s.authType = authTypeSession
 
 	return true, nil
 }
 
-// Authenticated reports if the current Client has an authenticated session with JIRA
+// SetBasicAuth sets username and password for the basic auth against the JIRA instance.
+func (s *AuthenticationService) SetBasicAuth(username, password string) {
+	s.username = username
+	s.password = password
+	s.authType = authTypeBasic
+}
+
+// Authenticated reports if the current Client has authentication details for JIRA
 func (s *AuthenticationService) Authenticated() bool {
 	if s != nil {
-		return s.client.session != nil
+		if s.authType == authTypeSession {
+			return s.client.session != nil
+		} else if s.authType == authTypeBasic {
+			return s.username != ""
+		}
+
 	}
 	return false
 }
 
-// TODO Missing API Call GET (Returns information about the currently authenticated user's session)
-// See https://docs.atlassian.com/jira/REST/latest/#auth/1/session
-// TODO Missing API Call DELETE (Logs the current user out of JIRA, destroying the existing session, if any.)
-// See https://docs.atlassian.com/jira/REST/latest/#auth/1/session
+// Logout logs out the current user that has been authenticated and the session in the client is destroyed.
+//
+// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
+func (s *AuthenticationService) Logout() error {
+	if s.authType != authTypeSession || s.client.session == nil {
+		return fmt.Errorf("No user is authenticated yet.")
+	}
+
+	apiEndpoint := "rest/auth/1/session"
+	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
+	if err != nil {
+		return fmt.Errorf("Creating the request to log the user out failed : %s", err)
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return fmt.Errorf("Error sending the logout request: %s", err)
+	}
+	if resp.StatusCode != 204 {
+		return fmt.Errorf("The logout was unsuccessful with status %d", resp.StatusCode)
+	}
+
+	// If logout successful, delete session
+	s.client.session = nil
+
+	return nil
+
+}
+
+// GetCurrentUser gets the details of the current user.
+//
+// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
+func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
+	if s == nil {
+		return nil, fmt.Errorf("AUthenticaiton Service is not instantiated")
+	}
+	if s.authType != authTypeSession || s.client.session == nil {
+		return nil, fmt.Errorf("No user is authenticated yet")
+	}
+
+	apiEndpoint := "rest/auth/1/session"
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Could not create request for getting user info : %s", err)
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Error sending request to get user info : %s", err)
+	}
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("Getting user info failed with status : %d", resp.StatusCode)
+	}
+
+	defer resp.Body.Close()
+	ret := new(Session)
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("Couldn't read body from the response : %s", err)
+	}
+
+	err = json.Unmarshal(data, &ret)
+
+	if err != nil {
+		return nil, fmt.Errorf("Could not unmarshall received user info : %s", err)
+	}
+
+	return ret, nil
+}

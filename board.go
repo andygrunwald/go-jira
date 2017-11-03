@@ -14,20 +14,20 @@ type BoardService struct {
 
 // BoardsList reflects a list of agile boards
 type BoardsList struct {
-	MaxResults int     `json:"maxResults"`
-	StartAt    int     `json:"startAt"`
-	Total      int     `json:"total"`
-	IsLast     bool    `json:"isLast"`
-	Values     []Board `json:"values"`
+	MaxResults int     `json:"maxResults" structs:"maxResults"`
+	StartAt    int     `json:"startAt" structs:"startAt"`
+	Total      int     `json:"total" structs:"total"`
+	IsLast     bool    `json:"isLast" structs:"isLast"`
+	Values     []Board `json:"values" structs:"values"`
 }
 
 // Board represents a JIRA agile board
 type Board struct {
-	ID       int    `json:"id,omitempty"`
-	Self     string `json:"self,omitempty"`
-	Name     string `json:"name,omitempty"`
-	Type     string `json:"type,omitempty"`
-	FilterID int    `json:"filterId,omitempty"`
+	ID       int    `json:"id,omitempty" structs:"id,omitempty"`
+	Self     string `json:"self,omitempty" structs:"self,omitempty"`
+	Name     string `json:"name,omitempty" structs:"name,omitemtpy"`
+	Type     string `json:"type,omitempty" structs:"type,omitempty"`
+	FilterID int    `json:"filterId,omitempty" structs:"filterId,omitempty"`
 }
 
 // BoardListOptions specifies the optional parameters to the BoardService.GetList
@@ -46,19 +46,19 @@ type BoardListOptions struct {
 
 // Wrapper struct for search result
 type sprintsResult struct {
-	Sprints []Sprint `json:"values"`
+	Sprints []Sprint `json:"values" structs:"values"`
 }
 
 // Sprint represents a sprint on JIRA agile board
 type Sprint struct {
-	ID            int        `json:"id"`
-	Name          string     `json:"name"`
-	CompleteDate  *time.Time `json:"completeDate"`
-	EndDate       *time.Time `json:"endDate"`
-	StartDate     *time.Time `json:"startDate"`
-	OriginBoardID int        `json:"originBoardId"`
-	Self          string     `json:"self"`
-	State         string     `json:"state"`
+	ID            int        `json:"id" structs:"id"`
+	Name          string     `json:"name" structs:"name"`
+	CompleteDate  *time.Time `json:"completeDate" structs:"completeDate"`
+	EndDate       *time.Time `json:"endDate" structs:"endDate"`
+	StartDate     *time.Time `json:"startDate" structs:"startDate"`
+	OriginBoardID int        `json:"originBoardId" structs:"originBoardId"`
+	Self          string     `json:"self" structs:"self"`
+	State         string     `json:"state" structs:"state"`
 }
 
 // GetAllBoards will returns all boards. This only includes boards that the user has permission to view.

@@ -3,7 +3,6 @@
 [![GoDoc](https://godoc.org/github.com/andygrunwald/go-jira?status.svg)](https://godoc.org/github.com/andygrunwald/go-jira)
 [![Build Status](https://travis-ci.org/andygrunwald/go-jira.svg?branch=master)](https://travis-ci.org/andygrunwald/go-jira)
 [![Go Report Card](https://goreportcard.com/badge/github.com/andygrunwald/go-jira)](https://goreportcard.com/report/github.com/andygrunwald/go-jira)
-[![Coverage Status](https://coveralls.io/repos/github/andygrunwald/go-jira/badge.svg?branch=master)](https://coveralls.io/github/andygrunwald/go-jira?branch=master)
 
 [Go](https://golang.org/) client library for [Atlassian JIRA](https://www.atlassian.com/software/jira).
 
@@ -12,9 +11,9 @@
 ## Features
 
 * Authentication (HTTP Basic, OAuth, Session Cookie)
-* Create and receive issues
+* Create and retrieve issues
 * Create and retrieve issue transitions (status updates)
-* Call every API endpoint of the JIRA, even it is not directly implemented in this library
+* Call every API endpoint of the JIRA, even if it is not directly implemented in this library
 
 This package is not JIRA API complete (yet), but you can call every API endpoint you want. See [Call a not implemented API endpoint](#call-a-not-implemented-api-endpoint) how to do this. For all possible API endpoints of JRIA have a look at [latest JIRA REST API documentation](https://docs.atlassian.com/jira/REST/latest/).
 
@@ -27,6 +26,17 @@ This package was tested against JIRA v6.3.4 and v7.1.2.
 It is go gettable
 
     $ go get github.com/andygrunwald/go-jira
+
+For stable versions you can use one of our tags with [gopkg.in](http://labix.org/gopkg.in). E.g.
+
+```go
+package main
+
+import (
+	jira "gopkg.in/andygrunwald/go-jira.v1"
+)
+...
+```
 
 (optional) to run unit / example tests:
 
@@ -58,7 +68,7 @@ import (
 
 func main() {
 	jiraClient, _ := jira.NewClient(nil, "https://issues.apache.org/jira/")
-	issue, _, _ := jiraClient.Issue.Get("MESOS-3325")
+	issue, _, _ := jiraClient.Issue.Get("MESOS-3325", nil)
 
 	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
 	fmt.Printf("Type: %s\n", issue.Fields.Type.Name)
@@ -70,10 +80,41 @@ func main() {
 }
 ```
 
-### Authenticate with session cookie
+### Authenticate with jira
 
 Some actions require an authenticated user.
-Here is an example with a session cookie authentification.
+
+#### Authenticate with basic auth
+
+Here is an example with basic auth authentication.
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/andygrunwald/go-jira"
+)
+
+func main() {
+	jiraClient, err := jira.NewClient(nil, "https://your.jira-instance.com/")
+	if err != nil {
+		panic(err)
+	}
+	jiraClient.Authentication.SetBasicAuth("username", "password")
+
+	issue, _, err := jiraClient.Issue.Get("SYS-5156", nil)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
+}
+```
+
+#### Authenticate with session cookie
+
+Here is an example with session cookie authentication.
 
 ```go
 package main
@@ -95,7 +136,64 @@ func main() {
 		panic(err)
 	}
 
-	issue, _, err := jiraClient.Issue.Get("SYS-5156")
+	issue, _, err := jiraClient.Issue.Get("SYS-5156", nil)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
+}
+```
+
+#### Authenticate with OAuth
+
+If you want to connect via OAuth to your JIRA Cloud instance checkout the [example of using OAuth authentication with JIRA in Go](https://gist.github.com/Lupus/edafe9a7c5c6b13407293d795442fe67) by [@Lupus](https://github.com/Lupus).
+
+For more details have a look at the [issue #56](https://github.com/andygrunwald/go-jira/issues/56).
+
+### Create an issue
+
+Example how to create an issue.
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/andygrunwald/go-jira"
+)
+
+func main() {
+	jiraClient, err := jira.NewClient(nil, "https://your.jira-instance.com/")
+	if err != nil {
+		panic(err)
+	}
+
+	res, err := jiraClient.Authentication.AcquireSessionCookie("username", "password")
+	if err != nil || res == false {
+		fmt.Printf("Result: %v\n", res)
+		panic(err)
+	}
+
+	i := jira.Issue{
+		Fields: &jira.IssueFields{
+			Assignee: &jira.User{
+				Name: "myuser",
+			},
+			Reporter: &jira.User{
+				Name: "youruser",
+			},
+			Description: "Test Issue",
+			Type: jira.IssueType{
+				Name: "Bug",
+			},
+			Project: jira.Project{
+				Key: "PROJ1",
+			},
+			Summary: "Just a demo issue",
+		},
+	}
+	issue, _, err := jiraClient.Issue.Create(&i)
 	if err != nil {
 		panic(err)
 	}

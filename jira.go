@@ -29,6 +29,8 @@ type Client struct {
 	Project        *ProjectService
 	Board          *BoardService
 	Sprint         *SprintService
+	User           *UserService
+	Group          *GroupService
 }
 
 // NewClient returns a new JIRA API client.
@@ -57,8 +59,47 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	c.Project = &ProjectService{client: c}
 	c.Board = &BoardService{client: c}
 	c.Sprint = &SprintService{client: c}
+	c.User = &UserService{client: c}
+	c.Group = &GroupService{client: c}
 
 	return c, nil
+}
+
+// NewRawRequest creates an API request.
+// A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
+// Relative URLs should always be specified without a preceding slash.
+// Allows using an optional native io.Reader for sourcing the request body.
+func (c *Client) NewRawRequest(method, urlStr string, body io.Reader) (*http.Request, error) {
+	rel, err := url.Parse(urlStr)
+	if err != nil {
+		return nil, err
+	}
+
+	u := c.baseURL.ResolveReference(rel)
+
+	req, err := http.NewRequest(method, u.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	// Set authentication information
+	if c.Authentication.authType == authTypeSession {
+		// Set session cookie if there is one
+		if c.session != nil {
+			for _, cookie := range c.session.Cookies {
+				req.AddCookie(cookie)
+			}
+		}
+	} else if c.Authentication.authType == authTypeBasic {
+		// Set basic auth information
+		if c.Authentication.username != "" {
+			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
+		}
+	}
+
+	return req, nil
 }
 
 // NewRequest creates an API request.
@@ -76,7 +117,7 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	var buf io.ReadWriter
 	if body != nil {
 		buf = new(bytes.Buffer)
-		err := json.NewEncoder(buf).Encode(body)
+		err = json.NewEncoder(buf).Encode(body)
 		if err != nil {
 			return nil, err
 		}
@@ -89,10 +130,18 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 
 	req.Header.Set("Content-Type", "application/json")
 
-	// Set session cookie if there is one
-	if c.session != nil {
-		for _, cookie := range c.session.Cookies {
-			req.AddCookie(cookie)
+	// Set authentication information
+	if c.Authentication.authType == authTypeSession {
+		// Set session cookie if there is one
+		if c.session != nil {
+			for _, cookie := range c.session.Cookies {
+				req.AddCookie(cookie)
+			}
+		}
+	} else if c.Authentication.authType == authTypeBasic {
+		// Set basic auth information
+		if c.Authentication.username != "" {
+			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
 		}
 	}
 
@@ -141,10 +190,18 @@ func (c *Client) NewMultiPartRequest(method, urlStr string, buf *bytes.Buffer) (
 	// Set required headers
 	req.Header.Set("X-Atlassian-Token", "nocheck")
 
-	// Set session cookie if there is one
-	if c.session != nil {
-		for _, cookie := range c.session.Cookies {
-			req.AddCookie(cookie)
+	// Set authentication information
+	if c.Authentication.authType == authTypeSession {
+		// Set session cookie if there is one
+		if c.session != nil {
+			for _, cookie := range c.session.Cookies {
+				req.AddCookie(cookie)
+			}
+		}
+	} else if c.Authentication.authType == authTypeBasic {
+		// Set basic auth information
+		if c.Authentication.username != "" {
+			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
 		}
 	}
 
