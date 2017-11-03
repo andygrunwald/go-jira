@@ -842,7 +842,7 @@ func (s *IssueService) DoTransitionWithPayload(ticketID, payload interface{}) (*
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return nil, err
+		return resp, err
 	}
 
 	return resp, nil
