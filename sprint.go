@@ -37,6 +37,9 @@ func (s *SprintService) MoveIssuesToSprint(sprintID int, issueIDs []string) (*Re
 	}
 
 	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
 	return resp, err
 }
 
@@ -56,5 +59,9 @@ func (s *SprintService) GetIssuesForSprint(sprintID int) ([]Issue, *Response, er
 
 	result := new(IssuesInSprintResult)
 	resp, err := s.client.Do(req, result)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+
 	return result.Issues, resp, err
 }
