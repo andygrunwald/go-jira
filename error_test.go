@@ -29,6 +29,38 @@ func TestError_NewJiraError(t *testing.T) {
 	}
 }
 
+func TestError_NoResponse(t *testing.T) {
+	err := NewJiraError(nil, errors.New("Original http error"))
+
+	msg := err.Error()
+	if !strings.Contains(msg, "Original http error") {
+		t.Errorf("Expected the original error message: Got\n%s\n", msg)
+	}
+
+	if !strings.Contains(msg, "No response") {
+		t.Errorf("Expected the 'No response' error message: Got\n%s\n", msg)
+	}
+}
+
+func TestError_NoJSON(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, `<html>Not JSON</html>`)
+	})
+
+	req, _ := testClient.NewRequest("GET", "/", nil)
+	resp, _ := testClient.Do(req, nil)
+
+	err := NewJiraError(resp, errors.New("Original http error"))
+	msg := err.Error()
+
+	if !strings.Contains(msg, "Could not parse JSON") {
+		t.Errorf("Expected the 'Could not parse JSON' error message: Got\n%s\n", msg)
+	}
+}
+
 func TestError_NilOriginalMessage(t *testing.T) {
 	defer func() {
 		if r := recover(); r != nil {

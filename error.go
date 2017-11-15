@@ -19,6 +19,10 @@ type Error struct {
 
 // NewJiraError creates a new jira Error
 func NewJiraError(resp *Response, httpError error) error {
+	if resp == nil {
+		return errors.Wrap(httpError, "No response returned")
+	}
+
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -28,7 +32,8 @@ func NewJiraError(resp *Response, httpError error) error {
 	jerr := Error{HTTPError: httpError}
 	err = json.Unmarshal(body, &jerr)
 	if err != nil {
-		return errors.Wrap(err, err.Error())
+		httpError = errors.Wrap(errors.New("Could not parse JSON"), httpError.Error())
+		return errors.Wrap(err, httpError.Error())
 	}
 
 	return &jerr
