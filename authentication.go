@@ -17,7 +17,7 @@ const (
 	authTypeBasic = 1
 	// HTTP Session Authentication
 	authTypeSession = 2
-	// HTTP Session Authentication
+	// Oauth Authentication
 	authTypeOauth = 3
 )
 
