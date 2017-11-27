@@ -3,8 +3,13 @@ package jira
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
+	"time"
 )
 
 const (
@@ -12,6 +17,8 @@ const (
 	authTypeBasic = 1
 	// HTTP Session Authentication
 	authTypeSession = 2
+	// HTTP Session Authentication
+	authTypeOauth = 3
 )
 
 // AuthenticationService handles authentication for the JIRA instance / API.
@@ -28,6 +35,9 @@ type AuthenticationService struct {
 
 	// Basic auth password
 	password string
+
+	// Oauth access token
+	accessToken string
 }
 
 // Session represents a Session JSON response by the JIRA API.
@@ -45,6 +55,13 @@ type Session struct {
 		PreviousLoginTime   string `json:"previousLoginTime"`
 	} `json:"loginInfo"`
 	Cookies []*http.Cookie
+}
+
+// JSON response from the Jira Auth server: https://auth.atlassian.io/oauth2/token
+type JiraAccessToken struct {
+	AccessToken string `json:"access_token"`
+	TokenType   string `json:"token_type"`
+	ExpiresIn   int    `json:"expires_in"`
 }
 
 // AcquireSessionCookie creates a new session for a user in JIRA.
@@ -89,6 +106,13 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 	return true, nil
 }
 
+// Sets the access token on the Authentication Service (helpful in event access tokens are cached by the client code).
+// Use GetOauth2AccessToken to get a new access token and set authType to Oauth
+func (s *AuthenticationService) SetOauth(accessToken string) {
+	s.authType = authTypeOauth
+	s.accessToken = accessToken
+}
+
 // SetBasicAuth sets username and password for the basic auth against the JIRA instance.
 func (s *AuthenticationService) SetBasicAuth(username, password string) {
 	s.username = username
@@ -103,6 +127,8 @@ func (s *AuthenticationService) Authenticated() bool {
 			return s.client.session != nil
 		} else if s.authType == authTypeBasic {
 			return s.username != ""
+		} else if s.authType == authTypeOauth {
+			return s.accessToken != ""
 		}
 
 	}
@@ -177,4 +203,76 @@ func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 	}
 
 	return ret, nil
+}
+
+// Attempts to retrieve an Oauth2 access token from the Jira Auth Server. Returns the details of the access token
+// in a JiraAccessToken struct so that it can be cached by the client application if desired (oauth2 tokens expire
+// after 15 min by default); else, this can be called multiple times to retrieve a new access token.
+//
+// oauthClientId, userKey, and sharedSecret are returned by Jira during the installation of the Add-on
+// scope is the scope to place on the AccessToken returned (e.g., "READ", "READ WRITE", "READ ACT_AS_USER")
+// See: https://developer.atlassian.com/cloud/jira/software/oauth-2-jwt-bearer-token-authorization-grant-type
+func (s *AuthenticationService) GetOauth2AccessToken(oauthClientId, userKey, scope string, sharedSecret []byte) (*JiraAccessToken, error) {
+	// create JSON Web Token
+	jiraAuthURL := "https://auth.atlassian.io"
+	jwtStr, err := createJWT(oauthClientId, s.client.baseURL.String(), jiraAuthURL, userKey, sharedSecret)
+	if err != nil {
+		return nil, fmt.Errorf("Error creating JSON Web Token : %s", err)
+	}
+
+	// Now make a request to the Jira auth server for an access token
+	oauth2Route := fmt.Sprintf("%s/oauth2/token", jiraAuthURL)
+	grantType := "urn:ietf:params:oauth:grant-type:jwt-bearer"
+	form := url.Values{"grant_type": {grantType}, "assertion": {jwtStr}, "scope": {scope}}
+	formBody := strings.NewReader(form.Encode())
+	req, err := http.NewRequest("POST", oauth2Route, formBody)
+	if err != nil {
+		return nil, fmt.Errorf("Error creating Jira Auth Server request : %s", err)
+	}
+	req.Header.Set("Content-Length", strconv.FormatInt(int64(len(form.Encode())), 10))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
+	req.Header.Set("alg", "HS256")
+	req.Header.Set("typ", "JWT")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("Error getting Oauth2 access token from %s : %s", oauth2Route, err)
+	}
+
+	// Finally, decode the JSON from the response
+	defer resp.Body.Close()
+	token := new(JiraAccessToken)
+	if err := json.NewDecoder(resp.Body).Decode(token); err != nil {
+		return nil, fmt.Errorf("Error decoding JSON from response %+v : %s", resp, err)
+	}
+
+	// set oauth type before leaving
+	s.SetOauth(token.AccessToken)
+
+	return token, nil
+}
+
+// Creates a JSON Web Token that will be used as an assertion to get an Oauth2 access token
+// See: https://developer.atlassian.com/cloud/jira/software/understanding-jwt
+func createJWT(oauthClientId, instanceURL, jiraAuthURL, userKey string, sharedSecret []byte) (string, error) {
+	jwt := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"iss": fmt.Sprintf("urn:atlassian:connect:clientid:%s", oauthClientId),
+		"tnt": instanceURL,
+		"sub": fmt.Sprintf("urn:atlassian:connect:userkey:%s", userKey),
+		"aud": jiraAuthURL,
+		"iat": time.Now().Unix(),
+		"exp": time.Now().Unix() + 10, // expires in 10 seconds
+	})
+
+	// sign the jwt using the signing method and the shared secret
+	if signingStr, err := jwt.SigningString(); err != nil {
+		return "", err
+	} else {
+		if _, err = jwt.Method.Sign(signingStr, sharedSecret); err != nil {
+			return "", err
+		}
+	}
+
+	// now return the signed JWT string to be included in the form params
+	return jwt.SignedString(sharedSecret)
 }

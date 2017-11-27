@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"reflect"
 	"testing"
+	"github.com/dgrijalva/jwt-go"
 )
 
 func TestAuthenticationService_AcquireSessionCookie_Failure(t *testing.T) {
@@ -99,6 +100,21 @@ func TestAuthenticationService_SetBasicAuth(t *testing.T) {
 	}
 }
 
+func TestAuthenticationService_SetOauth(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testClient.Authentication.SetOauth("token")
+
+	if testClient.Authentication.accessToken != "token" {
+		t.Errorf("Expected accessToken='token'. Got '%s'", testClient.Authentication.accessToken)
+	}
+
+	if testClient.Authentication.authType != authTypeOauth {
+		t.Errorf("Expected authType %d. Got %d", authTypeOauth, testClient.Authentication.authType)
+	}
+}
+
 func TestAuthenticationService_Authenticated(t *testing.T) {
 	// Skip setup() because we don't want a fully setup client
 	testClient = new(Client)
@@ -130,6 +146,18 @@ func TestAuthenticationService_Authenticated_WithBasicAuthButNoUsername(t *testi
 	// Test before we've attempted to authenticate
 	if testClient.Authentication.Authenticated() != false {
 		t.Error("Expected false, but result was true")
+	}
+}
+
+func TestAuthenticationService_Authenticated_WithOAuth(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testClient.Authentication.SetOauth("token")
+
+	// Test before we've attempted to authenticate
+	if testClient.Authentication.Authenticated() != true {
+		t.Error("Expected true, but result was false")
 	}
 }
 
@@ -319,3 +347,43 @@ func TestAuthenticationService_Logout_FailWithoutLogin(t *testing.T) {
 		t.Error("Expected not nil, got nil")
 	}
 }
+
+func TestAuthenticationService_createJWT(t *testing.T) {
+	testURL := "https://example.com"
+	secret := []byte("secret")
+	jwtStr, err := createJWT("oauthId", testURL, testURL, "user", secret)
+	if err != nil {
+		t.Errorf("Unexpected error creating JWT: %s", err)
+	}
+
+	type JiraClaims struct {
+		InstanceURL string `json:"tnt"`
+		jwt.StandardClaims
+	}
+
+	token, err := jwt.ParseWithClaims(jwtStr, &JiraClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return secret, nil
+	})
+	if err != nil {
+		t.Errorf("Unexpected error parsing JWT: %s", err)
+	}
+
+	if claims, ok := token.Claims.(*JiraClaims); !ok {
+		t.Errorf("Unexpected error processing custom Jira Claims: %s", err)
+	} else {
+		if claims.InstanceURL != testURL {
+			t.Errorf("Exepcted %s in claims 'tnt' but got: %s", testURL, testURL)
+		}
+		if claims.Audience != testURL {
+			t.Errorf("Exepcted %s in claims 'aud' but got: %s", testURL, testURL)
+		}
+		if claims.Issuer != "urn:atlassian:connect:clientid:oauthId" {
+			t.Errorf("Exepcted urn:atlassian:connect:clientid:oauthId in claims 'iss' but got: %s", claims.Issuer)
+		}
+		if claims.Subject!= "urn:atlassian:connect:userkey:user" {
+			t.Errorf("Exepcted urn:atlassian:connect:userkey:user in claims 'sub' but got: %s", claims.Subject)
+		}
+	}
+}
+
+

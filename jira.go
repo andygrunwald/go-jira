@@ -20,7 +20,7 @@ type Client struct {
 	// Base URL for API requests.
 	baseURL *url.URL
 
-	// Session storage if the user authentificate with a Session cookie
+	// Session storage if the user authenticate with a Session cookie
 	session *Session
 
 	// Services used for talking to different parts of the JIRA API.
@@ -97,6 +97,9 @@ func (c *Client) NewRawRequest(method, urlStr string, body io.Reader) (*http.Req
 		if c.Authentication.username != "" {
 			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
 		}
+	} else if c.Authentication.authType == authTypeOauth {
+		req.Header.Set("Accept", "application/json")
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Authentication.accessToken))
 	}
 
 	return req, nil
@@ -143,6 +146,9 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 		if c.Authentication.username != "" {
 			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
 		}
+	} else if c.Authentication.authType == authTypeOauth {
+		req.Header.Set("Accept", "application/json")
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Authentication.accessToken))
 	}
 
 	return req, nil
@@ -203,6 +209,9 @@ func (c *Client) NewMultiPartRequest(method, urlStr string, buf *bytes.Buffer) (
 		if c.Authentication.username != "" {
 			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
 		}
+	} else if c.Authentication.authType == authTypeOauth {
+		req.Header.Set("Accept", "application/json")
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Authentication.accessToken))
 	}
 
 	return req, nil
