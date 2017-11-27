@@ -72,3 +72,22 @@ func (s *UserService) Create(user *User) (*User, *Response, error) {
 	}
 	return responseUser, resp, nil
 }
+
+// Finds user info from JIRA:
+//  it can find users by email,username or name
+//
+// JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-findUsers
+func (s *UserService) Find(property string) ([]User, *Response, error) {
+	apiEndpoint := fmt.Sprintf("/rest/api/2/user/search?username=%s", property)
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	users := []User{}
+	resp, err := s.client.Do(req, &users)
+	if err != nil {
+		return nil, resp, err
+	}
+	return users, resp, nil
+}
