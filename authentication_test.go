@@ -3,11 +3,11 @@ package jira
 import (
 	"bytes"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"io/ioutil"
 	"net/http"
 	"reflect"
 	"testing"
-	"github.com/dgrijalva/jwt-go"
 )
 
 func TestAuthenticationService_AcquireSessionCookie_Failure(t *testing.T) {
@@ -380,10 +380,8 @@ func TestAuthenticationService_createJWT(t *testing.T) {
 		if claims.Issuer != "urn:atlassian:connect:clientid:oauthId" {
 			t.Errorf("Exepcted urn:atlassian:connect:clientid:oauthId in claims 'iss' but got: %s", claims.Issuer)
 		}
-		if claims.Subject!= "urn:atlassian:connect:userkey:user" {
+		if claims.Subject != "urn:atlassian:connect:userkey:user" {
 			t.Errorf("Exepcted urn:atlassian:connect:userkey:user in claims 'sub' but got: %s", claims.Subject)
 		}
 	}
 }
-
-

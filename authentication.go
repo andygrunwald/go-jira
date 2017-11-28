@@ -99,7 +99,7 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 	}
 
 	if err != nil {
-		return false, errors.Wrap(err,"Auth at JIRA instance failed (HTTP(S) request)")
+		return false, errors.Wrap(err, "Auth at JIRA instance failed (HTTP(S) request)")
 	}
 	if resp != nil && resp.StatusCode != 200 {
 		return false, fmt.Errorf("Auth at JIRA instance failed (HTTP(S) request). Status code: %d", resp.StatusCode)
@@ -156,7 +156,7 @@ func (s *AuthenticationService) Logout() error {
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return errors.Wrap(err,"Error sending the logout request")
+		return errors.Wrap(err, "Error sending the logout request")
 	}
 	if resp.StatusCode != 204 {
 		return fmt.Errorf("The logout was unsuccessful with status %d", resp.StatusCode)
@@ -183,12 +183,12 @@ func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 	apiEndpoint := "rest/auth/1/session"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
-		return nil, errors.Wrap(err,"Could not create request for getting user info")
+		return nil, errors.Wrap(err, "Could not create request for getting user info")
 	}
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return nil, errors.Wrap(err,"Error sending request to get user info")
+		return nil, errors.Wrap(err, "Error sending request to get user info")
 	}
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("Getting user info failed with status : %d", resp.StatusCode)
@@ -198,13 +198,13 @@ func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 	ret := new(Session)
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, errors.Wrap(err,"Couldn't read body from the response")
+		return nil, errors.Wrap(err, "Couldn't read body from the response")
 	}
 
 	err = json.Unmarshal(data, &ret)
 
 	if err != nil {
-		return nil, errors.Wrap(err,"Could not unmarshall received user info")
+		return nil, errors.Wrap(err, "Could not unmarshall received user info")
 	}
 
 	return ret, nil
@@ -221,7 +221,7 @@ func (s *AuthenticationService) GetOauth2AccessToken(oauthClientId, userKey, sco
 	// create JSON Web Token
 	jwtStr, err := createJWT(oauthClientId, s.client.baseURL.String(), jiraAuthURL, userKey, sharedSecret)
 	if err != nil {
-		return nil, errors.Wrap(err,"Error creating JSON Web Token")
+		return nil, errors.Wrap(err, "Error creating JSON Web Token")
 	}
 
 	// Now make a request to the Jira auth server for an access token
@@ -230,7 +230,7 @@ func (s *AuthenticationService) GetOauth2AccessToken(oauthClientId, userKey, sco
 	formBody := strings.NewReader(form.Encode())
 	req, err := http.NewRequest("POST", jiraOauth2URL, formBody)
 	if err != nil {
-		return nil, errors.Wrap(err,"Error creating Jira Auth Server request")
+		return nil, errors.Wrap(err, "Error creating Jira Auth Server request")
 	}
 	req.Header.Set("Content-Length", strconv.FormatInt(int64(len(form.Encode())), 10))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
