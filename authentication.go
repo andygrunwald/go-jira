@@ -174,7 +174,7 @@ func (s *AuthenticationService) Logout() error {
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 	if s == nil {
-		return nil, fmt.Errorf("Authenticaiton Service is not instantiated")
+		return nil, fmt.Errorf("Authentication Service is not instantiated")
 	}
 	if s.authType != authTypeSession || s.client.session == nil {
 		return nil, fmt.Errorf("No user is authenticated yet")
