@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/jarcoal/httpmock"
 	"io/ioutil"
 	"net/http"
 	"reflect"
@@ -149,7 +150,7 @@ func TestAuthenticationService_Authenticated_WithBasicAuthButNoUsername(t *testi
 	}
 }
 
-func TestAuthenticationService_Authenticated_WithOAuth(t *testing.T) {
+func TestAuthenticationService_Authenticated_WithOAuth2(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -345,6 +346,29 @@ func TestAuthenticationService_Logout_FailWithoutLogin(t *testing.T) {
 	err := testClient.Authentication.Logout()
 	if err == nil {
 		t.Error("Expected not nil, got nil")
+	}
+}
+
+func TestAuthenticationService_GetOauth2AccessToken(t *testing.T) {
+	setup()
+	defer teardown()
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+	httpmock.RegisterResponder("POST", jiraOauth2URL, httpmock.NewStringResponder(200, `{"access_token":"token","token_type":"Bearer","expires_in":900}`))
+	a, err := testClient.Authentication.GetOauth2AccessToken("clientId", "userKey", "READ", []byte("secret"))
+	if err != nil {
+		t.Errorf("Expected no error getting oauth2 access token, but got : %s", err)
+	}
+	if a != nil {
+		if a.AccessToken != "token" {
+			t.Errorf("Unexpected access token : %s", a.AccessToken)
+		}
+		if a.TokenType != "Bearer" {
+			t.Errorf("Unexpected access token type : %s", a.TokenType)
+		}
+		if a.ExpiresIn != 900 {
+			t.Errorf("Unexpected access token expiration : %d", a.ExpiresIn)
+		}
 	}
 }
 

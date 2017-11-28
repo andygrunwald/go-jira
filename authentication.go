@@ -240,6 +240,8 @@ func (s *AuthenticationService) GetOauth2AccessToken(oauthClientId, userKey, sco
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error getting Oauth2 access token from %s", jiraOauth2URL))
+	} else if resp.StatusCode != 200 && resp.StatusCode != 204 {
+		return nil, fmt.Errorf("Getting Oauth2 access token failed with status : %d", resp.StatusCode)
 	}
 
 	// Finally, decode the JSON from the response
@@ -249,7 +251,7 @@ func (s *AuthenticationService) GetOauth2AccessToken(oauthClientId, userKey, sco
 		return nil, errors.Wrap(err, fmt.Sprintf("Error decoding JSON from response %+v", resp))
 	}
 
-	// set oauth type before leaving
+	// set auth type
 	s.SetOauth2(token.AccessToken)
 
 	return token, nil
