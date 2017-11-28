@@ -97,7 +97,7 @@ func (c *Client) NewRawRequest(method, urlStr string, body io.Reader) (*http.Req
 		if c.Authentication.username != "" {
 			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
 		}
-	} else if c.Authentication.authType == authTypeOauth {
+	} else if c.Authentication.authType == authTypeOauth2 {
 		req.Header.Set("Accept", "application/json")
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Authentication.accessToken))
 	}
@@ -146,7 +146,7 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 		if c.Authentication.username != "" {
 			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
 		}
-	} else if c.Authentication.authType == authTypeOauth {
+	} else if c.Authentication.authType == authTypeOauth2 {
 		req.Header.Set("Accept", "application/json")
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Authentication.accessToken))
 	}
@@ -209,7 +209,7 @@ func (c *Client) NewMultiPartRequest(method, urlStr string, buf *bytes.Buffer) (
 		if c.Authentication.username != "" {
 			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
 		}
-	} else if c.Authentication.authType == authTypeOauth {
+	} else if c.Authentication.authType == authTypeOauth2 {
 		req.Header.Set("Accept", "application/json")
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Authentication.accessToken))
 	}

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -17,8 +18,12 @@ const (
 	authTypeBasic = 1
 	// HTTP Session Authentication
 	authTypeSession = 2
-	// Oauth Authentication
-	authTypeOauth = 3
+	// Oauth2 Authentication
+	authTypeOauth2 = 3
+	// Jira Auth server URL
+	jiraAuthURL = "https://auth.atlassian.io"
+	// URL to get Oauth2 Access Tokens
+	jiraOauth2URL = jiraAuthURL + "/oauth2/token"
 )
 
 // AuthenticationService handles authentication for the JIRA instance / API.
@@ -94,7 +99,7 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 	}
 
 	if err != nil {
-		return false, fmt.Errorf("Auth at JIRA instance failed (HTTP(S) request). %s", err)
+		return false, errors.Wrap(err,"Auth at JIRA instance failed (HTTP(S) request)")
 	}
 	if resp != nil && resp.StatusCode != 200 {
 		return false, fmt.Errorf("Auth at JIRA instance failed (HTTP(S) request). Status code: %d", resp.StatusCode)
@@ -108,8 +113,8 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 
 // Sets the access token on the Authentication Service (helpful in event access tokens are cached by the client code).
 // Use GetOauth2AccessToken to get a new access token and set authType to Oauth
-func (s *AuthenticationService) SetOauth(accessToken string) {
-	s.authType = authTypeOauth
+func (s *AuthenticationService) SetOauth2(accessToken string) {
+	s.authType = authTypeOauth2
 	s.accessToken = accessToken
 }
 
@@ -127,7 +132,7 @@ func (s *AuthenticationService) Authenticated() bool {
 			return s.client.session != nil
 		} else if s.authType == authTypeBasic {
 			return s.username != ""
-		} else if s.authType == authTypeOauth {
+		} else if s.authType == authTypeOauth2 {
 			return s.accessToken != ""
 		}
 
@@ -140,18 +145,18 @@ func (s *AuthenticationService) Authenticated() bool {
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 func (s *AuthenticationService) Logout() error {
 	if s.authType != authTypeSession || s.client.session == nil {
-		return fmt.Errorf("No user is authenticated yet.")
+		return fmt.Errorf("No user is authenticated yet")
 	}
 
 	apiEndpoint := "rest/auth/1/session"
 	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
 	if err != nil {
-		return fmt.Errorf("Creating the request to log the user out failed : %s", err)
+		return errors.Wrap(err, "Creating the request to log the user out failed")
 	}
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return fmt.Errorf("Error sending the logout request: %s", err)
+		return errors.Wrap(err,"Error sending the logout request")
 	}
 	if resp.StatusCode != 204 {
 		return fmt.Errorf("The logout was unsuccessful with status %d", resp.StatusCode)
@@ -169,7 +174,7 @@ func (s *AuthenticationService) Logout() error {
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 	if s == nil {
-		return nil, fmt.Errorf("AUthenticaiton Service is not instantiated")
+		return nil, fmt.Errorf("Authenticaiton Service is not instantiated")
 	}
 	if s.authType != authTypeSession || s.client.session == nil {
 		return nil, fmt.Errorf("No user is authenticated yet")
@@ -178,12 +183,12 @@ func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 	apiEndpoint := "rest/auth/1/session"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
-		return nil, fmt.Errorf("Could not create request for getting user info : %s", err)
+		return nil, errors.Wrap(err,"Could not create request for getting user info")
 	}
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return nil, fmt.Errorf("Error sending request to get user info : %s", err)
+		return nil, errors.Wrap(err,"Error sending request to get user info")
 	}
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("Getting user info failed with status : %d", resp.StatusCode)
@@ -193,13 +198,13 @@ func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 	ret := new(Session)
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("Couldn't read body from the response : %s", err)
+		return nil, errors.Wrap(err,"Couldn't read body from the response")
 	}
 
 	err = json.Unmarshal(data, &ret)
 
 	if err != nil {
-		return nil, fmt.Errorf("Could not unmarshall received user info : %s", err)
+		return nil, errors.Wrap(err,"Could not unmarshall received user info")
 	}
 
 	return ret, nil
@@ -214,20 +219,18 @@ func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 // See: https://developer.atlassian.com/cloud/jira/software/oauth-2-jwt-bearer-token-authorization-grant-type
 func (s *AuthenticationService) GetOauth2AccessToken(oauthClientId, userKey, scope string, sharedSecret []byte) (*JiraAccessToken, error) {
 	// create JSON Web Token
-	jiraAuthURL := "https://auth.atlassian.io"
 	jwtStr, err := createJWT(oauthClientId, s.client.baseURL.String(), jiraAuthURL, userKey, sharedSecret)
 	if err != nil {
-		return nil, fmt.Errorf("Error creating JSON Web Token : %s", err)
+		return nil, errors.Wrap(err,"Error creating JSON Web Token")
 	}
 
 	// Now make a request to the Jira auth server for an access token
-	oauth2Route := fmt.Sprintf("%s/oauth2/token", jiraAuthURL)
 	grantType := "urn:ietf:params:oauth:grant-type:jwt-bearer"
 	form := url.Values{"grant_type": {grantType}, "assertion": {jwtStr}, "scope": {scope}}
 	formBody := strings.NewReader(form.Encode())
-	req, err := http.NewRequest("POST", oauth2Route, formBody)
+	req, err := http.NewRequest("POST", jiraOauth2URL, formBody)
 	if err != nil {
-		return nil, fmt.Errorf("Error creating Jira Auth Server request : %s", err)
+		return nil, errors.Wrap(err,"Error creating Jira Auth Server request")
 	}
 	req.Header.Set("Content-Length", strconv.FormatInt(int64(len(form.Encode())), 10))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
@@ -236,18 +239,18 @@ func (s *AuthenticationService) GetOauth2AccessToken(oauthClientId, userKey, sco
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("Error getting Oauth2 access token from %s : %s", oauth2Route, err)
+		return nil, errors.Wrap(err, fmt.Sprintf("Error getting Oauth2 access token from %s", jiraOauth2URL))
 	}
 
 	// Finally, decode the JSON from the response
 	defer resp.Body.Close()
 	token := new(JiraAccessToken)
 	if err := json.NewDecoder(resp.Body).Decode(token); err != nil {
-		return nil, fmt.Errorf("Error decoding JSON from response %+v : %s", resp, err)
+		return nil, errors.Wrap(err, fmt.Sprintf("Error decoding JSON from response %+v", resp))
 	}
 
 	// set oauth type before leaving
-	s.SetOauth(token.AccessToken)
+	s.SetOauth2(token.AccessToken)
 
 	return token, nil
 }
@@ -266,10 +269,10 @@ func createJWT(oauthClientId, instanceURL, jiraAuthURL, userKey string, sharedSe
 
 	// sign the jwt using the signing method and the shared secret
 	if signingStr, err := jwt.SigningString(); err != nil {
-		return "", err
+		return "", errors.Wrap(err, "Error creating JWT signing string")
 	} else {
 		if _, err = jwt.Method.Sign(signingStr, sharedSecret); err != nil {
-			return "", err
+			return "", errors.Wrap(err, "Error signing JWT with secret")
 		}
 	}
 

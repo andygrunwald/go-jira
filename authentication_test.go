@@ -100,18 +100,18 @@ func TestAuthenticationService_SetBasicAuth(t *testing.T) {
 	}
 }
 
-func TestAuthenticationService_SetOauth(t *testing.T) {
+func TestAuthenticationService_SetOauth2(t *testing.T) {
 	setup()
 	defer teardown()
 
-	testClient.Authentication.SetOauth("token")
+	testClient.Authentication.SetOauth2("token")
 
 	if testClient.Authentication.accessToken != "token" {
 		t.Errorf("Expected accessToken='token'. Got '%s'", testClient.Authentication.accessToken)
 	}
 
-	if testClient.Authentication.authType != authTypeOauth {
-		t.Errorf("Expected authType %d. Got %d", authTypeOauth, testClient.Authentication.authType)
+	if testClient.Authentication.authType != authTypeOauth2 {
+		t.Errorf("Expected authType %d. Got %d", authTypeOauth2, testClient.Authentication.authType)
 	}
 }
 
@@ -153,7 +153,7 @@ func TestAuthenticationService_Authenticated_WithOAuth(t *testing.T) {
 	setup()
 	defer teardown()
 
-	testClient.Authentication.SetOauth("token")
+	testClient.Authentication.SetOauth2("token")
 
 	// Test before we've attempted to authenticate
 	if testClient.Authentication.Authenticated() != true {
