@@ -55,3 +55,21 @@ func TestUserService_Create(t *testing.T) {
 		t.Error("Expected user. User is nil")
 	}
 }
+
+func TestUserService_GetGroups(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/user/groups", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, "/rest/api/2/user/groups?username=fred")
+
+		w.WriteHeader(http.StatusCreated)
+		fmt.Fprint(w, `[{"name":"jira-software-users","self":"http://www.example.com/jira/rest/api/2/user?username=fred"}]`)
+	})
+
+	if groups, _, err := testClient.User.GetGroups("fred"); err != nil {
+		t.Errorf("Error given: %s", err)
+	} else if groups == nil {
+		t.Error("Expected user groups. []UserGroup is nil")
+	}
+}
