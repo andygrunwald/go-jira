@@ -54,7 +54,7 @@ type GroupMember struct {
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/server/#api/2/group-getUsersFromGroup
 func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/group/member?groupname=%s", name)
+	apiEndpoint := fmt.Sprintf("/rest/api/2/group/member?groupname=%s", name)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
@@ -73,7 +73,7 @@ func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-addUserToGroup
 func (s *GroupService) Add(groupname string, username string) (*Group, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/group/user?groupname=%s", groupname)
+	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s", groupname)
 	var user struct {
 		Name string `json:"name"`
 	}
@@ -97,11 +97,7 @@ func (s *GroupService) Add(groupname string, username string) (*Group, *Response
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-removeUserFromGroup
 func (s *GroupService) Remove(groupname string, username string) (*Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/group/user?groupname=%s&username=%s", groupname, username)
-	// var user struct {
-	// 	Name string `json:"name"`
-	// }
-	// user.Name = username
+	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s&username=%s", groupname, username)
 	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
 	if err != nil {
 		return nil, err
