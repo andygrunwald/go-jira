@@ -46,7 +46,7 @@ func (s *UserService) Get(username string) (*User, *Response, error) {
 	user := new(User)
 	resp, err := s.client.Do(req, user)
 	if err != nil {
-		return nil, resp, err
+		return nil, resp, NewJiraError(resp, err)
 	}
 	return user, resp, nil
 }
@@ -70,11 +70,13 @@ func (s *UserService) Create(user *User) (*User, *Response, error) {
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, resp, fmt.Errorf("Could not read the returned data")
+		e := fmt.Errorf("Could not read the returned data")
+		return nil, resp, NewJiraError(resp, e)
 	}
 	err = json.Unmarshal(data, responseUser)
 	if err != nil {
-		return nil, resp, fmt.Errorf("Could not unmarshall the data into struct")
+		e := fmt.Errorf("Could not unmarshall the data into struct")
+		return nil, resp, NewJiraError(resp, e)
 	}
 	return responseUser, resp, nil
 }
@@ -92,7 +94,7 @@ func (s *UserService) GetGroups(username string) (*[]UserGroup, *Response, error
 	userGroups := new([]UserGroup)
 	resp, err := s.client.Do(req, userGroups)
 	if err != nil {
-		return nil, resp, err
+		return nil, resp, NewJiraError(resp, err)
 	}
 	return userGroups, resp, nil
 }
@@ -111,7 +113,7 @@ func (s *UserService) Find(property string) ([]User, *Response, error) {
 	users := []User{}
 	resp, err := s.client.Do(req, &users)
 	if err != nil {
-		return nil, resp, err
+		return nil, resp, NewJiraError(resp, err)
 	}
 	return users, resp, nil
 }
