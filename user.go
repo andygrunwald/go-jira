@@ -27,6 +27,12 @@ type User struct {
 	ApplicationKeys []string   `json:"applicationKeys,omitempty" structs:"applicationKeys,omitempty"`
 }
 
+// UserGroup represents the group list
+type UserGroup struct {
+	Self string `json:"self,omitempty" structs:"self,omitempty"`
+	Name string `json:"name,omitempty" structs:"name,omitempty"`
+}
+
 // Get gets user info from JIRA
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUser
@@ -71,4 +77,22 @@ func (s *UserService) Create(user *User) (*User, *Response, error) {
 		return nil, resp, fmt.Errorf("Could not unmarshall the data into struct")
 	}
 	return responseUser, resp, nil
+}
+
+// GetGroups returns the groups which the user belongs to
+//
+// JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUserGroups
+func (s *UserService) GetGroups(username string) (*[]UserGroup, *Response, error) {
+	apiEndpoint := fmt.Sprintf("/rest/api/2/user/groups?username=%s", username)
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	userGroups := new([]UserGroup)
+	resp, err := s.client.Do(req, userGroups)
+	if err != nil {
+		return nil, resp, err
+	}
+	return userGroups, resp, nil
 }
