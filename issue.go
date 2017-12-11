@@ -225,11 +225,20 @@ type Priority struct {
 	ID      string `json:"id,omitempty" structs:"id,omitempty"`
 }
 
-// Watches represents a type of how many user are "observing" a JIRA issue to track the status / updates.
+// Watches represents a type of how many and which user are "observing" a JIRA issue to track the status / updates.
 type Watches struct {
-	Self       string `json:"self,omitempty" structs:"self,omitempty"`
-	WatchCount int    `json:"watchCount,omitempty" structs:"watchCount,omitempty"`
-	IsWatching bool   `json:"isWatching,omitempty" structs:"isWatching,omitempty"`
+	Self       string     `json:"self,omitempty" structs:"self,omitempty"`
+	WatchCount int        `json:"watchCount,omitempty" structs:"watchCount,omitempty"`
+	IsWatching bool       `json:"isWatching,omitempty" structs:"isWatching,omitempty"`
+	Watchers   []*Watcher `json:"watchers,omitempty" structs:"watchers,omitempty"`
+}
+
+// Watcher represents a simplified user that "observes" the issue
+type Watcher struct {
+	Self        string `json:"self,omitempty" structs:"self,omitempty"`
+	Name        string `json:"name,omitempty" structs:"name,omitempty"`
+	DisplayName string `json:"displayName,omitempty" structs:"displayName,omitempty"`
+	Active      bool   `json:"active,omitempty" structs:"active,omitempty"`
 }
 
 // AvatarUrls represents different dimensions of avatars / images
@@ -958,5 +967,67 @@ func (s *IssueService) Delete(issueID string) (*Response, error) {
 	}
 
 	resp, err := s.client.Do(req, nil)
+	return resp, err
+}
+
+// GetWatchers wil return all the users watching/observing the given issue
+func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
+	watchesApiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
+
+	req, err := s.client.NewRequest("GET", watchesApiEndPoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	watches := new(Watches)
+	resp, err := s.client.Do(req, watches)
+	if err != nil {
+		return nil, nil, NewJiraError(resp, err)
+	}
+
+	result := []User{}
+	user := new(User)
+	for _, watcher := range watches.Watchers {
+		user, resp, err = s.client.User.Get(watcher.Name)
+		if err != nil {
+			return nil, resp, NewJiraError(resp, err)
+		}
+		result = append(result, *user)
+	}
+
+	return &result, resp, nil
+}
+
+// SetWatcher adds watcher to the given issue
+func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, error) {
+	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
+
+	req, err := s.client.NewRequest("POST", apiEndPoint, userName)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+
+	return resp, err
+}
+
+// RemoveWatcher removes given user from given issue
+func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response, error) {
+	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
+
+	req, err := s.client.NewRequest("DELETE", apiEndPoint, userName)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+
 	return resp, err
 }
