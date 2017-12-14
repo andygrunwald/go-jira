@@ -18,6 +18,8 @@ type groupMembersResult struct {
 	MaxResults int           `json:"maxResults"`
 	Total      int           `json:"total"`
 	Members    []GroupMember `json:"values"`
+	IsLast     bool          `json:"isLast"`
+	NextPage   string        `json:"nextPage"`
 }
 
 // GroupMember reflects a single member of a group
@@ -49,5 +51,20 @@ func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
 		return nil, resp, err
 	}
 
-	return group.Members, resp, nil
+	result := group.Members
+	for group.IsLast != true {
+		apiEndpoint = group.NextPage
+		req, err = s.client.NewRequest("GET", apiEndpoint, nil)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		group = new(groupMembersResult)
+		resp, err = s.client.Do(req, group)
+		if err != nil {
+			return nil, resp, err
+		}
+		result = append(result, group.Members...)
+	}
+	return result, resp, nil
 }
