@@ -44,7 +44,7 @@ func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
 	}
 
 	group := new(groupMembersResult)
-	resp, err := s.client.Do(req, group)
+	resp, err := s.client.Do(req, &group)
 	if err != nil {
 		return nil, resp, err
 	}
