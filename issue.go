@@ -971,6 +971,8 @@ func (s *IssueService) Delete(issueID string) (*Response, error) {
 }
 
 // GetWatchers wil return all the users watching/observing the given issue
+//
+// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-getIssueWatchers
 func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
 	watchesApiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
@@ -999,6 +1001,8 @@ func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
 }
 
 // SetWatcher adds watcher to the given issue
+//
+// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-addWatcher
 func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
@@ -1016,6 +1020,8 @@ func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, e
 }
 
 // RemoveWatcher removes given user from given issue
+//
+// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-removeWatcher
 func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
