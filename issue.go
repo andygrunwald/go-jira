@@ -303,6 +303,7 @@ type transitionResult struct {
 type Transition struct {
 	ID     string                     `json:"id" structs:"id"`
 	Name   string                     `json:"name" structs:"name"`
+	To     Status                     `json:"to" structs:"status"`
 	Fields map[string]TransitionField `json:"fields" structs:"fields"`
 }
 
