@@ -101,12 +101,12 @@ type IssueFields struct {
 	Project              Project       `json:"project,omitempty" structs:"project,omitempty"`
 	Resolution           *Resolution   `json:"resolution,omitempty" structs:"resolution,omitempty"`
 	Priority             *Priority     `json:"priority,omitempty" structs:"priority,omitempty"`
-	Resolutiondate       string        `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
-	Created              string        `json:"created,omitempty" structs:"created,omitempty"`
-	Duedate              string        `json:"duedate,omitempty" structs:"duedate,omitempty"`
+	Resolutiondate       Time          `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
+	Created              Time          `json:"created,omitempty" structs:"created,omitempty"`
+	Duedate              Time          `json:"duedate,omitempty" structs:"duedate,omitempty"`
 	Watches              *Watches      `json:"watches,omitempty" structs:"watches,omitempty"`
 	Assignee             *User         `json:"assignee,omitempty" structs:"assignee,omitempty"`
-	Updated              string        `json:"updated,omitempty" structs:"updated,omitempty"`
+	Updated              Time          `json:"updated,omitempty" structs:"updated,omitempty"`
 	Description          string        `json:"description,omitempty" structs:"description,omitempty"`
 	Summary              string        `json:"summary" structs:"summary"`
 	Creator              *User         `json:"Creator,omitempty" structs:"Creator,omitempty"`
@@ -330,6 +330,10 @@ type Option struct {
 // UnmarshalJSON will transform the JIRA time into a time.Time
 // during the transformation of the JIRA JSON response
 func (t *Time) UnmarshalJSON(b []byte) error {
+	// Ignore null, like in the main JSON package.
+	if string(b) == "null" {
+			return nil
+	}
 	ti, err := time.Parse("\"2006-01-02T15:04:05.999-0700\"", string(b))
 	if err != nil {
 		return err
