@@ -303,6 +303,7 @@ type transitionResult struct {
 type Transition struct {
 	ID     string                     `json:"id" structs:"id"`
 	Name   string                     `json:"name" structs:"name"`
+	To     Status                     `json:"to" structs:"status"`
 	Fields map[string]TransitionField `json:"fields" structs:"fields"`
 }
 
@@ -313,12 +314,18 @@ type TransitionField struct {
 
 // CreateTransitionPayload is used for creating new issue transitions
 type CreateTransitionPayload struct {
-	Transition TransitionPayload `json:"transition" structs:"transition"`
+	Transition TransitionPayload       `json:"transition" structs:"transition"`
+	Fields     TransitionPayloadFields `json:"fields" structs:"fields"`
 }
 
 // TransitionPayload represents the request payload of Transition calls like DoTransition
 type TransitionPayload struct {
 	ID string `json:"id" structs:"id"`
+}
+
+// TransitionPayloadFields represents the fields that can be set when executing a transition
+type TransitionPayloadFields struct {
+	Resolution *Resolution `json:"resolution,omitempty" structs:"resolution,omitempty"`
 }
 
 // Option represents an option value in a SelectList or MultiSelect
