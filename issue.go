@@ -367,6 +367,14 @@ func (t *Date) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// MarshalJSON will transform the Date object into a short
+// date string as JIRA expects during the creation of a
+// JIRA request
+func (t Date) MarshalJSON() ([]byte, error) {
+	time := time.Time(t)
+	return []byte(time.Format("\"2006-01-02\"")), nil
+}
+
 // Worklog represents the work log of a JIRA issue.
 // One Worklog contains zero or n WorklogRecords
 // JIRA Wiki: https://confluence.atlassian.com/jira/logging-work-on-an-issue-185729605.html
