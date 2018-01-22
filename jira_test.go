@@ -112,6 +112,9 @@ func TestNewClient_WithServices(t *testing.T) {
 	if c.Group == nil {
 		t.Error("No GroupService provided")
 	}
+	if c.Version == nil {
+		t.Error("No VersionService provided")
+	}
 }
 
 func TestCheckResponse(t *testing.T) {

@@ -53,18 +53,6 @@ type Project struct {
 	ProjectCategory ProjectCategory `json:"projectCategory,omitempty" structs:"projectCategory,omitempty"`
 }
 
-// Version represents a single release version of a project
-type Version struct {
-	Self            string `json:"self" structs:"self,omitempty"`
-	ID              string `json:"id" structs:"id,omitempty"`
-	Name            string `json:"name" structs:"name,omitempty"`
-	Archived        bool   `json:"archived" structs:"archived,omitempty"`
-	Released        bool   `json:"released" structs:"released,omitempty"`
-	ReleaseDate     string `json:"releaseDate" structs:"releaseDate,omitempty"`
-	UserReleaseDate string `json:"userReleaseDate" structs:"userReleaseDate,omitempty"`
-	ProjectID       int    `json:"projectId" structs:"projectId,omitempty"` // Unlike other IDs, this is returned as a number
-}
-
 // ProjectComponent represents a single component of a project
 type ProjectComponent struct {
 	Self                string `json:"self" structs:"self,omitempty"`
