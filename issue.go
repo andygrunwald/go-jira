@@ -103,7 +103,7 @@ type IssueFields struct {
 	Priority             *Priority     `json:"priority,omitempty" structs:"priority,omitempty"`
 	Resolutiondate       Time          `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
 	Created              Time          `json:"created,omitempty" structs:"created,omitempty"`
-	Duedate              Time          `json:"duedate,omitempty" structs:"duedate,omitempty"`
+	Duedate              Date          `json:"duedate,omitempty" structs:"duedate,omitempty"`
 	Watches              *Watches      `json:"watches,omitempty" structs:"watches,omitempty"`
 	Assignee             *User         `json:"assignee,omitempty" structs:"assignee,omitempty"`
 	Updated              Time          `json:"updated,omitempty" structs:"updated,omitempty"`
@@ -294,6 +294,9 @@ type Parent struct {
 // Time represents the Time definition of JIRA as a time.Time of go
 type Time time.Time
 
+// Date represents the Date definition of JIRA as a time.Time of go
+type Date time.Time
+
 // Wrapper struct for search result
 type transitionResult struct {
 	Transitions []Transition `json:"transitions" structs:"transitions"`
@@ -339,7 +342,7 @@ type Option struct {
 func (t *Time) UnmarshalJSON(b []byte) error {
 	// Ignore null, like in the main JSON package.
 	if string(b) == "null" {
-			return nil
+		return nil
 	}
 	ti, err := time.Parse("\"2006-01-02T15:04:05.999-0700\"", string(b))
 	if err != nil {
@@ -347,6 +350,29 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 	}
 	*t = Time(ti)
 	return nil
+}
+
+// UnmarshalJSON will transform the JIRA date into a time.Time
+// during the transformation of the JIRA JSON response
+func (t *Date) UnmarshalJSON(b []byte) error {
+	// Ignore null, like in the main JSON package.
+	if string(b) == "null" {
+		return nil
+	}
+	ti, err := time.Parse("\"2006-01-02\"", string(b))
+	if err != nil {
+		return err
+	}
+	*t = Date(ti)
+	return nil
+}
+
+// MarshalJSON will transform the Date object into a short
+// date string as JIRA expects during the creation of a
+// JIRA request
+func (t Date) MarshalJSON() ([]byte, error) {
+	time := time.Time(t)
+	return []byte(time.Format("\"2006-01-02\"")), nil
 }
 
 // Worklog represents the work log of a JIRA issue.
