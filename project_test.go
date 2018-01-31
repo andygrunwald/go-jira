@@ -31,6 +31,31 @@ func TestProjectService_GetList(t *testing.T) {
 	}
 }
 
+func TestProjectService_ListWithOptions(t *testing.T) {
+	setup()
+	defer teardown()
+	testAPIEdpoint := "/rest/api/2/project"
+
+	raw, err := ioutil.ReadFile("./mocks/all_projects.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, "/rest/api/2/project?expand=issueTypes")
+		fmt.Fprint(w, string(raw))
+	})
+
+	projects, _, err := testClient.Project.ListWithOptions(&GetQueryOptions{Expand: "issueTypes"})
+	if projects == nil {
+		t.Error("Expected project list. Project list is nil")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
+
 func TestProjectService_Get(t *testing.T) {
 	setup()
 	defer teardown()
