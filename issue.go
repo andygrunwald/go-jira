@@ -101,12 +101,12 @@ type IssueFields struct {
 	Project              Project       `json:"project,omitempty" structs:"project,omitempty"`
 	Resolution           *Resolution   `json:"resolution,omitempty" structs:"resolution,omitempty"`
 	Priority             *Priority     `json:"priority,omitempty" structs:"priority,omitempty"`
-	Resolutiondate       string        `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
-	Created              string        `json:"created,omitempty" structs:"created,omitempty"`
-	Duedate              string        `json:"duedate,omitempty" structs:"duedate,omitempty"`
+	Resolutiondate       Time          `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
+	Created              Time          `json:"created,omitempty" structs:"created,omitempty"`
+	Duedate              Date          `json:"duedate,omitempty" structs:"duedate,omitempty"`
 	Watches              *Watches      `json:"watches,omitempty" structs:"watches,omitempty"`
 	Assignee             *User         `json:"assignee,omitempty" structs:"assignee,omitempty"`
-	Updated              string        `json:"updated,omitempty" structs:"updated,omitempty"`
+	Updated              Time          `json:"updated,omitempty" structs:"updated,omitempty"`
 	Description          string        `json:"description,omitempty" structs:"description,omitempty"`
 	Summary              string        `json:"summary" structs:"summary"`
 	Creator              *User         `json:"Creator,omitempty" structs:"Creator,omitempty"`
@@ -225,11 +225,20 @@ type Priority struct {
 	ID      string `json:"id,omitempty" structs:"id,omitempty"`
 }
 
-// Watches represents a type of how many user are "observing" a JIRA issue to track the status / updates.
+// Watches represents a type of how many and which user are "observing" a JIRA issue to track the status / updates.
 type Watches struct {
-	Self       string `json:"self,omitempty" structs:"self,omitempty"`
-	WatchCount int    `json:"watchCount,omitempty" structs:"watchCount,omitempty"`
-	IsWatching bool   `json:"isWatching,omitempty" structs:"isWatching,omitempty"`
+	Self       string     `json:"self,omitempty" structs:"self,omitempty"`
+	WatchCount int        `json:"watchCount,omitempty" structs:"watchCount,omitempty"`
+	IsWatching bool       `json:"isWatching,omitempty" structs:"isWatching,omitempty"`
+	Watchers   []*Watcher `json:"watchers,omitempty" structs:"watchers,omitempty"`
+}
+
+// Watcher represents a simplified user that "observes" the issue
+type Watcher struct {
+	Self        string `json:"self,omitempty" structs:"self,omitempty"`
+	Name        string `json:"name,omitempty" structs:"name,omitempty"`
+	DisplayName string `json:"displayName,omitempty" structs:"displayName,omitempty"`
+	Active      bool   `json:"active,omitempty" structs:"active,omitempty"`
 }
 
 // AvatarUrls represents different dimensions of avatars / images
@@ -285,6 +294,9 @@ type Parent struct {
 // Time represents the Time definition of JIRA as a time.Time of go
 type Time time.Time
 
+// Date represents the Date definition of JIRA as a time.Time of go
+type Date time.Time
+
 // Wrapper struct for search result
 type transitionResult struct {
 	Transitions []Transition `json:"transitions" structs:"transitions"`
@@ -294,6 +306,7 @@ type transitionResult struct {
 type Transition struct {
 	ID     string                     `json:"id" structs:"id"`
 	Name   string                     `json:"name" structs:"name"`
+	To     Status                     `json:"to" structs:"status"`
 	Fields map[string]TransitionField `json:"fields" structs:"fields"`
 }
 
@@ -304,12 +317,18 @@ type TransitionField struct {
 
 // CreateTransitionPayload is used for creating new issue transitions
 type CreateTransitionPayload struct {
-	Transition TransitionPayload `json:"transition" structs:"transition"`
+	Transition TransitionPayload       `json:"transition" structs:"transition"`
+	Fields     TransitionPayloadFields `json:"fields" structs:"fields"`
 }
 
 // TransitionPayload represents the request payload of Transition calls like DoTransition
 type TransitionPayload struct {
 	ID string `json:"id" structs:"id"`
+}
+
+// TransitionPayloadFields represents the fields that can be set when executing a transition
+type TransitionPayloadFields struct {
+	Resolution *Resolution `json:"resolution,omitempty" structs:"resolution,omitempty"`
 }
 
 // Option represents an option value in a SelectList or MultiSelect
@@ -321,12 +340,39 @@ type Option struct {
 // UnmarshalJSON will transform the JIRA time into a time.Time
 // during the transformation of the JIRA JSON response
 func (t *Time) UnmarshalJSON(b []byte) error {
+	// Ignore null, like in the main JSON package.
+	if string(b) == "null" {
+		return nil
+	}
 	ti, err := time.Parse("\"2006-01-02T15:04:05.999-0700\"", string(b))
 	if err != nil {
 		return err
 	}
 	*t = Time(ti)
 	return nil
+}
+
+// UnmarshalJSON will transform the JIRA date into a time.Time
+// during the transformation of the JIRA JSON response
+func (t *Date) UnmarshalJSON(b []byte) error {
+	// Ignore null, like in the main JSON package.
+	if string(b) == "null" {
+		return nil
+	}
+	ti, err := time.Parse("\"2006-01-02\"", string(b))
+	if err != nil {
+		return err
+	}
+	*t = Date(ti)
+	return nil
+}
+
+// MarshalJSON will transform the Date object into a short
+// date string as JIRA expects during the creation of a
+// JIRA request
+func (t Date) MarshalJSON() ([]byte, error) {
+	time := time.Time(t)
+	return []byte(time.Format("\"2006-01-02\"")), nil
 }
 
 // Worklog represents the work log of a JIRA issue.
@@ -958,5 +1004,73 @@ func (s *IssueService) Delete(issueID string) (*Response, error) {
 	}
 
 	resp, err := s.client.Do(req, nil)
+	return resp, err
+}
+
+// GetWatchers wil return all the users watching/observing the given issue
+//
+// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-getIssueWatchers
+func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
+	watchesApiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
+
+	req, err := s.client.NewRequest("GET", watchesApiEndPoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	watches := new(Watches)
+	resp, err := s.client.Do(req, watches)
+	if err != nil {
+		return nil, nil, NewJiraError(resp, err)
+	}
+
+	result := []User{}
+	user := new(User)
+	for _, watcher := range watches.Watchers {
+		user, resp, err = s.client.User.Get(watcher.Name)
+		if err != nil {
+			return nil, resp, NewJiraError(resp, err)
+		}
+		result = append(result, *user)
+	}
+
+	return &result, resp, nil
+}
+
+// SetWatcher adds watcher to the given issue
+//
+// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-addWatcher
+func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, error) {
+	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
+
+	req, err := s.client.NewRequest("POST", apiEndPoint, userName)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+
+	return resp, err
+}
+
+// RemoveWatcher removes given user from given issue
+//
+// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-removeWatcher
+func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response, error) {
+	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
+
+	req, err := s.client.NewRequest("DELETE", apiEndPoint, userName)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+
 	return resp, err
 }

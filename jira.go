@@ -31,6 +31,7 @@ type Client struct {
 	Sprint         *SprintService
 	User           *UserService
 	Group          *GroupService
+	Version        *VersionService
 }
 
 // NewClient returns a new JIRA API client.
@@ -61,6 +62,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	c.Sprint = &SprintService{client: c}
 	c.User = &UserService{client: c}
 	c.Group = &GroupService{client: c}
+	c.Version = &VersionService{client: c}
 
 	return c, nil
 }
