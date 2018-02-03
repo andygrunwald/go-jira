@@ -2,6 +2,8 @@ package jira
 
 import (
 	"fmt"
+
+	"github.com/google/go-querystring/query"
 )
 
 // ProjectService handles projects for the JIRA instance / API.
@@ -21,6 +23,7 @@ type ProjectList []struct {
 	AvatarUrls      AvatarUrls      `json:"avatarUrls" structs:"avatarUrls"`
 	ProjectTypeKey  string          `json:"projectTypeKey" structs:"projectTypeKey"`
 	ProjectCategory ProjectCategory `json:"projectCategory,omitempty" structs:"projectsCategory,omitempty"`
+	IssueTypes      []IssueType     `json:"issueTypes,omitempty" structs:"issueTypes,omitempty"`
 }
 
 // ProjectCategory represents a single project category
@@ -73,10 +76,26 @@ type ProjectComponent struct {
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
 func (s *ProjectService) GetList() (*ProjectList, *Response, error) {
+	return s.ListWithOptions(&GetQueryOptions{})
+}
+
+// GetList gets all projects form JIRA with optional query params, like &GetQueryOptions{Expand: "issueTypes"} to get
+// a list of all projects and their supported issuetypes
+//
+// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
+func (s *ProjectService) ListWithOptions(options *GetQueryOptions) (*ProjectList, *Response, error) {
 	apiEndpoint := "rest/api/2/project"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
+	}
+
+	if options != nil {
+		q, err := query.Values(options)
+		if err != nil {
+			return nil, nil, err
+		}
+		req.URL.RawQuery = q.Encode()
 	}
 
 	projectList := new(ProjectList)
