@@ -387,19 +387,18 @@ type Worklog struct {
 
 // WorklogRecord represents one entry of a Worklog
 type WorklogRecord struct {
-	Self             string `json:"self" structs:"self"`
-	Author           User   `json:"author" structs:"author"`
-	UpdateAuthor     User   `json:"updateAuthor" structs:"updateAuthor"`
-	Comment          string `json:"comment" structs:"comment"`
-	Created          Time   `json:"created" structs:"created"`
-	Updated          Time   `json:"updated" structs:"updated"`
-	Started          Time   `json:"started" structs:"started"`
-	TimeSpent        string `json:"timeSpent" structs:"timeSpent"`
-	TimeSpentSeconds int    `json:"timeSpentSeconds" structs:"timeSpentSeconds"`
-	ID               string `json:"id" structs:"id"`
-	IssueID          string `json:"issueId" structs:"issueId"`
+	Self             string `json:"self,omitempty" structs:"self,omitempty"`
+	Author           *User   `json:"author,omitempty" structs:"author,omitempty"`
+	UpdateAuthor     *User   `json:"updateAuthor,omitempty" structs:"updateAuthor,omitempty"`
+	Comment          string `json:"comment,omitempty" structs:"comment,omitempty"`
+	Created          *Time   `json:"created,omitempty" structs:"created,omitempty"`
+	Updated          *Time   `json:"updated,omitempty" structs:"updated,omitempty"`
+	Started          *Time   `json:"started,omitempty" structs:"started,omitempty"`
+	TimeSpent        string `json:"timeSpent,omitempty" structs:"timeSpent,omitempty"`
+	TimeSpentSeconds int    `json:"timeSpentSeconds,omitempty" structs:"timeSpentSeconds,omitempty"`
+	ID               string `json:"id,omitempty" structs:"id,omitempty"`
+	IssueID          string `json:"issueId,omitempty" structs:"issueId,omitempty"`
 }
-
 // TimeTracking represents the timetracking fields of a JIRA issue.
 type TimeTracking struct {
 	OriginalEstimate         string `json:"originalEstimate,omitempty" structs:"originalEstimate,omitempty"`
@@ -736,6 +735,26 @@ func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment
 	}
 
 	return responseComment, resp, nil
+}
+
+// AddWorklogRecord adds a new worklog record to issueID.
+//
+// https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-issue-issueIdOrKey-worklog-post
+func (s *IssueService) AddWorklogRecord(issueID string, record *WorklogRecord) (*WorklogRecord, *Response, error) {
+  apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
+  req, err := s.client.NewRequest("POST", apiEndpoint, record)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  responseRecord := new(WorklogRecord)
+  resp, err := s.client.Do(req, responseRecord)
+  if err != nil {
+    jerr := NewJiraError(resp, err)
+    return nil, resp, jerr
+  }
+
+  return responseRecord, resp, nil
 }
 
 // AddLink adds a link between two issues.
