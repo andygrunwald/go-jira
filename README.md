@@ -265,6 +265,12 @@ A few examples:
 
 If you are new to pull requests, checkout [Collaborating on projects using issues and pull requests / Creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
 
+### Dependency management
+
+`go-jira` uses `dep` for dependency management.  After cloning the repo, it's easy to make sure you have the correct dependencies by running `dep ensure`.
+
+For adding new dependencies, updating dependencies, and other operations, the [Daily Dep](https://golang.github.io/dep/docs/daily-dep.html) is a good place to start.
+
 ## License
 
 This project is released under the terms of the [MIT license](http://en.wikipedia.org/wiki/MIT_License).
