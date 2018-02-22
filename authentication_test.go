@@ -3,6 +3,8 @@ package jira
 import (
 	"bytes"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/jarcoal/httpmock"
 	"io/ioutil"
 	"net/http"
 	"reflect"
@@ -99,6 +101,21 @@ func TestAuthenticationService_SetBasicAuth(t *testing.T) {
 	}
 }
 
+func TestAuthenticationService_SetOauth2(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testClient.Authentication.SetOauth2("token")
+
+	if testClient.Authentication.accessToken != "token" {
+		t.Errorf("Expected accessToken='token'. Got '%s'", testClient.Authentication.accessToken)
+	}
+
+	if testClient.Authentication.authType != authTypeOauth2 {
+		t.Errorf("Expected authType %d. Got %d", authTypeOauth2, testClient.Authentication.authType)
+	}
+}
+
 func TestAuthenticationService_Authenticated(t *testing.T) {
 	// Skip setup() because we don't want a fully setup client
 	testClient = new(Client)
@@ -130,6 +147,18 @@ func TestAuthenticationService_Authenticated_WithBasicAuthButNoUsername(t *testi
 	// Test before we've attempted to authenticate
 	if testClient.Authentication.Authenticated() != false {
 		t.Error("Expected false, but result was true")
+	}
+}
+
+func TestAuthenticationService_Authenticated_WithOAuth2(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testClient.Authentication.SetOauth2("token")
+
+	// Test before we've attempted to authenticate
+	if testClient.Authentication.Authenticated() != true {
+		t.Error("Expected true, but result was false")
 	}
 }
 
@@ -317,5 +346,66 @@ func TestAuthenticationService_Logout_FailWithoutLogin(t *testing.T) {
 	err := testClient.Authentication.Logout()
 	if err == nil {
 		t.Error("Expected not nil, got nil")
+	}
+}
+
+func TestAuthenticationService_GetOauth2AccessToken(t *testing.T) {
+	setup()
+	defer teardown()
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+	httpmock.RegisterResponder("POST", jiraOauth2URL, httpmock.NewStringResponder(200, `{"access_token":"token","token_type":"Bearer","expires_in":900}`))
+	a, err := testClient.Authentication.GetOauth2AccessToken("clientId", "userKey", "READ", []byte("secret"))
+	if err != nil {
+		t.Errorf("Expected no error getting oauth2 access token, but got : %s", err)
+	}
+	if a != nil {
+		if a.AccessToken != "token" {
+			t.Errorf("Unexpected access token : %s", a.AccessToken)
+		}
+		if a.TokenType != "Bearer" {
+			t.Errorf("Unexpected access token type : %s", a.TokenType)
+		}
+		if a.ExpiresIn != 900 {
+			t.Errorf("Unexpected access token expiration : %d", a.ExpiresIn)
+		}
+	}
+}
+
+func TestAuthenticationService_createJWT(t *testing.T) {
+	testURL := "https://example.com"
+	secret := []byte("secret")
+	jwtStr, err := createJWT("oauthId", testURL, testURL, "user", secret)
+	if err != nil {
+		t.Errorf("Unexpected error creating JWT: %s", err)
+	}
+
+	type JiraClaims struct {
+		InstanceURL string `json:"tnt"`
+		jwt.StandardClaims
+	}
+
+	token, err := jwt.ParseWithClaims(jwtStr, &JiraClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return secret, nil
+	})
+	if err != nil {
+		t.Errorf("Unexpected error parsing JWT: %s", err)
+	}
+
+	if claims, ok := token.Claims.(*JiraClaims); !ok {
+		t.Errorf("Unexpected error processing custom Jira Claims: %s", err)
+	} else {
+		if claims.InstanceURL != testURL {
+			t.Errorf("Exepcted %s in claims 'tnt' but got: %s", testURL, testURL)
+		}
+		if claims.Audience != testURL {
+			t.Errorf("Exepcted %s in claims 'aud' but got: %s", testURL, testURL)
+		}
+		if claims.Issuer != "urn:atlassian:connect:clientid:oauthId" {
+			t.Errorf("Exepcted urn:atlassian:connect:clientid:oauthId in claims 'iss' but got: %s", claims.Issuer)
+		}
+		if claims.Subject != "urn:atlassian:connect:userkey:user" {
+			t.Errorf("Exepcted urn:atlassian:connect:userkey:user in claims 'sub' but got: %s", claims.Subject)
+		}
 	}
 }

@@ -10,7 +10,7 @@
 
 ## Features
 
-* Authentication (HTTP Basic, OAuth, Session Cookie)
+* Authentication (HTTP Basic, OAuth1, OAuth2, Session Cookie)
 * Create and retrieve issues
 * Create and retrieve issue transitions (status updates)
 * Call every API endpoint of the JIRA, even if it is not directly implemented in this library
@@ -145,11 +145,52 @@ func main() {
 }
 ```
 
-#### Authenticate with OAuth
+#### Authenticate with OAuth1
 
 If you want to connect via OAuth to your JIRA Cloud instance checkout the [example of using OAuth authentication with JIRA in Go](https://gist.github.com/Lupus/edafe9a7c5c6b13407293d795442fe67) by [@Lupus](https://github.com/Lupus).
 
 For more details have a look at the [issue #56](https://github.com/andygrunwald/go-jira/issues/56).
+
+#### Authenticate with OAuth2
+
+Oauth2 only works for Jira (Cloud) Add-Ons installed through the Atlassian Connect framework. [Read more about it here](https://developer.atlassian.com/cloud/jira/software/oauth-2-jwt-bearer-token-authorization-grant-type/).
+
+To get an Oauth2 access token, you'll need the following bits of information that come as part of the security response during a Jira Add-On install: 
+`oauthClientId`, `sharedSecret`, and `user_key`. Additionally, you'll need to specify the `scope`, for example READ, WRITE, ADMIN, ACT_AS_USER, for the permissions needed by the access token. Below is an example of retrieving an Oauth2 access token with `READ ACT_AS_USER` permissions:
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/andygrunwald/go-jira"
+)
+
+func main() {
+	jiraClient, err := jira.NewClient(nil, "https://your.jira-instance.com/")
+	if err != nil {
+		panic(err)
+	}
+
+	token, err := jiraClient.Authentication.GetOauth2AccessToken(oauthClientId, userKey, "READ ACT_AS_USER", sharedSecret)
+	if err != nil {
+		fmt.Println("Didn't get a token")
+		panic(err)
+	}
+	if token != nil {
+		fmt.Printf("retrieved accessToken %s of type %s that expires in %d seconds\n", token.AccessToken, token.TokenType, token.ExpiresIn)
+	}
+
+	issue, _, err := jiraClient.Issue.Get("SYS-5156", nil)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
+}
+```
+
+Since the token is returned, you also have the opportunity to cache it so it can be shared across clients / processes until it expires (default expiration is 900 seconds). If you fetch a token from cache, it can be set explicitly on the `jiraClient` obj via `jiraClient.Authentication.SetOauth2(token.AccessToken)`. 
 
 ### Create an issue
 
