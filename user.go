@@ -37,7 +37,7 @@ type UserGroup struct {
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUser
 func (s *UserService) Get(username string) (*User, *Response, error) {
-	apiEndpoint := fmt.Sprintf("/rest/api/2/user?username=%s", username)
+	apiEndpoint := fmt.Sprintf("rest/api/2/user?username=%s", username)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
@@ -55,7 +55,7 @@ func (s *UserService) Get(username string) (*User, *Response, error) {
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-createUser
 func (s *UserService) Create(user *User) (*User, *Response, error) {
-	apiEndpoint := "/rest/api/2/user"
+	apiEndpoint := "rest/api/2/user"
 	req, err := s.client.NewRequest("POST", apiEndpoint, user)
 	if err != nil {
 		return nil, nil, err
@@ -85,7 +85,7 @@ func (s *UserService) Create(user *User) (*User, *Response, error) {
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUserGroups
 func (s *UserService) GetGroups(username string) (*[]UserGroup, *Response, error) {
-	apiEndpoint := fmt.Sprintf("/rest/api/2/user/groups?username=%s", username)
+	apiEndpoint := fmt.Sprintf("rest/api/2/user/groups?username=%s", username)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
@@ -104,7 +104,7 @@ func (s *UserService) GetGroups(username string) (*[]UserGroup, *Response, error
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-findUsers
 func (s *UserService) Find(property string) ([]User, *Response, error) {
-	apiEndpoint := fmt.Sprintf("/rest/api/2/user/search?username=%s", property)
+	apiEndpoint := fmt.Sprintf("rest/api/2/user/search?username=%s", property)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
