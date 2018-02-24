@@ -80,35 +80,29 @@ func main() {
 }
 ```
 
-### Authenticate with jira
+### Authentication
 
-Some actions require an authenticated user.
+The `go-jira` library does not handle most authentication directly.  Instead, authentication should be handled within
+an `http.Client`.  That client can then be passed into the `NewClient` function when creating a jira client.
 
-#### Authenticate with basic auth
+For convenience, capability for basic and cookie-based authentication is included in the main library.
 
-Here is an example with basic auth authentication.
+#### Basic auth example
+
+A more thorough, [runnable example](examples/basicauth/main.go) is provided in the examples directory.
 
 ```go
-package main
-
-import (
-	"fmt"
-	"github.com/andygrunwald/go-jira"
-)
-
 func main() {
-	jiraClient, err := jira.NewClient(nil, "https://your.jira-instance.com/")
-	if err != nil {
-		panic(err)
-	}
-	jiraClient.Authentication.SetBasicAuth("username", "password")
-
-	issue, _, err := jiraClient.Issue.Get("SYS-5156", nil)
-	if err != nil {
-		panic(err)
+	tp := jira.BasicAuthTransport{
+		Username: strings.TrimSpace(username),
+		Password: strings.TrimSpace(password),
 	}
 
-	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
+	client, err := jira.NewClient(tp.Client(), "https://my.jira.com")
+
+	u, _, err := client.User.Get("some_user")
+
+	fmt.Printf("\nEmail: %v\nSuccess!\n", u.EmailAddress)
 }
 ```
 
