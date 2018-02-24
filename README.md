@@ -271,6 +271,12 @@ If you are new to pull requests, checkout [Collaborating on projects using issue
 
 For adding new dependencies, updating dependencies, and other operations, the [Daily Dep](https://golang.github.io/dep/docs/daily-dep.html) is a good place to start.
 
+### Sandbox environment for testing
+
+Jira offers sandbox test environments at http://go.atlassian.com/cloud-dev.
+
+You can read more about them at https://developer.atlassian.com/blog/2016/04/cloud-ecosystem-dev-env/.
+
 ## License
 
 This project is released under the terms of the [MIT license](http://en.wikipedia.org/wiki/MIT_License).
