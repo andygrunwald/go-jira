@@ -94,8 +94,8 @@ A more thorough, [runnable example](examples/basicauth/main.go) is provided in t
 ```go
 func main() {
 	tp := jira.BasicAuthTransport{
-		Username: strings.TrimSpace(username),
-		Password: strings.TrimSpace(password),
+		Username: "username",
+		Password: "password",
 	}
 
 	client, err := jira.NewClient(tp.Client(), "https://my.jira.com")
