@@ -108,34 +108,19 @@ func main() {
 
 #### Authenticate with session cookie
 
-Here is an example with session cookie authentication.
+A more thorough, [runnable example](examples/cookieauth/main.go) is provided in the examples directory.
 
 ```go
-package main
-
-import (
-	"fmt"
-	"github.com/andygrunwald/go-jira"
-)
-
-func main() {
-	jiraClient, err := jira.NewClient(nil, "https://your.jira-instance.com/")
-	if err != nil {
-		panic(err)
+	tp := jira.CookieAuthTransport{
+		Username: "username",
+		Password: "password",
+		BaseURL:  "https://my.jira.com",
 	}
 
-	res, err := jiraClient.Authentication.AcquireSessionCookie("username", "password")
-	if err != nil || res == false {
-		fmt.Printf("Result: %v\n", res)
-		panic(err)
-	}
+	client, err := jira.NewClient(tp.Client(), tp.BaseURL)
+	u, _, err := client.User.Get("admin")
 
-	issue, _, err := jiraClient.Issue.Get("SYS-5156", nil)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
+	fmt.Printf("\nEmail: %v\nSuccess!\n", u.EmailAddress)
 }
 ```
 
@@ -158,14 +143,14 @@ import (
 )
 
 func main() {
-	jiraClient, err := jira.NewClient(nil, "https://your.jira-instance.com/")
-	if err != nil {
-		panic(err)
+	tp := jira.CookieAuthTransport{
+		Username: "username",
+		Password: "password",
+		BaseURL:  "https://my.jira.com",
 	}
 
-	res, err := jiraClient.Authentication.AcquireSessionCookie("username", "password")
-	if err != nil || res == false {
-		fmt.Printf("Result: %v\n", res)
+	jiraClient, err := jira.NewClient(tp.Client(), tp.BaseURL)
+	if err != nil {
 		panic(err)
 	}
 
@@ -211,7 +196,13 @@ import (
 )
 
 func main() {
-	jiraClient, _ := jira.NewClient(nil, "https://jira.atlassian.com/")
+	tp := jira.CookieAuthTransport{
+		Username: "username",
+		Password: "password",
+		BaseURL:  "https://my.jira.com",
+	}
+
+	jiraClient, _ := jira.NewClient(tp.Client(), tp.BaseURL)
 	req, _ := jiraClient.NewRequest("GET", "/rest/api/2/project", nil)
 
 	projects := new([]jira.Project)
