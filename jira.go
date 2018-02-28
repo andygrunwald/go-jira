@@ -330,11 +330,11 @@ func (t *BasicAuthTransport) transport() http.RoundTripper {
 type CookieAuthTransport struct {
 	Username string
 	Password string
-	BaseURL  string
+	AuthURL  string
 
 	// SessionObject is the authenticated cookie string.s
 	// It's passed in each call to prove the client is authenticated.
-	sessionObject []*http.Cookie
+	SessionObject []*http.Cookie
 
 	// Transport is the underlying HTTP transport to use when making requests.
 	// It will default to http.DefaultTransport if nil.
@@ -343,7 +343,7 @@ type CookieAuthTransport struct {
 
 // RoundTrip adds the session object to the request.
 func (t *CookieAuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	if t.sessionObject == nil {
+	if t.SessionObject == nil {
 		err := t.setSessionObject()
 		if err != nil {
 			return nil, errors.Wrap(err, "cookieauth: no session object has been set")
@@ -351,7 +351,7 @@ func (t *CookieAuthTransport) RoundTrip(req *http.Request) (*http.Response, erro
 	}
 
 	req2 := cloneRequest(req) // per RoundTripper contract
-	for _, cookie := range t.sessionObject {
+	for _, cookie := range t.SessionObject {
 		req2.AddCookie(cookie)
 	}
 
@@ -367,7 +367,7 @@ func (t *CookieAuthTransport) Client() *http.Client {
 // setSessionObject attempts to authenticate the user and set
 // the session object (e.g. cookie)
 func (t *CookieAuthTransport) setSessionObject() error {
-	req, err := t.getAuthRequest()
+	req, err := t.buildAuthRequest()
 	if err != nil {
 		return err
 	}
@@ -380,13 +380,12 @@ func (t *CookieAuthTransport) setSessionObject() error {
 		return err
 	}
 
-	t.sessionObject = resp.Cookies()
+	t.SessionObject = resp.Cookies()
 	return nil
 }
 
 // getAuthRequest assembles the request to get the authenticated cookie
-func (t *CookieAuthTransport) getAuthRequest() (*http.Request, error) {
-	apiEndpoint := "rest/auth/1/session"
+func (t *CookieAuthTransport) buildAuthRequest() (*http.Request, error) {
 	body := struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
@@ -395,21 +394,10 @@ func (t *CookieAuthTransport) getAuthRequest() (*http.Request, error) {
 		t.Password,
 	}
 
-	ep, err := url.Parse(apiEndpoint)
-	if err != nil {
-		return nil, err
-	}
-	base, err := url.Parse(t.BaseURL)
-	if err != nil {
-		return nil, err
-	}
-
-	u := base.ResolveReference(ep)
-
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(body)
 
-	req, err := http.NewRequest("POST", u.String(), b)
+	req, err := http.NewRequest("POST", t.AuthURL, b)
 	if err != nil {
 		return nil, err
 	}

@@ -110,14 +110,16 @@ func main() {
 
 A more thorough, [runnable example](examples/cookieauth/main.go) is provided in the examples directory.
 
+Note:  The `AuthURL` is almost always going to have the path `/rest/auth/1/session`
+
 ```go
 	tp := jira.CookieAuthTransport{
 		Username: "username",
 		Password: "password",
-		BaseURL:  "https://my.jira.com",
+		AuthURL:  "https://my.jira.com/rest/auth/1/session",
 	}
 
-	client, err := jira.NewClient(tp.Client(), tp.BaseURL)
+	client, err := jira.NewClient(tp.Client(), "https://my.jira.com")
 	u, _, err := client.User.Get("admin")
 
 	fmt.Printf("\nEmail: %v\nSuccess!\n", u.EmailAddress)
