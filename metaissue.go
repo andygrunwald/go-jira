@@ -36,7 +36,7 @@ type MetaIssueType struct {
 	Description string                `json:"description,omitempty"`
 	IconUrl     string                `json:"iconurl,omitempty"`
 	Name        string                `json:"name,omitempty"`
-	Subtasks    bool                  `json:"subtask,omitempty"`
+	Subtask     bool                  `json:"subtask,omitempty"`
 	Expand      string                `json:"expand,omitempty"`
 	Fields      tcontainer.MarshalMap `json:"fields,omitempty"`
 }
@@ -44,7 +44,14 @@ type MetaIssueType struct {
 // GetCreateMeta makes the api call to get the meta information required to create a ticket
 func (s *IssueService) GetCreateMeta(projectkey string) (*CreateMetaInfo, *Response, error) {
 
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/createmeta?projectKeys=%s&expand=projects.issuetypes.fields", projectkey)
+	apiEndpoint := ""
+	if len(projectkey) > 0 {
+		apiEndpoint = fmt.Sprintf("rest/api/2/issue/createmeta?projectKeys=%s&expand=projects.issuetypes.fields", projectkey)
+	}else {
+		apiEndpoint = fmt.Sprintf("rest/api/2/issue/createmeta?expand=projects.issuetypes.fields")
+	}
+
+	fmt.Println(apiEndpoint)
 
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
