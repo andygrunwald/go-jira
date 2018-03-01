@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/trivago/tgo/tcontainer"
+	"github.com/google/go-querystring/query"
 )
 
 // CreateMetaInfo contains information about fields and their attributed to create a ticket.
@@ -36,26 +37,30 @@ type MetaIssueType struct {
 	Description string                `json:"description,omitempty"`
 	IconUrl     string                `json:"iconurl,omitempty"`
 	Name        string                `json:"name,omitempty"`
-	Subtask     bool                  `json:"subtask,omitempty"`
+	Subtasks     bool                  `json:"subtask,omitempty"`
 	Expand      string                `json:"expand,omitempty"`
 	Fields      tcontainer.MarshalMap `json:"fields,omitempty"`
 }
 
 // GetCreateMeta makes the api call to get the meta information required to create a ticket
 func (s *IssueService) GetCreateMeta(projectkey string) (*CreateMetaInfo, *Response, error) {
+	return s.GetCreateMetaWithOptions(&GetQueryOptions{ProjectKey: projectkey, Expand: "projects.issuetypes.fields"})
+}
 
-	apiEndpoint := ""
-	if len(projectkey) > 0 {
-		apiEndpoint = fmt.Sprintf("rest/api/2/issue/createmeta?projectKeys=%s&expand=projects.issuetypes.fields", projectkey)
-	}else {
-		apiEndpoint = fmt.Sprintf("rest/api/2/issue/createmeta?expand=projects.issuetypes.fields")
-	}
-
-	fmt.Println(apiEndpoint)
+// GetCreateMetaWithOptions makes the api call to get the meta information without requiring to have a projectKey
+func (s *IssueService) GetCreateMetaWithOptions(options *GetQueryOptions) (*CreateMetaInfo, *Response, error) {
+	apiEndpoint := "rest/api/2/issue/createmeta"
 
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
+	}
+	if options != nil {
+		q, err := query.Values(options)
+		if err != nil {
+			return nil, nil , err
+		}
+		req.URL.RawQuery = q.Encode()
 	}
 
 	meta := new(CreateMetaInfo)
@@ -67,7 +72,6 @@ func (s *IssueService) GetCreateMeta(projectkey string) (*CreateMetaInfo, *Respo
 
 	return meta, resp, nil
 }
-
 // GetProjectWithName returns a project with "name" from the meta information received. If not found, this returns nil.
 // The comparison of the name is case insensitive.
 func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {

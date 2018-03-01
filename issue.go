@@ -509,6 +509,7 @@ type GetQueryOptions struct {
 	// FieldsByKeys if true then fields in issues will be referenced by keys instead of ids
 	FieldsByKeys  bool `url:"fieldsByKeys,omitempty"`
 	UpdateHistory bool `url:"updateHistory,omitempty"`
+	ProjectKey string  `url:"projectKey,omitempty"`
 }
 
 // CustomFields represents custom fields of JIRA
