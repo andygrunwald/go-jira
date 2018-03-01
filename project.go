@@ -79,7 +79,7 @@ func (s *ProjectService) GetList() (*ProjectList, *Response, error) {
 	return s.ListWithOptions(&GetQueryOptions{})
 }
 
-// GetList gets all projects form JIRA with optional query params, like &GetQueryOptions{Expand: "issueTypes"} to get
+// ListWithOptions gets all projects form JIRA with optional query params, like &GetQueryOptions{Expand: "issueTypes"} to get
 // a list of all projects and their supported issuetypes
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects

@@ -121,7 +121,7 @@ func (s *AuthenticationService) Authenticated() bool {
 // client anymore
 func (s *AuthenticationService) Logout() error {
 	if s.authType != authTypeSession || s.client.session == nil {
-		return fmt.Errorf("No user is authenticated yet.")
+		return fmt.Errorf("no user is authenticated")
 	}
 
 	apiEndpoint := "rest/auth/1/session"
