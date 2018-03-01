@@ -16,7 +16,7 @@ type CreateMetaInfo struct {
 // MetaProject is the meta information about a project returned from createmeta api
 type MetaProject struct {
 	Expand string `json:"expand,omitempty"`
-	Self   string `json:"self, omitempty"`
+	Self   string `json:"self,omitempty"`
 	Id     string `json:"id,omitempty"`
 	Key    string `json:"key,omitempty"`
 	Name   string `json:"name,omitempty"`

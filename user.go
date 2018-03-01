@@ -99,7 +99,7 @@ func (s *UserService) GetGroups(username string) (*[]UserGroup, *Response, error
 	return userGroups, resp, nil
 }
 
-// Finds user info from JIRA:
+// Find searches for user info from JIRA:
 // It can find users by email, username or name
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-findUsers

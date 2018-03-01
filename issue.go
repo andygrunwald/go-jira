@@ -388,17 +388,18 @@ type Worklog struct {
 // WorklogRecord represents one entry of a Worklog
 type WorklogRecord struct {
 	Self             string `json:"self,omitempty" structs:"self,omitempty"`
-	Author           *User   `json:"author,omitempty" structs:"author,omitempty"`
-	UpdateAuthor     *User   `json:"updateAuthor,omitempty" structs:"updateAuthor,omitempty"`
+	Author           *User  `json:"author,omitempty" structs:"author,omitempty"`
+	UpdateAuthor     *User  `json:"updateAuthor,omitempty" structs:"updateAuthor,omitempty"`
 	Comment          string `json:"comment,omitempty" structs:"comment,omitempty"`
-	Created          *Time   `json:"created,omitempty" structs:"created,omitempty"`
-	Updated          *Time   `json:"updated,omitempty" structs:"updated,omitempty"`
-	Started          *Time   `json:"started,omitempty" structs:"started,omitempty"`
+	Created          *Time  `json:"created,omitempty" structs:"created,omitempty"`
+	Updated          *Time  `json:"updated,omitempty" structs:"updated,omitempty"`
+	Started          *Time  `json:"started,omitempty" structs:"started,omitempty"`
 	TimeSpent        string `json:"timeSpent,omitempty" structs:"timeSpent,omitempty"`
 	TimeSpentSeconds int    `json:"timeSpentSeconds,omitempty" structs:"timeSpentSeconds,omitempty"`
 	ID               string `json:"id,omitempty" structs:"id,omitempty"`
 	IssueID          string `json:"issueId,omitempty" structs:"issueId,omitempty"`
 }
+
 // TimeTracking represents the timetracking fields of a JIRA issue.
 type TimeTracking struct {
 	OriginalEstimate         string `json:"originalEstimate,omitempty" structs:"originalEstimate,omitempty"`
@@ -674,11 +675,11 @@ func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
 	return &ret, resp, nil
 }
 
-// Update updates an issue from a JSON representation. The issue is found by key.
+// UpdateIssue updates an issue from a JSON representation. The issue is found by key.
 //
 // https://docs.atlassian.com/jira/REST/7.4.0/#api/2/issue-editIssue
-func (s *IssueService) UpdateIssue(jiraId string, data map[string]interface{}) (*Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", jiraId)
+func (s *IssueService) UpdateIssue(jiraID string, data map[string]interface{}) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", jiraID)
 	req, err := s.client.NewRequest("PUT", apiEndpoint, data)
 	if err != nil {
 		return nil, err
@@ -741,20 +742,20 @@ func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment
 //
 // https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-issue-issueIdOrKey-worklog-post
 func (s *IssueService) AddWorklogRecord(issueID string, record *WorklogRecord) (*WorklogRecord, *Response, error) {
-  apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
-  req, err := s.client.NewRequest("POST", apiEndpoint, record)
-  if err != nil {
-    return nil, nil, err
-  }
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
+	req, err := s.client.NewRequest("POST", apiEndpoint, record)
+	if err != nil {
+		return nil, nil, err
+	}
 
-  responseRecord := new(WorklogRecord)
-  resp, err := s.client.Do(req, responseRecord)
-  if err != nil {
-    jerr := NewJiraError(resp, err)
-    return nil, resp, jerr
-  }
+	responseRecord := new(WorklogRecord)
+	resp, err := s.client.Do(req, responseRecord)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
+	}
 
-  return responseRecord, resp, nil
+	return responseRecord, resp, nil
 }
 
 // AddLink adds a link between two issues.
@@ -949,7 +950,7 @@ func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIss
 	for key, value := range fieldsConfig {
 		jiraKey, found := allFields[key]
 		if !found {
-			return nil, fmt.Errorf("Key %s is not found in the list of fields.", key)
+			return nil, fmt.Errorf("key %s is not found in the list of fields", key)
 		}
 
 		valueType, err := metaIssuetype.Fields.String(jiraKey + "/schema/type")
@@ -1030,9 +1031,9 @@ func (s *IssueService) Delete(issueID string) (*Response, error) {
 //
 // JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-getIssueWatchers
 func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
-	watchesApiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
+	watchesAPIEndpoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
-	req, err := s.client.NewRequest("GET", watchesApiEndPoint, nil)
+	req, err := s.client.NewRequest("GET", watchesAPIEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1056,7 +1057,7 @@ func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
 	return &result, resp, nil
 }
 
-// SetWatcher adds watcher to the given issue
+// AddWatcher adds watcher to the given issue
 //
 // JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-addWatcher
 func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, error) {
