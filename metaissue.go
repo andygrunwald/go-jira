@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/trivago/tgo/tcontainer"
 	"github.com/google/go-querystring/query"
+	"github.com/trivago/tgo/tcontainer"
 )
 
 // CreateMetaInfo contains information about fields and their attributed to create a ticket.
@@ -37,14 +37,14 @@ type MetaIssueType struct {
 	Description string                `json:"description,omitempty"`
 	IconUrl     string                `json:"iconurl,omitempty"`
 	Name        string                `json:"name,omitempty"`
-	Subtasks     bool                  `json:"subtask,omitempty"`
+	Subtasks    bool                  `json:"subtask,omitempty"`
 	Expand      string                `json:"expand,omitempty"`
 	Fields      tcontainer.MarshalMap `json:"fields,omitempty"`
 }
 
 // GetCreateMeta makes the api call to get the meta information required to create a ticket
-func (s *IssueService) GetCreateMeta(projectkey string) (*CreateMetaInfo, *Response, error) {
-	return s.GetCreateMetaWithOptions(&GetQueryOptions{ProjectKey: projectkey, Expand: "projects.issuetypes.fields"})
+func (s *IssueService) GetCreateMeta(projectkeys string) (*CreateMetaInfo, *Response, error) {
+	return s.GetCreateMetaWithOptions(&GetQueryOptions{ProjectKeys: projectkeys, Expand: "projects.issuetypes.fields"})
 }
 
 // GetCreateMetaWithOptions makes the api call to get the meta information without requiring to have a projectKey
@@ -58,7 +58,7 @@ func (s *IssueService) GetCreateMetaWithOptions(options *GetQueryOptions) (*Crea
 	if options != nil {
 		q, err := query.Values(options)
 		if err != nil {
-			return nil, nil , err
+			return nil, nil, err
 		}
 		req.URL.RawQuery = q.Encode()
 	}
@@ -72,6 +72,7 @@ func (s *IssueService) GetCreateMetaWithOptions(options *GetQueryOptions) (*Crea
 
 	return meta, resp, nil
 }
+
 // GetProjectWithName returns a project with "name" from the meta information received. If not found, this returns nil.
 // The comparison of the name is case insensitive.
 func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {
