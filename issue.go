@@ -528,6 +528,9 @@ type CustomFields map[string]string
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
 func (s *IssueService) Get(issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/issue/%s", issueID)
+	if !s.client.Authentication.Authenticated() {
+		apiEndpoint = fmt.Sprintf("rest/api/2/issue/%s", issueID)
+	}
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
