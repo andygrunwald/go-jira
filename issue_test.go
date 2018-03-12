@@ -255,7 +255,7 @@ func TestIssueService_Get_Fields(t *testing.T) {
 
 	issue, _, err := testClient.Issue.Get("10002", nil)
 	if issue == nil {
-		t.Errorf("Expected issue. Issue is nil %s", err)
+		t.Errorf("Expected issue. Issue is nil")
 	}
 	if !reflect.DeepEqual(issue.Fields.Labels, []string{"test"}) {
 		t.Error("Expected labels for the returned issue")
