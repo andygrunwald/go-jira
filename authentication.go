@@ -54,6 +54,8 @@ type Session struct {
 // However, this resource may be used to mimic the behaviour of JIRA's log-in page (e.g. to display log-in errors to a user).
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
+//
+// Deprecated: Use CookieAuthTransport instead
 func (s *AuthenticationService) AcquireSessionCookie(username, password string) (bool, error) {
 	apiEndpoint := "rest/auth/1/session"
 	body := struct {
@@ -90,6 +92,8 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 }
 
 // SetBasicAuth sets username and password for the basic auth against the JIRA instance.
+//
+// Deprecated: Use BasicAuthTransport instead
 func (s *AuthenticationService) SetBasicAuth(username, password string) {
 	s.username = username
 	s.password = password
@@ -112,9 +116,12 @@ func (s *AuthenticationService) Authenticated() bool {
 // Logout logs out the current user that has been authenticated and the session in the client is destroyed.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
+//
+// Deprecated: Use CookieAuthTransport to create base client.  Logging out is as simple as not using the
+// client anymore
 func (s *AuthenticationService) Logout() error {
 	if s.authType != authTypeSession || s.client.session == nil {
-		return fmt.Errorf("No user is authenticated yet.")
+		return fmt.Errorf("no user is authenticated")
 	}
 
 	apiEndpoint := "rest/auth/1/session"

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/google/go-querystring/query"
 	"github.com/trivago/tgo/tcontainer"
 )
 
@@ -16,7 +17,7 @@ type CreateMetaInfo struct {
 // MetaProject is the meta information about a project returned from createmeta api
 type MetaProject struct {
 	Expand string `json:"expand,omitempty"`
-	Self   string `json:"self, omitempty"`
+	Self   string `json:"self,omitempty"`
 	Id     string `json:"id,omitempty"`
 	Key    string `json:"key,omitempty"`
 	Name   string `json:"name,omitempty"`
@@ -42,13 +43,24 @@ type MetaIssueType struct {
 }
 
 // GetCreateMeta makes the api call to get the meta information required to create a ticket
-func (s *IssueService) GetCreateMeta(projectkey string) (*CreateMetaInfo, *Response, error) {
+func (s *IssueService) GetCreateMeta(projectkeys string) (*CreateMetaInfo, *Response, error) {
+	return s.GetCreateMetaWithOptions(&GetQueryOptions{ProjectKeys: projectkeys, Expand: "projects.issuetypes.fields"})
+}
 
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/createmeta?projectKeys=%s&expand=projects.issuetypes.fields", projectkey)
+// GetCreateMetaWithOptions makes the api call to get the meta information without requiring to have a projectKey
+func (s *IssueService) GetCreateMetaWithOptions(options *GetQueryOptions) (*CreateMetaInfo, *Response, error) {
+	apiEndpoint := "rest/api/2/issue/createmeta"
 
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
+	}
+	if options != nil {
+		q, err := query.Values(options)
+		if err != nil {
+			return nil, nil, err
+		}
+		req.URL.RawQuery = q.Encode()
 	}
 
 	meta := new(CreateMetaInfo)

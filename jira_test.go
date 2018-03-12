@@ -112,6 +112,9 @@ func TestNewClient_WithServices(t *testing.T) {
 	if c.Group == nil {
 		t.Error("No GroupService provided")
 	}
+	if c.Version == nil {
+		t.Error("No VersionService provided")
+	}
 }
 
 func TestCheckResponse(t *testing.T) {
@@ -428,23 +431,147 @@ func TestClient_GetBaseURL_WithURL(t *testing.T) {
 	}
 }
 
-func TestClient_Do_PagingInfoEmptyByDefault(t *testing.T) {
-	c, _ := NewClient(nil, testJIRAInstanceURL)
-	req, _ := c.NewRequest("GET", "/", nil)
-	type foo struct {
-		A string
-	}
-	body := new(foo)
+// REMOVED : This actually calls a live URL.  It's not a unit test.
+// I'm also not really sure what it's testing.
+// func TestClient_Do_PagingInfoEmptyByDefault(t *testing.T) {
+// 	c, _ := NewClient(nil, testJIRAInstanceURL)
+// 	req, _ := c.NewRequest("GET", "/", nil)
+// 	t.Errorf("%v\n", req)
+// 	type foo struct {
+// 		A string
+// 	}
+// 	body := new(foo)
 
-	resp, _ := c.Do(req, body)
+// 	resp, _ := c.Do(req, body)
 
-	if resp.StartAt != 0 {
-		t.Errorf("StartAt not equal to 0")
+// 	if resp.StartAt != 0 {
+// 		t.Errorf("StartAt not equal to 0")
+// 	}
+// 	if resp.MaxResults != 0 {
+// 		t.Errorf("StartAt not equal to 0")
+// 	}
+// 	if resp.Total != 0 {
+// 		t.Errorf("StartAt not equal to 0")
+// 	}
+// }
+
+func TestBasicAuthTransport(t *testing.T) {
+	setup()
+	defer teardown()
+
+	username, password := "username", "password"
+
+	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		u, p, ok := r.BasicAuth()
+		if !ok {
+			t.Errorf("request does not contain basic auth credentials")
+		}
+		if u != username {
+			t.Errorf("request contained basic auth username %q, want %q", u, username)
+		}
+		if p != password {
+			t.Errorf("request contained basic auth password %q, want %q", p, password)
+		}
+	})
+
+	tp := &BasicAuthTransport{
+		Username: username,
+		Password: password,
 	}
-	if resp.MaxResults != 0 {
-		t.Errorf("StartAt not equal to 0")
+
+	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL)
+	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
+	basicAuthClient.Do(req, nil)
+}
+
+func TestBasicAuthTransport_transport(t *testing.T) {
+	// default transport
+	tp := &BasicAuthTransport{}
+	if tp.transport() != http.DefaultTransport {
+		t.Errorf("Expected http.DefaultTransport to be used.")
 	}
-	if resp.Total != 0 {
-		t.Errorf("StartAt not equal to 0")
+
+	// custom transport
+	tp = &BasicAuthTransport{
+		Transport: &http.Transport{},
 	}
+	if tp.transport() == http.DefaultTransport {
+		t.Errorf("Expected custom transport to be used.")
+	}
+}
+
+// Test that the cookie in the transport is the cookie returned in the header
+func TestCookieAuthTransport_SessionObject_Exists(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testCookie := &http.Cookie{Name: "test", Value: "test"}
+
+	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		cookies := r.Cookies()
+
+		if len(cookies) < 1 {
+			t.Errorf("No cookies set")
+		}
+
+		if cookies[0].Name != testCookie.Name {
+			t.Errorf("Cookie names don't match, expected %v, got %v", testCookie.Name, cookies[0].Name)
+		}
+
+		if cookies[0].Value != testCookie.Value {
+			t.Errorf("Cookie values don't match, expected %v, got %v", testCookie.Value, cookies[0].Value)
+		}
+	})
+
+	tp := &CookieAuthTransport{
+		Username:      "username",
+		Password:      "password",
+		AuthURL:       "https://some.jira.com/rest/auth/1/session",
+		SessionObject: []*http.Cookie{testCookie},
+	}
+
+	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL)
+	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
+	basicAuthClient.Do(req, nil)
+}
+
+// Test that if no cookie is in the transport, it checks for a cookie
+func TestCookieAuthTransport_SessionObject_DoesNotExist(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testCookie := &http.Cookie{Name: "does_not_exist", Value: "does_not_exist"}
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		http.SetCookie(w, testCookie)
+		w.Write([]byte(`OK`))
+	}))
+	defer ts.Close()
+
+	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		cookies := r.Cookies()
+
+		if len(cookies) < 1 {
+			t.Errorf("No cookies set")
+		}
+
+		if cookies[0].Name != testCookie.Name {
+			t.Errorf("Cookie names don't match, expected %v, got %v", testCookie.Name, cookies[0].Name)
+		}
+
+		if cookies[0].Value != testCookie.Value {
+			t.Errorf("Cookie values don't match, expected %v, got %v", testCookie.Value, cookies[0].Value)
+		}
+	})
+
+	tp := &CookieAuthTransport{
+		Username: "username",
+		Password: "password",
+		AuthURL:  ts.URL,
+	}
+
+	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL)
+	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
+	basicAuthClient.Do(req, nil)
 }

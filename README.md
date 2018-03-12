@@ -15,7 +15,7 @@
 * Create and retrieve issue transitions (status updates)
 * Call every API endpoint of the JIRA, even if it is not directly implemented in this library
 
-This package is not JIRA API complete (yet), but you can call every API endpoint you want. See [Call a not implemented API endpoint](#call-a-not-implemented-api-endpoint) how to do this. For all possible API endpoints of JRIA have a look at [latest JIRA REST API documentation](https://docs.atlassian.com/jira/REST/latest/).
+This package is not JIRA API complete (yet), but you can call every API endpoint you want. See [Call a not implemented API endpoint](#call-a-not-implemented-api-endpoint) how to do this. For all possible API endpoints of JIRA have a look at [latest JIRA REST API documentation](https://docs.atlassian.com/jira/REST/latest/).
 
 ## Compatible JIRA versions
 
@@ -80,68 +80,49 @@ func main() {
 }
 ```
 
-### Authenticate with jira
+### Authentication
 
-Some actions require an authenticated user.
+The `go-jira` library does not handle most authentication directly.  Instead, authentication should be handled within
+an `http.Client`.  That client can then be passed into the `NewClient` function when creating a jira client.
 
-#### Authenticate with basic auth
+For convenience, capability for basic and cookie-based authentication is included in the main library.
 
-Here is an example with basic auth authentication.
+#### Basic auth example
+
+A more thorough, [runnable example](examples/basicauth/main.go) is provided in the examples directory.
 
 ```go
-package main
-
-import (
-	"fmt"
-	"github.com/andygrunwald/go-jira"
-)
-
 func main() {
-	jiraClient, err := jira.NewClient(nil, "https://your.jira-instance.com/")
-	if err != nil {
-		panic(err)
-	}
-	jiraClient.Authentication.SetBasicAuth("username", "password")
-
-	issue, _, err := jiraClient.Issue.Get("SYS-5156", nil)
-	if err != nil {
-		panic(err)
+	tp := jira.BasicAuthTransport{
+		Username: "username",
+		Password: "password",
 	}
 
-	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
+	client, err := jira.NewClient(tp.Client(), "https://my.jira.com")
+
+	u, _, err := client.User.Get("some_user")
+
+	fmt.Printf("\nEmail: %v\nSuccess!\n", u.EmailAddress)
 }
 ```
 
 #### Authenticate with session cookie
 
-Here is an example with session cookie authentication.
+A more thorough, [runnable example](examples/cookieauth/main.go) is provided in the examples directory.
+
+Note:  The `AuthURL` is almost always going to have the path `/rest/auth/1/session`
 
 ```go
-package main
-
-import (
-	"fmt"
-	"github.com/andygrunwald/go-jira"
-)
-
-func main() {
-	jiraClient, err := jira.NewClient(nil, "https://your.jira-instance.com/")
-	if err != nil {
-		panic(err)
+	tp := jira.CookieAuthTransport{
+		Username: "username",
+		Password: "password",
+		AuthURL:  "https://my.jira.com/rest/auth/1/session",
 	}
 
-	res, err := jiraClient.Authentication.AcquireSessionCookie("username", "password")
-	if err != nil || res == false {
-		fmt.Printf("Result: %v\n", res)
-		panic(err)
-	}
+	client, err := jira.NewClient(tp.Client(), "https://my.jira.com")
+	u, _, err := client.User.Get("admin")
 
-	issue, _, err := jiraClient.Issue.Get("SYS-5156", nil)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
+	fmt.Printf("\nEmail: %v\nSuccess!\n", u.EmailAddress)
 }
 ```
 
@@ -164,14 +145,14 @@ import (
 )
 
 func main() {
-	jiraClient, err := jira.NewClient(nil, "https://your.jira-instance.com/")
-	if err != nil {
-		panic(err)
+	tp := jira.CookieAuthTransport{
+		Username: "username",
+		Password: "password",
+		BaseURL:  "https://my.jira.com",
 	}
 
-	res, err := jiraClient.Authentication.AcquireSessionCookie("username", "password")
-	if err != nil || res == false {
-		fmt.Printf("Result: %v\n", res)
+	jiraClient, err := jira.NewClient(tp.Client(), tp.BaseURL)
+	if err != nil {
 		panic(err)
 	}
 
@@ -217,7 +198,13 @@ import (
 )
 
 func main() {
-	jiraClient, _ := jira.NewClient(nil, "https://jira.atlassian.com/")
+	tp := jira.CookieAuthTransport{
+		Username: "username",
+		Password: "password",
+		BaseURL:  "https://my.jira.com",
+	}
+
+	jiraClient, _ := jira.NewClient(tp.Client(), tp.BaseURL)
 	req, _ := jiraClient.NewRequest("GET", "/rest/api/2/project", nil)
 
 	projects := new([]jira.Project)
@@ -264,6 +251,18 @@ A few examples:
 * Sharing the love if [go-jira](https://github.com/andygrunwald/go-jira) and help people to get use to it
 
 If you are new to pull requests, checkout [Collaborating on projects using issues and pull requests / Creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
+
+### Dependency management
+
+`go-jira` uses `dep` for dependency management.  After cloning the repo, it's easy to make sure you have the correct dependencies by running `dep ensure`.
+
+For adding new dependencies, updating dependencies, and other operations, the [Daily Dep](https://golang.github.io/dep/docs/daily-dep.html) is a good place to start.
+
+### Sandbox environment for testing
+
+Jira offers sandbox test environments at http://go.atlassian.com/cloud-dev.
+
+You can read more about them at https://developer.atlassian.com/blog/2016/04/cloud-ecosystem-dev-env/.
 
 ## License
 
