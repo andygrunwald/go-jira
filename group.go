@@ -20,6 +20,28 @@ type groupMembersResult struct {
 	Members    []GroupMember `json:"values"`
 	IsLast     bool          `json:"isLast"`
 	NextPage   string        `json:"nextPage"`
+	Client     *Client       `json:"-"`
+}
+
+func (g *groupMembersResult) GetNextPage() (*groupMembersResult, *Response, error) {
+	if g.IsLast {
+		return nil, nil, nil
+	}
+	if g.Client == nil {
+		return nil, nil, fmt.Errorf("GroupService not assigned")
+	}
+	apiEndpoint := g.NextPage
+	req, err := g.Client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	group := new(groupMembersResult)
+	resp, err := g.Client.Do(req, group)
+	if err != nil {
+		return nil, resp, err
+	}
+	group.Client = g.Client
+	return group, resp, nil
 }
 
 // Group represents a JIRA group
@@ -55,6 +77,7 @@ type GroupMember struct {
 // User of this resource is required to have sysadmin or admin permissions.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/server/#api/2/group-getUsersFromGroup
+// WARNING: This API only returns the first page of group members
 func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/member?groupname=%s", name)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -68,22 +91,34 @@ func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
 		return nil, resp, err
 	}
 
-	result := group.Members
-	for group.IsLast != true {
-		apiEndpoint = group.NextPage
-		req, err = s.client.NewRequest("GET", apiEndpoint, nil)
-		if err != nil {
-			return nil, nil, err
-		}
+	return group.Members, resp, nil
+}
 
-		group = new(groupMembersResult)
-		resp, err = s.client.Do(req, group)
-		if err != nil {
-			return nil, resp, err
-		}
-		result = append(result, group.Members...)
+// Get returns a paginated list of members of the specified group and its subgroups.
+// Users in the page are ordered by user names.
+// User of this resource is required to have sysadmin or admin permissions.
+//
+// JIRA API docs: https://docs.atlassian.com/jira/REST/server/#api/2/group-getUsersFromGroup
+func (s *GroupService) GetByPage(name string, startAt int, maxResults int, includeInactiveUsers bool) (*groupMembersResult, *Response, error) {
+	if maxResults < 0 || maxResults > 50 {
+		maxResults = 50
 	}
-	return result, resp, nil
+	// TODO: should we escape the name here?
+	apiEndpoint := fmt.Sprintf(
+		"/rest/api/2/group/member?groupname=%s&startAt=%d&maxResults=%d&includeInactiveUsers=%t",
+		name, startAt, maxResults, includeInactiveUsers)
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	group := new(groupMembersResult)
+	resp, err := s.client.Do(req, group)
+	if err != nil {
+		return nil, resp, err
+	}
+	group.Client = s.client
+	return group, resp, nil
 }
 
 // Add adds user to group

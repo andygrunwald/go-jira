@@ -527,9 +527,43 @@ type CustomFields map[string]string
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
 func (s *IssueService) Get(issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if options != nil {
+		q, err := query.Values(options)
+		if err != nil {
+			return nil, nil, err
+		}
+		req.URL.RawQuery = q.Encode()
+	}
+
+	issue := new(Issue)
+	resp, err := s.client.Do(req, issue)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
+	}
+
+	return issue, resp, nil
+}
+
+// Get returns a full representation of the issue for the given issue key.
+// JIRA will attempt to identify the issue by the issueIdOrKey path parameter.
+// This can be an issue id, or an issue key.
+// If the issue cannot be found via an exact match, JIRA will also look for the issue in a case-insensitive way, or by looking to see if the issue was moved.
+//
+// The given options will be appended to the query string
+//
+// JIRA API docs: https://docs.atlassian.com/jira-software/REST/7.3.1/#agile/1.0/issue-getIssue
+// TODO: create agile service for holding all agile apis' implementation
+func (s *IssueService) GetWithAgile(issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/issue/%s", issueID)
 	if !s.client.Authentication.Authenticated() {
-		apiEndpoint = fmt.Sprintf("rest/api/2/issue/%s", issueID)
+		return nil, nil, fmt.Errorf("agile endpoints need to be authenticated for testing")
 	}
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
