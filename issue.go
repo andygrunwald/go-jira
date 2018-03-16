@@ -559,6 +559,7 @@ func (s *IssueService) Get(issueID string, options *GetQueryOptions) (*Issue, *R
 // The given options will be appended to the query string
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/7.3.1/#agile/1.0/issue-getIssue
+//
 // TODO: create agile service for holding all agile apis' implementation
 func (s *IssueService) GetWithAgile(issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/issue/%s", issueID)
