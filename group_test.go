@@ -36,7 +36,7 @@ func TestGroupService_GetPage(t *testing.T) {
 			t.Errorf("startAt %s", startAt)
 		}
 	})
-	if page, resp, err := testClient.Group.GetByOption("default", &GroupSearchOptions{
+	if page, resp, err := testClient.Group.GetWithOptions("default", &GroupSearchOptions{
 		StartAt:              0,
 		MaxResults:           2,
 		IncludeInactiveUsers: false,
@@ -54,7 +54,7 @@ func TestGroupService_GetPage(t *testing.T) {
 		if resp.Total != 4 {
 			t.Errorf("Expect Result Total to be 4, but is %d", resp.Total)
 		}
-		if page, resp, err := testClient.Group.GetByOption("default", &GroupSearchOptions{
+		if page, resp, err := testClient.Group.GetWithOptions("default", &GroupSearchOptions{
 			StartAt:              2,
 			MaxResults:           2,
 			IncludeInactiveUsers: false,
