@@ -44,9 +44,23 @@ type BoardListOptions struct {
 	SearchOptions
 }
 
-// Wrapper struct for search result
-type sprintsResult struct {
-	Sprints []Sprint `json:"values" structs:"values"`
+// SprintListOptions specifies the optional parameters to the BoardService.GetAllSprints
+type SprintListOptions struct {
+	// State filters results to sprints in specified states.
+	// Valid values:  future, active, closed.
+	// You can define multiple states separated by commas, e.g. state=active,closed.
+	State string `url:"state,omitempty"`
+
+	SearchOptions
+}
+
+// SprintsList reflects a list of Agile sprints
+type SprintsList struct {
+	MaxResults int      `json:"maxResults" structs:"maxResults"`
+	StartAt    int      `json:"startAt" structs:"startAt"`
+	Total      int      `json:"total" structs:"total"`
+	IsLast     bool     `json:"isLast" structs:"isLast"`
+	Values     []Sprint `json:"values" structs:"values"`
 }
 
 // Sprint represents a sprint on JIRA agile board
@@ -149,18 +163,22 @@ func (s *BoardService) DeleteBoard(boardID int) (*Board, *Response, error) {
 // This only includes sprints that the user has permission to view.
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board/{boardId}/sprint
-func (s *BoardService) GetAllSprints(boardID string) ([]Sprint, *Response, error) {
+func (s *BoardService) GetAllSprints(boardID string, opt *SprintListOptions) (*SprintsList, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%s/sprint", boardID)
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	url, err := addOptions(apiEndpoint, opt)
+	if err != nil {
+		return nil, nil, err
+	}
+	req, err := s.client.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	result := new(sprintsResult)
+	result := new(SprintsList)
 	resp, err := s.client.Do(req, result)
 	if err != nil {
 		err = NewJiraError(resp, err)
+		return nil, nil, err
 	}
-
-	return result.Sprints, resp, err
+	return result, resp, err
 }
