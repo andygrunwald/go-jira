@@ -27,6 +27,7 @@ type Client struct {
 
 	// Services used for talking to different parts of the JIRA API.
 	Authentication *AuthenticationService
+	Filter         *FilterService
 	Issue          *IssueService
 	Project        *ProjectService
 	Board          *BoardService
@@ -58,6 +59,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 		baseURL: parsedBaseURL,
 	}
 	c.Authentication = &AuthenticationService{client: c}
+	c.Filter = &FilterService{client: c}
 	c.Issue = &IssueService{client: c}
 	c.Project = &ProjectService{client: c}
 	c.Board = &BoardService{client: c}
@@ -135,6 +137,7 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	req.Header.Set("Content-Type", "application/json")
 
 	// Set authentication information
+	// DEPRECATED : Authentication should be handled in the underlying client
 	if c.Authentication.authType == authTypeSession {
 		// Set session cookie if there is one
 		if c.session != nil {
@@ -219,6 +222,8 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
+	// raw, _ := httputil.DumpResponse(httpResp, true)
+	// fmt.Printf("RAW: %s\n", string(raw))
 
 	err = CheckResponse(httpResp)
 	if err != nil {
