@@ -81,6 +81,9 @@ type Sprint struct {
 func (s *BoardService) GetAllBoards(opt *BoardListOptions) (*BoardsList, *Response, error) {
 	apiEndpoint := "rest/agile/1.0/board"
 	url, err := addOptions(apiEndpoint, opt)
+	if err != nil {
+		return nil, nil, err
+	}
 	req, err := s.client.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, nil, err
