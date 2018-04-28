@@ -6,7 +6,7 @@
 
 [Go](https://golang.org/) client library for [Atlassian JIRA](https://www.atlassian.com/software/jira).
 
-![Go client library for Atlassian JIRA](./img/logo.png "Go client library for Atlassian JIRA.")
+![Go client library for Atlassian JIRA](./img/logo_small.png "Go client library for Atlassian JIRA.")
 
 ## Features
 
