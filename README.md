@@ -6,7 +6,7 @@
 
 [Go](https://golang.org/) client library for [Atlassian JIRA](https://www.atlassian.com/software/jira).
 
-![Go client library for Atlassian JIRA](./img/logo_small.png "Go client library for Atlassian JIRA.")
+![Go client library for Atlassian JIRA](./img/go-jira-compressed.png "Go client library for Atlassian JIRA.")
 
 ## Features
 
@@ -145,14 +145,13 @@ import (
 )
 
 func main() {
-	base := "https://my.jira.com"
 	tp := jira.CookieAuthTransport{
 		Username: "username",
 		Password: "password",
-		AuthURL:  fmt.Sprintf("%s/rest/auth/1/session", base),
+		BaseURL:  "https://my.jira.com",
 	}
 
-	jiraClient, err := jira.NewClient(tp.Client(), base)
+	jiraClient, err := jira.NewClient(tp.Client(), tp.BaseURL)
 	if err != nil {
 		panic(err)
 	}
@@ -199,14 +198,13 @@ import (
 )
 
 func main() {
-	base := "https://my.jira.com"
 	tp := jira.CookieAuthTransport{
 		Username: "username",
 		Password: "password",
-		AuthURL:  fmt.Sprintf("%s/rest/auth/1/session", base),
+		BaseURL:  "https://my.jira.com",
 	}
 
-	jiraClient, err := jira.NewClient(tp.Client(), base)
+	jiraClient, _ := jira.NewClient(tp.Client(), tp.BaseURL)
 	req, _ := jiraClient.NewRequest("GET", "/rest/api/2/project", nil)
 
 	projects := new([]jira.Project)

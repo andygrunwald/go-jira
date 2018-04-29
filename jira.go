@@ -12,6 +12,7 @@ import (
 
 	"github.com/google/go-querystring/query"
 	"github.com/pkg/errors"
+	"log"
 )
 
 // A Client manages communication with the JIRA API.
@@ -34,6 +35,7 @@ type Client struct {
 	User           *UserService
 	Group          *GroupService
 	Version        *VersionService
+	Worklog        *WorklogService
 }
 
 // NewClient returns a new JIRA API client.
@@ -65,6 +67,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	c.User = &UserService{client: c}
 	c.Group = &GroupService{client: c}
 	c.Version = &VersionService{client: c}
+	c.Worklog = &WorklogService{client: c}
 
 	return c, nil
 }
@@ -231,6 +234,10 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 		// Open a NewDecoder and defer closing the reader only if there is a provided interface to decode to
 		defer httpResp.Body.Close()
 		err = json.NewDecoder(httpResp.Body).Decode(v)
+
+		if err != nil {
+			log.Printf("error JSON encoding body: %v", httpResp.Body)
+		}
 	}
 
 	resp := newResponse(httpResp, v)

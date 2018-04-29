@@ -32,7 +32,7 @@ func NewJiraError(resp *Response, httpError error) error {
 	jerr := Error{HTTPError: httpError}
 	err = json.Unmarshal(body, &jerr)
 	if err != nil {
-		httpError = errors.Wrap(errors.New("Could not parse JSON"), httpError.Error())
+		httpError = errors.Wrap(errors.New(fmt.Sprintf("Could not parse JSON from body %s", string(body))), httpError.Error())
 		return errors.Wrap(err, httpError.Error())
 	}
 
