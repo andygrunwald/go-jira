@@ -12,6 +12,7 @@ import (
 
 	"github.com/google/go-querystring/query"
 	"github.com/pkg/errors"
+	"strings"
 )
 
 // A Client manages communication with the JIRA API.
@@ -48,6 +49,11 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 		httpClient = http.DefaultClient
 	}
 
+	// ensure the baseURL contains a trailing slash so that all paths are preserved in later calls
+	if !strings.HasSuffix(baseURL, "/") {
+		baseURL += "/"
+	}
+
 	parsedBaseURL, err := url.Parse(baseURL)
 	if err != nil {
 		return nil, err
@@ -71,12 +77,15 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 
 // NewRawRequest creates an API request.
 // A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
-// Relative URLs should always be specified without a preceding slash.
 // Allows using an optional native io.Reader for sourcing the request body.
 func (c *Client) NewRawRequest(method, urlStr string, body io.Reader) (*http.Request, error) {
 	rel, err := url.Parse(urlStr)
 	if err != nil {
 		return nil, err
+	}
+	// Relative URLs should be specified without a preceding slash since baseURL will have the trailing slash
+	if !rel.IsAbs() {
+		rel.Path = strings.TrimLeft(rel.Path, "/")
 	}
 
 	u := c.baseURL.ResolveReference(rel)
@@ -108,12 +117,15 @@ func (c *Client) NewRawRequest(method, urlStr string, body io.Reader) (*http.Req
 
 // NewRequest creates an API request.
 // A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
-// Relative URLs should always be specified without a preceding slash.
 // If specified, the value pointed to by body is JSON encoded and included as the request body.
 func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Request, error) {
 	rel, err := url.Parse(urlStr)
 	if err != nil {
 		return nil, err
+	}
+	// Relative URLs should be specified without a preceding slash since baseURL will have the trailing slash
+	if !rel.IsAbs() {
+		rel.Path = strings.TrimLeft(rel.Path, "/")
 	}
 
 	u := c.baseURL.ResolveReference(rel)
@@ -176,12 +188,15 @@ func addOptions(s string, opt interface{}) (string, error) {
 
 // NewMultiPartRequest creates an API request including a multi-part file.
 // A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
-// Relative URLs should always be specified without a preceding slash.
 // If specified, the value pointed to by buf is a multipart form.
 func (c *Client) NewMultiPartRequest(method, urlStr string, buf *bytes.Buffer) (*http.Request, error) {
 	rel, err := url.Parse(urlStr)
 	if err != nil {
 		return nil, err
+	}
+	// Relative URLs should be specified without a preceding slash since baseURL will have the trailing slash
+	if !rel.IsAbs() {
+		rel.Path = strings.TrimLeft(rel.Path, "/")
 	}
 
 	u := c.baseURL.ResolveReference(rel)
