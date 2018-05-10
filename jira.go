@@ -8,11 +8,11 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"strings"
 	"time"
 
 	"github.com/google/go-querystring/query"
 	"github.com/pkg/errors"
-	"strings"
 )
 
 // A Client manages communication with the JIRA API.
@@ -84,9 +84,7 @@ func (c *Client) NewRawRequest(method, urlStr string, body io.Reader) (*http.Req
 		return nil, err
 	}
 	// Relative URLs should be specified without a preceding slash since baseURL will have the trailing slash
-	if !rel.IsAbs() {
-		rel.Path = strings.TrimLeft(rel.Path, "/")
-	}
+	rel.Path = strings.TrimLeft(rel.Path, "/")
 
 	u := c.baseURL.ResolveReference(rel)
 
@@ -124,9 +122,7 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 		return nil, err
 	}
 	// Relative URLs should be specified without a preceding slash since baseURL will have the trailing slash
-	if !rel.IsAbs() {
-		rel.Path = strings.TrimLeft(rel.Path, "/")
-	}
+	rel.Path = strings.TrimLeft(rel.Path, "/")
 
 	u := c.baseURL.ResolveReference(rel)
 
@@ -195,9 +191,7 @@ func (c *Client) NewMultiPartRequest(method, urlStr string, buf *bytes.Buffer) (
 		return nil, err
 	}
 	// Relative URLs should be specified without a preceding slash since baseURL will have the trailing slash
-	if !rel.IsAbs() {
-		rel.Path = strings.TrimLeft(rel.Path, "/")
-	}
+	rel.Path = strings.TrimLeft(rel.Path, "/")
 
 	u := c.baseURL.ResolveReference(rel)
 
