@@ -103,3 +103,27 @@ func TestProjectService_Get_NoProject(t *testing.T) {
 		t.Errorf("Error given: %s", err)
 	}
 }
+
+func TestProjectService_GetPermissionScheme(t *testing.T) {
+	setup()
+	defer teardown()
+	testAPIEdpoint := "/rest/api/2/project/99999999/permissionscheme"
+
+	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, testAPIEdpoint)
+		fmt.Fprint(w, nil)
+	})
+
+	projects, resp, err := testClient.Project.GetPermissionScheme("99999999")
+	if projects != nil {
+		t.Errorf("Expected nil. Got %+v", projects)
+	}
+
+	if resp.Status == "404" {
+		t.Errorf("Expected status 404. Got %s", resp.Status)
+	}
+	if err == nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
