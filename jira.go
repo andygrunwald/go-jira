@@ -353,7 +353,10 @@ func (t *CookieAuthTransport) RoundTrip(req *http.Request) (*http.Response, erro
 			return nil, errors.Wrap(err, "cookieauth: no session object has been set")
 		}
 	}
-
+	// fix probable unexpected gzip issue. 
+	// "Request failed. Please analyze the request body for more details. Status code: 401: 
+	// Could not parse JSON: invalid character '\\x1f' looking for beginning of value"
+	req.Header.Set("Accept-Encoding", "identity")
 	req2 := cloneRequest(req) // per RoundTripper contract
 	for _, cookie := range t.SessionObject {
 		req2.AddCookie(cookie)
