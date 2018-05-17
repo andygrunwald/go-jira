@@ -148,10 +148,10 @@ func main() {
 	tp := jira.CookieAuthTransport{
 		Username: "username",
 		Password: "password",
-		BaseURL:  "https://my.jira.com",
+		AuthURL:  "https://my.jira.com",
 	}
 
-	jiraClient, err := jira.NewClient(tp.Client(), tp.BaseURL)
+	jiraClient, err := jira.NewClient(tp.Client(), tp.AuthURL)
 	if err != nil {
 		panic(err)
 	}
@@ -201,10 +201,10 @@ func main() {
 	tp := jira.CookieAuthTransport{
 		Username: "username",
 		Password: "password",
-		BaseURL:  "https://my.jira.com",
+		AuthURL:  "https://my.jira.com",
 	}
 
-	jiraClient, _ := jira.NewClient(tp.Client(), tp.BaseURL)
+	jiraClient, _ := jira.NewClient(tp.Client(), tp.AuthURL)
 	req, _ := jiraClient.NewRequest("GET", "/rest/api/2/project", nil)
 
 	projects := new([]jira.Project)

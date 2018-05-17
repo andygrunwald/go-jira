@@ -1,0 +1,44 @@
+[
+  {
+    "self": "https://jira.com/rest/api/2/tempo-timesheets/3/worklogs/16210",
+    "author": {
+      "self": "https://jira.com/rest/api/2/user?username=smgladkovskiy",
+      "name": "smgladkovskiy",
+      "key": "smgladkovskiy",
+      "avatarUrls": {},
+      "displayName": "Sergey Gladkovskiy"
+    },
+    "comment": "Database structure creating",
+    "dateCreated": "2018-04-08T20:40:40Z",
+    "dateUpdated": "2018-04-08T20:40:40Z",
+    "dateStarted": "2018-04-08T20:40:00Z",
+    "timeSpentSeconds": 28800,
+    "id": 16210,
+    "issue": {
+      "id": 139440,
+      "self": "https://jira.com/rest/api/2/issue/139440",
+      "key": "SLRM-200"
+    }
+  },
+  {
+    "self": "https://jira.com/rest/api/2/tempo-timesheets/3/worklogs/16235",
+    "author": {
+      "self": "https://jira.com/rest/api/2/user?username=smgladkovskiy",
+      "name": "smgladkovskiy",
+      "key": "smgladkovskiy",
+      "avatarUrls": {},
+      "displayName": "Sergey Gladkovskiy"
+    },
+    "comment": "DevOps'ing",
+    "dateCreated": "2018-04-10T20:36:34Z",
+    "dateUpdated": "2018-04-10T20:36:34Z",
+    "dateStarted": "2018-04-10T20:36:00Z",
+    "timeSpentSeconds": 10800,
+    "id": 16235,
+    "issue": {
+      "id": 139440,
+      "self": "https://jira.com/rest/api/2/issue/139440",
+      "key": "SLRM-200"
+    }
+  }
+]

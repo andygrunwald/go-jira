@@ -2,12 +2,10 @@ package jira
 
 import (
 	"time"
-	"net/url"
-	"fmt"
 	"strings"
 )
 
-const WLTimeFormat = "2006-01-02T15:04:05.000"
+const WLTimeFormat = "2006-01-02T15:04:05Z"
 const WLDateFormat = "2006-01-02"
 
 // SprintService handles sprints in JIRA Agile API.
@@ -16,10 +14,10 @@ type WorklogService struct {
 	client *Client
 }
 
-type TSWorkLogRequest struct {
-	Username string
-	DateFrom *WLDate
-	DateTo   *WLDate
+type TSWorkLogOptions struct {
+	Username string  `url:"username"`
+	DateFrom *WLDate `url:"dateFrom"`
+	DateTo   *WLDate `url:"dateTo"`
 }
 
 // WorkLog time custom format
@@ -86,17 +84,11 @@ func (d *WLDate) UnmarshalJSON(b []byte) (err error) {
 }
 
 // GetWorkLogs returns worklogs for a user on date range
-func (w *WorklogService) GetWorkLogs(wlr *TSWorkLogRequest) (*[]TSWorkLog, *Response, error) {
+func (w *WorklogService) GetWorkLogs(options *TSWorkLogOptions) (*[]TSWorkLog, *Response, error) {
+	apiEndpoint := "/rest/tempo-timesheets/3/worklogs"
 
-	params := url.Values{}
-	params.Add("dateFrom", wlr.DateFrom.Format(WLDateFormat))
-	params.Add("dateTo", wlr.DateTo.Format(WLDateFormat))
-	params.Add("username", wlr.Username)
-
-	apiEndpoint := fmt.Sprintf("/rest/tempo-timesheets/3/worklogs?%s", params.Encode())
-
-	req, err := w.client.NewRequest("GET", apiEndpoint, nil)
-
+	url, err := addOptions(apiEndpoint, options)
+	req, err := w.client.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, nil, err
 	}
