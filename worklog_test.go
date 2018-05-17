@@ -14,7 +14,7 @@ func TestWorklogService_GetWorkLogs(t *testing.T) {
 
 	testAPIEndpoint := "/rest/tempo-timesheets/3/worklogs"
 
-	raw, err := ioutil.ReadFile("./mocks/tempo_worklogs.json")
+	raw, err := ioutil.ReadFile("./mocks/tempo_timesheets_worklogs.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -25,12 +25,12 @@ func TestWorklogService_GetWorkLogs(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	dateFrom, _ := time.Parse(WLDateFormat, "2018-04-01")
-	dateTo, _ := time.Parse(WLDateFormat, "2018-04-10")
-	options := TSWorkLogOptions{
+	dateFrom, _ := time.Parse(TTWorklogDateFormat, "2018-04-01")
+	dateTo, _ := time.Parse(TTWorklogDateFormat, "2018-04-10")
+	options := TTWorkLogOptions{
 		Username: "smgladkovskiy",
-		DateFrom: &WLDate{dateFrom},
-		DateTo:   &WLDate{dateTo},
+		DateFrom: &TTWorklogDate{dateFrom},
+		DateTo:   &TTWorklogDate{dateTo},
 	}
 	worklogs, _, err := testClient.Worklog.GetWorkLogs(&options)
 	if worklogs == nil {
