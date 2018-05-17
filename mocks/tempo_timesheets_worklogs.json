@@ -9,9 +9,9 @@
       "displayName": "Sergey Gladkovskiy"
     },
     "comment": "Database structure creating",
-    "dateCreated": "2018-04-08T20:40:40Z",
-    "dateUpdated": "2018-04-08T20:40:40Z",
-    "dateStarted": "2018-04-08T20:40:00Z",
+    "dateCreated": "2018-04-08T20:40:40.000",
+    "dateUpdated": "2018-04-08T20:40:40.000",
+    "dateStarted": "2018-04-08T20:40:00.000",
     "timeSpentSeconds": 28800,
     "id": 16210,
     "issue": {
@@ -30,9 +30,9 @@
       "displayName": "Sergey Gladkovskiy"
     },
     "comment": "DevOps'ing",
-    "dateCreated": "2018-04-10T20:36:34Z",
-    "dateUpdated": "2018-04-10T20:36:34Z",
-    "dateStarted": "2018-04-10T20:36:00Z",
+    "dateCreated": "2018-04-10T20:36:34.000",
+    "dateUpdated": "2018-04-10T20:36:34.000",
+    "dateStarted": "2018-04-10T20:36:00.000",
     "timeSpentSeconds": 10800,
     "id": 16235,
     "issue": {

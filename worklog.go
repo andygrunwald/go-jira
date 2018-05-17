@@ -3,9 +3,11 @@ package jira
 import (
 	"time"
 	"strings"
+	"net/url"
+	"fmt"
 )
 
-const TTWorklogTimeFormat = "2006-01-02T15:04:05Z"
+const TTWorklogTimeFormat = "2006-01-02T15:04:05.000"
 const TTWorklogDateFormat = "2006-01-02"
 
 // SprintService handles sprints in JIRA Agile API.
@@ -80,15 +82,21 @@ func (d *TTWorklogDate) UnmarshalJSON(b []byte) (err error) {
 	}
 
 	d.Time, err = time.Parse(TTWorklogDateFormat, s)
+	if err != nil {
+		return err
+	}
 	return
 }
 
 // GetWorkLogs returns worklogs for a user on date range
 func (w *TempoTimesheetsWorklogService) GetWorkLogs(options *TTWorkLogOptions) (*[]TTWorkLog, *Response, error) {
-	apiEndpoint := "/rest/tempo-timesheets/3/worklogs"
+	params := url.Values{}
+	params.Add("dateFrom", options.DateFrom.Format(TTWorklogDateFormat))
+	params.Add("dateTo", options.DateTo.Format(TTWorklogDateFormat))
+	params.Add("username", options.Username)
 
-	url, err := addOptions(apiEndpoint, options)
-	req, err := w.client.NewRequest("GET", url, nil)
+	apiEndpoint := fmt.Sprintf("/rest/tempo-timesheets/3/worklogs?%s", params.Encode())
+	req, err := w.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
