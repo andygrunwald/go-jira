@@ -10,12 +10,13 @@ import (
 const TTWorklogTimeFormat = "2006-01-02T15:04:05.000"
 const TTWorklogDateFormat = "2006-01-02"
 
-// SprintService handles sprints in JIRA Agile API.
-// See https://docs.atlassian.com/jira-software/REST/cloud/
+// TempoTimesheetsWorklogService handles tempo timesheets worklogs in JIRA rest API.
+// See http://developer.tempo.io/doc/timesheets/api/rest/latest/#848933329
 type TempoTimesheetsWorklogService struct {
 	client *Client
 }
 
+// Worklog request options
 type TTWorkLogOptions struct {
 	Username string         `url:"username"`
 	DateFrom *TTWorklogDate `url:"dateFrom"`

@@ -12,7 +12,6 @@ import (
 
 	"github.com/google/go-querystring/query"
 	"github.com/pkg/errors"
-	"log"
 )
 
 // A Client manages communication with the JIRA API.
@@ -235,9 +234,6 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 		defer httpResp.Body.Close()
 		err = json.NewDecoder(httpResp.Body).Decode(v)
 
-		if err != nil {
-			log.Printf("error JSON encoding body: %v", httpResp.Body)
-		}
 	}
 
 	resp := newResponse(httpResp, v)
