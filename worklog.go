@@ -7,7 +7,11 @@ import (
 	"fmt"
 )
 
+// WorklogBean that returns worklog api uses this time format.
+// Watch the Returns section: http://developer.tempo.io/doc/timesheets/api/rest/latest/#848933329
 const TTWorklogTimeFormat = "2006-01-02T15:04:05.000"
+// Date format for api request
+// http://developer.tempo.io/doc/timesheets/api/rest/latest/#848933329
 const TTWorklogDateFormat = "2006-01-02"
 
 // TempoTimesheetsWorklogService handles tempo timesheets worklogs in JIRA rest API.
