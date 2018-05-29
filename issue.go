@@ -343,6 +343,8 @@ type Option struct {
 	Value string `json:"value" structs:"value"`
 }
 
+const timeFormat = "2006-01-02T15:04:05.999-0700"
+
 // UnmarshalJSON will transform the JIRA time into a time.Time
 // during the transformation of the JIRA JSON response
 func (t *Time) UnmarshalJSON(b []byte) error {
@@ -350,7 +352,21 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 	if string(b) == "null" {
 		return nil
 	}
-	ti, err := time.Parse("\"2006-01-02T15:04:05.999-0700\"", string(b))
+	ti, err := time.Parse("\""+timeFormat+"\"", string(b))
+	if err != nil {
+		return err
+	}
+	*t = Time(ti)
+	return nil
+}
+
+// unmarshal will transform the JIRA time string into a Time
+func (t *Time) unmarshalString(s string) error {
+	// Ignore null, like in the main JSON package.
+	if s == "null" {
+		return nil
+	}
+	ti, err := time.Parse(timeFormat, s)
 	if err != nil {
 		return err
 	}
@@ -361,7 +377,7 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 // MarshalJSON will transform the time.Time into a JIRA time
 // during the creation of a JIRA request
 func (t Time) MarshalJSON() ([]byte, error) {
-	return []byte(time.Time(t).Format("\"2006-01-02T15:04:05.999-0700\"")), nil
+	return []byte(time.Time(t).Format("\"" + timeFormat + "\"")), nil
 }
 
 // UnmarshalJSON will transform the JIRA date into a time.Time
@@ -472,6 +488,20 @@ type Comment struct {
 	Updated      string            `json:"updated,omitempty" structs:"updated,omitempty"`
 	Created      string            `json:"created,omitempty" structs:"created,omitempty"`
 	Visibility   CommentVisibility `json:"visibility,omitempty" structs:"visibility,omitempty"`
+}
+
+// CreatedAsTime retrieves the Created field as Time
+func (c Comment) CreatedAsTime() (Time, error) {
+	var t Time
+	err := t.unmarshalString(c.Created)
+	return t, err
+}
+
+// UpdatedAsTime retrieves the Updated field as Time
+func (c Comment) UpdatedAsTime() (Time, error) {
+	var t Time
+	err := t.unmarshalString(c.Updated)
+	return t, err
 }
 
 // FixVersion represents a software release in which an issue is fixed.
@@ -1249,12 +1279,16 @@ func (s *IssueService) UpdateAssignee(issueID string, assignee *User) (*Response
 	return resp, err
 }
 
+// CreatedTime retrieves the Created field as timestamp
 func (c ChangelogHistory) CreatedTime() (time.Time, error) {
-	var t time.Time
-	// Ignore null
-	if string(c.Created) == "null" {
-		return t, nil
-	}
-	t, err := time.Parse("2006-01-02T15:04:05.999-0700", c.Created)
+	var t Time
+	err := t.unmarshalString(c.Created)
+	return time.Time(t), err
+}
+
+// CreatedAsTime retrieves the Created field as Time
+func (c ChangelogHistory) CreatedAsTime() (Time, error) {
+	var t Time
+	err := t.unmarshalString(c.Created)
 	return t, err
 }

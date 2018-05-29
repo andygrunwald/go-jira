@@ -1563,6 +1563,24 @@ func TestIssueService_Get_Fields_Changelog(t *testing.T) {
 	if ct, _ := issue.Changelog.Histories[0].CreatedTime(); !tm.Equal(ct) {
 		t.Errorf("Expected CreatedTime func return %v time, %v got", tm, ct)
 	}
+	if cTime, _ := issue.Changelog.Histories[0].CreatedAsTime(); !tm.Equal(time.Time(cTime)) {
+		t.Errorf("Expected CreatedAsTime func return time %v, got %v", tm, cTime)
+	}
+}
+func TestTime_UnmarhalString(t *testing.T) {
+	const timeString = `2018-06-20T16:50:35.000+0300`
+	var t1, t2 Time
+	err := json.Unmarshal([]byte("\""+timeString+"\""), &t1)
+	if err != nil {
+		t.Error("Problem unmarshalling:", err)
+	}
+	err = t2.unmarshalString(timeString)
+	if err != nil {
+		t.Error("Problem unmarshalling:", err)
+	}
+	if !time.Time(t2).Equal(time.Time(t1)) || time.Time(t1).IsZero() {
+		t.Errorf("Expected unmarshalling via two methods to get the same non-zero result: t1: %v, t2: %v", time.Time(t1).Format(timeFormat), time.Time(t2).Format(timeFormat))
+	}
 }
 func TestIssueService_Get_Fields_AffectsVersions(t *testing.T) {
 	setup()
