@@ -31,12 +31,13 @@ type IssueService struct {
 
 // Issue represents a JIRA issue.
 type Issue struct {
-	Expand    string       `json:"expand,omitempty" structs:"expand,omitempty"`
-	ID        string       `json:"id,omitempty" structs:"id,omitempty"`
-	Self      string       `json:"self,omitempty" structs:"self,omitempty"`
-	Key       string       `json:"key,omitempty" structs:"key,omitempty"`
-	Fields    *IssueFields `json:"fields,omitempty" structs:"fields,omitempty"`
-	Changelog *Changelog   `json:"changelog,omitempty" structs:"changelog,omitempty"`
+	Expand         string               `json:"expand,omitempty" structs:"expand,omitempty"`
+	ID             string               `json:"id,omitempty" structs:"id,omitempty"`
+	Self           string               `json:"self,omitempty" structs:"self,omitempty"`
+	Key            string               `json:"key,omitempty" structs:"key,omitempty"`
+	Fields         *IssueFields         `json:"fields,omitempty" structs:"fields,omitempty"`
+	RenderedFields *IssueRenderedFields `json:"renderedFields,omitempty" structs:"renderedFields,omitempty"`
+	Changelog      *Changelog           `json:"changelog,omitempty" structs:"changelog,omitempty"`
 }
 
 // ChangelogItems reflects one single changelog item of a history item
@@ -194,6 +195,23 @@ func (i *IssueFields) UnmarshalJSON(data []byte) error {
 	i.Unknowns = totalMap
 	return nil
 
+}
+
+// IssueRenderedFields represents rendered fields of a JIRA issue.
+// Not all IssueFields are rendered.
+type IssueRenderedFields struct {
+	// TODO Missing fields
+	//      * "aggregatetimespent": null,
+	//      * "workratio": -1,
+	//      * "lastViewed": null,
+	//      * "aggregatetimeoriginalestimate": null,
+	//      * "aggregatetimeestimate": null,
+	//      * "environment": null,
+	Resolutiondate string    `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
+	Created        string    `json:"created,omitempty" structs:"created,omitempty"`
+	Duedate        string    `json:"duedate,omitempty" structs:"duedate,omitempty"`
+	Updated        string    `json:"updated,omitempty" structs:"updated,omitempty"`
+	Comments       *Comments `json:"comment,omitempty" structs:"comment,omitempty"`
 }
 
 // IssueType represents a type of a JIRA issue.
