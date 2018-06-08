@@ -235,15 +235,6 @@ type Resolution struct {
 	Name        string `json:"name" structs:"name"`
 }
 
-// Priority represents a priority of a JIRA issue.
-// Typical types are "Normal", "Moderate", "Urgent", ...
-type Priority struct {
-	Self    string `json:"self,omitempty" structs:"self,omitempty"`
-	IconURL string `json:"iconUrl,omitempty" structs:"iconUrl,omitempty"`
-	Name    string `json:"name,omitempty" structs:"name,omitempty"`
-	ID      string `json:"id,omitempty" structs:"id,omitempty"`
-}
-
 // Watches represents a type of how many and which user are "observing" a JIRA issue to track the status / updates.
 type Watches struct {
 	Self       string     `json:"self,omitempty" structs:"self,omitempty"`
