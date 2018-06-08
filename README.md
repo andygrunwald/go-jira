@@ -207,7 +207,7 @@ func main() {
 	}
 
 	jiraClient, err := jira.NewClient(tp.Client(), base)
-	req, _ := jiraClient.NewRequest("GET", "/rest/api/2/project", nil)
+	req, _ := jiraClient.NewRequest("GET", "rest/api/2/project", nil)
 
 	projects := new([]jira.Project)
 	_, err := jiraClient.Do(req, projects)
