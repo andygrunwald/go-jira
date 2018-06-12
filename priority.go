@@ -29,7 +29,7 @@ func (s *PriorityService) GetList() ([]Priority, *Response, error) {
 	}
 
 	priorityList := []Priority{}
-	resp, err := s.client.Do(req, priorityList)
+	resp, err := s.client.Do(req, &priorityList)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
 	}
