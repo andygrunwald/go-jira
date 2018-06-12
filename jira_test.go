@@ -115,6 +115,9 @@ func TestNewClient_WithServices(t *testing.T) {
 	if c.Version == nil {
 		t.Error("No VersionService provided")
 	}
+	if c.Priority == nil {
+		t.Error("No PriorityService provided")
+	}
 }
 
 func TestCheckResponse(t *testing.T) {
