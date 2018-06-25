@@ -37,6 +37,7 @@ type Client struct {
 	Version        *VersionService
 	Priority       *PriorityService
 	Field          *FieldService
+	Component      *ComponentService
 }
 
 // NewClient returns a new JIRA API client.
@@ -75,6 +76,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	c.Version = &VersionService{client: c}
 	c.Priority = &PriorityService{client: c}
 	c.Field = &FieldService{client: c}
+	c.Component = &ComponentService{client: c}
 
 	return c, nil
 }
