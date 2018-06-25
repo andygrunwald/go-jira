@@ -24,7 +24,7 @@ func TestFieldService_GetList(t *testing.T) {
 
 	fields, _, err := testClient.Field.GetList()
 	if fields == nil {
-		t.Error("Expected priority list. Priority list is nil")
+		t.Error("Expected field list. Field list is nil")
 	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)
