@@ -1,0 +1,140 @@
+[
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/1",
+    "id": "1",
+    "description": "A fix for this issue is checked into the tree and tested.",
+    "name": "Fixed"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/2",
+    "id": "2",
+    "description": "The problem described is an issue which will never be fixed.",
+    "name": "Won't Fix"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/3",
+    "id": "3",
+    "description": "The problem is a duplicate of an existing issue.",
+    "name": "Duplicate"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/6",
+    "id": "6",
+    "description": "The problem isn't valid and it can't be fixed.",
+    "name": "Invalid"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/4",
+    "id": "4",
+    "description": "The problem is not completely described.",
+    "name": "Incomplete"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/5",
+    "id": "5",
+    "description": "All attempts at reproducing this issue failed, or not enough information was available to reproduce the issue. Reading the code produces no clues as to why this behavior would occur. If more information appears later, please reopen the issue.",
+    "name": "Cannot Reproduce"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/7",
+    "id": "7",
+    "description": "Later",
+    "name": "Later"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/8",
+    "id": "8",
+    "description": "The described issue is not actually a problem - it is as designed.",
+    "name": "Not A Problem"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/9",
+    "id": "9",
+    "description": "Unresolved",
+    "name": "Unresolved"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/10",
+    "id": "10",
+    "description": "As the name suggests",
+    "name": "Implemented"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/11",
+    "id": "11",
+    "description": "",
+    "name": "Done"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/10000",
+    "id": "10000",
+    "description": "This issue was automatically closed",
+    "name": "Auto Closed"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/10001",
+    "id": "10001",
+    "description": "",
+    "name": "Pending Closed"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/10002",
+    "id": "10002",
+    "description": "REMIND",
+    "name": "REMIND"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/10003",
+    "id": "10003",
+    "description": "Resolved",
+    "name": "Resolved"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/10004",
+    "id": "10004",
+    "description": "Not A Bug",
+    "name": "Not A Bug"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/10005",
+    "id": "10005",
+    "description": "Workaround",
+    "name": "Workaround"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/10006",
+    "id": "10006",
+    "description": "Staged",
+    "name": "Staged"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/10007",
+    "id": "10007",
+    "description": "Delivered",
+    "name": "Delivered"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/10008",
+    "id": "10008",
+    "description": "Information Provided",
+    "name": "Information Provided"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/10009",
+    "id": "10009",
+    "description": "Works for Me",
+    "name": "Works for Me"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/10010",
+    "id": "10010",
+    "description": "Feedback Received",
+    "name": "Feedback Received"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/resolution/10011",
+    "id": "10011",
+    "description": "Won't Do",
+    "name": "Won't Do"
+  }
+]

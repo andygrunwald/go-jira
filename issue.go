@@ -226,15 +226,6 @@ type IssueType struct {
 	AvatarID    int    `json:"avatarId,omitempty" structs:"avatarId,omitempty"`
 }
 
-// Resolution represents a resolution of a JIRA issue.
-// Typical types are "Fixed", "Suspended", "Won't Fix", ...
-type Resolution struct {
-	Self        string `json:"self" structs:"self"`
-	ID          string `json:"id" structs:"id"`
-	Description string `json:"description" structs:"description"`
-	Name        string `json:"name" structs:"name"`
-}
-
 // Watches represents a type of how many and which user are "observing" a JIRA issue to track the status / updates.
 type Watches struct {
 	Self       string     `json:"self,omitempty" structs:"self,omitempty"`

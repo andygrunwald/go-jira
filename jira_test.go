@@ -118,6 +118,9 @@ func TestNewClient_WithServices(t *testing.T) {
 	if c.Priority == nil {
 		t.Error("No PriorityService provided")
 	}
+	if c.Resolution == nil {
+		t.Error("No ResolutionService provided")
+	}
 }
 
 func TestCheckResponse(t *testing.T) {
