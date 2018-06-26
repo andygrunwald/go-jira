@@ -7,12 +7,12 @@ import (
 	"testing"
 )
 
-func TestFieldService_GetList(t *testing.T) {
+func TestStatusCategoryService_GetList(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/rest/api/2/field"
+	testAPIEdpoint := "/rest/api/2/statuscategory"
 
-	raw, err := ioutil.ReadFile("./mocks/all_fields.json")
+	raw, err := ioutil.ReadFile("./mocks/all_statuscategories.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -22,9 +22,9 @@ func TestFieldService_GetList(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	fields, _, err := testClient.Field.GetList()
-	if fields == nil {
-		t.Error("Expected field list. Field list is nil")
+	statusCategory, _, err := testClient.StatusCategory.GetList()
+	if statusCategory == nil {
+		t.Error("Expected statusCategory list. StatusCategory list is nil")
 	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)
