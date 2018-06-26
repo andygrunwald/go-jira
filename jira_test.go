@@ -121,6 +121,9 @@ func TestNewClient_WithServices(t *testing.T) {
 	if c.Resolution == nil {
 		t.Error("No ResolutionService provided")
 	}
+	if c.StatusCategory == nil {
+		t.Error("No StatusCategoryService provided")
+	}
 }
 
 func TestCheckResponse(t *testing.T) {
