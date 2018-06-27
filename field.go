@@ -1,14 +1,13 @@
 package jira
 
-// PriorityService handles priorities for the JIRA instance / API.
+// FieldService handles fields for the JIRA instance / API.
 //
-// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-Priority
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-Field
 type FieldService struct {
 	client *Client
 }
 
-// Priority represents a priority of a JIRA issue.
-// Typical types are "Normal", "Moderate", "Urgent", ...
+// Field represents a field of a JIRA issue.
 type Field struct {
 	ID          string      `json:"id,omitempty" structs:"id,omitempty"`
 	Key         string      `json:"key,omitempty" structs:"key,omitempty"`
@@ -27,7 +26,7 @@ type FieldSchema struct {
 
 // GetList gets all fields from JIRA
 //
-// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-priority-get
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-field-get
 func (s *FieldService) GetList() ([]Field, *Response, error) {
 	apiEndpoint := "rest/api/2/field"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
