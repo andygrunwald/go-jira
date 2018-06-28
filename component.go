@@ -25,17 +25,8 @@ type CreateComponentOptions struct {
 	ProjectID    int    `json:"projectId,omitempty" structs:"projectId,omitempty"`
 }
 
-// FullComponent is a JIRA component with all details filled in
-type FullComponent struct {
-	RealAssigneeType    string `json:"realAssigneeType,omitempty" structs:"realAssigneeType,omitempty"`
-	RealAssignee        *User  `json:"realAssignee,omitempty" structs:"realAssignee,omitempty"`
-	IsAssigneeTypeValid bool   `json:"isAssigneeTypeValid,omitempty" structs:"isAssigneeTypeValid,omitempty"`
-
-	CreateComponentOptions
-}
-
 // Create creates a new JIRA component based on the given options.
-func (s *ComponentService) Create(options *CreateComponentOptions) (*FullComponent, *Response, error) {
+func (s *ComponentService) Create(options *CreateComponentOptions) (*ProjectComponent, *Response, error) {
 	apiEndpoint := "rest/api/2/component"
 	req, err := s.client.NewRequest("POST", apiEndpoint, options)
 	if err != nil {
@@ -47,7 +38,7 @@ func (s *ComponentService) Create(options *CreateComponentOptions) (*FullCompone
 		return nil, resp, err
 	}
 
-	component := new(FullComponent)
+	component := new(ProjectComponent)
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
