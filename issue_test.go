@@ -1308,3 +1308,25 @@ func TestIssueService_GetWatchers(t *testing.T) {
 		t.Error("Expected watcher name fred")
 	}
 }
+
+func TestIssueService_UpdateAssignee(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/10002/assignee", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+		testRequestURL(t, r, "/rest/api/2/issue/10002/assignee")
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	resp, err := testClient.Issue.UpdateAssignee("10002", &User{
+		Name: "test-username",
+	})
+
+	if resp.StatusCode != 204 {
+		t.Error("Expected issue not re-assigned.")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
