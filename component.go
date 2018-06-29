@@ -30,5 +30,9 @@ func (s *ComponentService) Create(options *CreateComponentOptions) (*ProjectComp
 	component := new(ProjectComponent)
 	resp, err := s.client.Do(req, component)
 
-	return component, resp, err
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+
+	return component, resp, nil
 }
