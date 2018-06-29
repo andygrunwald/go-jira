@@ -37,6 +37,7 @@ type Client struct {
 	Version        *VersionService
 	Priority       *PriorityService
 	Field          *FieldService
+	Component      *ComponentService
 	Resolution     *ResolutionService
 	StatusCategory *StatusCategoryService
 }
@@ -77,6 +78,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	c.Version = &VersionService{client: c}
 	c.Priority = &PriorityService{client: c}
 	c.Field = &FieldService{client: c}
+	c.Component = &ComponentService{client: c}
 	c.Resolution = &ResolutionService{client: c}
 	c.StatusCategory = &StatusCategoryService{client: c}
 
