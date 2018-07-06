@@ -33,6 +33,15 @@ type UserGroup struct {
 	Name string `json:"name,omitempty" structs:"name,omitempty"`
 }
 
+type userSearchParam struct {
+	name  string
+	value string
+}
+
+type userSearch []userSearchParam
+
+type userSearchF func(userSearch) userSearch
+
 // Get gets user info from JIRA
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUser
@@ -116,12 +125,59 @@ func (s *UserService) GetSelf() (*User, *Response, error) {
 	return &user, resp, nil
 }
 
+// WithMaxResults sets the max results to return
+func WithMaxResults(maxResults int) userSearchF {
+	return func(s userSearch) userSearch {
+		s = append(s, userSearchParam{name: "maxResults", value: fmt.Sprintf("%d", maxResults)})
+		return s
+	}
+}
+
+// WithStartAt set the start pager
+func WithStartAt(startAt int) userSearchF {
+	return func(s userSearch) userSearch {
+		s = append(s, userSearchParam{name: "startAt", value: fmt.Sprintf("%d", startAt)})
+		return s
+	}
+}
+
+// WithActive sets the active users lookup
+func WithActive(active bool) userSearchF {
+	return func(s userSearch) userSearch {
+		s = append(s, userSearchParam{name: "includeActive", value: fmt.Sprintf("%t", active)})
+		return s
+	}
+}
+
+// WithInactive sets the inactive users lookup
+func WithInactive(inactive bool) userSearchF {
+	return func(s userSearch) userSearch {
+		s = append(s, userSearchParam{name: "includeInactive", value: fmt.Sprintf("%t", inactive)})
+		return s
+	}
+}
+
 // Find searches for user info from JIRA:
 // It can find users by email, username or name
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-findUsers
-func (s *UserService) Find(property string) ([]User, *Response, error) {
-	apiEndpoint := fmt.Sprintf("/rest/api/2/user/search?username=%s", property)
+func (s *UserService) Find(property string, tweaks ...userSearchF) ([]User, *Response, error) {
+	search := []userSearchParam{
+		{
+			name:  "username",
+			value: property,
+		},
+	}
+	for _, f := range tweaks {
+		search = f(search)
+	}
+
+	var queryString = ""
+	for _, param := range search {
+		queryString += param.name + "=" + param.value + "&"
+	}
+
+	apiEndpoint := fmt.Sprintf("/rest/api/2/user/search?" + queryString[:len(queryString)-1])
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
