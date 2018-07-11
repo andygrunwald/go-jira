@@ -90,6 +90,24 @@ func (s *UserService) Create(user *User) (*User, *Response, error) {
 	return responseUser, resp, nil
 }
 
+// Delete deletes an user from JIRA.
+// Returns http.StatusNoContent on success.
+//
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-user-delete
+func (s *UserService) Delete(username string) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("/rest/api/2/user?username=%s", username)
+	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, NewJiraError(resp, err)
+	}
+	return resp, nil
+}
+
 // GetGroups returns the groups which the user belongs to
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUserGroups
