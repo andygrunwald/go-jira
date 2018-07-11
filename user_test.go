@@ -56,6 +56,26 @@ func TestUserService_Create(t *testing.T) {
 	}
 }
 
+func TestUserService_Delete(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/user", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+		testRequestURL(t, r, "/rest/api/2/user?username=fred")
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	resp, err := testClient.User.Delete("fred")
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+
+	if resp.StatusCode != http.StatusNoContent {
+		t.Errorf("Wrong status code: %d. Expected %d", resp.StatusCode, http.StatusNoContent)
+	}
+}
+
 func TestUserService_GetGroups(t *testing.T) {
 	setup()
 	defer teardown()
