@@ -1,7 +1,9 @@
 package jira
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/url"
 )
 
@@ -22,12 +24,11 @@ type groupMembersResult struct {
 }
 
 // Group represents a JIRA group
+// Schema can be found here https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-group-get
 type Group struct {
-	ID                   string          `json:"id"`
-	Title                string          `json:"title"`
-	Type                 string          `json:"type"`
-	Properties           groupProperties `json:"properties"`
-	AdditionalProperties bool            `json:"additionalProperties"`
+	Name  string        `json:"name"`
+	Self  string        `json:"self"`
+	Items []GroupMember `json:"items"`
 }
 
 type groupProperties struct {
@@ -150,5 +151,52 @@ func (s *GroupService) Remove(groupname string, username string) (*Response, err
 		return resp, jerr
 	}
 
+	return resp, nil
+}
+
+// Create creates an group in JIRA.
+//
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-group-post
+func (s *GroupService) Create(group *Group) (*Group, *Response, error) {
+	apiEndpoint := "/rest/api/2/group"
+	req, err := s.client.NewRequest("POST", apiEndpoint, group)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	responseGroup := new(Group)
+	defer resp.Body.Close()
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		e := fmt.Errorf("Could not read the returned data")
+		return nil, resp, NewJiraError(resp, e)
+	}
+	err = json.Unmarshal(data, responseGroup)
+	if err != nil {
+		e := fmt.Errorf("Could not unmarshall the data into struct")
+		return nil, resp, NewJiraError(resp, e)
+	}
+	return responseGroup, resp, nil
+}
+
+// Delete deletes an already existing group from JIRA
+//
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-group-delete
+func (s *GroupService) Delete(groupName string) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("/rest/api/2/group?groupname=%s", groupName)
+	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, NewJiraError(resp, err)
+	}
 	return resp, nil
 }
