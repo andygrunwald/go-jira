@@ -109,3 +109,25 @@ func TestGroupService_Remove(t *testing.T) {
 		t.Errorf("Error given: %s", err)
 	}
 }
+
+func TestGroupService_Create(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/group", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, "/rest/api/2/group")
+
+		w.WriteHeader(http.StatusCreated)
+		fmt.Fprint(w, `{"id": "https://docs.atlassian.com/jira/REST/schema/add-group#","title": "Add Group","type": "object","name" : "hello" ,"additionalProperties": false}`)
+	})
+
+	g := &Group{
+		Name: "hello",
+	}
+
+	if group, _, err := testClient.Group.Create(g); err != nil {
+		t.Errorf("Error given: %s", err)
+	} else if group == nil {
+		t.Error("Expected group. Group is nil")
+	}
+}
