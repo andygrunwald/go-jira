@@ -131,3 +131,23 @@ func TestGroupService_Create(t *testing.T) {
 		t.Error("Expected group. Group is nil")
 	}
 }
+
+func TestGroupService_Delete(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/group", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+		testRequestURL(t, r, "/rest/api/2/group?groupname=hello")
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	resp, err := testClient.Group.Delete("hello")
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+
+	if resp.StatusCode != http.StatusNoContent {
+		t.Errorf("Wrong status code: %d. Expected %d", resp.StatusCode, http.StatusNoContent)
+	}
+}

@@ -183,3 +183,20 @@ func (s *GroupService) Create(group *Group) (*Group, *Response, error) {
 	}
 	return responseGroup, resp, nil
 }
+
+// Delete deletes an already existing group from JIRA
+//
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-group-delete
+func (s *GroupService) Delete(groupName string) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("/rest/api/2/group?groupname=%s", groupName)
+	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, NewJiraError(resp, err)
+	}
+	return resp, nil
+}
