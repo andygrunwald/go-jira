@@ -274,6 +274,7 @@ type Status struct {
 type Progress struct {
 	Progress int `json:"progress" structs:"progress"`
 	Total    int `json:"total" structs:"total"`
+	Percent  int `json:"percent" structs:"percent"`
 }
 
 // Parent represents the parent of a JIRA issue, to be used with subtask issue types.
