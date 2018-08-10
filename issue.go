@@ -718,7 +718,7 @@ func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment
 		Body: comment.Body,
 	}
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, comment.ID)
-	req, err := s.client.NewRequest("POST", apiEndpoint, reqBody)
+	req, err := s.client.NewRequest("PUT", apiEndpoint, reqBody)
 	if err != nil {
 		return nil, nil, err
 	}

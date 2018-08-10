@@ -157,7 +157,7 @@ func TestIssueService_UpdateComment(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10000/comment/10001", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, "PUT")
 		testRequestURL(t, r, "/rest/api/2/issue/10000/comment/10001")
 
 		w.WriteHeader(http.StatusCreated)
