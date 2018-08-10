@@ -624,7 +624,7 @@ func (s *IssueService) GetWorklogs(issueID string) (*Worklog, *Response, error) 
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
 func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
-	apiEndpoint := "rest/api/2/issue/"
+	apiEndpoint := "rest/api/2/issue"
 	req, err := s.client.NewRequest("POST", apiEndpoint, issue)
 	if err != nil {
 		return nil, nil, err
