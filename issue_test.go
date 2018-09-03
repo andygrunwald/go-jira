@@ -1358,7 +1358,7 @@ func TestIssueService_Get_Fields_Changelog(t *testing.T) {
 
 	tm, _ := time.Parse("2006-01-02T15:04:05.999-0700", "2018-06-20T16:50:35.000+0300")
 
-	if ct, _ := issue.Changelog.Histories[0].CreatedTime(); ct != tm {
-		t.Errorf("Expected CreatedTime func return 2018-06-20T16:50:35.000+0300 time, %v got", ct)
+	if ct, _ := issue.Changelog.Histories[0].CreatedTime(); !tm.Equal(ct) {
+		t.Errorf("Expected CreatedTime func return %v time, %v got", tm, ct)
 	}
 }
