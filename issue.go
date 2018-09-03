@@ -624,7 +624,7 @@ func (s *IssueService) GetWorklogs(issueID string) (*Worklog, *Response, error) 
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
 func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
-	apiEndpoint := "rest/api/2/issue/"
+	apiEndpoint := "rest/api/2/issue"
 	req, err := s.client.NewRequest("POST", apiEndpoint, issue)
 	if err != nil {
 		return nil, nil, err
@@ -1077,6 +1077,25 @@ func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
 	req, err := s.client.NewRequest("DELETE", apiEndPoint, userName)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+
+	return resp, err
+}
+
+// UpdateAssignee updates the user assigned to work on the given issue
+//
+// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/7.10.2/#api/2/issue-assign
+func (s *IssueService) UpdateAssignee(issueID string, assignee *User) (*Response, error) {
+	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/assignee", issueID)
+
+	req, err := s.client.NewRequest("PUT", apiEndPoint, assignee)
 	if err != nil {
 		return nil, err
 	}
