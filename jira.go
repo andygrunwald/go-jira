@@ -375,7 +375,10 @@ func (t *CookieAuthTransport) RoundTrip(req *http.Request) (*http.Response, erro
 
 	req2 := cloneRequest(req) // per RoundTripper contract
 	for _, cookie := range t.SessionObject {
-		req2.AddCookie(cookie)
+		// Don't add an empty value cookie to the request
+		if cookie.Value != "" {
+			req2.AddCookie(cookie)
+		}
 	}
 
 	return t.transport().RoundTrip(req2)
