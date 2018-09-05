@@ -543,6 +543,26 @@ func (s *IssueService) Get(issueID string, options *GetQueryOptions) (*Issue, *R
 	return issue, resp, nil
 }
 
+// GetSession gets the session if logged in or not via cookies
+// This enables client.NewRequest to work with CookieAuthTransport for Issues
+// Gets an existing cookie session and returns it
+// The caller should check for error incase the session is invalid
+func (s *IssueService) GetSession() (*Response, error) {
+	apiEndpoint := "rest/auth/1/session"
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return resp, jerr
+	}
+
+	return resp, nil
+}
+
 // DownloadAttachment returns a Response of an attachment for a given attachmentID.
 // The attachment is in the Response.Body of the response.
 // This is an io.ReadCloser.
