@@ -53,6 +53,25 @@ func TestIssueService_Get_WithQuerySuccess(t *testing.T) {
 	}
 }
 
+func TestIssueService_GetSession_Success(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, "/rest/auth/1/session")
+
+		fmt.Fprint(w, `{"self":"https://jira.splunk.com/rest/api/latest/user?username=jirauser","name":"jirauser","loginInfo":{"failedLoginCount":6,"loginCount":559,"lastFailedLoginTime":"2018-07-24T15:48:00.299-0700","previousLoginTime":"2018-09-05T09:31:54.871-0700"}}`)
+	})
+
+	res, err := testClient.Issue.GetSession()
+	if res == nil {
+		t.Error("Expected Session. Session is nil")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
 func TestIssueService_Create(t *testing.T) {
 	setup()
 	defer teardown()
