@@ -1107,3 +1107,13 @@ func (s *IssueService) UpdateAssignee(issueID string, assignee *User) (*Response
 
 	return resp, err
 }
+
+func (c ChangelogHistory) CreatedTime() (time.Time, error) {
+	var t time.Time
+	// Ignore null
+	if string(c.Created) == "null" {
+		return t, nil
+	}
+	t, err := time.Parse("2006-01-02T15:04:05.999-0700", c.Created)
+	return t, err
+}
