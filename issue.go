@@ -91,46 +91,46 @@ type Epic struct {
 // Every JIRA issue has several fields attached.
 type IssueFields struct {
 	// TODO Missing fields
-	//      * "aggregatetimespent": null,
 	//      * "workratio": -1,
 	//      * "lastViewed": null,
-	//      * "aggregatetimeoriginalestimate": null,
-	//      * "aggregatetimeestimate": null,
 	//      * "environment": null,
-	Expand               string        `json:"expand,omitempty" structs:"expand,omitempty"`
-	Type                 IssueType     `json:"issuetype,omitempty" structs:"issuetype,omitempty"`
-	Project              Project       `json:"project,omitempty" structs:"project,omitempty"`
-	Resolution           *Resolution   `json:"resolution,omitempty" structs:"resolution,omitempty"`
-	Priority             *Priority     `json:"priority,omitempty" structs:"priority,omitempty"`
-	Resolutiondate       Time          `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
-	Created              Time          `json:"created,omitempty" structs:"created,omitempty"`
-	Duedate              Date          `json:"duedate,omitempty" structs:"duedate,omitempty"`
-	Watches              *Watches      `json:"watches,omitempty" structs:"watches,omitempty"`
-	Assignee             *User         `json:"assignee,omitempty" structs:"assignee,omitempty"`
-	Updated              Time          `json:"updated,omitempty" structs:"updated,omitempty"`
-	Description          string        `json:"description,omitempty" structs:"description,omitempty"`
-	Summary              string        `json:"summary,omitempty" structs:"summary,omitempty"`
-	Creator              *User         `json:"Creator,omitempty" structs:"Creator,omitempty"`
-	Reporter             *User         `json:"reporter,omitempty" structs:"reporter,omitempty"`
-	Components           []*Component  `json:"components,omitempty" structs:"components,omitempty"`
-	Status               *Status       `json:"status,omitempty" structs:"status,omitempty"`
-	Progress             *Progress     `json:"progress,omitempty" structs:"progress,omitempty"`
-	AggregateProgress    *Progress     `json:"aggregateprogress,omitempty" structs:"aggregateprogress,omitempty"`
-	TimeTracking         *TimeTracking `json:"timetracking,omitempty" structs:"timetracking,omitempty"`
-	TimeSpent            int           `json:"timespent,omitempty" structs:"timespent,omitempty"`
-	TimeEstimate         int           `json:"timeestimate,omitempty" structs:"timeestimate,omitempty"`
-	TimeOriginalEstimate int           `json:"timeoriginalestimate,omitempty" structs:"timeoriginalestimate,omitempty"`
-	Worklog              *Worklog      `json:"worklog,omitempty" structs:"worklog,omitempty"`
-	IssueLinks           []*IssueLink  `json:"issuelinks,omitempty" structs:"issuelinks,omitempty"`
-	Comments             *Comments     `json:"comment,omitempty" structs:"comment,omitempty"`
-	FixVersions          []*FixVersion `json:"fixVersions,omitempty" structs:"fixVersions,omitempty"`
-	Labels               []string      `json:"labels,omitempty" structs:"labels,omitempty"`
-	Subtasks             []*Subtasks   `json:"subtasks,omitempty" structs:"subtasks,omitempty"`
-	Attachments          []*Attachment `json:"attachment,omitempty" structs:"attachment,omitempty"`
-	Epic                 *Epic         `json:"epic,omitempty" structs:"epic,omitempty"`
-	Sprint               *Sprint       `json:"sprint,omitempty" structs:"sprint,omitempty"`
-	Parent               *Parent       `json:"parent,omitempty" structs:"parent,omitempty"`
-	Unknowns             tcontainer.MarshalMap
+	Expand                        string        `json:"expand,omitempty" structs:"expand,omitempty"`
+	Type                          IssueType     `json:"issuetype,omitempty" structs:"issuetype,omitempty"`
+	Project                       Project       `json:"project,omitempty" structs:"project,omitempty"`
+	Resolution                    *Resolution   `json:"resolution,omitempty" structs:"resolution,omitempty"`
+	Priority                      *Priority     `json:"priority,omitempty" structs:"priority,omitempty"`
+	Resolutiondate                Time          `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
+	Created                       Time          `json:"created,omitempty" structs:"created,omitempty"`
+	Duedate                       Date          `json:"duedate,omitempty" structs:"duedate,omitempty"`
+	Watches                       *Watches      `json:"watches,omitempty" structs:"watches,omitempty"`
+	Assignee                      *User         `json:"assignee,omitempty" structs:"assignee,omitempty"`
+	Updated                       Time          `json:"updated,omitempty" structs:"updated,omitempty"`
+	Description                   string        `json:"description,omitempty" structs:"description,omitempty"`
+	Summary                       string        `json:"summary,omitempty" structs:"summary,omitempty"`
+	Creator                       *User         `json:"Creator,omitempty" structs:"Creator,omitempty"`
+	Reporter                      *User         `json:"reporter,omitempty" structs:"reporter,omitempty"`
+	Components                    []*Component  `json:"components,omitempty" structs:"components,omitempty"`
+	Status                        *Status       `json:"status,omitempty" structs:"status,omitempty"`
+	Progress                      *Progress     `json:"progress,omitempty" structs:"progress,omitempty"`
+	AggregateProgress             *Progress     `json:"aggregateprogress,omitempty" structs:"aggregateprogress,omitempty"`
+	TimeTracking                  *TimeTracking `json:"timetracking,omitempty" structs:"timetracking,omitempty"`
+	TimeSpent                     int           `json:"timespent,omitempty" structs:"timespent,omitempty"`
+	TimeEstimate                  int           `json:"timeestimate,omitempty" structs:"timeestimate,omitempty"`
+	TimeOriginalEstimate          int           `json:"timeoriginalestimate,omitempty" structs:"timeoriginalestimate,omitempty"`
+	Worklog                       *Worklog      `json:"worklog,omitempty" structs:"worklog,omitempty"`
+	IssueLinks                    []*IssueLink  `json:"issuelinks,omitempty" structs:"issuelinks,omitempty"`
+	Comments                      *Comments     `json:"comment,omitempty" structs:"comment,omitempty"`
+	FixVersions                   []*FixVersion `json:"fixVersions,omitempty" structs:"fixVersions,omitempty"`
+	Labels                        []string      `json:"labels,omitempty" structs:"labels,omitempty"`
+	Subtasks                      []*Subtasks   `json:"subtasks,omitempty" structs:"subtasks,omitempty"`
+	Attachments                   []*Attachment `json:"attachment,omitempty" structs:"attachment,omitempty"`
+	Epic                          *Epic         `json:"epic,omitempty" structs:"epic,omitempty"`
+	Sprint                        *Sprint       `json:"sprint,omitempty" structs:"sprint,omitempty"`
+	Parent                        *Parent       `json:"parent,omitempty" structs:"parent,omitempty"`
+	AggregateTimeOriginalEstimate int           `json:"aggregatetimeoriginalestimate,omitempty" structs:"aggregatetimeoriginalestimate,omitempty"`
+	AggregateTimeSpent            int           `json:"aggregatetimespent,omitempty" structs:"aggregatetimespent,omitempty"`
+	AggregateTimeEstimate         int           `json:"aggregatetimeestimate,omitempty" structs:"aggregatetimeestimate,omitempty"`
+	Unknowns                      tcontainer.MarshalMap
 }
 
 // MarshalJSON is a custom JSON marshal function for the IssueFields structs.
@@ -274,6 +274,7 @@ type Status struct {
 type Progress struct {
 	Progress int `json:"progress" structs:"progress"`
 	Total    int `json:"total" structs:"total"`
+	Percent  int `json:"percent" structs:"percent"`
 }
 
 // Parent represents the parent of a JIRA issue, to be used with subtask issue types.
