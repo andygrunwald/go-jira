@@ -733,6 +733,24 @@ func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment
 	return responseComment, resp, nil
 }
 
+// DeleteComment Deletes a comment from an issueID.
+//
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-issue-issueIdOrKey-comment-id-delete
+func (s *IssueService) DeleteComment(issueID, commentID string) error {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, commentID)
+	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
+	if err != nil {
+		return err
+	}
+
+	_, err = s.client.Do(req, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // AddWorklogRecord adds a new worklog record to issueID.
 //
 // https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-issue-issueIdOrKey-worklog-post
