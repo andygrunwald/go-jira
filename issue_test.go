@@ -182,6 +182,34 @@ func TestIssueService_UpdateComment(t *testing.T) {
 	}
 }
 
+func TestIssueService_DeleteComment(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/10000/comment/10001", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+		testRequestURL(t, r, "/rest/api/2/issue/10000/comment/10001")
+
+		w.WriteHeader(http.StatusCreated)
+		fmt.Fprint(w, `{"self":"http://www.example.com/jira/rest/api/2/issue/10010/comment/10001","id":"10001","author":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget venenatis elit. Duis eu justo eget augue iaculis fermentum. Sed semper quam laoreet nisi egestas at posuere augue semper.","updateAuthor":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"created":"2016-03-16T04:22:37.356+0000","updated":"2016-03-16T04:22:37.356+0000","visibility":{"type":"role","value":"Administrators"}}`)
+	})
+
+	c := &Comment{
+		ID:   "10001",
+		Body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget venenatis elit. Duis eu justo eget augue iaculis fermentum. Sed semper quam laoreet nisi egestas at posuere augue semper.",
+		Visibility: CommentVisibility{
+			Type:  "role",
+			Value: "Administrators",
+		},
+	}
+	comment, _, err := testClient.Issue.UpdateComment("10000", c)
+	if comment == nil {
+		t.Error("Expected Comment. Comment is nil")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
 func TestIssueService_AddWorklogRecord(t *testing.T) {
 	setup()
 	defer teardown()
