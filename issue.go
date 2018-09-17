@@ -743,9 +743,10 @@ func (s *IssueService) DeleteComment(issueID, commentID string) error {
 		return err
 	}
 
-	_, err = s.client.Do(req, nil)
+	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return err
+		jerr := NewJiraError(resp, err)
+		return jerr
 	}
 
 	return nil
