@@ -23,6 +23,7 @@ type TempoTimesheetsWorklogService struct {
 
 // Worklog request options
 type TTWorkLogOptions struct {
+	Project  string         `url:"projectKey"`
 	Username string         `url:"username"`
 	DateFrom *TTWorklogDate `url:"dateFrom"`
 	DateTo   *TTWorklogDate `url:"dateTo"`
