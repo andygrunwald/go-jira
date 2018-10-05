@@ -206,11 +206,8 @@ func main() {
 		AuthURL:  fmt.Sprintf("%s/rest/auth/1/session", base),
 	}
 
-	jiraClient, _ := jira.NewClient(tp.Client(), base)
-	req, err := jiraClient.NewRequest("GET", "/rest/api/2/project", nil)
-	if err != nil {
-        panic(err)
-    }
+	jiraClient, err := jira.NewClient(tp.Client(), base)
+	req, _ := jiraClient.NewRequest("GET", "rest/api/2/project", nil)
 
 	projects := new([]jira.Project)
 	_, err = jiraClient.Do(req, projects)
@@ -253,7 +250,7 @@ A few examples:
 * Correct typos in the README / documentation
 * Reporting bugs
 * Implement a new feature or endpoint
-* Sharing the love if [go-jira](https://github.com/andygrunwald/go-jira) and help people to get use to it
+* Sharing the love of [go-jira](https://github.com/andygrunwald/go-jira) and help people to get use to it
 
 If you are new to pull requests, checkout [Collaborating on projects using issues and pull requests / Creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
 

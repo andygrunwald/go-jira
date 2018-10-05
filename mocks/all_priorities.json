@@ -1,0 +1,42 @@
+[
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/priority/1",
+    "statusColor": "#cc0000",
+    "description": "Blocks development and/or testing work, production could not run",
+    "iconUrl": "https://issues.apache.org/jira/images/icons/priorities/blocker.svg",
+    "name": "Blocker",
+    "id": "1"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/priority/2",
+    "statusColor": "#ff0000",
+    "description": "Crashes, loss of data, severe memory leak.",
+    "iconUrl": "https://issues.apache.org/jira/images/icons/priorities/critical.svg",
+    "name": "Critical",
+    "id": "2"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/priority/3",
+    "statusColor": "#009900",
+    "description": "Major loss of function.",
+    "iconUrl": "https://issues.apache.org/jira/images/icons/priorities/major.svg",
+    "name": "Major",
+    "id": "3"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/priority/4",
+    "statusColor": "#006600",
+    "description": "Minor loss of function, or other problem where easy workaround is present.",
+    "iconUrl": "https://issues.apache.org/jira/images/icons/priorities/minor.svg",
+    "name": "Minor",
+    "id": "4"
+  },
+  {
+    "self": "https://issues.apache.org/jira/rest/api/2/priority/5",
+    "statusColor": "#003300",
+    "description": "Cosmetic problem like misspelt words or misaligned text.",
+    "iconUrl": "https://issues.apache.org/jira/images/icons/priorities/trivial.svg",
+    "name": "Trivial",
+    "id": "5"
+  }
+]

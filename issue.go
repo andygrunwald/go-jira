@@ -31,12 +31,13 @@ type IssueService struct {
 
 // Issue represents a JIRA issue.
 type Issue struct {
-	Expand    string       `json:"expand,omitempty" structs:"expand,omitempty"`
-	ID        string       `json:"id,omitempty" structs:"id,omitempty"`
-	Self      string       `json:"self,omitempty" structs:"self,omitempty"`
-	Key       string       `json:"key,omitempty" structs:"key,omitempty"`
-	Fields    *IssueFields `json:"fields,omitempty" structs:"fields,omitempty"`
-	Changelog *Changelog   `json:"changelog,omitempty" structs:"changelog,omitempty"`
+	Expand         string               `json:"expand,omitempty" structs:"expand,omitempty"`
+	ID             string               `json:"id,omitempty" structs:"id,omitempty"`
+	Self           string               `json:"self,omitempty" structs:"self,omitempty"`
+	Key            string               `json:"key,omitempty" structs:"key,omitempty"`
+	Fields         *IssueFields         `json:"fields,omitempty" structs:"fields,omitempty"`
+	RenderedFields *IssueRenderedFields `json:"renderedFields,omitempty" structs:"renderedFields,omitempty"`
+	Changelog      *Changelog           `json:"changelog,omitempty" structs:"changelog,omitempty"`
 }
 
 // ChangelogItems reflects one single changelog item of a history item
@@ -90,46 +91,46 @@ type Epic struct {
 // Every JIRA issue has several fields attached.
 type IssueFields struct {
 	// TODO Missing fields
-	//      * "aggregatetimespent": null,
 	//      * "workratio": -1,
 	//      * "lastViewed": null,
-	//      * "aggregatetimeoriginalestimate": null,
-	//      * "aggregatetimeestimate": null,
 	//      * "environment": null,
-	Expand               string        `json:"expand,omitempty" structs:"expand,omitempty"`
-	Type                 IssueType     `json:"issuetype,omitempty" structs:"issuetype,omitempty"`
-	Project              Project       `json:"project,omitempty" structs:"project,omitempty"`
-	Resolution           *Resolution   `json:"resolution,omitempty" structs:"resolution,omitempty"`
-	Priority             *Priority     `json:"priority,omitempty" structs:"priority,omitempty"`
-	Resolutiondate       Time          `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
-	Created              Time          `json:"created,omitempty" structs:"created,omitempty"`
-	Duedate              Date          `json:"duedate,omitempty" structs:"duedate,omitempty"`
-	Watches              *Watches      `json:"watches,omitempty" structs:"watches,omitempty"`
-	Assignee             *User         `json:"assignee,omitempty" structs:"assignee,omitempty"`
-	Updated              Time          `json:"updated,omitempty" structs:"updated,omitempty"`
-	Description          string        `json:"description,omitempty" structs:"description,omitempty"`
-	Summary              string        `json:"summary,omitempty" structs:"summary,omitempty"`
-	Creator              *User         `json:"Creator,omitempty" structs:"Creator,omitempty"`
-	Reporter             *User         `json:"reporter,omitempty" structs:"reporter,omitempty"`
-	Components           []*Component  `json:"components,omitempty" structs:"components,omitempty"`
-	Status               *Status       `json:"status,omitempty" structs:"status,omitempty"`
-	Progress             *Progress     `json:"progress,omitempty" structs:"progress,omitempty"`
-	AggregateProgress    *Progress     `json:"aggregateprogress,omitempty" structs:"aggregateprogress,omitempty"`
-	TimeTracking         *TimeTracking `json:"timetracking,omitempty" structs:"timetracking,omitempty"`
-	TimeSpent            int           `json:"timespent,omitempty" structs:"timespent,omitempty"`
-	TimeEstimate         int           `json:"timeestimate,omitempty" structs:"timeestimate,omitempty"`
-	TimeOriginalEstimate int           `json:"timeoriginalestimate,omitempty" structs:"timeoriginalestimate,omitempty"`
-	Worklog              *Worklog      `json:"worklog,omitempty" structs:"worklog,omitempty"`
-	IssueLinks           []*IssueLink  `json:"issuelinks,omitempty" structs:"issuelinks,omitempty"`
-	Comments             *Comments     `json:"comment,omitempty" structs:"comment,omitempty"`
-	FixVersions          []*FixVersion `json:"fixVersions,omitempty" structs:"fixVersions,omitempty"`
-	Labels               []string      `json:"labels,omitempty" structs:"labels,omitempty"`
-	Subtasks             []*Subtasks   `json:"subtasks,omitempty" structs:"subtasks,omitempty"`
-	Attachments          []*Attachment `json:"attachment,omitempty" structs:"attachment,omitempty"`
-	Epic                 *Epic         `json:"epic,omitempty" structs:"epic,omitempty"`
-	Sprint               *Sprint       `json:"sprint,omitempty" structs:"sprint,omitempty"`
-	Parent               *Parent       `json:"parent,omitempty" structs:"parent,omitempty"`
-	Unknowns             tcontainer.MarshalMap
+	Expand                        string        `json:"expand,omitempty" structs:"expand,omitempty"`
+	Type                          IssueType     `json:"issuetype,omitempty" structs:"issuetype,omitempty"`
+	Project                       Project       `json:"project,omitempty" structs:"project,omitempty"`
+	Resolution                    *Resolution   `json:"resolution,omitempty" structs:"resolution,omitempty"`
+	Priority                      *Priority     `json:"priority,omitempty" structs:"priority,omitempty"`
+	Resolutiondate                Time          `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
+	Created                       Time          `json:"created,omitempty" structs:"created,omitempty"`
+	Duedate                       Date          `json:"duedate,omitempty" structs:"duedate,omitempty"`
+	Watches                       *Watches      `json:"watches,omitempty" structs:"watches,omitempty"`
+	Assignee                      *User         `json:"assignee,omitempty" structs:"assignee,omitempty"`
+	Updated                       Time          `json:"updated,omitempty" structs:"updated,omitempty"`
+	Description                   string        `json:"description,omitempty" structs:"description,omitempty"`
+	Summary                       string        `json:"summary,omitempty" structs:"summary,omitempty"`
+	Creator                       *User         `json:"Creator,omitempty" structs:"Creator,omitempty"`
+	Reporter                      *User         `json:"reporter,omitempty" structs:"reporter,omitempty"`
+	Components                    []*Component  `json:"components,omitempty" structs:"components,omitempty"`
+	Status                        *Status       `json:"status,omitempty" structs:"status,omitempty"`
+	Progress                      *Progress     `json:"progress,omitempty" structs:"progress,omitempty"`
+	AggregateProgress             *Progress     `json:"aggregateprogress,omitempty" structs:"aggregateprogress,omitempty"`
+	TimeTracking                  *TimeTracking `json:"timetracking,omitempty" structs:"timetracking,omitempty"`
+	TimeSpent                     int           `json:"timespent,omitempty" structs:"timespent,omitempty"`
+	TimeEstimate                  int           `json:"timeestimate,omitempty" structs:"timeestimate,omitempty"`
+	TimeOriginalEstimate          int           `json:"timeoriginalestimate,omitempty" structs:"timeoriginalestimate,omitempty"`
+	Worklog                       *Worklog      `json:"worklog,omitempty" structs:"worklog,omitempty"`
+	IssueLinks                    []*IssueLink  `json:"issuelinks,omitempty" structs:"issuelinks,omitempty"`
+	Comments                      *Comments     `json:"comment,omitempty" structs:"comment,omitempty"`
+	FixVersions                   []*FixVersion `json:"fixVersions,omitempty" structs:"fixVersions,omitempty"`
+	Labels                        []string      `json:"labels,omitempty" structs:"labels,omitempty"`
+	Subtasks                      []*Subtasks   `json:"subtasks,omitempty" structs:"subtasks,omitempty"`
+	Attachments                   []*Attachment `json:"attachment,omitempty" structs:"attachment,omitempty"`
+	Epic                          *Epic         `json:"epic,omitempty" structs:"epic,omitempty"`
+	Sprint                        *Sprint       `json:"sprint,omitempty" structs:"sprint,omitempty"`
+	Parent                        *Parent       `json:"parent,omitempty" structs:"parent,omitempty"`
+	AggregateTimeOriginalEstimate int           `json:"aggregatetimeoriginalestimate,omitempty" structs:"aggregatetimeoriginalestimate,omitempty"`
+	AggregateTimeSpent            int           `json:"aggregatetimespent,omitempty" structs:"aggregatetimespent,omitempty"`
+	AggregateTimeEstimate         int           `json:"aggregatetimeestimate,omitempty" structs:"aggregatetimeestimate,omitempty"`
+	Unknowns                      tcontainer.MarshalMap
 }
 
 // MarshalJSON is a custom JSON marshal function for the IssueFields structs.
@@ -196,6 +197,23 @@ func (i *IssueFields) UnmarshalJSON(data []byte) error {
 
 }
 
+// IssueRenderedFields represents rendered fields of a JIRA issue.
+// Not all IssueFields are rendered.
+type IssueRenderedFields struct {
+	// TODO Missing fields
+	//      * "aggregatetimespent": null,
+	//      * "workratio": -1,
+	//      * "lastViewed": null,
+	//      * "aggregatetimeoriginalestimate": null,
+	//      * "aggregatetimeestimate": null,
+	//      * "environment": null,
+	Resolutiondate string    `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
+	Created        string    `json:"created,omitempty" structs:"created,omitempty"`
+	Duedate        string    `json:"duedate,omitempty" structs:"duedate,omitempty"`
+	Updated        string    `json:"updated,omitempty" structs:"updated,omitempty"`
+	Comments       *Comments `json:"comment,omitempty" structs:"comment,omitempty"`
+}
+
 // IssueType represents a type of a JIRA issue.
 // Typical types are "Request", "Bug", "Story", ...
 type IssueType struct {
@@ -206,24 +224,6 @@ type IssueType struct {
 	Name        string `json:"name,omitempty" structs:"name,omitempty"`
 	Subtask     bool   `json:"subtask,omitempty" structs:"subtask,omitempty"`
 	AvatarID    int    `json:"avatarId,omitempty" structs:"avatarId,omitempty"`
-}
-
-// Resolution represents a resolution of a JIRA issue.
-// Typical types are "Fixed", "Suspended", "Won't Fix", ...
-type Resolution struct {
-	Self        string `json:"self" structs:"self"`
-	ID          string `json:"id" structs:"id"`
-	Description string `json:"description" structs:"description"`
-	Name        string `json:"name" structs:"name"`
-}
-
-// Priority represents a priority of a JIRA issue.
-// Typical types are "Normal", "Moderate", "Urgent", ...
-type Priority struct {
-	Self    string `json:"self,omitempty" structs:"self,omitempty"`
-	IconURL string `json:"iconUrl,omitempty" structs:"iconUrl,omitempty"`
-	Name    string `json:"name,omitempty" structs:"name,omitempty"`
-	ID      string `json:"id,omitempty" structs:"id,omitempty"`
 }
 
 // Watches represents a type of how many and which user are "observing" a JIRA issue to track the status / updates.
@@ -270,20 +270,11 @@ type Status struct {
 	StatusCategory StatusCategory `json:"statusCategory" structs:"statusCategory"`
 }
 
-// StatusCategory represents the category a status belongs to.
-// Those categories can be user defined in every JIRA instance.
-type StatusCategory struct {
-	Self      string `json:"self" structs:"self"`
-	ID        int    `json:"id" structs:"id"`
-	Name      string `json:"name" structs:"name"`
-	Key       string `json:"key" structs:"key"`
-	ColorName string `json:"colorName" structs:"colorName"`
-}
-
 // Progress represents the progress of a JIRA issue.
 type Progress struct {
 	Progress int `json:"progress" structs:"progress"`
 	Total    int `json:"total" structs:"total"`
+	Percent  int `json:"percent" structs:"percent"`
 }
 
 // Parent represents the parent of a JIRA issue, to be used with subtask issue types.
@@ -634,7 +625,7 @@ func (s *IssueService) GetWorklogs(issueID string) (*Worklog, *Response, error) 
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
 func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
-	apiEndpoint := "rest/api/2/issue/"
+	apiEndpoint := "rest/api/2/issue"
 	req, err := s.client.NewRequest("POST", apiEndpoint, issue)
 	if err != nil {
 		return nil, nil, err
@@ -728,7 +719,7 @@ func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment
 		Body: comment.Body,
 	}
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, comment.ID)
-	req, err := s.client.NewRequest("POST", apiEndpoint, reqBody)
+	req, err := s.client.NewRequest("PUT", apiEndpoint, reqBody)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -740,6 +731,25 @@ func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment
 	}
 
 	return responseComment, resp, nil
+}
+
+// DeleteComment Deletes a comment from an issueID.
+//
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-issue-issueIdOrKey-comment-id-delete
+func (s *IssueService) DeleteComment(issueID, commentID string) error {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, commentID)
+	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
+	if err != nil {
+		return err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return jerr
+	}
+
+	return nil
 }
 
 // AddWorklogRecord adds a new worklog record to issueID.
@@ -1097,4 +1107,33 @@ func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response
 	}
 
 	return resp, err
+}
+
+// UpdateAssignee updates the user assigned to work on the given issue
+//
+// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/7.10.2/#api/2/issue-assign
+func (s *IssueService) UpdateAssignee(issueID string, assignee *User) (*Response, error) {
+	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/assignee", issueID)
+
+	req, err := s.client.NewRequest("PUT", apiEndPoint, assignee)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+
+	return resp, err
+}
+
+func (c ChangelogHistory) CreatedTime() (time.Time, error) {
+	var t time.Time
+	// Ignore null
+	if string(c.Created) == "null" {
+		return t, nil
+	}
+	t, err := time.Parse("2006-01-02T15:04:05.999-0700", c.Created)
+	return t, err
 }
