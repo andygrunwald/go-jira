@@ -1,10 +1,11 @@
 package jira
 
 import (
-	"testing"
-	"net/http"
 	"fmt"
 	"io/ioutil"
+	"net/http"
+	"net/url"
+	"testing"
 	"time"
 )
 
@@ -25,14 +26,14 @@ func TestWorklogService_GetWorkLogs(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
+	params := url.Values{}
 	dateFrom, _ := time.Parse(TTWorklogDateFormat, "2018-04-01")
 	dateTo, _ := time.Parse(TTWorklogDateFormat, "2018-04-10")
-	options := TTWorkLogOptions{
-		Username: "smgladkovskiy",
-		DateFrom: &TTWorklogDate{dateFrom},
-		DateTo:   &TTWorklogDate{dateTo},
-	}
-	worklogs, _, err := testClient.Worklog.GetWorkLogs(&options)
+	params.Add("dateFrom", dateFrom.Format(TTWorklogDateFormat))
+	params.Add("dateTo", dateTo.Format(TTWorklogDateFormat))
+	params.Add("username", "smgladkovskiy")
+
+	worklogs, _, err := testClient.Worklog.GetWorkLogs(&params)
 	if worklogs == nil {
 		t.Error("Expected worklogs. Worklogs is nil")
 	}

@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/andygrunwald/go-jira"
+  packages = ["."]
+  revision = "0298784c4606cdf01e99644da115863c052a737c"
+  version = "v1.5.0"
+
+[[projects]]
   name = "github.com/fatih/structs"
   packages = ["."]
   revision = "a720dfa8df582c51dee1b36feabb906bde1588bd"
@@ -28,9 +34,24 @@
   revision = "e4d1ddd28c17dd89ed26327cf69fded22060671b"
   version = "v1.0.1"
 
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  revision = "e3636079e1a4c1f337f212cc5cd2aca108f6c900"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = [
+    "unix",
+    "windows"
+  ]
+  revision = "8469e314837c2e2471561de5c47bbf8bfd0d9099"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e84ca9eea6d233e0947b0d760913db2983fd4cbf6fd0d8690c737a71affb635c"
+  inputs-digest = "7c343ac6907485bd7b92e6f7ac4fab828a9d9071c5e18c9561dffb6258770ea6"
   solver-name = "gps-cdcl"
   solver-version = 1

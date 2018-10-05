@@ -1,15 +1,16 @@
 package jira
 
 import (
-	"time"
-	"strings"
-	"net/url"
 	"fmt"
+	"net/url"
+	"strings"
+	"time"
 )
 
 // WorklogBean that returns worklog api uses this time format.
 // Watch the Returns section: http://developer.tempo.io/doc/timesheets/api/rest/latest/#848933329
 const TTWorklogTimeFormat = "2006-01-02T15:04:05.000"
+
 // Date format for api request
 // http://developer.tempo.io/doc/timesheets/api/rest/latest/#848933329
 const TTWorklogDateFormat = "2006-01-02"
@@ -94,12 +95,7 @@ func (d *TTWorklogDate) UnmarshalJSON(b []byte) (err error) {
 }
 
 // GetWorkLogs returns worklogs for a user on date range
-func (w *TempoTimesheetsWorklogService) GetWorkLogs(options *TTWorkLogOptions) (*[]TTWorkLog, *Response, error) {
-	params := url.Values{}
-	params.Add("dateFrom", options.DateFrom.Format(TTWorklogDateFormat))
-	params.Add("dateTo", options.DateTo.Format(TTWorklogDateFormat))
-	params.Add("username", options.Username)
-
+func (w *TempoTimesheetsWorklogService) GetWorkLogs(params *url.Values) (*[]TTWorkLog, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/tempo-timesheets/3/worklogs?%s", params.Encode())
 	req, err := w.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
