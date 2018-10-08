@@ -40,6 +40,7 @@ type Client struct {
 	Component      *ComponentService
 	Resolution     *ResolutionService
 	StatusCategory *StatusCategoryService
+	Filter         *FilterService
 }
 
 // NewClient returns a new JIRA API client.
@@ -81,6 +82,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	c.Component = &ComponentService{client: c}
 	c.Resolution = &ResolutionService{client: c}
 	c.StatusCategory = &StatusCategoryService{client: c}
+	c.Filter = &FilterService{client: c}
 
 	return c, nil
 }
