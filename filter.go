@@ -12,24 +12,11 @@ type FilterService struct {
 
 // Filter represents a Filter in Jira
 type Filter struct {
-	Self        string `json:"self"`
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Owner       struct {
-		Self       string `json:"self"`
-		Key        string `json:"key"`
-		AccountID  string `json:"accountId"`
-		Name       string `json:"name"`
-		AvatarUrls struct {
-			Four8X48  string `json:"48x48"`
-			Two4X24   string `json:"24x24"`
-			One6X16   string `json:"16x16"`
-			Three2X32 string `json:"32x32"`
-		} `json:"avatarUrls"`
-		DisplayName string `json:"displayName"`
-		Active      bool   `json:"active"`
-	} `json:"owner"`
+	Self             string        `json:"self"`
+	ID               string        `json:"id"`
+	Name             string        `json:"name"`
+	Description      string        `json:"description"`
+	Owner            User          `json:"owner"`
 	Jql              string        `json:"jql"`
 	ViewURL          string        `json:"viewUrl"`
 	SearchURL        string        `json:"searchUrl"`
@@ -72,6 +59,7 @@ func (fs *FilterService) GetList() ([]*Filter, *Response, error) {
 	return filters, resp, err
 }
 
+// Get retrieves a single Filter from Jira
 func (fs *FilterService) Get(filterID int) (*Filter, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/filter/%d", filterID)
 	req, err := fs.client.NewRequest("GET", apiEndpoint, nil)
