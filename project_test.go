@@ -77,6 +77,9 @@ func TestProjectService_Get(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error given: %s", err)
 	}
+	if len(projects.Roles) != 9 {
+		t.Errorf("Expected 9 roles but got %d", len(projects.Roles))
+	}
 }
 
 func TestProjectService_Get_NoProject(t *testing.T) {
