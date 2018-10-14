@@ -89,13 +89,13 @@ For convenience, capability for basic and cookie-based authentication is include
 
 #### Basic auth example
 
-A more thorough, [runnable example](examples/basicauth/main.go) is provided in the examples directory.
+A more thorough, [runnable example](examples/basicauth/main.go) is provided in the examples directory. **It's worth noting that using passwords in basic auth is now deprecated and will be removed.** Jira gives you the ability to [create tokens now.](https://confluence.atlassian.com/cloud/api-tokens-938839638.html)
 
 ```go
 func main() {
 	tp := jira.BasicAuthTransport{
 		Username: "username",
-		Password: "password",
+		Password: "token",
 	}
 
 	client, err := jira.NewClient(tp.Client(), "https://my.jira.com")
@@ -106,25 +106,10 @@ func main() {
 }
 ```
 
-#### Authenticate with session cookie
+#### Authenticate with session cookie [DEPRECATED]
 
-A more thorough, [runnable example](examples/cookieauth/main.go) is provided in the examples directory.
+JIRA [deprecated this authentication method.](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-basic-auth-and-cookie-based-auth/)  It's not longer available for use.
 
-Note:  The `AuthURL` is almost always going to have the path `/rest/auth/1/session`
-
-```go
-	tp := jira.CookieAuthTransport{
-		Username: "username",
-		Password: "password",
-		AuthURL:  "https://my.jira.com/rest/auth/1/session",
-	}
-
-	client, err := jira.NewClient(tp.Client(), "https://my.jira.com")
-	u, _, err := client.User.Get("admin")
-
-	fmt.Printf("\nEmail: %v\nSuccess!\n", u.EmailAddress)
-}
-```
 
 #### Authenticate with OAuth
 
@@ -146,10 +131,9 @@ import (
 
 func main() {
 	base := "https://my.jira.com"
-	tp := jira.CookieAuthTransport{
+	tp := jira.BasicAuthTransport{
 		Username: "username",
-		Password: "password",
-		AuthURL:  fmt.Sprintf("%s/rest/auth/1/session", base),
+		Password: "token",
 	}
 
 	jiraClient, err := jira.NewClient(tp.Client(), base)
@@ -200,10 +184,9 @@ import (
 
 func main() {
 	base := "https://my.jira.com"
-	tp := jira.CookieAuthTransport{
+	tp := jira.BasicAuthTransport{
 		Username: "username",
-		Password: "password",
-		AuthURL:  fmt.Sprintf("%s/rest/auth/1/session", base),
+		Password: "token",
 	}
 
 	jiraClient, err := jira.NewClient(tp.Client(), base)
