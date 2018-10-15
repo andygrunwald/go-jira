@@ -27,6 +27,7 @@ const (
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue
 type IssueService struct {
 	client *Client
+	Notify bool
 }
 
 // Issue represents a JIRA issue.
@@ -653,7 +654,7 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
 func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", issue.Key)
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v?notifyUsers=%t", issue.Key, s.Notify)
 	req, err := s.client.NewRequest("PUT", apiEndpoint, issue)
 	if err != nil {
 		return nil, nil, err
@@ -674,7 +675,7 @@ func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
 //
 // https://docs.atlassian.com/jira/REST/7.4.0/#api/2/issue-editIssue
 func (s *IssueService) UpdateIssue(jiraID string, data map[string]interface{}) (*Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", jiraID)
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v?notifyUsers=%t", jiraID, s.Notify)
 	req, err := s.client.NewRequest("PUT", apiEndpoint, data)
 	if err != nil {
 		return nil, err

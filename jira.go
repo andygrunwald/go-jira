@@ -50,7 +50,7 @@ type Client struct {
 // As an alternative you can use Session Cookie based authentication provided by this package as well.
 // See https://docs.atlassian.com/jira/REST/latest/#authentication
 // baseURL is the HTTP endpoint of your JIRA instance and should always be specified with a trailing slash.
-func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
+func NewClient(httpClient *http.Client, baseURL string, notify bool) (*Client, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
@@ -70,7 +70,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 		baseURL: parsedBaseURL,
 	}
 	c.Authentication = &AuthenticationService{client: c}
-	c.Issue = &IssueService{client: c}
+	c.Issue = &IssueService{client: c, Notify: notify}
 	c.Project = &ProjectService{client: c}
 	c.Board = &BoardService{client: c}
 	c.Sprint = &SprintService{client: c}
