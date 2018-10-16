@@ -3,14 +3,16 @@ package jira
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"reflect"
 	"strings"
 	"testing"
 
-	"github.com/trivago/tgo/tcontainer"
 	"time"
+
+	"github.com/trivago/tgo/tcontainer"
 )
 
 func TestIssueService_Get_Success(t *testing.T) {
@@ -72,6 +74,54 @@ func TestIssueService_Create(t *testing.T) {
 	}
 	issue, _, err := testClient.Issue.Create(i)
 	if issue == nil {
+		t.Error("Expected issue. Issue is nil")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
+func TestIssueService_CreateThenGet(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, "/rest/api/2/issue")
+
+		w.WriteHeader(http.StatusCreated)
+		io.Copy(w, r.Body)
+	})
+
+	i := &Issue{
+		Fields: &IssueFields{
+			Description: "example bug report",
+			Created:     Time(time.Now()),
+		},
+	}
+	issue, _, err := testClient.Issue.Create(i)
+	if issue == nil {
+		t.Error("Expected issue. Issue is nil")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+
+	testMux.HandleFunc("/rest/api/2/issue/10002", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, "/rest/api/2/issue/10002")
+
+		bytes, err := json.Marshal(issue)
+		if err != nil {
+			t.Errorf("Error marshaling issue: %s", err)
+		}
+		_, err = w.Write(bytes)
+		if err != nil {
+			t.Errorf("Error writing response: %s", err)
+		}
+	})
+
+	issue2, _, err := testClient.Issue.Get("10002", nil)
+	if issue2 == nil {
 		t.Error("Expected issue. Issue is nil")
 	}
 	if err != nil {
@@ -1349,7 +1399,6 @@ func TestIssueService_UpdateAssignee(t *testing.T) {
 	}
 }
 
-
 func TestIssueService_Get_Fields_Changelog(t *testing.T) {
 	setup()
 	defer teardown()
@@ -1360,7 +1409,7 @@ func TestIssueService_Get_Fields_Changelog(t *testing.T) {
 		fmt.Fprint(w, `{"expand":"changelog","id":"10002","self":"http://www.example.com/jira/rest/api/2/issue/10002","key":"EX-1","changelog":{"startAt": 0,"maxResults": 1, "total": 1, "histories": [{"id": "10002", "author": {"self": "http://www.example.com/jira/rest/api/2/user?username=fred", "name": "fred", "key": "fred", "emailAddress": "fred@example.com", "avatarUrls": {"48x48": "http://www.example.com/secure/useravatar?ownerId=fred&avatarId=33072", "24x24": "http://www.example.com/secure/useravatar?size=small&ownerId=fred&avatarId=33072", "16x16": "http://www.example.com/secure/useravatar?size=xsmall&ownerId=fred&avatarId=33072", "32x32": "http://www.example.com/secure/useravatar?size=medium&ownerId=fred&avatarId=33072"},"displayName":"Fred","active": true,"timeZone":"Australia/Sydney"},"created":"2018-06-20T16:50:35.000+0300","items":[{"field":"Rank","fieldtype":"custom","from":"","fromString":"","to":"","toString":"Ranked higher"}]}]}}`)
 	})
 
-	issue, _, _ := testClient.Issue.Get("10002", &GetQueryOptions{Expand:"changelog"})
+	issue, _, _ := testClient.Issue.Get("10002", &GetQueryOptions{Expand: "changelog"})
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
 	}
