@@ -27,6 +27,11 @@ const (
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue
 type IssueService struct {
 	client *Client
+	Config *ServiceConfig
+}
+
+// ServiceConfig describes some config options that apply to many/all calls made by the service
+type ServiceConfig struct {
 	Notify bool
 }
 
@@ -654,7 +659,7 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
 func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v?notifyUsers=%t", issue.Key, s.Notify)
+	apiEndpoint := fmt.Sprintf("rest/api/3/issue/%v?notifyUsers=%t", issue.Key, s.Config.Notify)
 	req, err := s.client.NewRequest("PUT", apiEndpoint, issue)
 	if err != nil {
 		return nil, nil, err
@@ -675,7 +680,7 @@ func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
 //
 // https://docs.atlassian.com/jira/REST/7.4.0/#api/2/issue-editIssue
 func (s *IssueService) UpdateIssue(jiraID string, data map[string]interface{}) (*Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v?notifyUsers=%t", jiraID, s.Notify)
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v?notifyUsers=%t", jiraID, s.Config.Notify)
 	req, err := s.client.NewRequest("PUT", apiEndpoint, data)
 	if err != nil {
 		return nil, err

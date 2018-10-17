@@ -7,7 +7,10 @@ import (
 )
 
 func main() {
-	jiraClient, _ := jira.NewClient(nil, "https://jira.atlassian.com/", true)
+	config = jira.ServiceConfig{
+		Notify: true,
+	}
+	jiraClient, _ := jira.NewClient(nil, "https://jira.atlassian.com/", config)
 	req, _ := jiraClient.NewRequest("GET", "/rest/api/2/project", nil)
 
 	projects := new([]jira.Project)

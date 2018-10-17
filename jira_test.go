@@ -38,7 +38,10 @@ func setup() {
 	testServer = httptest.NewServer(testMux)
 
 	// jira client configured to use test server
-	testClient, _ = NewClient(nil, testServer.URL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	testClient, _ = NewClient(nil, testServer.URL, config)
 }
 
 // teardown closes the test HTTP server.
@@ -59,7 +62,10 @@ func testRequestURL(t *testing.T, r *http.Request, want string) {
 }
 
 func TestNewClient_WrongUrl(t *testing.T) {
-	c, err := NewClient(nil, "://issues.apache.org/jira/", true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	c, err := NewClient(nil, "://issues.apache.org/jira/", config)
 
 	if err == nil {
 		t.Error("Expected an error. Got none")
@@ -72,7 +78,10 @@ func TestNewClient_WrongUrl(t *testing.T) {
 func TestNewClient_WithHttpClient(t *testing.T) {
 	httpClient := http.DefaultClient
 	httpClient.Timeout = 10 * time.Minute
-	c, err := NewClient(httpClient, testJIRAInstanceURL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	c, err := NewClient(httpClient, testJIRAInstanceURL, config)
 
 	if err != nil {
 		t.Errorf("Got an error: %s", err)
@@ -86,7 +95,10 @@ func TestNewClient_WithHttpClient(t *testing.T) {
 }
 
 func TestNewClient_WithServices(t *testing.T) {
-	c, err := NewClient(nil, testJIRAInstanceURL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	c, err := NewClient(nil, testJIRAInstanceURL, config)
 
 	if err != nil {
 		t.Errorf("Got an error: %s", err)
@@ -142,7 +154,10 @@ func TestCheckResponse(t *testing.T) {
 }
 
 func TestClient_NewRequest(t *testing.T) {
-	c, err := NewClient(nil, testJIRAInstanceURL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	c, err := NewClient(nil, testJIRAInstanceURL, config)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -164,7 +179,10 @@ func TestClient_NewRequest(t *testing.T) {
 }
 
 func TestClient_NewRawRequest(t *testing.T) {
-	c, err := NewClient(nil, testJIRAInstanceURL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	c, err := NewClient(nil, testJIRAInstanceURL, config)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -197,7 +215,10 @@ func testURLParseError(t *testing.T, err error) {
 }
 
 func TestClient_NewRequest_BadURL(t *testing.T) {
-	c, err := NewClient(nil, testJIRAInstanceURL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	c, err := NewClient(nil, testJIRAInstanceURL, config)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -206,7 +227,10 @@ func TestClient_NewRequest_BadURL(t *testing.T) {
 }
 
 func TestClient_NewRequest_SessionCookies(t *testing.T) {
-	c, err := NewClient(nil, testJIRAInstanceURL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	c, err := NewClient(nil, testJIRAInstanceURL, config)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -235,7 +259,10 @@ func TestClient_NewRequest_SessionCookies(t *testing.T) {
 }
 
 func TestClient_NewRequest_BasicAuth(t *testing.T) {
-	c, err := NewClient(nil, testJIRAInstanceURL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	c, err := NewClient(nil, testJIRAInstanceURL, config)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -261,7 +288,10 @@ func TestClient_NewRequest_BasicAuth(t *testing.T) {
 // since there is no difference between an HTTP request body that is an empty string versus one that is not set at all.
 // However in certain cases, intermediate systems may treat these differently resulting in subtle errors.
 func TestClient_NewRequest_EmptyBody(t *testing.T) {
-	c, err := NewClient(nil, testJIRAInstanceURL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	c, err := NewClient(nil, testJIRAInstanceURL, config)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -275,7 +305,10 @@ func TestClient_NewRequest_EmptyBody(t *testing.T) {
 }
 
 func TestClient_NewMultiPartRequest(t *testing.T) {
-	c, err := NewClient(nil, testJIRAInstanceURL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	c, err := NewClient(nil, testJIRAInstanceURL, config)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -308,7 +341,10 @@ func TestClient_NewMultiPartRequest(t *testing.T) {
 }
 
 func TestClient_NewMultiPartRequest_BasicAuth(t *testing.T) {
-	c, err := NewClient(nil, testJIRAInstanceURL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	c, err := NewClient(nil, testJIRAInstanceURL, config)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -427,7 +463,10 @@ func TestClient_GetBaseURL_WithURL(t *testing.T) {
 		t.Errorf("URL parsing -> Got an error: %s", err)
 	}
 
-	c, err := NewClient(nil, testJIRAInstanceURL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	c, err := NewClient(nil, testJIRAInstanceURL, config)
 	if err != nil {
 		t.Errorf("Client creation -> Got an error: %s", err)
 	}
@@ -464,7 +503,10 @@ func TestBasicAuthTransport(t *testing.T) {
 		Password: password,
 	}
 
-	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL, config)
 	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
 	basicAuthClient.Do(req, nil)
 }
@@ -515,7 +557,10 @@ func TestCookieAuthTransport_SessionObject_Exists(t *testing.T) {
 		SessionObject: []*http.Cookie{testCookie},
 	}
 
-	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL, config)
 	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
 	basicAuthClient.Do(req, nil)
 }
@@ -551,7 +596,10 @@ func TestCookieAuthTransport_SessionObject_ExistsWithEmptyCookie(t *testing.T) {
 		SessionObject: []*http.Cookie{emptyCookie, testCookie},
 	}
 
-	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL, config)
 	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
 	basicAuthClient.Do(req, nil)
 }
@@ -592,7 +640,10 @@ func TestCookieAuthTransport_SessionObject_DoesNotExist(t *testing.T) {
 		AuthURL:  ts.URL,
 	}
 
-	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL, true)
+	config = ServiceConfig{
+		Notify: true,
+	}
+	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL, config)
 	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
 	basicAuthClient.Do(req, nil)
 }

@@ -42,7 +42,10 @@ func main() {
 		tp = ba.Client()
 	}
 
-	client, err := jira.NewClient(tp, strings.TrimSpace(jiraURL), true)
+	config = jira.ServiceConfig{
+		Notify: true,
+	}
+	client, err := jira.NewClient(tp, strings.TrimSpace(jiraURL), config)
 	if err != nil {
 		fmt.Printf("\nerror: %v\n", err)
 		return
