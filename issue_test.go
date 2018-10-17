@@ -96,11 +96,11 @@ func TestIssueService_Update(t *testing.T) {
 		},
 	}
 	issue, _, err := testClient.Issue.Update(i)
-	if issue == nil {
-		t.Error("Expected issue. Issue is nil")
-	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)
+	}
+	if issue == nil {
+		t.Error("Expected issue. Issue is nil")
 	}
 }
 
@@ -1349,7 +1349,6 @@ func TestIssueService_UpdateAssignee(t *testing.T) {
 	}
 }
 
-
 func TestIssueService_Get_Fields_Changelog(t *testing.T) {
 	setup()
 	defer teardown()
@@ -1360,7 +1359,7 @@ func TestIssueService_Get_Fields_Changelog(t *testing.T) {
 		fmt.Fprint(w, `{"expand":"changelog","id":"10002","self":"http://www.example.com/jira/rest/api/2/issue/10002","key":"EX-1","changelog":{"startAt": 0,"maxResults": 1, "total": 1, "histories": [{"id": "10002", "author": {"self": "http://www.example.com/jira/rest/api/2/user?username=fred", "name": "fred", "key": "fred", "emailAddress": "fred@example.com", "avatarUrls": {"48x48": "http://www.example.com/secure/useravatar?ownerId=fred&avatarId=33072", "24x24": "http://www.example.com/secure/useravatar?size=small&ownerId=fred&avatarId=33072", "16x16": "http://www.example.com/secure/useravatar?size=xsmall&ownerId=fred&avatarId=33072", "32x32": "http://www.example.com/secure/useravatar?size=medium&ownerId=fred&avatarId=33072"},"displayName":"Fred","active": true,"timeZone":"Australia/Sydney"},"created":"2018-06-20T16:50:35.000+0300","items":[{"field":"Rank","fieldtype":"custom","from":"","fromString":"","to":"","toString":"Ranked higher"}]}]}}`)
 	})
 
-	issue, _, _ := testClient.Issue.Get("10002", &GetQueryOptions{Expand:"changelog"})
+	issue, _, _ := testClient.Issue.Get("10002", &GetQueryOptions{Expand: "changelog"})
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
 	}

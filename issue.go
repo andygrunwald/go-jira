@@ -31,9 +31,9 @@ type IssueService struct {
 
 // UpdateQueryOptions specifies the optional parameters to the Edit issue
 type UpdateQueryOptions struct {
-	NotifyUsers            string `url:"notifyUsers,omitempty"`
-	OverrideScreenSecurity string `url:"overrideScreenSecurity,omitempty"`
-	OverrideEditableFlag   string `url:"overrideEditableFlag,omitempty"`
+	NotifyUsers            bool `url:"notifyUsers,omitempty"`
+	OverrideScreenSecurity bool `url:"overrideScreenSecurity,omitempty"`
+	OverrideEditableFlag   bool `url:"overrideEditableFlag,omitempty"`
 }
 
 // Issue represents a JIRA issue.
