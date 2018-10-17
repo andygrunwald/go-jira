@@ -96,11 +96,11 @@ func TestIssueService_Update(t *testing.T) {
 		},
 	}
 	issue, _, err := testClient.Issue.Update(i)
-	if err != nil {
-		t.Errorf("Error given: %s", err)
-	}
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
 	}
 }
 
