@@ -67,7 +67,7 @@ import (
 )
 
 func main() {
-	jiraClient, _ := jira.NewClient(nil, "https://issues.apache.org/jira/", true)
+	jiraClient, _ := jira.NewClient(nil, "https://issues.apache.org/jira/")
 	issue, _, _ := jiraClient.Issue.Get("MESOS-3325", nil)
 
 	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
@@ -98,7 +98,7 @@ func main() {
 		Password: "token",
 	}
 
-	client, err := jira.NewClient(tp.Client(), "https://my.jira.com", true)
+	client, err := jira.NewClient(tp.Client(), "https://my.jira.com")
 
 	u, _, err := client.User.Get("some_user")
 
@@ -136,7 +136,7 @@ func main() {
 		Password: "token",
 	}
 
-	jiraClient, err := jira.NewClient(tp.Client(), base, true)
+	jiraClient, err := jira.NewClient(tp.Client(), base)
 	if err != nil {
 		panic(err)
 	}
@@ -189,7 +189,7 @@ func main() {
 		Password: "token",
 	}
 
-	jiraClient, err := jira.NewClient(tp.Client(), base, true)
+	jiraClient, err := jira.NewClient(tp.Client(), base)
 	req, _ := jiraClient.NewRequest("GET", "rest/api/2/project", nil)
 
 	projects := new([]jira.Project)

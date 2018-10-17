@@ -14,10 +14,7 @@ func main() {
 	}
 	client := &http.Client{Transport: tr}
 
-	config = jira.ServiceConfig{
-		Notify: true,
-	}
-	jiraClient, _ := jira.NewClient(client, "https://issues.apache.org/jira/", config)
+	jiraClient, _ := jira.NewClient(client, "https://issues.apache.org/jira/")
 	issue, _, _ := jiraClient.Issue.Get("MESOS-3325", nil)
 
 	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)

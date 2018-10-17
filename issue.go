@@ -27,12 +27,13 @@ const (
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue
 type IssueService struct {
 	client *Client
-	Config *ServiceConfig
 }
 
-// ServiceConfig describes some config options that apply to many/all calls made by the service
-type ServiceConfig struct {
-	Notify bool
+// UpdateOptions specifies the optional parameters to the Edit issue
+type UpdateOptions struct {
+	NotifyUsers            bool `url:"notifyUsers,omitempty"`
+	OverrideScreenSecurity bool `url:"overrideScreenSecurity,omitempty"`
+	OverrideEditableFlag   bool `url:"overrideEditableFlag,omitempty"`
 }
 
 // Issue represents a JIRA issue.
@@ -655,11 +656,37 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 	return responseIssue, resp, nil
 }
 
+// UpdateWithOptions updates an issue from a JSON representation,
+// while also specifiying query params. The issue is found by key.
+//
+// JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
+func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateOptions) (*Issue, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/3/issue/%v", issue.Key)
+	url, err := addOptions(apiEndpoint, opts)
+	if err != nil {
+		return nil, nil, err
+	}
+	req, err := s.client.NewRequest("PUT", url, issue)
+	if err != nil {
+		return nil, nil, err
+	}
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
+	}
+
+	// This is just to follow the rest of the API's convention of returning an issue.
+	// Returning the same pointer here is pointless, so we return a copy instead.
+	ret := *issue
+	return &ret, resp, nil
+}
+
 // Update updates an issue from a JSON representation. The issue is found by key.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
 func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/3/issue/%v?notifyUsers=%t", issue.Key, s.Config.Notify)
+	apiEndpoint := fmt.Sprintf("rest/api/3/issue/%v", issue.Key)
 	req, err := s.client.NewRequest("PUT", apiEndpoint, issue)
 	if err != nil {
 		return nil, nil, err
@@ -680,7 +707,7 @@ func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
 //
 // https://docs.atlassian.com/jira/REST/7.4.0/#api/2/issue-editIssue
 func (s *IssueService) UpdateIssue(jiraID string, data map[string]interface{}) (*Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v?notifyUsers=%t", jiraID, s.Config.Notify)
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", jiraID)
 	req, err := s.client.NewRequest("PUT", apiEndpoint, data)
 	if err != nil {
 		return nil, err

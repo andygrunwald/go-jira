@@ -29,10 +29,7 @@ func main() {
 		Password: strings.TrimSpace(password),
 	}
 
-	config = jira.ServiceConfig{
-		Notify: true,
-	}
-	client, err := jira.NewClient(tp.Client(), strings.TrimSpace(jiraURL), config)
+	client, err := jira.NewClient(tp.Client(), strings.TrimSpace(jiraURL))
 	if err != nil {
 		fmt.Printf("\nerror: %v\n", err)
 		return
