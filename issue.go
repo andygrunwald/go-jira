@@ -663,6 +663,8 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/3/issue/%v", issue.Key)
 	url, err := addOptions(apiEndpoint, opts)
+	fmt.Println(url)
+	fmt.Println(issue)
 	if err != nil {
 		return nil, nil, err
 	}
