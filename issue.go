@@ -29,8 +29,8 @@ type IssueService struct {
 	client *Client
 }
 
-// UpdateOptions specifies the optional parameters to the Edit issue
-type UpdateOptions struct {
+// UpdateQueryOptions specifies the optional parameters to the Edit issue
+type UpdateQueryOptions struct {
 	NotifyUsers            bool `url:"notifyUsers,omitempty"`
 	OverrideScreenSecurity bool `url:"overrideScreenSecurity,omitempty"`
 	OverrideEditableFlag   bool `url:"overrideEditableFlag,omitempty"`
@@ -660,7 +660,7 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 // while also specifiying query params. The issue is found by key.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
-func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateOptions) (*Issue, *Response, error) {
+func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/3/issue/%v", issue.Key)
 	url, err := addOptions(apiEndpoint, opts)
 	if err != nil {
@@ -686,21 +686,8 @@ func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateOptions) (*Is
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
 func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", issue.Key)
-	req, err := s.client.NewRequest("PUT", apiEndpoint, issue)
-	if err != nil {
-		return nil, nil, err
-	}
-	resp, err := s.client.Do(req, nil)
-	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
-	}
-
-	// This is just to follow the rest of the API's convention of returning an issue.
-	// Returning the same pointer here is pointless, so we return a copy instead.
-	ret := *issue
-	return &ret, resp, nil
+	opts := &UpdateQueryOptions{}
+	return s.UpdateWithOptions(issue, opts)
 }
 
 // UpdateIssue updates an issue from a JSON representation. The issue is found by key.
