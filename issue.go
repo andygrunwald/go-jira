@@ -686,7 +686,7 @@ func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateOptions) (*Is
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
 func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/3/issue/%v", issue.Key)
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", issue.Key)
 	req, err := s.client.NewRequest("PUT", apiEndpoint, issue)
 	if err != nil {
 		return nil, nil, err
