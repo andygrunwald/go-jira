@@ -686,8 +686,7 @@ func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateQueryOptions)
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
 func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
-	opts := &UpdateQueryOptions{}
-	return s.UpdateWithOptions(issue, opts)
+	return s.UpdateWithOptions(issue, nil)
 }
 
 // UpdateIssue updates an issue from a JSON representation. The issue is found by key.
