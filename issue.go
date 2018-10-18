@@ -29,6 +29,13 @@ type IssueService struct {
 	client *Client
 }
 
+// UpdateQueryOptions specifies the optional parameters to the Edit issue
+type UpdateQueryOptions struct {
+	NotifyUsers            bool `url:"notifyUsers,omitempty"`
+	OverrideScreenSecurity bool `url:"overrideScreenSecurity,omitempty"`
+	OverrideEditableFlag   bool `url:"overrideEditableFlag,omitempty"`
+}
+
 // Issue represents a JIRA issue.
 type Issue struct {
 	Expand         string               `json:"expand,omitempty" structs:"expand,omitempty"`
@@ -655,12 +662,17 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 	return responseIssue, resp, nil
 }
 
-// Update updates an issue from a JSON representation. The issue is found by key.
+// UpdateWithOptions updates an issue from a JSON representation,
+// while also specifiying query params. The issue is found by key.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
-func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
+func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", issue.Key)
-	req, err := s.client.NewRequest("PUT", apiEndpoint, issue)
+	url, err := addOptions(apiEndpoint, opts)
+	if err != nil {
+		return nil, nil, err
+	}
+	req, err := s.client.NewRequest("PUT", url, issue)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -674,6 +686,13 @@ func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
 	// Returning the same pointer here is pointless, so we return a copy instead.
 	ret := *issue
 	return &ret, resp, nil
+}
+
+// Update updates an issue from a JSON representation. The issue is found by key.
+//
+// JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
+func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
+	return s.UpdateWithOptions(issue, nil)
 }
 
 // UpdateIssue updates an issue from a JSON representation. The issue is found by key.

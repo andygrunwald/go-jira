@@ -440,30 +440,6 @@ func TestClient_GetBaseURL_WithURL(t *testing.T) {
 	}
 }
 
-// REMOVED : This actually calls a live URL.  It's not a unit test.
-// I'm also not really sure what it's testing.
-// func TestClient_Do_PagingInfoEmptyByDefault(t *testing.T) {
-// 	c, _ := NewClient(nil, testJIRAInstanceURL)
-// 	req, _ := c.NewRequest("GET", "/", nil)
-// 	t.Errorf("%v\n", req)
-// 	type foo struct {
-// 		A string
-// 	}
-// 	body := new(foo)
-
-// 	resp, _ := c.Do(req, body)
-
-// 	if resp.StartAt != 0 {
-// 		t.Errorf("StartAt not equal to 0")
-// 	}
-// 	if resp.MaxResults != 0 {
-// 		t.Errorf("StartAt not equal to 0")
-// 	}
-// 	if resp.Total != 0 {
-// 		t.Errorf("StartAt not equal to 0")
-// 	}
-// }
-
 func TestBasicAuthTransport(t *testing.T) {
 	setup()
 	defer teardown()
