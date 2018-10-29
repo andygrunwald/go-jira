@@ -23,6 +23,7 @@ func TestVersionService_Get_Success(t *testing.T) {
 			"releaseDate": "2010-07-06",
 			"overdue": true,
 			"userReleaseDate": "6/Jul/2010",
+			"startDate" : "2010-07-01",
 			"projectId": 10000
 		}`)
 	})
@@ -63,6 +64,7 @@ func TestVersionService_Create(t *testing.T) {
 		Released:        true,
 		ReleaseDate:     "2010-07-06",
 		UserReleaseDate: "6/Jul/2010",
+		StartDate:       "2018-07-01",
 	}
 
 	version, _, err := testClient.Version.Create(v)
@@ -87,6 +89,7 @@ func TestServiceService_Update(t *testing.T) {
 			"released": true,
 			"releaseDate": "2010-07-06",
 			"userReleaseDate": "6/Jul/2010",
+			"startDate" : "2010-07-01",
 			"project": "PXA",
 			"projectId": 10000
 		  }`)
