@@ -128,7 +128,7 @@ type IssueFields struct {
 	IssueLinks                    []*IssueLink      `json:"issuelinks,omitempty" structs:"issuelinks,omitempty"`
 	Comments                      *Comments         `json:"comment,omitempty" structs:"comment,omitempty"`
 	FixVersions                   []*FixVersion     `json:"fixVersions,omitempty" structs:"fixVersions,omitempty"`
-	AffectsVersions               []*AffectsVersion `json:"versions,omitempty" structs:"AffectsVersions,omitempty"`
+	AffectsVersions               []*AffectsVersion `json:"versions,omitempty" structs:"affectsVersions,omitempty"`
 	Labels                        []string          `json:"labels,omitempty" structs:"labels,omitempty"`
 	Subtasks                      []*Subtasks       `json:"subtasks,omitempty" structs:"subtasks,omitempty"`
 	Attachments                   []*Attachment     `json:"attachment,omitempty" structs:"attachment,omitempty"`
