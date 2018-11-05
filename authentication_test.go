@@ -80,6 +80,50 @@ func TestAuthenticationService_AcquireSessionCookie_Success(t *testing.T) {
 	}
 }
 
+func TestAuthenticationService_AcquireSessionCookieExport(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, "/rest/auth/1/session")
+		b, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			t.Errorf("Error in read body: %s", err)
+		}
+		if bytes.Index(b, []byte(`"username":"foo"`)) < 0 {
+			t.Error("No username found")
+		}
+		if bytes.Index(b, []byte(`"password":"bar"`)) < 0 {
+			t.Error("No password found")
+		}
+
+		fmt.Fprint(w, `{"session":{"name":"JSESSIONID","value":"12345678901234567890"},"loginInfo":{"failedLoginCount":10,"loginCount":127,"lastFailedLoginTime":"2016-03-16T04:22:35.386+0000","previousLoginTime":"2016-03-16T04:22:35.386+0000"}}`)
+	})
+
+	_, err := testClient.Authentication.AcquireSessionCookie("foo", "bar")
+	if err != nil {
+		t.Errorf("No error expected. Got %s", err)
+	}
+
+	sessionExport := testClient.Authentication.ExportSession()
+	expectedSessionExport := `{"session":{"name":"JSESSIONID","value":"12345678901234567890"},"loginInfo":{"failedLoginCount":10,"loginCount":127,"lastFailedLoginTime":"2016-03-16T04:22:35.386+0000","previousLoginTime":"2016-03-16T04:22:35.386+0000"},"cookies":[]}`
+	if string(sessionExport) != expectedSessionExport {
+		t.Errorf("Expected sessionExport %s. Got %s", expectedSessionExport, string(sessionExport))
+	}
+}
+
+func TestAuthenticationService_SessionImport(t *testing.T) {
+	setup()
+	defer teardown()
+
+	session := []byte(`{"session":{"name":"JSESSIONID","value":"12345678901234567890"},"loginInfo":{"failedLoginCount":10,"loginCount":127,"lastFailedLoginTime":"2016-03-16T04:22:35.386+0000","previousLoginTime":"2016-03-16T04:22:35.386+0000"},"cookies":[]}`)
+	testClient.Authentication.ImportSession(session)
+
+	if testClient.Authentication.authType != authTypeSession {
+		t.Errorf("Expected authType %d. Got %d", authTypeSession, testClient.Authentication.authType)
+	}
+}
+
 func TestAuthenticationService_SetBasicAuth(t *testing.T) {
 	setup()
 	defer teardown()
