@@ -44,7 +44,19 @@ type Session struct {
 		LastFailedLoginTime string `json:"lastFailedLoginTime"`
 		PreviousLoginTime   string `json:"previousLoginTime"`
 	} `json:"loginInfo"`
-	Cookies []*http.Cookie
+	Cookies []*http.Cookie `json:"cookies"`
+}
+
+// ExportSession exports the current session so it can be reused later
+func (s *AuthenticationService) ExportSession() []byte {
+	session, _ := json.Marshal(s.client.session)
+	return session
+}
+
+// ImportSession imports a session
+func (s *AuthenticationService) ImportSession(session []byte) {
+	_ = json.Unmarshal(session, &s.client.session)
+	s.authType = authTypeSession
 }
 
 // AcquireSessionCookie creates a new session for a user in JIRA.
