@@ -2,6 +2,7 @@ package jira
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -532,7 +533,7 @@ type CustomFields map[string]string
 // The given options will be appended to the query string
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
-func (s *IssueService) Get(issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
+func (s *IssueService) Get(ctx context.Context, issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -548,7 +549,7 @@ func (s *IssueService) Get(issueID string, options *GetQueryOptions) (*Issue, *R
 	}
 
 	issue := new(Issue)
-	resp, err := s.client.Do(req, issue)
+	resp, err := s.client.Do(ctx, req, issue)
 	if err != nil {
 		jerr := NewJiraError(resp, err)
 		return nil, resp, jerr
@@ -561,14 +562,14 @@ func (s *IssueService) Get(issueID string, options *GetQueryOptions) (*Issue, *R
 // The attachment is in the Response.Body of the response.
 // This is an io.ReadCloser.
 // The caller should close the resp.Body.
-func (s *IssueService) DownloadAttachment(attachmentID string) (*Response, error) {
+func (s *IssueService) DownloadAttachment(ctx context.Context, attachmentID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("secure/attachment/%s/", attachmentID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		jerr := NewJiraError(resp, err)
 		return resp, jerr
@@ -578,7 +579,7 @@ func (s *IssueService) DownloadAttachment(attachmentID string) (*Response, error
 }
 
 // PostAttachment uploads r (io.Reader) as an attachment to a given issueID
-func (s *IssueService) PostAttachment(issueID string, r io.Reader, attachmentName string) (*[]Attachment, *Response, error) {
+func (s *IssueService) PostAttachment(ctx context.Context, issueID string, r io.Reader, attachmentName string) (*[]Attachment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/attachments", issueID)
 
 	b := new(bytes.Buffer)
@@ -606,7 +607,7 @@ func (s *IssueService) PostAttachment(issueID string, r io.Reader, attachmentNam
 
 	// PostAttachment response returns a JSON array (as multiple attachments can be posted)
 	attachment := new([]Attachment)
-	resp, err := s.client.Do(req, attachment)
+	resp, err := s.client.Do(ctx, req, attachment)
 	if err != nil {
 		jerr := NewJiraError(resp, err)
 		return nil, resp, jerr
@@ -619,7 +620,7 @@ func (s *IssueService) PostAttachment(issueID string, r io.Reader, attachmentNam
 // This method is especially important if you need to read all the worklogs, not just the first page.
 //
 // https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/worklog-getIssueWorklog
-func (s *IssueService) GetWorklogs(issueID string) (*Worklog, *Response, error) {
+func (s *IssueService) GetWorklogs(ctx context.Context, issueID string) (*Worklog, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
 
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -628,7 +629,7 @@ func (s *IssueService) GetWorklogs(issueID string) (*Worklog, *Response, error) 
 	}
 
 	v := new(Worklog)
-	resp, err := s.client.Do(req, v)
+	resp, err := s.client.Do(ctx, req, v)
 	return v, resp, err
 }
 
@@ -637,13 +638,13 @@ func (s *IssueService) GetWorklogs(issueID string) (*Worklog, *Response, error) 
 // The issueType field must correspond to a sub-task issue type and you must provide a parent field in the issue create request containing the id or key of the parent issue.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
-func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
+func (s *IssueService) Create(ctx context.Context, issue *Issue) (*Issue, *Response, error) {
 	apiEndpoint := "rest/api/2/issue"
 	req, err := s.client.NewRequest("POST", apiEndpoint, issue)
 	if err != nil {
 		return nil, nil, err
 	}
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		// incase of error return the resp for further inspection
 		return nil, resp, err
@@ -666,7 +667,7 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 // while also specifiying query params. The issue is found by key.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
-func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
+func (s *IssueService) UpdateWithOptions(ctx context.Context, issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", issue.Key)
 	url, err := addOptions(apiEndpoint, opts)
 	if err != nil {
@@ -676,7 +677,7 @@ func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateQueryOptions)
 	if err != nil {
 		return nil, nil, err
 	}
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		jerr := NewJiraError(resp, err)
 		return nil, resp, jerr
@@ -691,20 +692,20 @@ func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateQueryOptions)
 // Update updates an issue from a JSON representation. The issue is found by key.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
-func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
-	return s.UpdateWithOptions(issue, nil)
+func (s *IssueService) Update(ctx context.Context, issue *Issue) (*Issue, *Response, error) {
+	return s.UpdateWithOptions(ctx, issue, nil)
 }
 
 // UpdateIssue updates an issue from a JSON representation. The issue is found by key.
 //
 // https://docs.atlassian.com/jira/REST/7.4.0/#api/2/issue-editIssue
-func (s *IssueService) UpdateIssue(jiraID string, data map[string]interface{}) (*Response, error) {
+func (s *IssueService) UpdateIssue(ctx context.Context, jiraID string, data map[string]interface{}) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", jiraID)
 	req, err := s.client.NewRequest("PUT", apiEndpoint, data)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		return resp, err
 	}
@@ -717,7 +718,7 @@ func (s *IssueService) UpdateIssue(jiraID string, data map[string]interface{}) (
 // AddComment adds a new comment to issueID.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-addComment
-func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *Response, error) {
+func (s *IssueService) AddComment(ctx context.Context, issueID string, comment *Comment) (*Comment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment", issueID)
 	req, err := s.client.NewRequest("POST", apiEndpoint, comment)
 	if err != nil {
@@ -725,7 +726,7 @@ func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *
 	}
 
 	responseComment := new(Comment)
-	resp, err := s.client.Do(req, responseComment)
+	resp, err := s.client.Do(ctx, req, responseComment)
 	if err != nil {
 		jerr := NewJiraError(resp, err)
 		return nil, resp, jerr
@@ -737,7 +738,7 @@ func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *
 // UpdateComment updates the body of a comment, identified by comment.ID, on the issueID.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/comment-updateComment
-func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment, *Response, error) {
+func (s *IssueService) UpdateComment(ctx context.Context, issueID string, comment *Comment) (*Comment, *Response, error) {
 	reqBody := struct {
 		Body string `json:"body"`
 	}{
@@ -750,7 +751,7 @@ func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment
 	}
 
 	responseComment := new(Comment)
-	resp, err := s.client.Do(req, responseComment)
+	resp, err := s.client.Do(ctx, req, responseComment)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -761,14 +762,14 @@ func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment
 // DeleteComment Deletes a comment from an issueID.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-issue-issueIdOrKey-comment-id-delete
-func (s *IssueService) DeleteComment(issueID, commentID string) error {
+func (s *IssueService) DeleteComment(ctx context.Context, issueID, commentID string) error {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, commentID)
 	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
 	if err != nil {
 		return err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		jerr := NewJiraError(resp, err)
 		return jerr
@@ -780,7 +781,7 @@ func (s *IssueService) DeleteComment(issueID, commentID string) error {
 // AddWorklogRecord adds a new worklog record to issueID.
 //
 // https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-issue-issueIdOrKey-worklog-post
-func (s *IssueService) AddWorklogRecord(issueID string, record *WorklogRecord) (*WorklogRecord, *Response, error) {
+func (s *IssueService) AddWorklogRecord(ctx context.Context, issueID string, record *WorklogRecord) (*WorklogRecord, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
 	req, err := s.client.NewRequest("POST", apiEndpoint, record)
 	if err != nil {
@@ -788,7 +789,7 @@ func (s *IssueService) AddWorklogRecord(issueID string, record *WorklogRecord) (
 	}
 
 	responseRecord := new(WorklogRecord)
-	resp, err := s.client.Do(req, responseRecord)
+	resp, err := s.client.Do(ctx, req, responseRecord)
 	if err != nil {
 		jerr := NewJiraError(resp, err)
 		return nil, resp, jerr
@@ -800,14 +801,14 @@ func (s *IssueService) AddWorklogRecord(issueID string, record *WorklogRecord) (
 // AddLink adds a link between two issues.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issueLink
-func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
+func (s *IssueService) AddLink(ctx context.Context, issueLink *IssueLink) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLink")
 	req, err := s.client.NewRequest("POST", apiEndpoint, issueLink)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		err = NewJiraError(resp, err)
 	}
@@ -818,7 +819,7 @@ func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
 // Search will search for tickets according to the jql
 //
 // JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
-func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Response, error) {
+func (s *IssueService) Search(ctx context.Context, jql string, options *SearchOptions) ([]Issue, *Response, error) {
 	var u string
 	if options == nil {
 		u = fmt.Sprintf("rest/api/2/search?jql=%s", url.QueryEscape(jql))
@@ -833,7 +834,7 @@ func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Res
 	}
 
 	v := new(searchResult)
-	resp, err := s.client.Do(req, v)
+	resp, err := s.client.Do(ctx, req, v)
 	if err != nil {
 		err = NewJiraError(resp, err)
 	}
@@ -843,7 +844,7 @@ func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Res
 // SearchPages will get issues from all pages in a search
 //
 // JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
-func (s *IssueService) SearchPages(jql string, options *SearchOptions, f func(Issue) error) error {
+func (s *IssueService) SearchPages(ctx context.Context, jql string, options *SearchOptions, f func(Issue) error) error {
 	if options == nil {
 		options = &SearchOptions{
 			StartAt:    0,
@@ -855,7 +856,7 @@ func (s *IssueService) SearchPages(jql string, options *SearchOptions, f func(Is
 		options.MaxResults = 50
 	}
 
-	issues, resp, err := s.Search(jql, options)
+	issues, resp, err := s.Search(ctx, jql, options)
 	if err != nil {
 		return err
 	}
@@ -873,7 +874,7 @@ func (s *IssueService) SearchPages(jql string, options *SearchOptions, f func(Is
 		}
 
 		options.StartAt += resp.MaxResults
-		issues, resp, err = s.Search(jql, options)
+		issues, resp, err = s.Search(ctx, jql, options)
 		if err != nil {
 			return err
 		}
@@ -881,7 +882,7 @@ func (s *IssueService) SearchPages(jql string, options *SearchOptions, f func(Is
 }
 
 // GetCustomFields returns a map of customfield_* keys with string values
-func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *Response, error) {
+func (s *IssueService) GetCustomFields(ctx context.Context, issueID string) (CustomFields, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -889,7 +890,7 @@ func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *Response,
 	}
 
 	issue := new(map[string]interface{})
-	resp, err := s.client.Do(req, issue)
+	resp, err := s.client.Do(ctx, req, issue)
 	if err != nil {
 		jerr := NewJiraError(resp, err)
 		return nil, resp, jerr
@@ -921,7 +922,7 @@ func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *Response,
 // along with fields that are required and their types.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getTransitions
-func (s *IssueService) GetTransitions(id string) ([]Transition, *Response, error) {
+func (s *IssueService) GetTransitions(ctx context.Context, id string) ([]Transition, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/transitions?expand=transitions.fields", id)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -929,7 +930,7 @@ func (s *IssueService) GetTransitions(id string) ([]Transition, *Response, error
 	}
 
 	result := new(transitionResult)
-	resp, err := s.client.Do(req, result)
+	resp, err := s.client.Do(ctx, req, result)
 	if err != nil {
 		err = NewJiraError(resp, err)
 	}
@@ -940,20 +941,20 @@ func (s *IssueService) GetTransitions(id string) ([]Transition, *Response, error
 // When performing the transition you can update or set other issue fields.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
-func (s *IssueService) DoTransition(ticketID, transitionID string) (*Response, error) {
+func (s *IssueService) DoTransition(ctx context.Context, ticketID, transitionID string) (*Response, error) {
 	payload := CreateTransitionPayload{
 		Transition: TransitionPayload{
 			ID: transitionID,
 		},
 	}
-	return s.DoTransitionWithPayload(ticketID, payload)
+	return s.DoTransitionWithPayload(ctx, ticketID, payload)
 }
 
 // DoTransitionWithPayload performs a transition on an issue using any payload.
 // When performing the transition you can update or set other issue fields.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
-func (s *IssueService) DoTransitionWithPayload(ticketID, payload interface{}) (*Response, error) {
+func (s *IssueService) DoTransitionWithPayload(ctx context.Context, ticketID, payload interface{}) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/transitions", ticketID)
 
 	req, err := s.client.NewRequest("POST", apiEndpoint, payload)
@@ -961,7 +962,7 @@ func (s *IssueService) DoTransitionWithPayload(ticketID, payload interface{}) (*
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		err = NewJiraError(resp, err)
 	}
@@ -1049,7 +1050,7 @@ func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIss
 }
 
 // Delete will delete a specified issue.
-func (s *IssueService) Delete(issueID string) (*Response, error) {
+func (s *IssueService) Delete(ctx context.Context, issueID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 
 	// to enable deletion of subtasks; without this, the request will fail if the issue has subtasks
@@ -1062,14 +1063,14 @@ func (s *IssueService) Delete(issueID string) (*Response, error) {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	return resp, err
 }
 
 // GetWatchers wil return all the users watching/observing the given issue
 //
 // JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-getIssueWatchers
-func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
+func (s *IssueService) GetWatchers(ctx context.Context, issueID string) (*[]User, *Response, error) {
 	watchesAPIEndpoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
 	req, err := s.client.NewRequest("GET", watchesAPIEndpoint, nil)
@@ -1078,7 +1079,7 @@ func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
 	}
 
 	watches := new(Watches)
-	resp, err := s.client.Do(req, watches)
+	resp, err := s.client.Do(ctx, req, watches)
 	if err != nil {
 		return nil, nil, NewJiraError(resp, err)
 	}
@@ -1086,7 +1087,7 @@ func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
 	result := []User{}
 	user := new(User)
 	for _, watcher := range watches.Watchers {
-		user, resp, err = s.client.User.Get(watcher.Name)
+		user, resp, err = s.client.User.Get(ctx, watcher.Name)
 		if err != nil {
 			return nil, resp, NewJiraError(resp, err)
 		}
@@ -1099,7 +1100,7 @@ func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
 // AddWatcher adds watcher to the given issue
 //
 // JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-addWatcher
-func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, error) {
+func (s *IssueService) AddWatcher(ctx context.Context, issueID string, userName string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
 	req, err := s.client.NewRequest("POST", apiEndPoint, userName)
@@ -1107,7 +1108,7 @@ func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, e
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		err = NewJiraError(resp, err)
 	}
@@ -1118,7 +1119,7 @@ func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, e
 // RemoveWatcher removes given user from given issue
 //
 // JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-removeWatcher
-func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response, error) {
+func (s *IssueService) RemoveWatcher(ctx context.Context, issueID string, userName string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
 	req, err := s.client.NewRequest("DELETE", apiEndPoint, userName)
@@ -1126,7 +1127,7 @@ func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		err = NewJiraError(resp, err)
 	}
@@ -1137,7 +1138,7 @@ func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response
 // UpdateAssignee updates the user assigned to work on the given issue
 //
 // JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/7.10.2/#api/2/issue-assign
-func (s *IssueService) UpdateAssignee(issueID string, assignee *User) (*Response, error) {
+func (s *IssueService) UpdateAssignee(ctx context.Context, issueID string, assignee *User) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/assignee", issueID)
 
 	req, err := s.client.NewRequest("PUT", apiEndPoint, assignee)
@@ -1145,7 +1146,7 @@ func (s *IssueService) UpdateAssignee(issueID string, assignee *User) (*Response
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		err = NewJiraError(resp, err)
 	}

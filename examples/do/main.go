@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	jira "github.com/andygrunwald/go-jira"
@@ -11,7 +12,7 @@ func main() {
 	req, _ := jiraClient.NewRequest("GET", "/rest/api/2/project", nil)
 
 	projects := new([]jira.Project)
-	_, err := jiraClient.Do(req, projects)
+	_, err := jiraClient.Do(context.Background(), req, projects)
 	if err != nil {
 		panic(err)
 	}

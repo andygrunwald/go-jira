@@ -1,7 +1,11 @@
 package jira
 
-import "github.com/google/go-querystring/query"
-import "fmt"
+import (
+	"context"
+	"fmt"
+
+	"github.com/google/go-querystring/query"
+)
 
 // FilterService handles fields for the JIRA instance / API.
 //
@@ -33,7 +37,7 @@ type Filter struct {
 }
 
 // GetList retrieves all filters from Jira
-func (fs *FilterService) GetList() ([]*Filter, *Response, error) {
+func (fs *FilterService) GetList(ctx context.Context) ([]*Filter, *Response, error) {
 
 	options := &GetQueryOptions{}
 	apiEndpoint := "rest/api/2/filter"
@@ -51,7 +55,7 @@ func (fs *FilterService) GetList() ([]*Filter, *Response, error) {
 	}
 
 	filters := []*Filter{}
-	resp, err := fs.client.Do(req, &filters)
+	resp, err := fs.client.Do(ctx, req, &filters)
 	if err != nil {
 		jerr := NewJiraError(resp, err)
 		return nil, resp, jerr
@@ -60,14 +64,14 @@ func (fs *FilterService) GetList() ([]*Filter, *Response, error) {
 }
 
 // Get retrieves a single Filter from Jira
-func (fs *FilterService) Get(filterID int) (*Filter, *Response, error) {
+func (fs *FilterService) Get(ctx context.Context, filterID int) (*Filter, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/filter/%d", filterID)
 	req, err := fs.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
 	filter := new(Filter)
-	resp, err := fs.client.Do(req, filter)
+	resp, err := fs.client.Do(ctx, req, filter)
 	if err != nil {
 		jerr := NewJiraError(resp, err)
 		return nil, resp, jerr

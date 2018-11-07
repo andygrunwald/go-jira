@@ -2,6 +2,7 @@ package jira
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -350,7 +351,7 @@ func TestClient_Do(t *testing.T) {
 
 	req, _ := testClient.NewRequest("GET", "/", nil)
 	body := new(foo)
-	testClient.Do(req, body)
+	testClient.Do(context.Background(), req, body)
 
 	want := &foo{"a"}
 	if !reflect.DeepEqual(body, want) {
@@ -374,7 +375,7 @@ func TestClient_Do_HTTPResponse(t *testing.T) {
 	})
 
 	req, _ := testClient.NewRequest("GET", "/", nil)
-	res, _ := testClient.Do(req, nil)
+	res, _ := testClient.Do(context.Background(), req, nil)
 	_, err := ioutil.ReadAll(res.Body)
 
 	if err != nil {
@@ -393,7 +394,7 @@ func TestClient_Do_HTTPError(t *testing.T) {
 	})
 
 	req, _ := testClient.NewRequest("GET", "/", nil)
-	_, err := testClient.Do(req, nil)
+	_, err := testClient.Do(context.Background(), req, nil)
 
 	if err == nil {
 		t.Error("Expected HTTP 400 error.")
@@ -411,7 +412,7 @@ func TestClient_Do_RedirectLoop(t *testing.T) {
 	})
 
 	req, _ := testClient.NewRequest("GET", "/", nil)
-	_, err := testClient.Do(req, nil)
+	_, err := testClient.Do(context.Background(), req, nil)
 
 	if err == nil {
 		t.Error("Expected error to be returned.")
@@ -466,7 +467,7 @@ func TestBasicAuthTransport(t *testing.T) {
 
 	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL)
 	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
-	basicAuthClient.Do(req, nil)
+	basicAuthClient.Do(context.Background(), req, nil)
 }
 
 func TestBasicAuthTransport_transport(t *testing.T) {
@@ -517,7 +518,7 @@ func TestCookieAuthTransport_SessionObject_Exists(t *testing.T) {
 
 	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL)
 	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
-	basicAuthClient.Do(req, nil)
+	basicAuthClient.Do(context.Background(), req, nil)
 }
 
 // Test that an empty cookie in the transport is not returned in the header
@@ -553,7 +554,7 @@ func TestCookieAuthTransport_SessionObject_ExistsWithEmptyCookie(t *testing.T) {
 
 	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL)
 	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
-	basicAuthClient.Do(req, nil)
+	basicAuthClient.Do(context.Background(), req, nil)
 }
 
 // Test that if no cookie is in the transport, it checks for a cookie
@@ -594,5 +595,5 @@ func TestCookieAuthTransport_SessionObject_DoesNotExist(t *testing.T) {
 
 	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL)
 	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
-	basicAuthClient.Do(req, nil)
+	basicAuthClient.Do(context.Background(), req, nil)
 }

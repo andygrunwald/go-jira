@@ -1,5 +1,7 @@
 package jira
 
+import "context"
+
 // PriorityService handles priorities for the JIRA instance / API.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-Priority
@@ -21,7 +23,7 @@ type Priority struct {
 // GetList gets all priorities from JIRA
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-priority-get
-func (s *PriorityService) GetList() ([]Priority, *Response, error) {
+func (s *PriorityService) GetList(ctx context.Context) ([]Priority, *Response, error) {
 	apiEndpoint := "rest/api/2/priority"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -29,7 +31,7 @@ func (s *PriorityService) GetList() ([]Priority, *Response, error) {
 	}
 
 	priorityList := []Priority{}
-	resp, err := s.client.Do(req, &priorityList)
+	resp, err := s.client.Do(ctx, req, &priorityList)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
 	}

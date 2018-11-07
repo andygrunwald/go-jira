@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -17,7 +18,7 @@ func TestError_NewJiraError(t *testing.T) {
 	})
 
 	req, _ := testClient.NewRequest("GET", "/", nil)
-	resp, _ := testClient.Do(req, nil)
+	resp, _ := testClient.Do(context.Background(), req, nil)
 
 	err := NewJiraError(resp, errors.New("Original http error"))
 	if err, ok := err.(*Error); !ok {
@@ -51,7 +52,7 @@ func TestError_NoJSON(t *testing.T) {
 	})
 
 	req, _ := testClient.NewRequest("GET", "/", nil)
-	resp, _ := testClient.Do(req, nil)
+	resp, _ := testClient.Do(context.Background(), req, nil)
 
 	err := NewJiraError(resp, errors.New("Original http error"))
 	msg := err.Error()

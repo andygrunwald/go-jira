@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -45,7 +46,7 @@ type userSearchF func(userSearch) userSearch
 // Get gets user info from JIRA
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUser
-func (s *UserService) Get(username string) (*User, *Response, error) {
+func (s *UserService) Get(ctx context.Context, username string) (*User, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user?username=%s", username)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -53,7 +54,7 @@ func (s *UserService) Get(username string) (*User, *Response, error) {
 	}
 
 	user := new(User)
-	resp, err := s.client.Do(req, user)
+	resp, err := s.client.Do(ctx, req, user)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
 	}
@@ -63,14 +64,14 @@ func (s *UserService) Get(username string) (*User, *Response, error) {
 // Create creates an user in JIRA.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-createUser
-func (s *UserService) Create(user *User) (*User, *Response, error) {
+func (s *UserService) Create(ctx context.Context, user *User) (*User, *Response, error) {
 	apiEndpoint := "/rest/api/2/user"
 	req, err := s.client.NewRequest("POST", apiEndpoint, user)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -94,14 +95,14 @@ func (s *UserService) Create(user *User) (*User, *Response, error) {
 // Returns http.StatusNoContent on success.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-user-delete
-func (s *UserService) Delete(username string) (*Response, error) {
+func (s *UserService) Delete(ctx context.Context, username string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user?username=%s", username)
 	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		return resp, NewJiraError(resp, err)
 	}
@@ -111,7 +112,7 @@ func (s *UserService) Delete(username string) (*Response, error) {
 // GetGroups returns the groups which the user belongs to
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUserGroups
-func (s *UserService) GetGroups(username string) (*[]UserGroup, *Response, error) {
+func (s *UserService) GetGroups(ctx context.Context, username string) (*[]UserGroup, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user/groups?username=%s", username)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -119,7 +120,7 @@ func (s *UserService) GetGroups(username string) (*[]UserGroup, *Response, error
 	}
 
 	userGroups := new([]UserGroup)
-	resp, err := s.client.Do(req, userGroups)
+	resp, err := s.client.Do(ctx, req, userGroups)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
 	}
@@ -129,14 +130,14 @@ func (s *UserService) GetGroups(username string) (*[]UserGroup, *Response, error
 // Get information about the current logged-in user
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-myself-get
-func (s *UserService) GetSelf() (*User, *Response, error) {
+func (s *UserService) GetSelf(ctx context.Context) (*User, *Response, error) {
 	const apiEndpoint = "rest/api/2/myself"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
 	var user User
-	resp, err := s.client.Do(req, &user)
+	resp, err := s.client.Do(ctx, req, &user)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
 	}
@@ -179,7 +180,7 @@ func WithInactive(inactive bool) userSearchF {
 // It can find users by email, username or name
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-findUsers
-func (s *UserService) Find(property string, tweaks ...userSearchF) ([]User, *Response, error) {
+func (s *UserService) Find(ctx context.Context, property string, tweaks ...userSearchF) ([]User, *Response, error) {
 	search := []userSearchParam{
 		{
 			name:  "username",
@@ -202,7 +203,7 @@ func (s *UserService) Find(property string, tweaks ...userSearchF) ([]User, *Res
 	}
 
 	users := []User{}
-	resp, err := s.client.Do(req, &users)
+	resp, err := s.client.Do(ctx, req, &users)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
 	}

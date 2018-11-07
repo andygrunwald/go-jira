@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -56,7 +57,7 @@ type Session struct {
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 //
 // Deprecated: Use CookieAuthTransport instead
-func (s *AuthenticationService) AcquireSessionCookie(username, password string) (bool, error) {
+func (s *AuthenticationService) AcquireSessionCookie(ctx context.Context, username, password string) (bool, error) {
 	apiEndpoint := "rest/auth/1/session"
 	body := struct {
 		Username string `json:"username"`
@@ -72,7 +73,7 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 	}
 
 	session := new(Session)
-	resp, err := s.client.Do(req, session)
+	resp, err := s.client.Do(ctx, req, session)
 
 	if resp != nil {
 		session.Cookies = resp.Cookies()
@@ -119,7 +120,7 @@ func (s *AuthenticationService) Authenticated() bool {
 //
 // Deprecated: Use CookieAuthTransport to create base client.  Logging out is as simple as not using the
 // client anymore
-func (s *AuthenticationService) Logout() error {
+func (s *AuthenticationService) Logout(ctx context.Context) error {
 	if s.authType != authTypeSession || s.client.session == nil {
 		return fmt.Errorf("no user is authenticated")
 	}
@@ -130,7 +131,7 @@ func (s *AuthenticationService) Logout() error {
 		return fmt.Errorf("Creating the request to log the user out failed : %s", err)
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		return fmt.Errorf("Error sending the logout request: %s", err)
 	}
@@ -148,7 +149,7 @@ func (s *AuthenticationService) Logout() error {
 // GetCurrentUser gets the details of the current user.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
-func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
+func (s *AuthenticationService) GetCurrentUser(ctx context.Context) (*Session, error) {
 	if s == nil {
 		return nil, fmt.Errorf("AUthenticaiton Service is not instantiated")
 	}
@@ -162,7 +163,7 @@ func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 		return nil, fmt.Errorf("Could not create request for getting user info : %s", err)
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		return nil, fmt.Errorf("Error sending request to get user info : %s", err)
 	}

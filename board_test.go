@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -22,7 +23,7 @@ func TestBoardService_GetAllBoards(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	projects, _, err := testClient.Board.GetAllBoards(nil)
+	projects, _, err := testClient.Board.GetAllBoards(context.Background(), nil)
 	if projects == nil {
 		t.Error("Expected boards list. Boards list is nil")
 	}
@@ -55,7 +56,7 @@ func TestBoardService_GetAllBoards_WithFilter(t *testing.T) {
 	boardsListOptions.StartAt = 1
 	boardsListOptions.MaxResults = 10
 
-	projects, _, err := testClient.Board.GetAllBoards(boardsListOptions)
+	projects, _, err := testClient.Board.GetAllBoards(context.Background(), boardsListOptions)
 	if projects == nil {
 		t.Error("Expected boards list. Boards list is nil")
 	}
@@ -75,7 +76,7 @@ func TestBoardService_GetBoard(t *testing.T) {
 		fmt.Fprint(w, `{"id":4,"self":"https://test.jira.org/rest/agile/1.0/board/1","name":"Test Weekly","type":"scrum"}`)
 	})
 
-	board, _, err := testClient.Board.GetBoard(1)
+	board, _, err := testClient.Board.GetBoard(context.Background(), 1)
 	if board == nil {
 		t.Error("Expected board list. Board list is nil")
 	}
@@ -95,7 +96,7 @@ func TestBoardService_GetBoard_WrongID(t *testing.T) {
 		fmt.Fprint(w, nil)
 	})
 
-	board, resp, err := testClient.Board.GetBoard(99999999)
+	board, resp, err := testClient.Board.GetBoard(context.Background(), 99999999)
 	if board != nil {
 		t.Errorf("Expected nil. Got %s", err)
 	}
@@ -124,7 +125,7 @@ func TestBoardService_CreateBoard(t *testing.T) {
 		Type:     "kanban",
 		FilterID: 17,
 	}
-	issue, _, err := testClient.Board.CreateBoard(b)
+	issue, _, err := testClient.Board.CreateBoard(context.Background(), b)
 	if issue == nil {
 		t.Error("Expected board. Board is nil")
 	}
@@ -144,7 +145,7 @@ func TestBoardService_DeleteBoard(t *testing.T) {
 		fmt.Fprint(w, `{}`)
 	})
 
-	_, resp, err := testClient.Board.DeleteBoard(1)
+	_, resp, err := testClient.Board.DeleteBoard(context.Background(), 1)
 	if resp.StatusCode != 204 {
 		t.Error("Expected board not deleted.")
 	}
@@ -170,7 +171,7 @@ func TestBoardService_GetAllSprints(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	sprints, _, err := testClient.Board.GetAllSprints("123")
+	sprints, _, err := testClient.Board.GetAllSprints(context.Background(), "123")
 
 	if err != nil {
 		t.Errorf("Got error: %v", err)
@@ -202,7 +203,7 @@ func TestBoardService_GetAllSprintsWithOptions(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	sprints, _, err := testClient.Board.GetAllSprintsWithOptions(123, &GetAllSprintsOptions{State: "active,future"})
+	sprints, _, err := testClient.Board.GetAllSprintsWithOptions(context.Background(), 123, &GetAllSprintsOptions{State: "active,future"})
 
 	if err != nil {
 		t.Errorf("Got error: %v", err)

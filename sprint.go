@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/google/go-querystring/query"
@@ -27,7 +28,7 @@ type IssuesInSprintResult struct {
 // The maximum number of issues that can be moved in one operation is 50.
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/sprint-moveIssuesToSprint
-func (s *SprintService) MoveIssuesToSprint(sprintID int, issueIDs []string) (*Response, error) {
+func (s *SprintService) MoveIssuesToSprint(ctx context.Context, sprintID int, issueIDs []string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/sprint/%d/issue", sprintID)
 
 	payload := IssuesWrapper{Issues: issueIDs}
@@ -38,7 +39,7 @@ func (s *SprintService) MoveIssuesToSprint(sprintID int, issueIDs []string) (*Re
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		err = NewJiraError(resp, err)
 	}
@@ -50,7 +51,7 @@ func (s *SprintService) MoveIssuesToSprint(sprintID int, issueIDs []string) (*Re
 // By default, the returned issues are ordered by rank.
 //
 //  JIRA API Docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/sprint-getIssuesForSprint
-func (s *SprintService) GetIssuesForSprint(sprintID int) ([]Issue, *Response, error) {
+func (s *SprintService) GetIssuesForSprint(ctx context.Context, sprintID int) ([]Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/sprint/%d/issue", sprintID)
 
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -60,7 +61,7 @@ func (s *SprintService) GetIssuesForSprint(sprintID int) ([]Issue, *Response, er
 	}
 
 	result := new(IssuesInSprintResult)
-	resp, err := s.client.Do(req, result)
+	resp, err := s.client.Do(ctx, req, result)
 	if err != nil {
 		err = NewJiraError(resp, err)
 	}
@@ -78,7 +79,7 @@ func (s *SprintService) GetIssuesForSprint(sprintID int) ([]Issue, *Response, er
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/7.3.1/#agile/1.0/issue-getIssue
 //
 // TODO: create agile service for holding all agile apis' implementation
-func (s *SprintService) GetIssue(issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
+func (s *SprintService) GetIssue(ctx context.Context, issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/issue/%s", issueID)
 
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -96,7 +97,7 @@ func (s *SprintService) GetIssue(issueID string, options *GetQueryOptions) (*Iss
 	}
 
 	issue := new(Issue)
-	resp, err := s.client.Do(req, issue)
+	resp, err := s.client.Do(ctx, req, issue)
 
 	if err != nil {
 		jerr := NewJiraError(resp, err)

@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 )
@@ -63,7 +64,7 @@ type GroupSearchOptions struct {
 // JIRA API docs: https://docs.atlassian.com/jira/REST/server/#api/2/group-getUsersFromGroup
 //
 // WARNING: This API only returns the first page of group members
-func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
+func (s *GroupService) Get(ctx context.Context, name string) ([]GroupMember, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/member?groupname=%s", url.QueryEscape(name))
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -71,7 +72,7 @@ func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
 	}
 
 	group := new(groupMembersResult)
-	resp, err := s.client.Do(req, group)
+	resp, err := s.client.Do(ctx, req, group)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -84,7 +85,7 @@ func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
 // User of this resource is required to have sysadmin or admin permissions.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/server/#api/2/group-getUsersFromGroup
-func (s *GroupService) GetWithOptions(name string, options *GroupSearchOptions) ([]GroupMember, *Response, error) {
+func (s *GroupService) GetWithOptions(ctx context.Context, name string, options *GroupSearchOptions) ([]GroupMember, *Response, error) {
 	var apiEndpoint string
 	if options == nil {
 		apiEndpoint = fmt.Sprintf("/rest/api/2/group/member?groupname=%s", url.QueryEscape(name))
@@ -103,7 +104,7 @@ func (s *GroupService) GetWithOptions(name string, options *GroupSearchOptions) 
 	}
 
 	group := new(groupMembersResult)
-	resp, err := s.client.Do(req, group)
+	resp, err := s.client.Do(ctx, req, group)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -113,7 +114,7 @@ func (s *GroupService) GetWithOptions(name string, options *GroupSearchOptions) 
 // Add adds user to group
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-addUserToGroup
-func (s *GroupService) Add(groupname string, username string) (*Group, *Response, error) {
+func (s *GroupService) Add(ctx context.Context, groupname string, username string) (*Group, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s", groupname)
 	var user struct {
 		Name string `json:"name"`
@@ -125,7 +126,7 @@ func (s *GroupService) Add(groupname string, username string) (*Group, *Response
 	}
 
 	responseGroup := new(Group)
-	resp, err := s.client.Do(req, responseGroup)
+	resp, err := s.client.Do(ctx, req, responseGroup)
 	if err != nil {
 		jerr := NewJiraError(resp, err)
 		return nil, resp, jerr
@@ -137,14 +138,14 @@ func (s *GroupService) Add(groupname string, username string) (*Group, *Response
 // Remove removes user from group
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-removeUserFromGroup
-func (s *GroupService) Remove(groupname string, username string) (*Response, error) {
+func (s *GroupService) Remove(ctx context.Context, groupname string, username string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s&username=%s", groupname, username)
 	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	if err != nil {
 		jerr := NewJiraError(resp, err)
 		return resp, jerr

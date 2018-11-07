@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -21,7 +22,7 @@ func TestFilterService_GetList(t *testing.T) {
 		fmt.Fprint(writer, string(raw))
 	})
 
-	filters, _, err := testClient.Filter.GetList()
+	filters, _, err := testClient.Filter.GetList(context.Background())
 	if filters == nil {
 		t.Error("Expected Filters list. Filters list is nil")
 	}
@@ -44,13 +45,12 @@ func TestFilterService_Get(t *testing.T) {
 		fmt.Fprintf(writer, string(raw))
 	})
 
-	filter, _, err := testClient.Filter.Get(10000)
+	filter, _, err := testClient.Filter.Get(context.Background(), 10000)
 	if filter == nil {
 		t.Errorf("Expected Filter, got nil")
 	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)
 	}
-
 
 }

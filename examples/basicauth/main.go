@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -35,7 +36,8 @@ func main() {
 		return
 	}
 
-	u, _, err := client.User.Get("admin")
+	ctx := context.Background()
+	u, _, err := client.User.Get(ctx, "admin")
 
 	if err != nil {
 		fmt.Printf("\nerror: %v\n", err)

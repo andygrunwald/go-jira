@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -22,7 +23,7 @@ func TestFieldService_GetList(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	fields, _, err := testClient.Field.GetList()
+	fields, _, err := testClient.Field.GetList(context.Background())
 	if fields == nil {
 		t.Error("Expected field list. Field list is nil")
 	}

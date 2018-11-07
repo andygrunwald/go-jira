@@ -1,5 +1,7 @@
 package jira
 
+import "context"
+
 // FieldService handles fields for the JIRA instance / API.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-Field
@@ -27,7 +29,7 @@ type FieldSchema struct {
 // GetList gets all fields from JIRA
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-field-get
-func (s *FieldService) GetList() ([]Field, *Response, error) {
+func (s *FieldService) GetList(ctx context.Context) ([]Field, *Response, error) {
 	apiEndpoint := "rest/api/2/field"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -35,7 +37,7 @@ func (s *FieldService) GetList() ([]Field, *Response, error) {
 	}
 
 	fieldList := []Field{}
-	resp, err := s.client.Do(req, &fieldList)
+	resp, err := s.client.Do(ctx, req, &fieldList)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
 	}

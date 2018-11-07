@@ -2,6 +2,7 @@ package jira
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -30,7 +31,7 @@ func TestAuthenticationService_AcquireSessionCookie_Failure(t *testing.T) {
 		w.WriteHeader(http.StatusInternalServerError)
 	})
 
-	res, err := testClient.Authentication.AcquireSessionCookie("foo", "bar")
+	res, err := testClient.Authentication.AcquireSessionCookie(context.Background(), "foo", "bar")
 	if err == nil {
 		t.Errorf("Expected error, but no error given")
 	}
@@ -63,7 +64,7 @@ func TestAuthenticationService_AcquireSessionCookie_Success(t *testing.T) {
 		fmt.Fprint(w, `{"session":{"name":"JSESSIONID","value":"12345678901234567890"},"loginInfo":{"failedLoginCount":10,"loginCount":127,"lastFailedLoginTime":"2016-03-16T04:22:35.386+0000","previousLoginTime":"2016-03-16T04:22:35.386+0000"}}`)
 	})
 
-	res, err := testClient.Authentication.AcquireSessionCookie("foo", "bar")
+	res, err := testClient.Authentication.AcquireSessionCookie(context.Background(), "foo", "bar")
 	if err != nil {
 		t.Errorf("No error expected. Got %s", err)
 	}
@@ -162,9 +163,9 @@ func TestAithenticationService_GetUserInfo_AccessForbidden_Fail(t *testing.T) {
 		}
 	})
 
-	testClient.Authentication.AcquireSessionCookie("foo", "bar")
+	testClient.Authentication.AcquireSessionCookie(context.Background(), "foo", "bar")
 
-	_, err := testClient.Authentication.GetCurrentUser()
+	_, err := testClient.Authentication.GetCurrentUser(context.Background())
 	if err == nil {
 		t.Errorf("Non nil error expect, received nil")
 	}
@@ -200,9 +201,9 @@ func TestAuthenticationService_GetUserInfo_NonOkStatusCode_Fail(t *testing.T) {
 		}
 	})
 
-	testClient.Authentication.AcquireSessionCookie("foo", "bar")
+	testClient.Authentication.AcquireSessionCookie(context.Background(), "foo", "bar")
 
-	_, err := testClient.Authentication.GetCurrentUser()
+	_, err := testClient.Authentication.GetCurrentUser(context.Background())
 	if err == nil {
 		t.Errorf("Non nil error expect, received nil")
 	}
@@ -212,7 +213,7 @@ func TestAuthenticationService_GetUserInfo_FailWithoutLogin(t *testing.T) {
 	// no setup() required here
 	testClient = new(Client)
 
-	_, err := testClient.Authentication.GetCurrentUser()
+	_, err := testClient.Authentication.GetCurrentUser(context.Background())
 	if err == nil {
 		t.Errorf("Expected error, but got %s", err)
 	}
@@ -255,9 +256,9 @@ func TestAuthenticationService_GetUserInfo_Success(t *testing.T) {
 		}
 	})
 
-	testClient.Authentication.AcquireSessionCookie("foo", "bar")
+	testClient.Authentication.AcquireSessionCookie(context.Background(), "foo", "bar")
 
-	userinfo, err := testClient.Authentication.GetCurrentUser()
+	userinfo, err := testClient.Authentication.GetCurrentUser(context.Background())
 	if err != nil {
 		t.Errorf("Nil error expect, received %s", err)
 	}
@@ -296,9 +297,9 @@ func TestAuthenticationService_Logout_Success(t *testing.T) {
 		}
 	})
 
-	testClient.Authentication.AcquireSessionCookie("foo", "bar")
+	testClient.Authentication.AcquireSessionCookie(context.Background(), "foo", "bar")
 
-	err := testClient.Authentication.Logout()
+	err := testClient.Authentication.Logout(context.Background())
 	if err != nil {
 		t.Errorf("Expected nil error, got %s", err)
 	}
@@ -314,7 +315,7 @@ func TestAuthenticationService_Logout_FailWithoutLogin(t *testing.T) {
 			w.WriteHeader(http.StatusUnauthorized)
 		}
 	})
-	err := testClient.Authentication.Logout()
+	err := testClient.Authentication.Logout(context.Background())
 	if err == nil {
 		t.Error("Expected not nil, got nil")
 	}

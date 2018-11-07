@@ -1,5 +1,7 @@
 package jira
 
+import "context"
+
 // ResolutionService handles resolutions for the JIRA instance / API.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-Resolution
@@ -19,7 +21,7 @@ type Resolution struct {
 // GetList gets all resolutions from JIRA
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-resolution-get
-func (s *ResolutionService) GetList() ([]Resolution, *Response, error) {
+func (s *ResolutionService) GetList(ctx context.Context) ([]Resolution, *Response, error) {
 	apiEndpoint := "rest/api/2/resolution"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -27,7 +29,7 @@ func (s *ResolutionService) GetList() ([]Resolution, *Response, error) {
 	}
 
 	resolutionList := []Resolution{}
-	resp, err := s.client.Do(req, &resolutionList)
+	resp, err := s.client.Do(ctx, req, &resolutionList)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
 	}

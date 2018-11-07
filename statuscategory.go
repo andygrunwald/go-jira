@@ -1,5 +1,7 @@
 package jira
 
+import "context"
+
 // StatusCategoryService handles status categories for the JIRA instance / API.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-Statuscategory
@@ -28,7 +30,7 @@ const (
 // GetList gets all status categories from JIRA
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-statuscategory-get
-func (s *StatusCategoryService) GetList() ([]StatusCategory, *Response, error) {
+func (s *StatusCategoryService) GetList(ctx context.Context) ([]StatusCategory, *Response, error) {
 	apiEndpoint := "rest/api/2/statuscategory"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -36,7 +38,7 @@ func (s *StatusCategoryService) GetList() ([]StatusCategory, *Response, error) {
 	}
 
 	statusCategoryList := []StatusCategory{}
-	resp, err := s.client.Do(req, &statusCategoryList)
+	resp, err := s.client.Do(ctx, req, &statusCategoryList)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
 	}
