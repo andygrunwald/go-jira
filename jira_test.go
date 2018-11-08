@@ -47,12 +47,14 @@ func teardown() {
 }
 
 func testMethod(t *testing.T, r *http.Request, want string) {
+	t.Helper()
 	if got := r.Method; got != want {
 		t.Errorf("Request method: %v, want %v", got, want)
 	}
 }
 
 func testRequestURL(t *testing.T, r *http.Request, want string) {
+	t.Helper()
 	if got := r.URL.String(); !strings.HasPrefix(got, want) {
 		t.Errorf("Request URL: %v, want %v", got, want)
 	}
