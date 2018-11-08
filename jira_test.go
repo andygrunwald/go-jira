@@ -60,6 +60,16 @@ func testRequestURL(t *testing.T, r *http.Request, want string) {
 	}
 }
 
+func testRequestPathWithQuery(t *testing.T, r *http.Request, wantPath string, wantQuery url.Values) {
+	t.Helper()
+	if got := r.URL.Path; !strings.HasPrefix(got, wantPath) {
+		t.Errorf("Request Path: %v, want %v", got, wantPath)
+	}
+	if got := r.URL.Query(); !reflect.DeepEqual(got, wantQuery) {
+		t.Errorf("Request Query: %v, want %v", got, wantQuery)
+	}
+}
+
 func TestNewClient_WrongUrl(t *testing.T) {
 	c, err := NewClient(nil, "://issues.apache.org/jira/")
 
