@@ -211,13 +211,13 @@ func (s *UserService) Find(property string, tweaks ...userSearchF) ([]User, *Res
 	return users, resp, nil
 }
 
-// UserAssignableToProjectsOptions specifies the optional parameters to search users that
+// UserFindAssignableToProjectsOptions specifies the optional parameters to search users that
 // support pagination.
 // Pagination is used for the JIRA REST APIs to conserve server resources and limit
 // response size for resources that return potentially large collection of users.
 // A request to a pages API will result in a values array wrapped in a JSON object with some paging metadata
 // Default Pagination options
-type UserAssignableToProjectsOptions struct {
+type UserFindAssignableToProjectsOptions struct {
 	// StartAt: The starting index of the returned projects. Base index: 0.
 	StartAt int `url:"startAt,omitempty"`
 	// MaxResults: The maximum number of projects to return per page. Default: 50.
@@ -227,10 +227,10 @@ type UserAssignableToProjectsOptions struct {
 	// Username: A query string used to search username, display name, and email address. The string is matched to the starting letters of any word in the searched fields. For example, ar matches to the username archie but not mark. This field is deprecated in favour of query parameter.
 	Username string `url:"username,omitempty"`
 	// ProjectKeys: A comma-separated list of project keys (case sensitive).
-	ProjectKeys []string `url:"projectKeys"`
+	ProjectKeys string `url:"projectKeys"`
 }
 
-func (s *UserService) FindAssignableToProjects(options *UserAssignableToProjectsOptions) ([]User, *Response, error) {
+func (s *UserService) FindAssignableToProjects(options *UserFindAssignableToProjectsOptions) ([]User, *Response, error) {
 	q, err := query.Values(options)
 	if err != nil {
 		return nil, nil, err
