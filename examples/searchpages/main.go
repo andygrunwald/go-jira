@@ -48,7 +48,10 @@ func main() {
 
 	// SearchPages will page through results and pass each issue to appendFunc
 	// In this example, we'll search for all the issues in the target project
-	client.Issue.SearchPages(fmt.Sprintf(`project=%s`, strings.TrimSpace(jiraPK)), nil, appendFunc)
+	err = client.Issue.SearchPages(fmt.Sprintf(`project=%s`, strings.TrimSpace(jiraPK)), nil, appendFunc)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	fmt.Printf("%d issues found.\n", len(issues))
 
