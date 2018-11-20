@@ -52,5 +52,27 @@ func TestFilterService_Get(t *testing.T) {
 		t.Errorf("Error given: %s", err)
 	}
 
+}
 
+func TestFilterService_GetFavouriteList(t *testing.T) {
+	setup()
+	defer teardown()
+	testAPIEdpoint := "/rest/api/2/filter/favourite"
+	raw, err := ioutil.ReadFile("./mocks/favourite_filters.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	testMux.HandleFunc(testAPIEdpoint, func(writer http.ResponseWriter, request *http.Request) {
+		testMethod(t, request, "GET")
+		testRequestURL(t, request, testAPIEdpoint)
+		fmt.Fprint(writer, string(raw))
+	})
+
+	filters, _, err := testClient.Filter.GetFavouriteList()
+	if filters == nil {
+		t.Error("Expected Filters list. Filters list is nil")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
 }
