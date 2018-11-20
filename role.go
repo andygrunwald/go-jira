@@ -6,7 +6,7 @@ import (
 
 // RoleService handles roles for the JIRA instance / API.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/3/role
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-group-Role
 type RoleService struct {
 	client *Client
 }
@@ -20,7 +20,7 @@ type Role struct {
 	Actors      []*Actor `json:"actors" structs:"actors"`
 }
 
-// Actor represents a JIRA user
+// Actor represents a JIRA actor
 type Actor struct {
 	ID          int        `json:"id" structs:"id"`
 	DisplayName string     `json:"displayName" structs:"displayName"`
@@ -36,6 +36,8 @@ type ActorUser struct {
 }
 
 // GetList returns a list of all available project roles
+//
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-role-get
 func (s *RoleService) GetList() (*[]Role, *Response, error) {
 	apiEndpoint := "rest/api/3/role"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -52,6 +54,8 @@ func (s *RoleService) GetList() (*[]Role, *Response, error) {
 }
 
 // Get retreives a single Role from Jira
+//
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-role-id-get
 func (s *RoleService) Get(roleID int) (*Role, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/3/role/%d", roleID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
