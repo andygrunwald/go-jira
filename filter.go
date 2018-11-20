@@ -59,6 +59,22 @@ func (fs *FilterService) GetList() ([]*Filter, *Response, error) {
 	return filters, resp, err
 }
 
+// GetFavouriteList retrieves the user's favourited filters from Jira
+func (fs *FilterService) GetFavouriteList() ([]*Filter, *Response, error) {
+	apiEndpoint := "rest/api/2/filter/favourite"
+	req, err := fs.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	filters := []*Filter{}
+	resp, err := fs.client.Do(req, &filters)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
+	}
+	return filters, resp, err
+}
+
 // Get retrieves a single Filter from Jira
 func (fs *FilterService) Get(filterID int) (*Filter, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/filter/%d", filterID)
