@@ -27,21 +27,22 @@ type Client struct {
 	session *Session
 
 	// Services used for talking to different parts of the JIRA API.
-	Authentication *AuthenticationService
-	Issue          *IssueService
-	Project        *ProjectService
-	Board          *BoardService
-	Sprint         *SprintService
-	User           *UserService
-	Group          *GroupService
-	Version        *VersionService
-	Priority       *PriorityService
-	Field          *FieldService
-	Component      *ComponentService
-	Resolution     *ResolutionService
-	StatusCategory *StatusCategoryService
-	Filter         *FilterService
-	Role           *RoleService
+	Authentication   *AuthenticationService
+	Issue            *IssueService
+	Project          *ProjectService
+	Board            *BoardService
+	Sprint           *SprintService
+	User             *UserService
+	Group            *GroupService
+	Version          *VersionService
+	Priority         *PriorityService
+	Field            *FieldService
+	Component        *ComponentService
+	Resolution       *ResolutionService
+	StatusCategory   *StatusCategoryService
+	Filter           *FilterService
+	Role             *RoleService
+	PermissionScheme *PermissionSchemeService
 }
 
 // NewClient returns a new JIRA API client.
@@ -85,6 +86,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	c.StatusCategory = &StatusCategoryService{client: c}
 	c.Filter = &FilterService{client: c}
 	c.Role = &RoleService{client: c}
+	c.PermissionScheme = &PermissionSchemeService{client: c}
 
 	return c, nil
 }
