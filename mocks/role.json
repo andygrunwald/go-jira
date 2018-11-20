@@ -1,0 +1,18 @@
+{
+  "self": "https://sample.instance.org/rest/api/3/role/10002",
+  "name": "Administrator",
+  "id": 10002,
+  "description": "Administrator description",
+  "actors": [
+    {
+      "id": 10002,
+      "displayName": "jira-administrators",
+      "type": "atlassian-group-role-actor",
+      "name": "jira-administrators",
+      "actorGroup": {
+        "name": "jira-administrators",
+        "displayName": "jira-administrators"
+      }
+    }
+  ]
+}
