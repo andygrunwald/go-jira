@@ -41,6 +41,7 @@ type Client struct {
 	Resolution     *ResolutionService
 	StatusCategory *StatusCategoryService
 	Filter         *FilterService
+	Role           *RoleService
 }
 
 // NewClient returns a new JIRA API client.
@@ -83,6 +84,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	c.Resolution = &ResolutionService{client: c}
 	c.StatusCategory = &StatusCategoryService{client: c}
 	c.Filter = &FilterService{client: c}
+	c.Role = &RoleService{client: c}
 
 	return c, nil
 }
