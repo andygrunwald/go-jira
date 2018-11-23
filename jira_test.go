@@ -256,7 +256,7 @@ func TestClient_NewRequest_BasicAuth(t *testing.T) {
 	}
 }
 
-// If a nil body is passed to gerrit.NewRequest, make sure that nil is also passed to http.NewRequest.
+// If a nil body is passed to jira.NewRequest, make sure that nil is also passed to http.NewRequest.
 // In most cases, passing an io.Reader that returns no content is fine,
 // since there is no difference between an HTTP request body that is an empty string versus one that is not set at all.
 // However in certain cases, intermediate systems may treat these differently resulting in subtle errors.
@@ -401,7 +401,7 @@ func TestClient_Do_HTTPError(t *testing.T) {
 }
 
 // Test handling of an error caused by the internal http client's Do() function.
-// A redirect loop is pretty unlikely to occur within the Gerrit API, but does allow us to exercise the right code path.
+// A redirect loop is pretty unlikely to occur within the JIRA API, but does allow us to exercise the right code path.
 func TestClient_Do_RedirectLoop(t *testing.T) {
 	setup()
 	defer teardown()
