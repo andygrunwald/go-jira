@@ -635,7 +635,8 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
 		// incase of error return the resp for further inspection
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
 
 	responseIssue := new(Issue)
@@ -741,7 +742,8 @@ func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment
 	responseComment := new(Comment)
 	resp, err := s.client.Do(req, responseComment)
 	if err != nil {
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
 
 	return responseComment, resp, nil
