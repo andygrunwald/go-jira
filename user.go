@@ -195,7 +195,7 @@ func (s *UserService) Find(property string, tweaks ...userSearchF) ([]User, *Res
 		queryString += param.name + "=" + param.value + "&"
 	}
 
-	apiEndpoint := fmt.Sprintf("/rest/api/2/user/search?" + queryString[:len(queryString)-1])
+	apiEndpoint := fmt.Sprintf("/rest/api/2/user/search?%s", queryString[:len(queryString)-1])
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
