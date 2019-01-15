@@ -267,7 +267,20 @@ func CheckResponse(r *http.Response) error {
 		return nil
 	}
 
-	err := fmt.Errorf("Request failed. Please analyze the request body for more details. Status code: %d", r.StatusCode)
+	var jiraError JiraError
+	if jsonErr := json.NewDecoder(r.Body).Decode(&jiraError); jsonErr != nil {
+		fmt.Println("Response JSON decoding failed! Error: " + jsonErr.Error())
+	}
+
+	var messages string
+	for _, msg := range jiraError.Errors {
+		messages +=  msg + "\n"
+	}
+
+	err := fmt.Errorf("Request failed. Please analyze the request body for more details. Status code: %d\n%s",
+		r.StatusCode,
+		messages,
+	)
 	return err
 }
 
