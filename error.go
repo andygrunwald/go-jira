@@ -38,6 +38,9 @@ func NewJiraError(resp *Response, httpError error) error {
 			return errors.Wrap(err, httpError.Error())
 		}
 	} else {
+        if httpError == nil {
+            return fmt.Errorf("Got Response Status %s:%s", resp.Status, string(body))
+        }
 		return errors.Wrap(httpError, fmt.Sprintf("%s: %s", resp.Status, string(body)))
 	}
 
