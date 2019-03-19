@@ -62,6 +62,25 @@ func TestError_NoJSON(t *testing.T) {
 	}
 }
 
+func TestError_Unauthorized_NilError(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        w.WriteHeader(http.StatusUnauthorized)
+		fmt.Fprint(w, `User is not authorized`)
+	})
+
+	req, _ := testClient.NewRequest("GET", "/", nil)
+	resp, _ := testClient.Do(req, nil)
+
+	err := NewJiraError(resp, nil)
+	msg := err.Error()
+    if !strings.Contains(msg, "401 Unauthorized:User is not authorized") {
+		t.Errorf("Expected Unauthorized HTTP status: Got\n%s\n", msg)
+    }
+}
+
 func TestError_BadJSON(t *testing.T) {
 	setup()
 	defer teardown()
