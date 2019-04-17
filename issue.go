@@ -615,6 +615,24 @@ func (s *IssueService) PostAttachment(issueID string, r io.Reader, attachmentNam
 	return attachment, resp, nil
 }
 
+// DeleteAttachment deletes an attachment of a given attachmentID
+func (s *IssueService) DeleteAttachment(attachmentID string) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/attachment/%s", attachmentID)
+
+	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return resp, jerr
+	}
+
+	return resp, nil
+}
+
 // GetWorklogs gets all the worklogs for an issue.
 // This method is especially important if you need to read all the worklogs, not just the first page.
 //
