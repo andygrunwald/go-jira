@@ -823,8 +823,22 @@ func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Res
 	if options == nil {
 		u = fmt.Sprintf("rest/api/2/search?jql=%s", url.QueryEscape(jql))
 	} else {
-		u = fmt.Sprintf("rest/api/2/search?jql=%s&startAt=%d&maxResults=%d&expand=%s&fields=%s&validateQuery=%s", url.QueryEscape(jql),
-			options.StartAt, options.MaxResults, options.Expand, strings.Join(options.Fields, ","), options.ValidateQuery)
+		u = "rest/api/2/search?jql=" + url.QueryEscape(jql)
+		if options.StartAt != 0 {
+			u += fmt.Sprintf("&startAt=%d", options.StartAt)
+		}
+		if options.MaxResults != 0 {
+			u += fmt.Sprintf("&maxResults=%d", options.MaxResults)
+		}
+		if options.Expand != "" {
+			u += fmt.Sprintf("&expand=%s", options.Expand)
+		}
+		if strings.Join(options.Fields, ",") != "" {
+			u += fmt.Sprintf("&fields=%s", strings.Join(options.Fields, ","))
+		}
+		if options.ValidateQuery != "" {
+			u += fmt.Sprintf("&validateQuery=%s", options.ValidateQuery)
+		}
 	}
 
 	req, err := s.client.NewRequest("GET", u, nil)
