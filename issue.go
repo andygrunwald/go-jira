@@ -219,6 +219,7 @@ type IssueRenderedFields struct {
 	Duedate        string    `json:"duedate,omitempty" structs:"duedate,omitempty"`
 	Updated        string    `json:"updated,omitempty" structs:"updated,omitempty"`
 	Comments       *Comments `json:"comment,omitempty" structs:"comment,omitempty"`
+	Description    string    `json:"description,omitempty" structs:"description,omitempty"`
 }
 
 // IssueType represents a type of a JIRA issue.
