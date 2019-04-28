@@ -464,14 +464,16 @@ type Comment struct {
 
 // FixVersion represents a software release in which an issue is fixed.
 type FixVersion struct {
-	Archived        *bool  `json:"archived,omitempty" structs:"archived,omitempty"`
+	Self            string `json:"self,omitempty" structs:"self,omitempty"`
 	ID              string `json:"id,omitempty" structs:"id,omitempty"`
 	Name            string `json:"name,omitempty" structs:"name,omitempty"`
-	ProjectID       int    `json:"projectId,omitempty" structs:"projectId,omitempty"`
-	ReleaseDate     string `json:"releaseDate,omitempty" structs:"releaseDate,omitempty"`
+	Description     string `json:"description,omitempty" structs:"name,omitempty"`
+	Archived        *bool  `json:"archived,omitempty" structs:"archived,omitempty"`
 	Released        *bool  `json:"released,omitempty" structs:"released,omitempty"`
-	Self            string `json:"self,omitempty" structs:"self,omitempty"`
+	ReleaseDate     string `json:"releaseDate,omitempty" structs:"releaseDate,omitempty"`
 	UserReleaseDate string `json:"userReleaseDate,omitempty" structs:"userReleaseDate,omitempty"`
+	ProjectID       int    `json:"projectId,omitempty" structs:"projectId,omitempty"` // Unlike other IDs, this is returned as a number
+	StartDate       string `json:"startDate,omitempty" structs:"startDate,omitempty"`
 }
 
 // CommentVisibility represents he visibility of a comment.
