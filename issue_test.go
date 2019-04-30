@@ -937,6 +937,14 @@ func TestIssueFields_MarshalJSON_Success(t *testing.T) {
 			ID:   "10000",
 			Key:  "EX",
 		},
+		AffectsVersions: []*AffectsVersion{
+			&AffectsVersion{
+				ID:          "10705",
+				Name:        "2.1.0-rc3",
+				Self:        "http://www.example.com/jira/rest/api/2/version/10705",
+				ReleaseDate: "2018-09-30",
+			},
+		},
 	}
 
 	bytes, err := json.Marshal(i)
@@ -1426,5 +1434,37 @@ func TestIssueService_Get_Fields_Changelog(t *testing.T) {
 
 	if ct, _ := issue.Changelog.Histories[0].CreatedTime(); !tm.Equal(ct) {
 		t.Errorf("Expected CreatedTime func return %v time, %v got", tm, ct)
+	}
+}
+func TestIssueService_Get_Fields_AffectsVersions(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/10002", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, "/rest/api/2/issue/10002")
+
+		fmt.Fprint(w, `{"fields":{"versions":[{"self":"http://www.example.com/jira/rest/api/2/version/10705","id":"10705","description":"test description","name":"2.1.0-rc3","archived":false,"released":false,"releaseDate":"2018-09-30"}]}}`)
+	})
+
+	issue, _, err := testClient.Issue.Get("10002", nil)
+	if issue == nil {
+		t.Error("Expected issue. Issue is nil")
+	}
+	if !reflect.DeepEqual(issue.Fields.AffectsVersions, []*AffectsVersion{
+		{
+			ID:          "10705",
+			Name:        "2.1.0-rc3",
+			Self:        "http://www.example.com/jira/rest/api/2/version/10705",
+			ReleaseDate: "2018-09-30",
+			Released:    false,
+			Archived:    false,
+			Description: "test description",
+		},
+	}) {
+		t.Error("Expected AffectsVersions for the returned issue")
+	}
+
+	if err != nil {
+		t.Errorf("Error given: %s", err)
 	}
 }
