@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"mime/multipart"
+	"net/http"
 	"net/url"
 	"reflect"
 	"strings"
@@ -295,6 +296,10 @@ type Parent struct {
 // Time represents the Time definition of JIRA as a time.Time of go
 type Time time.Time
 
+func (t Time) Equal(u Time) bool {
+	return time.Time(t).Equal(time.Time(u))
+}
+
 // Date represents the Date definition of JIRA as a time.Time of go
 type Date time.Time
 
@@ -394,17 +399,23 @@ type Worklog struct {
 
 // WorklogRecord represents one entry of a Worklog
 type WorklogRecord struct {
-	Self             string `json:"self,omitempty" structs:"self,omitempty"`
-	Author           *User  `json:"author,omitempty" structs:"author,omitempty"`
-	UpdateAuthor     *User  `json:"updateAuthor,omitempty" structs:"updateAuthor,omitempty"`
-	Comment          string `json:"comment,omitempty" structs:"comment,omitempty"`
-	Created          *Time  `json:"created,omitempty" structs:"created,omitempty"`
-	Updated          *Time  `json:"updated,omitempty" structs:"updated,omitempty"`
-	Started          *Time  `json:"started,omitempty" structs:"started,omitempty"`
-	TimeSpent        string `json:"timeSpent,omitempty" structs:"timeSpent,omitempty"`
-	TimeSpentSeconds int    `json:"timeSpentSeconds,omitempty" structs:"timeSpentSeconds,omitempty"`
-	ID               string `json:"id,omitempty" structs:"id,omitempty"`
-	IssueID          string `json:"issueId,omitempty" structs:"issueId,omitempty"`
+	Self             string           `json:"self,omitempty" structs:"self,omitempty"`
+	Author           *User            `json:"author,omitempty" structs:"author,omitempty"`
+	UpdateAuthor     *User            `json:"updateAuthor,omitempty" structs:"updateAuthor,omitempty"`
+	Comment          string           `json:"comment,omitempty" structs:"comment,omitempty"`
+	Created          *Time            `json:"created,omitempty" structs:"created,omitempty"`
+	Updated          *Time            `json:"updated,omitempty" structs:"updated,omitempty"`
+	Started          *Time            `json:"started,omitempty" structs:"started,omitempty"`
+	TimeSpent        string           `json:"timeSpent,omitempty" structs:"timeSpent,omitempty"`
+	TimeSpentSeconds int              `json:"timeSpentSeconds,omitempty" structs:"timeSpentSeconds,omitempty"`
+	ID               string           `json:"id,omitempty" structs:"id,omitempty"`
+	IssueID          string           `json:"issueId,omitempty" structs:"issueId,omitempty"`
+	Properties       []EntityProperty `json:"properties,omitempty"`
+}
+
+type EntityProperty struct {
+	Key   string      `json:"key"`
+	Value interface{} `json:"value"`
 }
 
 // TimeTracking represents the timetracking fields of a JIRA issue.
@@ -527,6 +538,22 @@ type GetQueryOptions struct {
 	ProjectKeys   string `url:"projectKeys,omitempty"`
 }
 
+// GetWorklogsQueryOptions specifies the optional parameters for the Get Worklogs method
+type GetWorklogsQueryOptions struct {
+	StartAt    int64  `url:"startAt,omitempty"`
+	MaxResults int32  `url:"maxResults,omitempty"`
+	Expand     string `url:"expand,omitempty"`
+}
+
+type AddWorklogQueryOptions struct {
+	NotifyUsers          bool   `url:"notifyUsers,omitempty"`
+	AdjustEstimate       string `url:"adjustEstimate,omitempty"`
+	NewEstimate          string `url:"newEstimate,omitempty"`
+	ReduceBy             string `url:"reduceBy,omitempty"`
+	Expand               string `url:"expand,omitempty"`
+	OverrideEditableFlag bool   `url:"overrideEditableFlag,omitempty"`
+}
+
 // CustomFields represents custom fields of JIRA
 // This can heavily differ between JIRA instances
 type CustomFields map[string]string
@@ -626,7 +653,7 @@ func (s *IssueService) PostAttachment(issueID string, r io.Reader, attachmentNam
 // This method is especially important if you need to read all the worklogs, not just the first page.
 //
 // https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/worklog-getIssueWorklog
-func (s *IssueService) GetWorklogs(issueID string) (*Worklog, *Response, error) {
+func (s *IssueService) GetWorklogs(issueID string, options ...func(*http.Request) error) (*Worklog, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
 
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -634,9 +661,32 @@ func (s *IssueService) GetWorklogs(issueID string) (*Worklog, *Response, error) 
 		return nil, nil, err
 	}
 
+	for _, option := range options {
+		err = option(req)
+		if err != nil {
+			return nil, nil, err
+		}
+	}
+
 	v := new(Worklog)
 	resp, err := s.client.Do(req, v)
 	return v, resp, err
+}
+
+// Applies query options to http request.
+// This helper is meant to be used with all "QueryOptions" structs.
+func WithQueryOptions(options interface{}) func(*http.Request) error {
+	q, err := query.Values(options)
+	if err != nil {
+		return func(*http.Request) error {
+			return err
+		}
+	}
+
+	return func(r *http.Request) error {
+		r.URL.RawQuery = q.Encode()
+		return nil
+	}
 }
 
 // Create creates an issue or a sub-task from a JSON representation.
@@ -787,11 +837,18 @@ func (s *IssueService) DeleteComment(issueID, commentID string) error {
 // AddWorklogRecord adds a new worklog record to issueID.
 //
 // https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-issue-issueIdOrKey-worklog-post
-func (s *IssueService) AddWorklogRecord(issueID string, record *WorklogRecord) (*WorklogRecord, *Response, error) {
+func (s *IssueService) AddWorklogRecord(issueID string, record *WorklogRecord, options ...func(*http.Request) error) (*WorklogRecord, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
 	req, err := s.client.NewRequest("POST", apiEndpoint, record)
 	if err != nil {
 		return nil, nil, err
+	}
+
+	for _, option := range options {
+		err = option(req)
+		if err != nil {
+			return nil, nil, err
+		}
 	}
 
 	responseRecord := new(WorklogRecord)

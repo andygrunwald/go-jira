@@ -3,6 +3,7 @@ package jira
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/google/go-cmp/cmp"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -1316,31 +1317,128 @@ func TestIssueService_Delete(t *testing.T) {
 	}
 }
 
+func getTime(original time.Time) *Time {
+	jiraTime := Time(original)
+
+	return &jiraTime
+}
+
 func TestIssueService_GetWorklogs(t *testing.T) {
 	setup()
 	defer teardown()
-	testMux.HandleFunc("/rest/api/2/issue/10002/worklog", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
-		testRequestURL(t, r, "/rest/api/2/issue/10002/worklog")
 
-		fmt.Fprint(w, `{"startAt": 1,"maxResults": 40,"total": 1,"worklogs": [{"id": "3","self": "http://kelpie9:8081/rest/api/2/issue/10002/worklog/3","author":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"updateAuthor":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"created":"2016-03-16T04:22:37.356+0000","updated":"2016-03-16T04:22:37.356+0000","comment":"","started":"2016-03-16T04:22:37.356+0000","timeSpent": "1h","timeSpentSeconds": 3600,"issueId":"10002"}]}`)
-	})
-
-	worklog, _, err := testClient.Issue.GetWorklogs("10002")
-	if worklog == nil {
-		t.Error("Expected worklog. Worklog is nil")
+	tt := []struct {
+		name     string
+		response string
+		issueId  string
+		uri      string
+		worklog  *Worklog
+		err      error
+		option   *AddWorklogQueryOptions
+	}{
+		{
+			name:     "simple worklog",
+			response: `{"startAt": 1,"maxResults": 40,"total": 1,"worklogs": [{"id": "3","self": "http://kelpie9:8081/rest/api/2/issue/10002/worklog/3","author":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"updateAuthor":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"created":"2016-03-16T04:22:37.356+0000","updated":"2016-03-16T04:22:37.356+0000","comment":"","started":"2016-03-16T04:22:37.356+0000","timeSpent": "1h","timeSpentSeconds": 3600,"issueId":"10002"}]}`,
+			issueId:  "10002",
+			uri:      "/rest/api/2/issue/%s/worklog",
+			worklog: &Worklog{
+				StartAt:    1,
+				MaxResults: 40,
+				Total:      1,
+				Worklogs: []WorklogRecord{
+					{
+						Self: "http://kelpie9:8081/rest/api/2/issue/10002/worklog/3",
+						Author: &User{
+							Self:        "http://www.example.com/jira/rest/api/2/user?username=fred",
+							Name:        "fred",
+							DisplayName: "Fred F. User",
+						},
+						UpdateAuthor: &User{
+							Self:        "http://www.example.com/jira/rest/api/2/user?username=fred",
+							Name:        "fred",
+							DisplayName: "Fred F. User",
+						},
+						Created:          getTime(time.Date(2016, time.March, 16, 4, 22, 37, 356000000, time.UTC)),
+						Started:          getTime(time.Date(2016, time.March, 16, 4, 22, 37, 356000000, time.UTC)),
+						Updated:          getTime(time.Date(2016, time.March, 16, 4, 22, 37, 356000000, time.UTC)),
+						TimeSpent:        "1h",
+						TimeSpentSeconds: 3600,
+						ID:               "3",
+						IssueID:          "10002",
+					},
+				},
+			},
+		},
+		{
+			name:     "expanded worklog",
+			response: `{"startAt":1,"maxResults":40,"total":1,"worklogs":[{"id":"3","self":"http://kelpie9:8081/rest/api/2/issue/10002/worklog/3","author":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"updateAuthor":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"created":"2016-03-16T04:22:37.356+0000","updated":"2016-03-16T04:22:37.356+0000","comment":"","started":"2016-03-16T04:22:37.356+0000","timeSpent":"1h","timeSpentSeconds":3600,"issueId":"10002","properties":[{"key":"foo","value":{"bar":"baz"}}]}]}`,
+			issueId:  "10002",
+			uri:      "/rest/api/2/issue/%s/worklog?expand=properties",
+			worklog: &Worklog{
+				StartAt:    1,
+				MaxResults: 40,
+				Total:      1,
+				Worklogs: []WorklogRecord{
+					{
+						Self: "http://kelpie9:8081/rest/api/2/issue/10002/worklog/3",
+						Author: &User{
+							Self:        "http://www.example.com/jira/rest/api/2/user?username=fred",
+							Name:        "fred",
+							DisplayName: "Fred F. User",
+						},
+						UpdateAuthor: &User{
+							Self:        "http://www.example.com/jira/rest/api/2/user?username=fred",
+							Name:        "fred",
+							DisplayName: "Fred F. User",
+						},
+						Created:          getTime(time.Date(2016, time.March, 16, 4, 22, 37, 356000000, time.UTC)),
+						Started:          getTime(time.Date(2016, time.March, 16, 4, 22, 37, 356000000, time.UTC)),
+						Updated:          getTime(time.Date(2016, time.March, 16, 4, 22, 37, 356000000, time.UTC)),
+						TimeSpent:        "1h",
+						TimeSpentSeconds: 3600,
+						ID:               "3",
+						IssueID:          "10002",
+						Properties: []EntityProperty{
+							{
+								Key: "foo",
+								Value: map[string]interface{}{
+									"bar": "baz",
+								},
+							},
+						},
+					},
+				},
+			},
+			option: &AddWorklogQueryOptions{Expand: "properties"},
+		},
 	}
 
-	if len(worklog.Worklogs) != 1 {
-		t.Error("Expected 1 worklog")
-	}
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			uri := fmt.Sprintf(tc.uri, tc.issueId)
+			testMux.HandleFunc(uri, func(w http.ResponseWriter, r *http.Request) {
+				testMethod(t, r, "GET")
+				testRequestURL(t, r, uri)
+				_, _ = fmt.Fprint(w, tc.response)
+			})
 
-	if worklog.Worklogs[0].Author.Name != "fred" {
-		t.Error("Expected worklog author to be fred")
-	}
+			var worklog *Worklog
+			var err error
 
-	if err != nil {
-		t.Errorf("Error given: %s", err)
+			if tc.option != nil {
+				worklog, _, err = testClient.Issue.GetWorklogs(tc.issueId, WithQueryOptions(tc.option))
+			} else {
+				worklog, _, err = testClient.Issue.GetWorklogs(tc.issueId)
+			}
+
+			if err != nil && !cmp.Equal(err, tc.err) {
+				t.Errorf("unexpected error: %v", err)
+			}
+
+			if !cmp.Equal(worklog, tc.worklog) {
+				t.Errorf("unexpected worklog structure: %s", cmp.Diff(worklog, tc.worklog))
+			}
+		})
 	}
 }
 
