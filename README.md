@@ -17,15 +17,18 @@
 
 This package is not JIRA API complete (yet), but you can call every API endpoint you want. See [Call a not implemented API endpoint](#call-a-not-implemented-api-endpoint) how to do this. For all possible API endpoints of JIRA have a look at [latest JIRA REST API documentation](https://docs.atlassian.com/jira/REST/latest/).
 
-## Compatible JIRA versions
+## Requirements
 
-This package was tested against JIRA v6.3.4 and v7.1.2.
+* Go >= 1.8
+* JIRA v6.3.4 & v7.1.2.
 
 ## Installation
 
 It is go gettable
 
-    $ go get github.com/andygrunwald/go-jira
+```bash
+go get github.com/andygrunwald/go-jira
+```
 
 For stable versions you can use one of our tags with [gopkg.in](http://labix.org/gopkg.in). E.g.
 
@@ -40,8 +43,10 @@ import (
 
 (optional) to run unit / example tests:
 
-    $ cd $GOPATH/src/github.com/andygrunwald/go-jira
-    $ go test -v ./...
+```bash
+cd $GOPATH/src/github.com/andygrunwald/go-jira
+go test -v ./...
+```
 
 ## API
 
@@ -239,9 +244,9 @@ If you are new to pull requests, checkout [Collaborating on projects using issue
 
 ### Dependency management
 
-`go-jira` uses `dep` for dependency management.  After cloning the repo, it's easy to make sure you have the correct dependencies by running `dep ensure`.
+`go-jira` uses `go modules` for dependency management.  After cloning the repo, it's easy to make sure you have the correct dependencies by running `go mod tidy`.
 
-For adding new dependencies, updating dependencies, and other operations, the [Daily Dep](https://golang.github.io/dep/docs/daily-dep.html) is a good place to start.
+For adding new dependencies, updating dependencies, and other operations, the [Daily workflow](https://github.com/golang/go/wiki/Modules#daily-workflow) is a good place to start.
 
 ### Sandbox environment for testing
 
