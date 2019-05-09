@@ -68,6 +68,9 @@ func (s *RoleService) Get(roleID int) (*Role, *Response, error) {
 		jerr := NewJiraError(resp, err)
 		return nil, resp, jerr
 	}
+	if role.Self == "" {
+		return nil, resp, fmt.Errorf("No role with ID %d found", roleID)
+	}
 
 	return role, resp, err
 }
