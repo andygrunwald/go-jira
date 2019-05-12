@@ -58,6 +58,22 @@ func testRequestURL(t *testing.T, r *http.Request, want string) {
 	}
 }
 
+func testRequestParams(t *testing.T, r *http.Request, want map[string]string) {
+	params := r.URL.Query()
+
+	if len(params) != len(want) {
+		t.Errorf("Request params: %d, want %d", len(params), len(want))
+	}
+
+	for key, val := range want {
+		if got := params.Get(key); val != got {
+			t.Errorf("Request params: %s, want %s", got, val)
+		}
+
+	}
+
+}
+
 func TestNewClient_WrongUrl(t *testing.T) {
 	c, err := NewClient(nil, "://issues.apache.org/jira/")
 
