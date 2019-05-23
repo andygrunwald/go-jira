@@ -1,4 +1,4 @@
-# [](https://github.com/andygrunwald/go-jira/compare/v1.9.0...v1.10.0) (2019-05-23)
+# [1.10.0](https://github.com/andygrunwald/go-jira/compare/v1.9.0...v1.10.0) (2019-05-23)
 
 
 ### Bug Fixes
