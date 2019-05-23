@@ -1,4 +1,18 @@
-# [](https://github.com/andygrunwald/go-jira/compare/v1.8.0...v1.9.0) (2019-05-19)
+# [](https://github.com/andygrunwald/go-jira/compare/v1.9.0...v1.10.0) (2019-05-23)
+
+
+### Bug Fixes
+
+* empty SearchOptions causing malformed request ([b3bf8c2](https://github.com/andygrunwald/go-jira/commit/b3bf8c2))
+
+
+### Features
+
+* added DeleteAttachment ([e93c0e1](https://github.com/andygrunwald/go-jira/commit/e93c0e1))
+
+
+
+# [1.9.0](https://github.com/andygrunwald/go-jira/compare/v1.8.0...v1.9.0) (2019-05-19)
 
 
 ### Features
