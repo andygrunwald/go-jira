@@ -15,15 +15,21 @@ import (
 	"github.com/pkg/errors"
 )
 
+// httpClient defines an interface for an http.Client implementation so that alternative
+// http Clients can be passed in for making requests
+type httpClient interface {
+	Do(request *http.Request) (response *http.Response, err error)
+}
+
 // A Client manages communication with the JIRA API.
 type Client struct {
 	// HTTP client used to communicate with the API.
-	client *http.Client
+	client httpClient
 
 	// Base URL for API requests.
 	baseURL *url.URL
 
-	// Session storage if the user authentificate with a Session cookie
+	// Session storage if the user authenticates with a Session cookie
 	session *Session
 
 	// Services used for talking to different parts of the JIRA API.
@@ -52,7 +58,7 @@ type Client struct {
 // As an alternative you can use Session Cookie based authentication provided by this package as well.
 // See https://docs.atlassian.com/jira/REST/latest/#authentication
 // baseURL is the HTTP endpoint of your JIRA instance and should always be specified with a trailing slash.
-func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
+func NewClient(httpClient httpClient, baseURL string) (*Client, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
