@@ -32,7 +32,7 @@ type IssueService struct {
 
 // UpdateQueryOptions specifies the optional parameters to the Edit issue
 type UpdateQueryOptions struct {
-	NotifyUsers            bool `url:"notifyUsers,omitempty"`
+	NotifyUsers            bool `url:"notifyUsers"`
 	OverrideScreenSecurity bool `url:"overrideScreenSecurity,omitempty"`
 	OverrideEditableFlag   bool `url:"overrideEditableFlag,omitempty"`
 }
