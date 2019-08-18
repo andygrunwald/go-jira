@@ -217,3 +217,35 @@ func TestBoardService_GetAllSprintsWithOptions(t *testing.T) {
 		t.Errorf("Expected 1 transition. Got %d", len(sprints.Values))
 	}
 }
+
+func TestBoardService_GetBoardConfigoration(t *testing.T) {
+	setup()
+	defer teardown()
+	testAPIEndpoint := "/rest/agile/1.0/board/35/configuration"
+
+	raw, err := ioutil.ReadFile("./mocks/board_configuration.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, testAPIEndpoint)
+		fmt.Fprint(w, string(raw))
+	})
+
+	boardConfiguration, _, err := testClient.Board.GetBoardConfiguration(35)
+
+	if err != nil {
+		t.Errorf("Got error: %v", err)
+	}
+
+	if boardConfiguration == nil {
+		t.Error("Expected boardConfiguration. Got nil.")
+	}
+
+	if len(boardConfiguration.ColumnConfig.Columns) != 6 {
+		t.Errorf("Expected 6 columns. go %d", len(boardConfiguration.ColumnConfig.Columns))
+	}
+
+}
