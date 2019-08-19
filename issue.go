@@ -268,18 +268,6 @@ type Component struct {
 	Name string `json:"name,omitempty" structs:"name,omitempty"`
 }
 
-// Status represents the current status of a JIRA issue.
-// Typical status are "Open", "In Progress", "Closed", ...
-// Status can be user defined in every JIRA instance.
-type Status struct {
-	Self           string         `json:"self" structs:"self"`
-	Description    string         `json:"description" structs:"description"`
-	IconURL        string         `json:"iconUrl" structs:"iconUrl"`
-	Name           string         `json:"name" structs:"name"`
-	ID             string         `json:"id" structs:"id"`
-	StatusCategory StatusCategory `json:"statusCategory" structs:"statusCategory"`
-}
-
 // Progress represents the progress of a JIRA issue.
 type Progress struct {
 	Progress int `json:"progress" structs:"progress"`
