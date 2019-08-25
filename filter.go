@@ -32,6 +32,12 @@ type Filter struct {
 	} `json:"subscriptions"`
 }
 
+// GetMyFiltersQueryOptions specifies the optional parameters for the Get My Filters method
+type GetMyFiltersQueryOptions struct {
+	IncludeFavourites bool   `url:"includeFavourites,omitempty"`
+	Expand            string `url:"expand,omitempty"`
+}
+
 // GetList retrieves all filters from Jira
 func (fs *FilterService) GetList() ([]*Filter, *Response, error) {
 
@@ -90,4 +96,27 @@ func (fs *FilterService) Get(filterID int) (*Filter, *Response, error) {
 	}
 
 	return filter, resp, err
+}
+
+// GetMyFilters retrieves the my Filters.
+//
+// https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-rest-api-3-filter-my-get
+func (fs *FilterService) GetMyFilters(opts *GetMyFiltersQueryOptions) ([]*Filter, *Response, error) {
+	apiEndpoint := "rest/api/3/filter/my"
+	url, err := addOptions(apiEndpoint, opts)
+	if err != nil {
+		return nil, nil, err
+	}
+	req, err := fs.client.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	filters := []*Filter{}
+	resp, err := fs.client.Do(req, &filters)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
+	}
+	return filters, resp, err
 }
