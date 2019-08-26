@@ -1,0 +1,120 @@
+{
+  "self": "b",
+  "maxResults": 100,
+  "startAt": 0,
+  "total": 2,
+  "isLast": true,
+  "values": [
+    {
+      "self": "http://test.jira.org/rest/api/3/filter/10000",
+      "id": "10000",
+      "name": "All Open Bugs",
+      "description": "Lists all open bugs",
+      "owner": {
+        "self": "http://test.jira.org/rest/api/3/user?accountId=99:27935d01-92a7-4687-8272-a9b8d3b2ae2e",
+        "key": "",
+        "accountId": "99:27935d01-92a7-4687-8272-a9b8d3b2ae2e",
+        "name": "",
+        "avatarUrls": {
+          "48x48": "http://test.jira.org/secure/useravatar?size=large&ownerId=mia",
+          "24x24": "http://test.jira.org/secure/useravatar?size=small&ownerId=mia",
+          "16x16": "http://test.jira.org/secure/useravatar?size=xsmall&ownerId=mia",
+          "32x32": "http://test.jira.org/secure/useravatar?size=medium&ownerId=mia"
+        },
+        "displayName": "Mia Krystof",
+        "active": false
+      },
+      "jql": "type = Bug and resolution is empty",
+      "viewUrl": "http://test.jira.org/issues/?filter=10000",
+      "searchUrl": "http://test.jira.org/rest/api/3/search?jql=type%20%3D%20Bug%20and%20resolutino%20is%20empty",
+      "favourite": true,
+      "favouritedCount": 0,
+      "sharePermissions": [],
+      "subscriptions": []
+    },
+    {
+      "self": "http://test.jira.org/rest/api/3/filter/10010",
+      "id": "10010",
+      "name": "My issues",
+      "description": "Issues assigned to me",
+      "owner": {
+        "self": "http://test.jira.org/rest/api/3/user?accountId=99:27935d01-92a7-4687-8272-a9b8d3b2ae2e",
+        "key": "",
+        "accountId": "99:27935d01-92a7-4687-8272-a9b8d3b2ae2e",
+        "name": "",
+        "avatarUrls": {
+          "48x48": "http://test.jira.org/secure/useravatar?size=large&ownerId=mia",
+          "24x24": "http://test.jira.org/secure/useravatar?size=small&ownerId=mia",
+          "16x16": "http://test.jira.org/secure/useravatar?size=xsmall&ownerId=mia",
+          "32x32": "http://test.jira.org/secure/useravatar?size=medium&ownerId=mia"
+        },
+        "displayName": "Mia Krystof",
+        "active": false
+      },
+      "jql": "assignee = currentUser() and resolution is empty",
+      "viewUrl": "http://test.jira.org/issues/?filter=10010",
+      "searchUrl": "http://test.jira.org/rest/api/3/search?jql=assignee+in+%28currentUser%28%29%29+and+resolution+is+empty",
+      "favourite": true,
+      "favouritedCount": 0,
+      "sharePermissions": [
+        {
+          "id": 10000,
+          "type": "global"
+        },
+        {
+          "id": 10010,
+          "type": "project",
+          "project": {
+            "self": "http://test.jira.org/rest/api/3/project/EX",
+            "id": "10000",
+            "key": "EX",
+            "name": "Example",
+            "avatarUrls": {
+              "48x48": "http://test.jira.org/secure/projectavatar?size=large&pid=10000",
+              "24x24": "http://test.jira.org/secure/projectavatar?size=small&pid=10000",
+              "16x16": "http://test.jira.org/secure/projectavatar?size=xsmall&pid=10000",
+              "32x32": "http://test.jira.org/secure/projectavatar?size=medium&pid=10000"
+            },
+            "projectCategory": {
+              "self": "http://test.jira.org/rest/api/3/projectCategory/10000",
+              "id": "10000",
+              "name": "FIRST",
+              "description": "First Project Category"
+            },
+            "simplified": false,
+            "style": "classic"
+          }
+        }
+      ],
+      "subscriptions": [
+        {
+          "id": 1,
+          "user": {
+            "self": "http://test.jira.org/rest/api/3/user?accountId=99:27935d01-92a7-4687-8272-a9b8d3b2ae2e",
+            "key": "",
+            "accountId": "99:27935d01-92a7-4687-8272-a9b8d3b2ae2e",
+            "name": "",
+            "emailAddress": "mia@example.com",
+            "avatarUrls": {
+              "48x48": "http://test.jira.org/secure/useravatar?size=large&ownerId=mia",
+              "24x24": "http://test.jira.org/secure/useravatar?size=small&ownerId=mia",
+              "16x16": "http://test.jira.org/secure/useravatar?size=xsmall&ownerId=mia",
+              "32x32": "http://test.jira.org/secure/useravatar?size=medium&ownerId=mia"
+            },
+            "displayName": "Mia Krystof",
+            "active": true,
+            "timeZone": "Australia/Sydney",
+            "groups": {
+              "size": 3,
+              "items": []
+            },
+            "applicationRoles": {
+              "size": 1,
+              "items": []
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
