@@ -100,3 +100,27 @@ func TestFilterService_GetMyFilters(t *testing.T) {
 		t.Errorf("Expected Filters, got nil")
 	}
 }
+
+func TestFilterService_Search(t *testing.T) {
+	setup()
+	defer teardown()
+	testAPIEndpoint := "/rest/api/3/filter/search"
+	raw, err := ioutil.ReadFile("./mocks/search_filters.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	testMux.HandleFunc(testAPIEndpoint, func(writer http.ResponseWriter, request *http.Request) {
+		testMethod(t, request, "GET")
+		testRequestURL(t, request, testAPIEndpoint)
+		fmt.Fprint(writer, string(raw))
+	})
+
+	opt := FilterSearchOptions{}
+	filters, _, err := testClient.Filter.Search(&opt)
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+	if filters == nil {
+		t.Errorf("Expected Filters, got nil")
+	}
+}
