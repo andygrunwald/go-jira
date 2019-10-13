@@ -30,3 +30,21 @@ func TestIssueLinkTypeService_GetList(t *testing.T) {
 		t.Errorf("Error give: %s", err)
 	}
 }
+
+func TestIssueLinkTypeService_Get(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issueLinkType/123", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, "/rest/api/2/issueLinkType/123")
+
+		fmt.Fprint(w, `{"id": "123","name": "Blocked","inward": "Blocked","outward": "Blocked",
+		"self": "https://www.example.com/jira/rest/api/2/issueLinkType/123"}`)
+	})
+
+	if linkType, _, err := testClient.IssueLinkType.Get("123"); err != nil {
+		t.Errorf("Error given: %s", err)
+	} else if linkType == nil {
+		t.Error("Expected linkType. LinkType is nil")
+	}
+}
