@@ -230,6 +230,8 @@ These services own a responsibility of the single endpoints / usecases of JIRA.
 
 ## Contribution
 
+We ❤️ PR's
+
 Contribution, in any kind of way, is highly welcome!
 It doesn't matter if you are not able to write code.
 Creating issues or holding talks and help other people to use [go-jira](https://github.com/andygrunwald/go-jira) is contribution, too!
@@ -253,10 +255,6 @@ For adding new dependencies, updating dependencies, and other operations, the [D
 Jira offers sandbox test environments at http://go.atlassian.com/cloud-dev.
 
 You can read more about them at https://developer.atlassian.com/blog/2016/04/cloud-ecosystem-dev-env/.
-
-## Contributing
-
-We ❤️ PR's
 
 ## Releasing
 
