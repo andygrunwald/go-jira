@@ -254,6 +254,26 @@ Jira offers sandbox test environments at http://go.atlassian.com/cloud-dev.
 
 You can read more about them at https://developer.atlassian.com/blog/2016/04/cloud-ecosystem-dev-env/.
 
+## Contributing
+
+We ❤️ PR's
+
+## Releasing
+
+Install `standard-version`
+```bash
+npm i -g standard-version
+```
+
+```bash
+standard-version
+git push --tags
+```
+
+Manually copy/paste text from changelog (for this new version) into the release on Github.com. E.g.
+
+[https://github.com/andygrunwald/go-jira/releases/edit/v1.11.0](https://github.com/andygrunwald/go-jira/releases/edit/v1.11.0)
+
 ## License
 
 This project is released under the terms of the [MIT license](http://en.wikipedia.org/wiki/MIT_License).
