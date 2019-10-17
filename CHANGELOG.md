@@ -22,8 +22,6 @@ All notable changes to this project will be documented in this file. See [standa
 * Fix fixversion description tag ([8383e2f](https://github.com/andygrunwald/go-jira/commit/8383e2f5f145d04f6bcdb47fb12a95b58bdcedfa))
 * Fix typos in filter_test.go ([e9a261c](https://github.com/andygrunwald/go-jira/commit/e9a261c52249073345e5895b22e2cf4d7286497a))
 
-### [1.11.5](https://github.com/andygrunwald/go-jira/compare/v1.11.4...v1.11.5) (2019-10-17)
-
 # [1.10.0](https://github.com/andygrunwald/go-jira/compare/v1.9.0...v1.10.0) (2019-05-23)
 
 
