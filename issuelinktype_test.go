@@ -48,3 +48,28 @@ func TestIssueLinkTypeService_Get(t *testing.T) {
 		t.Error("Expected linkType. LinkType is nil")
 	}
 }
+
+func TestIssueLinkTypeService_Create(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issueLinkType", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, "/rest/api/2/issueLinkType")
+
+		w.WriteHeader(http.StatusCreated)
+		fmt.Fprint(w, `{"id":"10021","name":"Problem/Incident","inward":"is caused by",
+		"outward":"causes","self":"https://www.example.com/jira/rest/api/2/issueLinkType/10021"}`)
+	})
+
+	lt := &IssueLinkType{
+		Name:    "Problem/Incident",
+		Inward:  "is caused by",
+		Outward: "causes",
+	}
+
+	if linkType, _, err := testClient.IssueLinkType.Create(lt); err != nil {
+		t.Errorf("Error given: %s", err)
+	} else if linkType == nil {
+		t.Error("Expected linkType. LinkType is nil")
+	}
+}
