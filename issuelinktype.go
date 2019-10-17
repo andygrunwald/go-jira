@@ -1,6 +1,10 @@
 package jira
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+)
 
 // IssueLinkTypeService handles issue link types for the JIRA instance / API.
 //
@@ -41,6 +45,36 @@ func (s *IssueLinkTypeService) Get(ID string) (*IssueLinkType, *Response, error)
 	resp, err := s.client.Do(req, linkType)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
+	}
+	return linkType, resp, nil
+}
+
+// Create creates an issue link type in JIRA.
+//
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-post
+func (s *IssueLinkTypeService) Create(linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
+	apiEndpoint := "/rest/api/2/issueLinkType"
+	req, err := s.client.NewRequest("POST", apiEndpoint, linkType)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	responseLinkType := new(IssueLinkType)
+	defer resp.Body.Close()
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		e := fmt.Errorf("Could not read the returned data")
+		return nil, resp, NewJiraError(resp, e)
+	}
+	err = json.Unmarshal(data, responseLinkType)
+	if err != nil {
+		e := fmt.Errorf("Could no unmarshal the data into struct")
+		return nil, resp, NewJiraError(resp, e)
 	}
 	return linkType, resp, nil
 }
