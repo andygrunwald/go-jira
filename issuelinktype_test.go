@@ -97,3 +97,22 @@ func TestIssueLinkTypeService_Update(t *testing.T) {
 		t.Error("Expected linkType. LinkType is nil")
 	}
 }
+
+func TestIssueLinkTypeService_Delete(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issueLinkType/100", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+		testRequestURL(t, r, "/rest/api/2/issueLinkType/100")
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	resp, err := testClient.IssueLinkType.Delete("100")
+	if resp.StatusCode != http.StatusNoContent {
+		t.Error("Expected issue not deleted.")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
