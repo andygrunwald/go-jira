@@ -73,3 +73,27 @@ func TestIssueLinkTypeService_Create(t *testing.T) {
 		t.Error("Expected linkType. LinkType is nil")
 	}
 }
+
+func TestIssueLinkTypeService_Update(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issueLinkType/100", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+		testRequestURL(t, r, "/rest/api/2/issueLinkType/100")
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	lt := &IssueLinkType{
+		ID:      "100",
+		Name:    "Problem/Incident",
+		Inward:  "is caused by",
+		Outward: "causes",
+	}
+
+	if linkType, _, err := testClient.IssueLinkType.Update(lt); err != nil {
+		t.Errorf("Error given: %s", err)
+	} else if linkType == nil {
+		t.Error("Expected linkType. LinkType is nil")
+	}
+}
