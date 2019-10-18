@@ -95,3 +95,17 @@ func (s *IssueLinkTypeService) Update(linkType *IssueLinkType) (*IssueLinkType, 
 	ret := *linkType
 	return &ret, resp, nil
 }
+
+// Delete deletes an issue link type based on provided ID.
+//
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-delete
+func (s *IssueLinkTypeService) Delete(ID string) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", ID)
+	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	return resp, err
+}
