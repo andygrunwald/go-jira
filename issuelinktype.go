@@ -78,3 +78,20 @@ func (s *IssueLinkTypeService) Create(linkType *IssueLinkType) (*IssueLinkType, 
 	}
 	return linkType, resp, nil
 }
+
+// Update updates an issue link type.  The issue is found by key.
+//
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-put
+func (s *IssueLinkTypeService) Update(linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", linkType.ID)
+	req, err := s.client.NewRequest("PUT", apiEndpoint, linkType)
+	if err != nil {
+		return nil, nil, err
+	}
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+	ret := *linkType
+	return &ret, resp, nil
+}
