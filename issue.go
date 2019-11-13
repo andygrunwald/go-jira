@@ -868,6 +868,33 @@ func (s *IssueService) AddWorklogRecord(issueID string, record *WorklogRecord, o
 	return responseRecord, resp, nil
 }
 
+// UpdateWorklogRecord updates a worklog record.
+//
+// https://docs.atlassian.com/software/jira/docs/api/REST/7.1.2/#api/2/issue-updateWorklog
+func (s *IssueService) UpdateWorklogRecord(issueID, worklogID string, record *WorklogRecord, options ...func(*http.Request) error) (*WorklogRecord, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog/%s", issueID, worklogID)
+	req, err := s.client.NewRequest("PUT", apiEndpoint, record)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	for _, option := range options {
+		err = option(req)
+		if err != nil {
+			return nil, nil, err
+		}
+	}
+
+	responseRecord := new(WorklogRecord)
+	resp, err := s.client.Do(req, responseRecord)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
+	}
+
+	return responseRecord, resp, nil
+}
+
 // AddLink adds a link between two issues.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issueLink
