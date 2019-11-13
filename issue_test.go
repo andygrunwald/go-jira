@@ -272,6 +272,28 @@ func TestIssueService_AddWorklogRecord(t *testing.T) {
 	}
 }
 
+func TestIssueService_UpdateWorklogRecord(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/10000/worklog/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+		testRequestURL(t, r, "/rest/api/2/issue/10000/worklog/1")
+
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, `{"self":"http://www.example.com/jira/rest/api/2/issue/10000/worklog/1","author":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"updateAuthor":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"comment":"I did some work here.","updated":"2018-02-14T22:14:46.003+0000","visibility":{"type":"group","value":"jira-developers"},"started":"2018-02-14T22:14:46.003+0000","timeSpent":"3h 20m","timeSpentSeconds":12000,"id":"100028","issueId":"10002"}`)
+	})
+	r := &WorklogRecord{
+		TimeSpent: "1h",
+	}
+	record, _, err := testClient.Issue.UpdateWorklogRecord("10000", "1", r)
+	if record == nil {
+		t.Error("Expected Record. Record is nil")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
 func TestIssueService_AddLink(t *testing.T) {
 	setup()
 	defer teardown()
