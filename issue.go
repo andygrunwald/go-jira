@@ -46,6 +46,7 @@ type Issue struct {
 	Fields         *IssueFields         `json:"fields,omitempty" structs:"fields,omitempty"`
 	RenderedFields *IssueRenderedFields `json:"renderedFields,omitempty" structs:"renderedFields,omitempty"`
 	Changelog      *Changelog           `json:"changelog,omitempty" structs:"changelog,omitempty"`
+	Transitions    []Transition         `json:"transitions,omitempty" structs:"transitions,omitempty"`
 }
 
 // ChangelogItems reflects one single changelog item of a history item

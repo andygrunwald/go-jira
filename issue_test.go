@@ -1564,6 +1564,37 @@ func TestIssueService_Get_Fields_Changelog(t *testing.T) {
 		t.Errorf("Expected CreatedTime func return %v time, %v got", tm, ct)
 	}
 }
+
+func TestIssueService_Get_Transitions(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/10002", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, "/rest/api/2/issue/10002")
+
+		fmt.Fprint(w, `{"expand":"renderedFields,names,schema,transitions,operations,editmeta,changelog,versionedRepresentations","id":"10002","self":"http://www.example.com/jira/api/latest/issue/10002","key":"EX-1","transitions":[{"id":"121","name":"Start","to":{"self":"http://www.example.com/rest/api/2/status/10444","description":"","iconUrl":"http://www.example.com/images/icons/statuses/inprogress.png","name":"In progress","id":"10444","statusCategory":{"self":"http://www.example.com/rest/api/2/statuscategory/4","id":4,"key":"indeterminate","colorName":"yellow","name":"In Progress"}}}]}`)
+	})
+
+	issue, _, _ := testClient.Issue.Get("10002", &GetQueryOptions{Expand: "transitions"})
+	if issue == nil {
+		t.Error("Expected issue. Issue is nil")
+	}
+
+	if len(issue.Transitions) != 1 {
+		t.Errorf("Expected one transition item, %v found", len(issue.Transitions))
+	}
+
+	transition := issue.Transitions[0]
+
+	if transition.Name != "Start" {
+		t.Errorf("Expected 'Start' transition to be available, got %q", transition.Name)
+	}
+
+	if transition.To.Name != "In progress" {
+		t.Errorf("Expected transition to lead to status 'In progress', got %q", transition.To.Name)
+	}
+}
+
 func TestIssueService_Get_Fields_AffectsVersions(t *testing.T) {
 	setup()
 	defer teardown()
