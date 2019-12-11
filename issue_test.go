@@ -1649,3 +1649,39 @@ func TestIssueService_Get_Fields_AffectsVersions(t *testing.T) {
 		t.Errorf("Error given: %s", err)
 	}
 }
+
+func TestIssueService_GetRemoteLinks(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testAPIEndpoint := "/rest/api/2/issue/123/remotelink"
+
+	raw, err := ioutil.ReadFile("./mocks/remote_links.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, testAPIEndpoint)
+		fmt.Fprint(w, string(raw))
+	})
+
+	remoteLinks, _, err := testClient.Issue.GetRemoteLinks("123")
+
+	if err != nil {
+		t.Errorf("Got error: %v", err)
+	}
+
+	if remoteLinks == nil {
+		t.Error("Expected remote links list. Got nil.")
+	}
+
+	if len(*remoteLinks) != 2 {
+		t.Errorf("Expected 2 remote links. Got %d", len(*remoteLinks))
+	}
+
+	if !(*remoteLinks)[0].Object.Status.Resolved {
+		t.Errorf("First remote link object status should be resolved")
+	}
+}
