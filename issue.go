@@ -1065,7 +1065,7 @@ func (s *IssueService) DoTransition(ticketID, transitionID string) (*Response, e
 // When performing the transition you can update or set other issue fields.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
-func (s *IssueService) DoTransitionWithPayload(ticketID, payload interface{}) (*Response, error) {
+func (s *IssueService) DoTransitionWithPayload(ticketID string, payload interface{}) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/transitions", ticketID)
 
 	req, err := s.client.NewRequest("POST", apiEndpoint, payload)
