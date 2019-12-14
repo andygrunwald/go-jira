@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.12.0](https://github.com/andygrunwald/go-jira/compare/v1.11.1...v1.12.0) (2019-12-14)
+
+
+### Features
+
+* Add IssueLinkTypeService with GetList and test ([261889a](https://github.com/andygrunwald/go-jira/commit/261889adc63623fcea0fa8cab0d5da26eec37e68))
+* add worklog update method ([9ff562a](https://github.com/andygrunwald/go-jira/commit/9ff562ae3ea037961f277be10412ad0a42ff8a6f))
+* Implement get remote links method ([1946cac](https://github.com/andygrunwald/go-jira/commit/1946cac0fe6ee91f784e3dda3c12f3f30f7115b8))
+* Implement issue link type DELETE ([e37cc6c](https://github.com/andygrunwald/go-jira/commit/e37cc6c6897830492c070667ab8b68bd85683fc3))
+* Implement issue link type GET ([57538b9](https://github.com/andygrunwald/go-jira/commit/57538b926c558e97940760a30bdc16cdd37ef4f1))
+* Implement issue link type POST ([75b9df8](https://github.com/andygrunwald/go-jira/commit/75b9df8b01557f01dc318d33c0bc2841a9c084eb))
+* Implement issue link type PUT ([48a15c1](https://github.com/andygrunwald/go-jira/commit/48a15c10443a3cff78f0fb2c8034dd772320e238))
+* provide access to issue transitions loaded from JIRA API ([7530b7c](https://github.com/andygrunwald/go-jira/commit/7530b7cd8266d82cdb4afe831518986772e742ba))
+
 ### [1.11.1](https://github.com/andygrunwald/go-jira/compare/v1.11.0...v1.11.1) (2019-10-17)
 
 ## [1.11.0](https://github.com/andygrunwald/go-jira/compare/v1.10.0...v1.11.0) (2019-10-17)
