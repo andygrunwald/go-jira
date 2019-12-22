@@ -712,6 +712,41 @@ func TestIssueService_GetCustomFields(t *testing.T) {
 	}
 }
 
+func TestIssueService_GetCustomFieldValues(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/createmeta", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		if r.URL.String() == "/rest/api/2/issue/createmeta?projectKeys=EX&issuetypeNames=Story&expand=projects.issuetypes.fields" {
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprintf(w, `{"expand":"projects","projects":[{"name":"EX","issuetypes":[{"name":"Story","fields":{"customfield_10002":{"name":"EX-2","key":"customfield_10002","allowedValues":[{"value":"Value1","id":"1","children":[{"value":"Value11","id":"11"},{"value":"Value12","id":"12"},{"value":"Value13","id":"13"}]},{"value":"Value2","id":"2"},{"value":"Value3","id":"3"}]}}}]}]}`)
+		}
+
+	})
+
+	customFieldValue, err := testClient.Issue.GetCustomFieldValues("EX", "Story", "customfield_10002")
+
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+
+	if customFieldValue == nil {
+		t.Errorf("Expected Customfield value")
+	}
+
+	if customFieldValue.Name != "EX-2" {
+		t.Errorf("Expected \"EX-2\" for custom field name")
+	}
+
+	if len(customFieldValue.AllowedValues) != 3 {
+		t.Errorf("Expected 3 as length for allowed values.")
+	}
+
+	if customFieldValue.AllowedValues[0].Children[0].Value != "Value11" {
+		t.Errorf("Expected \"Value11\" for children value.")
+	}
+}
+
 func TestIssueService_GetComplexCustomFields(t *testing.T) {
 	setup()
 	defer teardown()

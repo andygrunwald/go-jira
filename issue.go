@@ -585,6 +585,32 @@ type RemoteLinkStatus struct {
 	Icon     *RemoteLinkIcon
 }
 
+// CreateMetaResponse represents the response for the createmeta endpoint
+type CreateMetaResponse struct {
+	Projects []struct {
+		Name       string `json:"name"`
+		IssueTypes []struct {
+			Name        string                 `json:"name"`
+			Description string                 `json:"description"`
+			Fields      map[string]interface{} `json:"fields"`
+		} `json:"issuetypes"`
+	} `json:"projects"`
+}
+
+// CustomFieldValue is to decode the allowedvalues for a customfield
+type CustomFieldValue struct {
+	Key           string `json:"key"`
+	Name          string `json:"name"`
+	AllowedValues []struct {
+		Value    string `json:"value"`
+		ID       string `json:"id"`
+		Children []struct {
+			Value string `json:"value"`
+			ID    string `json:"id"`
+		} `json:"children"`
+	} `json:"allowedValues"`
+}
+
 // Get returns a full representation of the issue for the given issue key.
 // JIRA will attempt to identify the issue by the issueIdOrKey path parameter.
 // This can be an issue id, or an issue key.
@@ -1065,6 +1091,29 @@ func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *Response,
 		}
 	}
 	return cf, resp, nil
+}
+
+// GetCustomFieldValues gets a list of the allowed values for a specifc customfield.
+func (s *IssueService) GetCustomFieldValues(project, issueTypeName, customField string) (*CustomFieldValue, error) {
+	apiEndpoint := fmt.Sprintf("/rest/api/2/issue/createmeta?projectKeys=%s&issuetypeNames=%s&expand=projects.issuetypes.fields", project, issueTypeName)
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+	data := new(CreateMetaResponse)
+	resp, err := s.client.Do(req, data)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return nil, jerr
+	}
+	customFieldData, err := json.Marshal(data.Projects[0].IssueTypes[0].Fields[customField])
+	if err != nil {
+		return nil, err
+	}
+	var customFieldValue CustomFieldValue
+	json.Unmarshal(customFieldData, &customFieldValue)
+
+	return &customFieldValue, nil
 }
 
 // GetTransitions gets a list of the transitions possible for this issue by the current user,
