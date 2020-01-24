@@ -258,7 +258,7 @@ You can read more about them at https://developer.atlassian.com/blog/2016/04/clo
 
 ## Releasing
 
-Install `standard-version`
+Install [standard-version](https://github.com/conventional-changelog/standard-version)
 ```bash
 npm i -g standard-version
 ```
