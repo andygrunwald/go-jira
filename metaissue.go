@@ -14,6 +14,11 @@ type CreateMetaInfo struct {
 	Projects []*MetaProject `json:"projects,omitempty"`
 }
 
+// EditMetaInfo contains information about fields and their attributed to edit a ticket.
+type EditMetaInfo struct {
+	Fields tcontainer.MarshalMap `json:"fields,omitempty"`
+}
+
 // MetaProject is the meta information about a project returned from createmeta api
 type MetaProject struct {
 	Expand string `json:"expand,omitempty"`
@@ -64,6 +69,25 @@ func (s *IssueService) GetCreateMetaWithOptions(options *GetQueryOptions) (*Crea
 	}
 
 	meta := new(CreateMetaInfo)
+	resp, err := s.client.Do(req, meta)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return meta, resp, nil
+}
+
+// GetEditMeta makes the api call to get the edit meta information for an issue
+func (s *IssueService) GetEditMeta(issue *Issue) (*EditMetaInfo, *Response, error) {
+	apiEndpoint := fmt.Sprintf("/rest/api/2/issue/%s/editmeta", issue.Key)
+
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	meta := new(EditMetaInfo)
 	resp, err := s.client.Do(req, meta)
 
 	if err != nil {
