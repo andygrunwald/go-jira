@@ -1330,3 +1330,20 @@ func (s *IssueService) GetRemoteLinks(id string) (*[]RemoteLink, *Response, erro
 	}
 	return result, resp, err
 }
+
+// AddRemoteLink adds a remote issue link on the issue.
+//
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issue-issueIdOrKey-remotelink-post
+func (s *IssueService) AddRemoteLink(issueID string, link *RemoteLink) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/remotelink", issueID)
+	req, err := s.client.NewRequest("POST", apiEndpoint, link)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, link)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+	return resp, err
+}
