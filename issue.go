@@ -965,7 +965,7 @@ func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Res
 			u += fmt.Sprintf("&startAt=%d", options.StartAt)
 		}
 		if options.MaxResults != 0 {
-			u += fmt.Sprintf("&maxResults=%d", options.MaxResults)
+			u += fmt.Sprintf("&amp;maxResults=%d", options.MaxResults)
 		}
 		if options.Expand != "" {
 			u += fmt.Sprintf("&expand=%s", options.Expand)
@@ -1009,6 +1009,10 @@ func (s *IssueService) SearchPages(jql string, options *SearchOptions, f func(Is
 	issues, resp, err := s.Search(jql, options)
 	if err != nil {
 		return err
+	}
+
+	if len(issues) == 0 {
+		return nil
 	}
 
 	for {
