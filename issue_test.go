@@ -3,13 +3,14 @@ package jira
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/google/go-cmp/cmp"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 
 	"time"
 
@@ -596,7 +597,7 @@ func TestIssueService_Search(t *testing.T) {
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/search", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testRequestURL(t, r, "/rest/api/2/search?jql=something&startAt=1&maxResults=40&expand=foo")
+		testRequestURL(t, r, "/rest/api/2/search?jql=something&amp;startAt=1&amp;maxResults=40&amp;expand=foo")
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, `{"expand": "schema,names","startAt": 1,"maxResults": 40,"total": 6,"issues": [{"expand": "html","id": "10230","self": "http://kelpie9:8081/rest/api/2/issue/BULK-62","key": "BULK-62","fields": {"summary": "testing","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/5","id": "5","description": "The sub-task of the issue","iconUrl": "http://kelpie9:8081/images/icons/issue_subtask.gif","name": "Sub-task","subtask": true},"customfield_10071": null}},{"expand": "html","id": "10004","self": "http://kelpie9:8081/rest/api/2/issue/BULK-47","key": "BULK-47","fields": {"summary": "Cheese v1 2.0 issue","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/3","id": "3","description": "A task that needs to be done.","iconUrl": "http://kelpie9:8081/images/icons/task.gif","name": "Task","subtask": false}}}]}`)
 	})
@@ -657,15 +658,15 @@ func TestIssueService_SearchPages(t *testing.T) {
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/search", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		if r.URL.String() == "/rest/api/2/search?jql=something&startAt=1&maxResults=2&expand=foo&validateQuery=warn" {
+		if r.URL.String() == "/rest/api/2/search?jql=something&amp;startAt=1&amp;maxResults=2&amp;expand=foo&amp;validateQuery=warn" {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprint(w, `{"expand": "schema,names","startAt": 1,"maxResults": 2,"total": 6,"issues": [{"expand": "html","id": "10230","self": "http://kelpie9:8081/rest/api/2/issue/BULK-62","key": "BULK-62","fields": {"summary": "testing","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/5","id": "5","description": "The sub-task of the issue","iconUrl": "http://kelpie9:8081/images/icons/issue_subtask.gif","name": "Sub-task","subtask": true},"customfield_10071": null}},{"expand": "html","id": "10004","self": "http://kelpie9:8081/rest/api/2/issue/BULK-47","key": "BULK-47","fields": {"summary": "Cheese v1 2.0 issue","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/3","id": "3","description": "A task that needs to be done.","iconUrl": "http://kelpie9:8081/images/icons/task.gif","name": "Task","subtask": false}}}]}`)
 			return
-		} else if r.URL.String() == "/rest/api/2/search?jql=something&startAt=3&maxResults=2&expand=foo&validateQuery=warn" {
+		} else if r.URL.String() == "/rest/api/2/search?jql=something&amp;startAt=3&amp;maxResults=2&amp;expand=foo&amp;validateQuery=warn" {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprint(w, `{"expand": "schema,names","startAt": 3,"maxResults": 2,"total": 6,"issues": [{"expand": "html","id": "10230","self": "http://kelpie9:8081/rest/api/2/issue/BULK-62","key": "BULK-62","fields": {"summary": "testing","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/5","id": "5","description": "The sub-task of the issue","iconUrl": "http://kelpie9:8081/images/icons/issue_subtask.gif","name": "Sub-task","subtask": true},"customfield_10071": null}},{"expand": "html","id": "10004","self": "http://kelpie9:8081/rest/api/2/issue/BULK-47","key": "BULK-47","fields": {"summary": "Cheese v1 2.0 issue","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/3","id": "3","description": "A task that needs to be done.","iconUrl": "http://kelpie9:8081/images/icons/task.gif","name": "Task","subtask": false}}}]}`)
 			return
-		} else if r.URL.String() == "/rest/api/2/search?jql=something&startAt=5&maxResults=2&expand=foo&validateQuery=warn" {
+		} else if r.URL.String() == "/rest/api/2/search?jql=something&amp;startAt=5&amp;maxResults=2&amp;expand=foo&amp;validateQuery=warn" {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprint(w, `{"expand": "schema,names","startAt": 5,"maxResults": 2,"total": 6,"issues": [{"expand": "html","id": "10230","self": "http://kelpie9:8081/rest/api/2/issue/BULK-62","key": "BULK-62","fields": {"summary": "testing","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/5","id": "5","description": "The sub-task of the issue","iconUrl": "http://kelpie9:8081/images/icons/issue_subtask.gif","name": "Sub-task","subtask": true},"customfield_10071": null}}]}`)
 			return
