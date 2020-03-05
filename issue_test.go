@@ -691,6 +691,34 @@ func TestIssueService_SearchPages(t *testing.T) {
 	}
 }
 
+func TestIssueService_SearchPages_EmptyResult(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/search", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		if r.URL.String() == "/rest/api/2/search?jql=something&amp;startAt=1&amp;maxResults=50&amp;expand=foo&amp;validateQuery=warn" {
+			w.WriteHeader(http.StatusOK)
+			// This is what Jira outputs when the &maxResult= issue occurs. It used to cause SearchPages to go into an endless loop.
+			fmt.Fprint(w, `{"expand": "schema,names","startAt": 0,"maxResults": 0,"total": 6,"issues": []}`)
+			return
+		}
+
+		t.Errorf("Unexpected URL: %v", r.URL)
+	})
+
+	opt := &SearchOptions{StartAt: 1, MaxResults: 50, Expand: "foo", ValidateQuery: "warn"}
+	issues := make([]Issue, 0)
+	err := testClient.Issue.SearchPages("something", opt, func(issue Issue) error {
+		issues = append(issues, issue)
+		return nil
+	})
+
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+
+}
+
 func TestIssueService_GetCustomFields(t *testing.T) {
 	setup()
 	defer teardown()
