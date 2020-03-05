@@ -1010,6 +1010,10 @@ func (s *IssueService) SearchPages(jql string, options *SearchOptions, f func(Is
 		return err
 	}
 
+	if len(issues) == 0 {
+		return nil
+	}
+
 	for {
 		for _, issue := range issues {
 			err = f(issue)
