@@ -29,6 +29,29 @@ func TestUserService_Get_Success(t *testing.T) {
 	}
 }
 
+func TestUserService_GetByAccountID_Success(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/user", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, "/rest/api/2/user?accountId=000000000000000000000000")
+
+		fmt.Fprint(w, `{"self":"http://www.example.com/jira/rest/api/2/user?accountId=000000000000000000000000","accountId": "000000000000000000000000",
+        "name":"fred","emailAddress":"fred@example.com","avatarUrls":{"48x48":"http://www.example.com/jira/secure/useravatar?size=large&ownerId=fred",
+        "24x24":"http://www.example.com/jira/secure/useravatar?size=small&ownerId=fred","16x16":"http://www.example.com/jira/secure/useravatar?size=xsmall&ownerId=fred",
+        "32x32":"http://www.example.com/jira/secure/useravatar?size=medium&ownerId=fred"},"displayName":"Fred F. User","active":true,"timeZone":"Australia/Sydney","groups":{"size":3,"items":[
+        {"name":"jira-user","self":"http://www.example.com/jira/rest/api/2/group?groupname=jira-user"},{"name":"jira-admin",
+        "self":"http://www.example.com/jira/rest/api/2/group?groupname=jira-admin"},{"name":"important","self":"http://www.example.com/jira/rest/api/2/group?groupname=important"
+        }]},"applicationRoles":{"size":1,"items":[]},"expand":"groups,applicationRoles"}`)
+	})
+
+	if user, _, err := testClient.User.GetByAccountID("000000000000000000000000"); err != nil {
+		t.Errorf("Error given: %s", err)
+	} else if user == nil {
+		t.Error("Expected user. User is nil")
+	}
+}
+
 func TestUserService_Create(t *testing.T) {
 	setup()
 	defer teardown()
