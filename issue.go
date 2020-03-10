@@ -249,6 +249,7 @@ type Watches struct {
 type Watcher struct {
 	Self        string `json:"self,omitempty" structs:"self,omitempty"`
 	Name        string `json:"name,omitempty" structs:"name,omitempty"`
+	AccountID   string `json:"accountId,omitempty" structs:"accountId,omitempty"`
 	DisplayName string `json:"displayName,omitempty" structs:"displayName,omitempty"`
 	Active      bool   `json:"active,omitempty" structs:"active,omitempty"`
 }
@@ -1236,9 +1237,17 @@ func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
 	result := []User{}
 	user := new(User)
 	for _, watcher := range watches.Watchers {
-		user, resp, err = s.client.User.Get(watcher.Name)
-		if err != nil {
-			return nil, resp, NewJiraError(resp, err)
+		if watcher.AccountID != "" {
+			user, resp, err = s.client.User.GetByAccountID(watcher.AccountID)
+			if err != nil {
+				return nil, resp, NewJiraError(resp, err)
+			}
+		} else {
+			// try fallback deprecated method
+			user, resp, err = s.client.User.Get(watcher.Name)
+			if err != nil {
+				return nil, resp, NewJiraError(resp, err)
+			}
 		}
 		result = append(result, *user)
 	}
