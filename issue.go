@@ -961,19 +961,19 @@ func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Res
 	} else {
 		u = "rest/api/2/search?jql=" + url.QueryEscape(jql)
 		if options.StartAt != 0 {
-			u += fmt.Sprintf("&amp;startAt=%d", options.StartAt)
+			u += fmt.Sprintf("&startAt=%d", options.StartAt)
 		}
 		if options.MaxResults != 0 {
 			u += fmt.Sprintf("&amp;maxResults=%d", options.MaxResults)
 		}
 		if options.Expand != "" {
-			u += fmt.Sprintf("&amp;expand=%s", options.Expand)
+			u += fmt.Sprintf("&expand=%s", options.Expand)
 		}
 		if strings.Join(options.Fields, ",") != "" {
-			u += fmt.Sprintf("&amp;fields=%s", strings.Join(options.Fields, ","))
+			u += fmt.Sprintf("&fields=%s", strings.Join(options.Fields, ","))
 		}
 		if options.ValidateQuery != "" {
-			u += fmt.Sprintf("&amp;validateQuery=%s", options.ValidateQuery)
+			u += fmt.Sprintf("&validateQuery=%s", options.ValidateQuery)
 		}
 	}
 
