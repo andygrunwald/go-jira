@@ -1755,3 +1755,47 @@ func TestIssueService_GetRemoteLinks(t *testing.T) {
 		t.Errorf("First remote link object status should be resolved")
 	}
 }
+
+func TestIssueService_AddRemoteLink(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/10000/remotelink", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, "/rest/api/2/issue/10000/remotelink")
+
+		w.WriteHeader(http.StatusCreated)
+		fmt.Fprint(w, `{"id": 10000, "self": "https://your-domain.atlassian.net/rest/api/issue/MKY-1/remotelink/10000"}`)
+	})
+	r := &RemoteLink{
+		Application: &RemoteLinkApplication{
+			Name: "My Acme Tracker",
+			Type: "com.acme.tracker",
+		},
+		GlobalID:     "system=http://www.mycompany.com/support&id=1",
+		Relationship: "causes",
+		Object: &RemoteLinkObject{
+			Summary: "Customer support issue",
+			Icon: &RemoteLinkIcon{
+				Url16x16: "http://www.mycompany.com/support/ticket.png",
+				Title:    "Support Ticket",
+			},
+			Title: "TSTSUP-111",
+			URL:   "http://www.mycompany.com/support?id=1",
+			Status: &RemoteLinkStatus{
+				Icon: &RemoteLinkIcon{
+					Url16x16: "http://www.mycompany.com/support/resolved.png",
+					Title:    "Case Closed",
+					Link:     "http://www.mycompany.com/support?id=1&details=closed",
+				},
+				Resolved: true,
+			},
+		},
+	}
+	record, _, err := testClient.Issue.AddRemoteLink("10000", r)
+	if record == nil {
+		t.Error("Expected Record. Record is nil")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
