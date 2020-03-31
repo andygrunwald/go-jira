@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 
@@ -956,29 +957,35 @@ func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
 //
 // JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
 func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Response, error) {
-	var u string
-	if options == nil {
-		u = fmt.Sprintf("rest/api/2/search?jql=%s", url.QueryEscape(jql))
-	} else {
-		u = "rest/api/2/search?jql=" + url.QueryEscape(jql)
+	u := url.URL{
+		Path: "rest/api/2/search",
+	}
+	uv := url.Values{}
+	if jql != "" {
+		uv.Add("jql", url.QueryEscape(jql))
+	}
+
+	if options != nil {
 		if options.StartAt != 0 {
-			u += fmt.Sprintf("&startAt=%d", options.StartAt)
+			uv.Add("startAt", strconv.Itoa(options.StartAt))
 		}
 		if options.MaxResults != 0 {
-			u += fmt.Sprintf("&amp;maxResults=%d", options.MaxResults)
+			uv.Add("maxResults", strconv.Itoa(options.MaxResults))
 		}
 		if options.Expand != "" {
-			u += fmt.Sprintf("&expand=%s", options.Expand)
+			uv.Add("expand", options.Expand)
 		}
 		if strings.Join(options.Fields, ",") != "" {
-			u += fmt.Sprintf("&fields=%s", strings.Join(options.Fields, ","))
+			uv.Add("fields", strings.Join(options.Fields, ","))
 		}
 		if options.ValidateQuery != "" {
-			u += fmt.Sprintf("&validateQuery=%s", options.ValidateQuery)
+			uv.Add("validateQuery", options.ValidateQuery)
 		}
 	}
 
-	req, err := s.client.NewRequest("GET", u, nil)
+	u.RawQuery = uv.Encode()
+
+	req, err := s.client.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return []Issue{}, nil, err
 	}
