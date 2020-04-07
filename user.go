@@ -50,8 +50,30 @@ type userSearchF func(userSearch) userSearch
 // Get gets user info from JIRA
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUser
+//
+// /!\ Deprecation notice: https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/
+// By 29 April 2019, we will remove personal data from the API that is used to identify users,
+// such as username and userKey, and instead use the Atlassian account ID (accountId).
 func (s *UserService) Get(username string) (*User, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user?username=%s", username)
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	user := new(User)
+	resp, err := s.client.Do(req, user)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+	return user, resp, nil
+}
+
+// Get gets user info from JIRA
+//
+// JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUser
+func (s *UserService) GetByAccountID(accountID string) (*User, *Response, error) {
+	apiEndpoint := fmt.Sprintf("/rest/api/2/user?accountId=%s", accountID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err

@@ -249,6 +249,7 @@ type Watches struct {
 type Watcher struct {
 	Self        string `json:"self,omitempty" structs:"self,omitempty"`
 	Name        string `json:"name,omitempty" structs:"name,omitempty"`
+	AccountID   string `json:"accountId,omitempty" structs:"accountId,omitempty"`
 	DisplayName string `json:"displayName,omitempty" structs:"displayName,omitempty"`
 	Active      bool   `json:"active,omitempty" structs:"active,omitempty"`
 }
@@ -964,7 +965,7 @@ func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Res
 			u += fmt.Sprintf("&startAt=%d", options.StartAt)
 		}
 		if options.MaxResults != 0 {
-			u += fmt.Sprintf("&maxResults=%d", options.MaxResults)
+			u += fmt.Sprintf("&amp;maxResults=%d", options.MaxResults)
 		}
 		if options.Expand != "" {
 			u += fmt.Sprintf("&expand=%s", options.Expand)
@@ -1008,6 +1009,10 @@ func (s *IssueService) SearchPages(jql string, options *SearchOptions, f func(Is
 	issues, resp, err := s.Search(jql, options)
 	if err != nil {
 		return err
+	}
+
+	if len(issues) == 0 {
+		return nil
 	}
 
 	for {
@@ -1236,9 +1241,17 @@ func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
 	result := []User{}
 	user := new(User)
 	for _, watcher := range watches.Watchers {
-		user, resp, err = s.client.User.Get(watcher.Name)
-		if err != nil {
-			return nil, resp, NewJiraError(resp, err)
+		if watcher.AccountID != "" {
+			user, resp, err = s.client.User.GetByAccountID(watcher.AccountID)
+			if err != nil {
+				return nil, resp, NewJiraError(resp, err)
+			}
+		} else {
+			// try fallback deprecated method
+			user, resp, err = s.client.User.Get(watcher.Name)
+			if err != nil {
+				return nil, resp, NewJiraError(resp, err)
+			}
 		}
 		result = append(result, *user)
 	}
