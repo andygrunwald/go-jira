@@ -351,7 +351,7 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 // MarshalJSON will transform the time.Time into a JIRA time
 // during the creation of a JIRA request
 func (t Time) MarshalJSON() ([]byte, error) {
-	return []byte(time.Time(t).Format("\"2006-01-02T15:04:05.999-0700\"")), nil
+	return []byte(time.Time(t).Format("\"2006-01-02T15:04:05.000-0700\"")), nil
 }
 
 // UnmarshalJSON will transform the JIRA date into a time.Time
