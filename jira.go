@@ -119,7 +119,7 @@ func (c *Client) NewRawRequestWithContext(ctx context.Context, method, urlStr st
 
 	u := c.baseURL.ResolveReference(rel)
 
-	req, err := http.NewRequestWithContext(ctx, method, u.String(), body)
+	req, err := newRequestWithContext(ctx, method, u.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -171,7 +171,7 @@ func (c *Client) NewRequestWithContext(ctx context.Context, method, urlStr strin
 		}
 	}
 
-	req, err := http.NewRequestWithContext(ctx, method, u.String(), buf)
+	req, err := newRequestWithContext(ctx, method, u.String(), buf)
 	if err != nil {
 		return nil, err
 	}
@@ -236,7 +236,7 @@ func (c *Client) NewMultiPartRequestWithContext(ctx context.Context, method, url
 
 	u := c.baseURL.ResolveReference(rel)
 
-	req, err := http.NewRequestWithContext(ctx, method, u.String(), buf)
+	req, err := newRequestWithContext(ctx, method, u.String(), buf)
 	if err != nil {
 		return nil, err
 	}
