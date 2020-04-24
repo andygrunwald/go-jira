@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -48,15 +49,22 @@ type MetaIssueType struct {
 }
 
 // GetCreateMeta makes the api call to get the meta information required to create a ticket
+func (s *IssueService) GetCreateMetaWithContext(ctx context.Context, projectkeys string) (*CreateMetaInfo, *Response, error) {
+	return s.GetCreateMetaWithOptionsWithContext(ctx, &GetQueryOptions{ProjectKeys: projectkeys, Expand: "projects.issuetypes.fields"})
+}
+
+// GetCreateMeta wraps GetCreateMetaWithContext using the background context.
 func (s *IssueService) GetCreateMeta(projectkeys string) (*CreateMetaInfo, *Response, error) {
-	return s.GetCreateMetaWithOptions(&GetQueryOptions{ProjectKeys: projectkeys, Expand: "projects.issuetypes.fields"})
+	return s.GetCreateMetaWithContext(context.Background(), projectkeys)
 }
 
 // GetCreateMetaWithOptions makes the api call to get the meta information without requiring to have a projectKey
-func (s *IssueService) GetCreateMetaWithOptions(options *GetQueryOptions) (*CreateMetaInfo, *Response, error) {
+// todo: the name should be reconsidered, GetCreateMetaWithOptions could be replace with simply
+//  GetCreateMeta and chick if the options is nil will pass the default options
+func (s *IssueService) GetCreateMetaWithOptionsWithContext(ctx context.Context, options *GetQueryOptions) (*CreateMetaInfo, *Response, error) {
 	apiEndpoint := "rest/api/2/issue/createmeta"
 
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -78,11 +86,16 @@ func (s *IssueService) GetCreateMetaWithOptions(options *GetQueryOptions) (*Crea
 	return meta, resp, nil
 }
 
-// GetEditMeta makes the api call to get the edit meta information for an issue
-func (s *IssueService) GetEditMeta(issue *Issue) (*EditMetaInfo, *Response, error) {
+// GetCreateMetaWithOptions wraps GetCreateMetaWithOptionsWithContext using the background context.
+func (s *IssueService) GetCreateMetaWithOptions(options *GetQueryOptions) (*CreateMetaInfo, *Response, error) {
+	return s.GetCreateMetaWithOptionsWithContext(context.Background(), options)
+}
+
+// GetEditMetaWithContext makes the api call to get the edit meta information for an issue
+func (s *IssueService) GetEditMetaWithContext(ctx context.Context, issue *Issue) (*EditMetaInfo, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/issue/%s/editmeta", issue.Key)
 
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -95,6 +108,11 @@ func (s *IssueService) GetEditMeta(issue *Issue) (*EditMetaInfo, *Response, erro
 	}
 
 	return meta, resp, nil
+}
+
+// GetEditMeta wraps GetEditMetaWithContext using the background context.
+func (s *IssueService) GetEditMeta(issue *Issue) (*EditMetaInfo, *Response, error) {
+	return s.GetEditMetaWithContext(context.Background(), issue)
 }
 
 // GetProjectWithName returns a project with "name" from the meta information received. If not found, this returns nil.

@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"time"
@@ -127,13 +128,13 @@ type BoardConfigurationColumnStatus struct {
 // GetAllBoards will returns all boards. This only includes boards that the user has permission to view.
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-getAllBoards
-func (s *BoardService) GetAllBoards(opt *BoardListOptions) (*BoardsList, *Response, error) {
+func (s *BoardService) GetAllBoardsWithContext(ctx context.Context, opt *BoardListOptions) (*BoardsList, *Response, error) {
 	apiEndpoint := "rest/agile/1.0/board"
 	url, err := addOptions(apiEndpoint, opt)
 	if err != nil {
 		return nil, nil, err
 	}
-	req, err := s.client.NewRequest("GET", url, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -148,13 +149,18 @@ func (s *BoardService) GetAllBoards(opt *BoardListOptions) (*BoardsList, *Respon
 	return boards, resp, err
 }
 
+// GetAllBoards wraps GetAllBoardsWithContext using the background context.
+func (s *BoardService) GetAllBoards(opt *BoardListOptions) (*BoardsList, *Response, error) {
+	return s.GetAllBoardsWithContext(context.Background(), opt)
+}
+
 // GetBoard will returns the board for the given boardID.
 // This board will only be returned if the user has permission to view it.
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-getBoard
-func (s *BoardService) GetBoard(boardID int) (*Board, *Response, error) {
+func (s *BoardService) GetBoardWithContext(ctx context.Context, boardID int) (*Board, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%v", boardID)
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -169,6 +175,11 @@ func (s *BoardService) GetBoard(boardID int) (*Board, *Response, error) {
 	return board, resp, nil
 }
 
+// GetBoard wraps GetBoardWithContext using the background context.
+func (s *BoardService) GetBoard(boardID int) (*Board, *Response, error) {
+	return s.GetBoardWithContext(context.Background(), boardID)
+}
+
 // CreateBoard creates a new board. Board name, type and filter Id is required.
 // name - Must be less than 255 characters.
 // type - Valid values: scrum, kanban
@@ -177,9 +188,9 @@ func (s *BoardService) GetBoard(boardID int) (*Board, *Response, error) {
 // board will be created instead (remember that board sharing depends on the filter sharing).
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-createBoard
-func (s *BoardService) CreateBoard(board *Board) (*Board, *Response, error) {
+func (s *BoardService) CreateBoardWithContext(ctx context.Context, board *Board) (*Board, *Response, error) {
 	apiEndpoint := "rest/agile/1.0/board"
-	req, err := s.client.NewRequest("POST", apiEndpoint, board)
+	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, board)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -194,12 +205,17 @@ func (s *BoardService) CreateBoard(board *Board) (*Board, *Response, error) {
 	return responseBoard, resp, nil
 }
 
+// CreateBoard wraps CreateBoardWithContext using the background context.
+func (s *BoardService) CreateBoard(board *Board) (*Board, *Response, error) {
+	return s.CreateBoardWithContext(context.Background(), board)
+}
+
 // DeleteBoard will delete an agile board.
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-deleteBoard
-func (s *BoardService) DeleteBoard(boardID int) (*Board, *Response, error) {
+func (s *BoardService) DeleteBoardWithContext(ctx context.Context, boardID int) (*Board, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%v", boardID)
-	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -211,11 +227,16 @@ func (s *BoardService) DeleteBoard(boardID int) (*Board, *Response, error) {
 	return nil, resp, err
 }
 
+// DeleteBoard wraps DeleteBoardWithContext using the background context.
+func (s *BoardService) DeleteBoard(boardID int) (*Board, *Response, error) {
+	return s.DeleteBoardWithContext(context.Background(), boardID)
+}
+
 // GetAllSprints will return all sprints from a board, for a given board Id.
 // This only includes sprints that the user has permission to view.
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board/{boardId}/sprint
-func (s *BoardService) GetAllSprints(boardID string) ([]Sprint, *Response, error) {
+func (s *BoardService) GetAllSprintsWithContext(ctx context.Context, boardID string) ([]Sprint, *Response, error) {
 	id, err := strconv.Atoi(boardID)
 	if err != nil {
 		return nil, nil, err
@@ -229,17 +250,22 @@ func (s *BoardService) GetAllSprints(boardID string) ([]Sprint, *Response, error
 	return result.Values, response, nil
 }
 
+// GetAllSprints wraps GetAllSprintsWithContext using the background context.
+func (s *BoardService) GetAllSprints(boardID string) ([]Sprint, *Response, error) {
+	return s.GetAllSprintsWithContext(context.Background(), boardID)
+}
+
 // GetAllSprintsWithOptions will return sprints from a board, for a given board Id and filtering options
 // This only includes sprints that the user has permission to view.
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board/{boardId}/sprint
-func (s *BoardService) GetAllSprintsWithOptions(boardID int, options *GetAllSprintsOptions) (*SprintsList, *Response, error) {
+func (s *BoardService) GetAllSprintsWithOptionsWithContext(ctx context.Context, boardID int, options *GetAllSprintsOptions) (*SprintsList, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%d/sprint", boardID)
 	url, err := addOptions(apiEndpoint, options)
 	if err != nil {
 		return nil, nil, err
 	}
-	req, err := s.client.NewRequest("GET", url, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -253,12 +279,17 @@ func (s *BoardService) GetAllSprintsWithOptions(boardID int, options *GetAllSpri
 	return result, resp, err
 }
 
+// GetAllSprintsWithOptions wraps GetAllSprintsWithOptionsWithContext using the background context.
+func (s *BoardService) GetAllSprintsWithOptions(boardID int, options *GetAllSprintsOptions) (*SprintsList, *Response, error) {
+	return s.GetAllSprintsWithOptionsWithContext(context.Background(), boardID, options)
+}
+
 // GetBoardConfiguration will return a board configuration for a given board Id
 // Jira API docs:https://developer.atlassian.com/cloud/jira/software/rest/#api-rest-agile-1-0-board-boardId-configuration-get
-func (s *BoardService) GetBoardConfiguration(boardID int) (*BoardConfiguration, *Response, error) {
+func (s *BoardService) GetBoardConfigurationWithContext(ctx context.Context, boardID int) (*BoardConfiguration, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%d/configuration", boardID)
 
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -272,4 +303,9 @@ func (s *BoardService) GetBoardConfiguration(boardID int) (*BoardConfiguration, 
 
 	return result, resp, err
 
+}
+
+// GetBoardConfiguration wraps GetBoardConfigurationWithContext using the background context.
+func (s *BoardService) GetBoardConfiguration(boardID int) (*BoardConfiguration, *Response, error) {
+	return s.GetBoardConfigurationWithContext(context.Background(), boardID)
 }

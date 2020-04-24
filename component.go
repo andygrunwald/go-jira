@@ -1,5 +1,7 @@
 package jira
 
+import "context"
+
 // ComponentService handles components for the JIRA instance / API.
 //
 // JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/7.10.1/#api/2/component
@@ -20,9 +22,9 @@ type CreateComponentOptions struct {
 }
 
 // Create creates a new JIRA component based on the given options.
-func (s *ComponentService) Create(options *CreateComponentOptions) (*ProjectComponent, *Response, error) {
+func (s *ComponentService) CreateWithContext(ctx context.Context, options *CreateComponentOptions) (*ProjectComponent, *Response, error) {
 	apiEndpoint := "rest/api/2/component"
-	req, err := s.client.NewRequest("POST", apiEndpoint, options)
+	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -35,4 +37,9 @@ func (s *ComponentService) Create(options *CreateComponentOptions) (*ProjectComp
 	}
 
 	return component, resp, nil
+}
+
+// Create wraps CreateWithContext using the background context.
+func (s *ComponentService) Create(options *CreateComponentOptions) (*ProjectComponent, *Response, error) {
+	return s.CreateWithContext(context.Background(), options)
 }

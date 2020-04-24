@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 )
@@ -65,9 +66,9 @@ type GroupSearchOptions struct {
 // JIRA API docs: https://docs.atlassian.com/jira/REST/server/#api/2/group-getUsersFromGroup
 //
 // WARNING: This API only returns the first page of group members
-func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
+func (s *GroupService) GetWithContext(ctx context.Context, name string) ([]GroupMember, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/member?groupname=%s", url.QueryEscape(name))
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -81,12 +82,17 @@ func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
 	return group.Members, resp, nil
 }
 
+// Get wraps GetWithContext using the background context.
+func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
+	return s.GetWithContext(context.Background(), name)
+}
+
 // GetWithOptions returns a paginated list of members of the specified group and its subgroups.
 // Users in the page are ordered by user names.
 // User of this resource is required to have sysadmin or admin permissions.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/server/#api/2/group-getUsersFromGroup
-func (s *GroupService) GetWithOptions(name string, options *GroupSearchOptions) ([]GroupMember, *Response, error) {
+func (s *GroupService) GetWithOptionsWithContext(ctx context.Context, name string, options *GroupSearchOptions) ([]GroupMember, *Response, error) {
 	var apiEndpoint string
 	if options == nil {
 		apiEndpoint = fmt.Sprintf("/rest/api/2/group/member?groupname=%s", url.QueryEscape(name))
@@ -99,7 +105,7 @@ func (s *GroupService) GetWithOptions(name string, options *GroupSearchOptions) 
 			options.IncludeInactiveUsers,
 		)
 	}
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -112,16 +118,21 @@ func (s *GroupService) GetWithOptions(name string, options *GroupSearchOptions) 
 	return group.Members, resp, nil
 }
 
+// GetWithOptions wraps GetWithOptionsWithContext using the background context.
+func (s *GroupService) GetWithOptions(name string, options *GroupSearchOptions) ([]GroupMember, *Response, error) {
+	return s.GetWithOptionsWithContext(context.Background(), name, options)
+}
+
 // Add adds user to group
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-addUserToGroup
-func (s *GroupService) Add(groupname string, username string) (*Group, *Response, error) {
+func (s *GroupService) AddWithContext(ctx context.Context, groupname string, username string) (*Group, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s", groupname)
 	var user struct {
 		Name string `json:"name"`
 	}
 	user.Name = username
-	req, err := s.client.NewRequest("POST", apiEndpoint, &user)
+	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, &user)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -136,12 +147,17 @@ func (s *GroupService) Add(groupname string, username string) (*Group, *Response
 	return responseGroup, resp, nil
 }
 
+// Add wraps AddWithContext using the background context.
+func (s *GroupService) Add(groupname string, username string) (*Group, *Response, error) {
+	return s.AddWithContext(context.Background(), groupname, username)
+}
+
 // Remove removes user from group
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-removeUserFromGroup
-func (s *GroupService) Remove(groupname string, username string) (*Response, error) {
+func (s *GroupService) RemoveWithContext(ctx context.Context, groupname string, username string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s&username=%s", groupname, username)
-	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndpoint, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -153,4 +169,9 @@ func (s *GroupService) Remove(groupname string, username string) (*Response, err
 	}
 
 	return resp, nil
+}
+
+// Remove wraps RemoveWithContext using the background context.
+func (s *GroupService) Remove(groupname string, username string) (*Response, error) {
+	return s.RemoveWithContext(context.Background(), groupname, username)
 }

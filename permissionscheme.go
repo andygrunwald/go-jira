@@ -1,6 +1,9 @@
 package jira
 
-import "fmt"
+import (
+	"context"
+	"fmt"
+)
 
 // PermissionSchemeService handles permissionschemes for the JIRA instance / API.
 //
@@ -28,9 +31,9 @@ type Holder struct {
 // GetList returns a list of all permission schemes
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-permissionscheme-get
-func (s *PermissionSchemeService) GetList() (*PermissionSchemes, *Response, error) {
+func (s *PermissionSchemeService) GetListWithContext(ctx context.Context) (*PermissionSchemes, *Response, error) {
 	apiEndpoint := "/rest/api/3/permissionscheme"
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -45,12 +48,17 @@ func (s *PermissionSchemeService) GetList() (*PermissionSchemes, *Response, erro
 	return pss, resp, nil
 }
 
+// GetList wraps GetListWithContext using the background context.
+func (s *PermissionSchemeService) GetList() (*PermissionSchemes, *Response, error) {
+	return s.GetListWithContext(context.Background())
+}
+
 // Get returns a full representation of the permission scheme for the schemeID
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-permissionscheme-schemeId-get
-func (s *PermissionSchemeService) Get(schemeID int) (*PermissionScheme, *Response, error) {
+func (s *PermissionSchemeService) GetWithContext(ctx context.Context, schemeID int) (*PermissionScheme, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/3/permissionscheme/%d", schemeID)
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -66,4 +74,9 @@ func (s *PermissionSchemeService) Get(schemeID int) (*PermissionScheme, *Respons
 	}
 
 	return ps, resp, nil
+}
+
+// Get wraps GetWithContext using the background context.
+func (s *PermissionSchemeService) Get(schemeID int) (*PermissionScheme, *Response, error) {
+	return s.GetWithContext(context.Background(), schemeID)
 }
