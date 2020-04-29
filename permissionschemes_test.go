@@ -19,7 +19,7 @@ func TestPermissionSchemeService_GetList(t *testing.T) {
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		testRequestURL(t, r, testAPIEndpoint)
-		fmt.Fprintf(w, string(raw))
+		fmt.Fprint(w, string(raw))
 	})
 
 	permissionScheme, _, err := testClient.PermissionScheme.GetList()
@@ -46,7 +46,7 @@ func TestPermissionSchemeService_GetList_NoList(t *testing.T) {
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		testRequestURL(t, r, testAPIEndpoint)
-		fmt.Fprintf(w, string(raw))
+		fmt.Fprint(w, string(raw))
 	})
 
 	permissionScheme, _, err := testClient.PermissionScheme.GetList()
@@ -69,7 +69,7 @@ func TestPermissionSchemeService_Get(t *testing.T) {
 	testMux.HandleFunc(testAPIEdpoint, func(writer http.ResponseWriter, request *http.Request) {
 		testMethod(t, request, "GET")
 		testRequestURL(t, request, testAPIEdpoint)
-		fmt.Fprintf(writer, string(raw))
+		fmt.Fprint(writer, string(raw))
 	})
 
 	permissionScheme, _, err := testClient.PermissionScheme.Get(10100)
@@ -92,7 +92,7 @@ func TestPermissionSchemeService_Get_NoScheme(t *testing.T) {
 	testMux.HandleFunc(testAPIEdpoint, func(writer http.ResponseWriter, request *http.Request) {
 		testMethod(t, request, "GET")
 		testRequestURL(t, request, testAPIEdpoint)
-		fmt.Fprintf(writer, string(raw))
+		fmt.Fprint(writer, string(raw))
 	})
 
 	permissionScheme, _, err := testClient.PermissionScheme.Get(99999)

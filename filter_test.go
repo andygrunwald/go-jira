@@ -41,7 +41,7 @@ func TestFilterService_Get(t *testing.T) {
 	testMux.HandleFunc(testAPIEndpoint, func(writer http.ResponseWriter, request *http.Request) {
 		testMethod(t, request, "GET")
 		testRequestURL(t, request, testAPIEndpoint)
-		fmt.Fprintf(writer, string(raw))
+		fmt.Fprint(writer, string(raw))
 	})
 
 	filter, _, err := testClient.Filter.Get(10000)
