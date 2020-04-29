@@ -285,7 +285,7 @@ func CheckResponse(r *http.Response) error {
 		return nil
 	}
 
-	err := fmt.Errorf("Request failed. Please analyze the request body for more details. Status code: %d", r.StatusCode)
+	err := fmt.Errorf("request failed. Please analyze the request body for more details. Status code: %d", r.StatusCode)
 	return err
 }
 

@@ -175,7 +175,7 @@ func (t *MetaIssueType) CheckCompleteAndAvailable(config map[string]string) (boo
 			for name := range mandatory {
 				requiredFields = append(requiredFields, name)
 			}
-			return false, fmt.Errorf("Required field not found in provided jira.fields. Required are: %#v", requiredFields)
+			return false, fmt.Errorf("required field not found in provided jira.fields. Required are: %#v", requiredFields)
 		}
 	}
 
@@ -186,7 +186,7 @@ func (t *MetaIssueType) CheckCompleteAndAvailable(config map[string]string) (boo
 			for name := range all {
 				availableFields = append(availableFields, name)
 			}
-			return false, fmt.Errorf("Fields in jira.fields are not available in jira. Available are: %#v", availableFields)
+			return false, fmt.Errorf("fields in jira.fields are not available in jira. Available are: %#v", availableFields)
 		}
 	}
 

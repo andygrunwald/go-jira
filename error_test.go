@@ -67,7 +67,7 @@ func TestError_Unauthorized_NilError(t *testing.T) {
 	defer teardown()
 
 	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprint(w, `User is not authorized`)
 	})
 
@@ -76,9 +76,9 @@ func TestError_Unauthorized_NilError(t *testing.T) {
 
 	err := NewJiraError(resp, nil)
 	msg := err.Error()
-    if !strings.Contains(msg, "401 Unauthorized:User is not authorized") {
+	if !strings.Contains(msg, "401 Unauthorized:User is not authorized") {
 		t.Errorf("Expected Unauthorized HTTP status: Got\n%s\n", msg)
-    }
+	}
 }
 
 func TestError_BadJSON(t *testing.T) {
@@ -96,8 +96,8 @@ func TestError_BadJSON(t *testing.T) {
 	err := NewJiraError(resp, errors.New("Original http error"))
 	msg := err.Error()
 
-	if !strings.Contains(msg, "Could not parse JSON") {
-		t.Errorf("Expected the 'Could not parse JSON' error message: Got\n%s\n", msg)
+	if !strings.Contains(msg, "could not parse JSON") {
+		t.Errorf("Expected the 'could not parse JSON' error message: Got\n%s\n", msg)
 	}
 }
 
