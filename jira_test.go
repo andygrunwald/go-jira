@@ -87,12 +87,12 @@ func TestNewClient_WithHttpClient(t *testing.T) {
 	httpClient := http.DefaultClient
 	httpClient.Timeout = 10 * time.Minute
 	c, err := NewClient(httpClient, testJIRAInstanceURL)
-
 	if err != nil {
 		t.Errorf("Got an error: %s", err)
 	}
 	if c == nil {
 		t.Error("Expected a client. Got none")
+		return
 	}
 	if !reflect.DeepEqual(c.client, httpClient) {
 		t.Errorf("HTTP clients are not equal. Injected %+v, got %+v", httpClient, c.client)

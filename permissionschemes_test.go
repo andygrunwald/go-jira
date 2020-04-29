@@ -23,14 +23,15 @@ func TestPermissionSchemeService_GetList(t *testing.T) {
 	})
 
 	permissionScheme, _, err := testClient.PermissionScheme.GetList()
+	if err != nil {
+		t.Errorf("Error given: %v", err)
+	}
 	if permissionScheme == nil {
 		t.Error("Expected permissionScheme list. PermissionScheme list is nil")
+		return
 	}
 	if len(permissionScheme.PermissionSchemes) != 2 {
 		t.Errorf("Expected %d permissionSchemes but got %d", 2, len(permissionScheme.PermissionSchemes))
-	}
-	if err != nil {
-		t.Errorf("Error given: %v", err)
 	}
 }
 
