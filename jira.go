@@ -324,7 +324,6 @@ func (r *Response) populatePageValues(v interface{}) {
 		r.MaxResults = value.MaxResults
 		r.Total = value.Total
 	}
-	return
 }
 
 // BasicAuthTransport is an http.RoundTripper that authenticates all requests
