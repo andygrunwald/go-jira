@@ -408,6 +408,9 @@ func TestIssueService_DownloadAttachment(t *testing.T) {
 	})
 
 	resp, err := testClient.Issue.DownloadAttachment("10000")
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
 	if resp == nil {
 		t.Error("Expected response. Response is nil")
 	}
@@ -423,9 +426,6 @@ func TestIssueService_DownloadAttachment(t *testing.T) {
 
 	if resp.StatusCode != 200 {
 		t.Errorf("Expected Status code 200. Given %d", resp.StatusCode)
-	}
-	if err != nil {
-		t.Errorf("Error given: %s", err)
 	}
 }
 
