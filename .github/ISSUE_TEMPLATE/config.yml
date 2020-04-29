@@ -1,0 +1,4 @@
+contact_links:
+  - name: Report a bug/feature request for the Jira Command Line Client
+    url: https://github.com/go-jira/jira/issues
+    about: This is the issue tracker for the Jira command-line client in Go. If you are using this, please report issues there.
