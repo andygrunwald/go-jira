@@ -1239,8 +1239,8 @@ func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
 	}
 
 	result := []User{}
-	user := new(User)
 	for _, watcher := range watches.Watchers {
+		var user *User
 		if watcher.AccountID != "" {
 			user, resp, err = s.client.User.GetByAccountID(watcher.AccountID)
 			if err != nil {
