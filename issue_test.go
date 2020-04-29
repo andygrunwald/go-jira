@@ -1018,7 +1018,7 @@ func TestIssueFields_MarshalJSON_Success(t *testing.T) {
 			Key:  "EX",
 		},
 		AffectsVersions: []*AffectsVersion{
-			&AffectsVersion{
+			{
 				ID:          "10705",
 				Name:        "2.1.0-rc3",
 				Self:        "http://www.example.com/jira/rest/api/2/version/10705",
