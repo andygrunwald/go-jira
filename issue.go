@@ -938,7 +938,7 @@ func (s *IssueService) UpdateWorklogRecord(issueID, worklogID string, record *Wo
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issueLink
 func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issueLink")
+	apiEndpoint := "rest/api/2/issueLink"
 	req, err := s.client.NewRequest("POST", apiEndpoint, issueLink)
 	if err != nil {
 		return nil, err
