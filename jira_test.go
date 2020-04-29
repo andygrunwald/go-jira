@@ -28,8 +28,6 @@ var (
 	testServer *httptest.Server
 )
 
-type testValues map[string]string
-
 // setup sets up a test HTTP server along with a jira.Client that is configured to talk to that test server.
 // Tests should register handlers on mux which provide mock responses for the API method being tested.
 func setup() {
@@ -377,10 +375,6 @@ func TestClient_Do(t *testing.T) {
 func TestClient_Do_HTTPResponse(t *testing.T) {
 	setup()
 	defer teardown()
-
-	type foo struct {
-		A string
-	}
 
 	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if m := "GET"; m != r.Method {
