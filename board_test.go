@@ -204,13 +204,13 @@ func TestBoardService_GetAllSprintsWithOptions(t *testing.T) {
 	})
 
 	sprints, _, err := testClient.Board.GetAllSprintsWithOptions(123, &GetAllSprintsOptions{State: "active,future"})
-
 	if err != nil {
 		t.Errorf("Got error: %v", err)
 	}
 
 	if sprints == nil {
 		t.Error("Expected sprint list. Got nil.")
+		return
 	}
 
 	if len(sprints.Values) != 1 {
@@ -235,13 +235,13 @@ func TestBoardService_GetBoardConfigoration(t *testing.T) {
 	})
 
 	boardConfiguration, _, err := testClient.Board.GetBoardConfiguration(35)
-
 	if err != nil {
 		t.Errorf("Got error: %v", err)
 	}
 
 	if boardConfiguration == nil {
 		t.Error("Expected boardConfiguration. Got nil.")
+		return
 	}
 
 	if len(boardConfiguration.ColumnConfig.Columns) != 6 {

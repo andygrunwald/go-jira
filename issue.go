@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 
@@ -192,7 +193,7 @@ func (i *IssueFields) UnmarshalJSON(data []byte) error {
 		options := strings.Split(tagDetail, ",")
 
 		if len(options) == 0 {
-			return fmt.Errorf("No tags options found for %s", field.Name)
+			return fmt.Errorf("no tags options found for %s", field.Name)
 		}
 		// the first one is the json tag
 		key := options[0]
@@ -757,11 +758,11 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, resp, fmt.Errorf("Could not read the returned data")
+		return nil, resp, fmt.Errorf("could not read the returned data")
 	}
 	err = json.Unmarshal(data, responseIssue)
 	if err != nil {
-		return nil, resp, fmt.Errorf("Could not unmarshall the data into struct")
+		return nil, resp, fmt.Errorf("could not unmarshall the data into struct")
 	}
 	return responseIssue, resp, nil
 }
@@ -939,7 +940,7 @@ func (s *IssueService) UpdateWorklogRecord(issueID, worklogID string, record *Wo
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issueLink
 func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issueLink")
+	apiEndpoint := "rest/api/2/issueLink"
 	req, err := s.client.NewRequest("POST", apiEndpoint, issueLink)
 	if err != nil {
 		return nil, err
@@ -957,29 +958,35 @@ func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
 //
 // JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
 func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Response, error) {
-	var u string
-	if options == nil {
-		u = fmt.Sprintf("rest/api/2/search?jql=%s", url.QueryEscape(jql))
-	} else {
-		u = "rest/api/2/search?jql=" + url.QueryEscape(jql)
+	u := url.URL{
+		Path: "rest/api/2/search",
+	}
+	uv := url.Values{}
+	if jql != "" {
+		uv.Add("jql", url.QueryEscape(jql))
+	}
+
+	if options != nil {
 		if options.StartAt != 0 {
-			u += fmt.Sprintf("&startAt=%d", options.StartAt)
+			uv.Add("startAt", strconv.Itoa(options.StartAt))
 		}
 		if options.MaxResults != 0 {
-			u += fmt.Sprintf("&amp;maxResults=%d", options.MaxResults)
+			uv.Add("maxResults", strconv.Itoa(options.MaxResults))
 		}
 		if options.Expand != "" {
-			u += fmt.Sprintf("&expand=%s", options.Expand)
+			uv.Add("expand", options.Expand)
 		}
 		if strings.Join(options.Fields, ",") != "" {
-			u += fmt.Sprintf("&fields=%s", strings.Join(options.Fields, ","))
+			uv.Add("fields", strings.Join(options.Fields, ","))
 		}
 		if options.ValidateQuery != "" {
-			u += fmt.Sprintf("&validateQuery=%s", options.ValidateQuery)
+			uv.Add("validateQuery", options.ValidateQuery)
 		}
 	}
 
-	req, err := s.client.NewRequest("GET", u, nil)
+	u.RawQuery = uv.Encode()
+
+	req, err := s.client.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return []Issue{}, nil, err
 	}
@@ -1195,7 +1202,7 @@ func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIss
 				Value: value,
 			}
 		default:
-			return nil, fmt.Errorf("Unknown issue type encountered: %s for %s", valueType, key)
+			return nil, fmt.Errorf("unknown issue type encountered: %s for %s", valueType, key)
 		}
 	}
 
@@ -1240,8 +1247,8 @@ func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
 	}
 
 	result := []User{}
-	user := new(User)
 	for _, watcher := range watches.Watchers {
+		var user *User
 		if watcher.AccountID != "" {
 			user, resp, err = s.client.User.GetByAccountID(watcher.AccountID)
 			if err != nil {

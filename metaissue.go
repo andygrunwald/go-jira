@@ -14,6 +14,11 @@ type CreateMetaInfo struct {
 	Projects []*MetaProject `json:"projects,omitempty"`
 }
 
+// EditMetaInfo contains information about fields and their attributed to edit a ticket.
+type EditMetaInfo struct {
+	Fields tcontainer.MarshalMap `json:"fields,omitempty"`
+}
+
 // MetaProject is the meta information about a project returned from createmeta api
 type MetaProject struct {
 	Expand string `json:"expand,omitempty"`
@@ -73,11 +78,30 @@ func (s *IssueService) GetCreateMetaWithOptions(options *GetQueryOptions) (*Crea
 	return meta, resp, nil
 }
 
+// GetEditMeta makes the api call to get the edit meta information for an issue
+func (s *IssueService) GetEditMeta(issue *Issue) (*EditMetaInfo, *Response, error) {
+	apiEndpoint := fmt.Sprintf("/rest/api/2/issue/%s/editmeta", issue.Key)
+
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	meta := new(EditMetaInfo)
+	resp, err := s.client.Do(req, meta)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return meta, resp, nil
+}
+
 // GetProjectWithName returns a project with "name" from the meta information received. If not found, this returns nil.
 // The comparison of the name is case insensitive.
 func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {
 	for _, m := range m.Projects {
-		if strings.ToLower(m.Name) == strings.ToLower(name) {
+		if strings.EqualFold(m.Name, name) {
 			return m
 		}
 	}
@@ -88,7 +112,7 @@ func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {
 // The comparison of the name is case insensitive.
 func (m *CreateMetaInfo) GetProjectWithKey(key string) *MetaProject {
 	for _, m := range m.Projects {
-		if strings.ToLower(m.Key) == strings.ToLower(key) {
+		if strings.EqualFold(m.Key, key) {
 			return m
 		}
 	}
@@ -99,7 +123,7 @@ func (m *CreateMetaInfo) GetProjectWithKey(key string) *MetaProject {
 // The comparison of the name is case insensitive
 func (p *MetaProject) GetIssueTypeWithName(name string) *MetaIssueType {
 	for _, m := range p.IssueTypes {
-		if strings.ToLower(m.Name) == strings.ToLower(name) {
+		if strings.EqualFold(m.Name, name) {
 			return m
 		}
 	}
@@ -175,7 +199,7 @@ func (t *MetaIssueType) CheckCompleteAndAvailable(config map[string]string) (boo
 			for name := range mandatory {
 				requiredFields = append(requiredFields, name)
 			}
-			return false, fmt.Errorf("Required field not found in provided jira.fields. Required are: %#v", requiredFields)
+			return false, fmt.Errorf("required field not found in provided jira.fields. Required are: %#v", requiredFields)
 		}
 	}
 
@@ -186,7 +210,7 @@ func (t *MetaIssueType) CheckCompleteAndAvailable(config map[string]string) (boo
 			for name := range all {
 				availableFields = append(availableFields, name)
 			}
-			return false, fmt.Errorf("Fields in jira.fields are not available in jira. Available are: %#v", availableFields)
+			return false, fmt.Errorf("fields in jira.fields are not available in jira. Available are: %#v", availableFields)
 		}
 	}
 
