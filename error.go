@@ -39,7 +39,7 @@ func NewJiraError(resp *Response, httpError error) error {
 		}
 	} else {
 		if httpError == nil {
-			return fmt.Errorf("got Response Status %s:%s", resp.Status, string(body))
+			return fmt.Errorf("got response status %s:%s", resp.Status, string(body))
 		}
 		return errors.Wrap(httpError, fmt.Sprintf("%s: %s", resp.Status, string(body)))
 	}
