@@ -106,12 +106,12 @@ func (s *UserService) Create(user *User) (*User, *Response, error) {
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		e := fmt.Errorf("Could not read the returned data")
+		e := fmt.Errorf("could not read the returned data")
 		return nil, resp, NewJiraError(resp, e)
 	}
 	err = json.Unmarshal(data, responseUser)
 	if err != nil {
-		e := fmt.Errorf("Could not unmarshall the data into struct")
+		e := fmt.Errorf("could not unmarshall the data into struct")
 		return nil, resp, NewJiraError(resp, e)
 	}
 	return responseUser, resp, nil

@@ -79,10 +79,10 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 	}
 
 	if err != nil {
-		return false, fmt.Errorf("Auth at JIRA instance failed (HTTP(S) request). %s", err)
+		return false, fmt.Errorf("auth at Jira instance failed (HTTP(S) request). %s", err)
 	}
 	if resp != nil && resp.StatusCode != 200 {
-		return false, fmt.Errorf("Auth at JIRA instance failed (HTTP(S) request). Status code: %d", resp.StatusCode)
+		return false, fmt.Errorf("auth at Jira instance failed (HTTP(S) request). Status code: %d", resp.StatusCode)
 	}
 
 	s.client.session = session
@@ -127,15 +127,15 @@ func (s *AuthenticationService) Logout() error {
 	apiEndpoint := "rest/auth/1/session"
 	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
 	if err != nil {
-		return fmt.Errorf("Creating the request to log the user out failed : %s", err)
+		return fmt.Errorf("creating the request to log the user out failed : %s", err)
 	}
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return fmt.Errorf("Error sending the logout request: %s", err)
+		return fmt.Errorf("error sending the logout request: %s", err)
 	}
 	if resp.StatusCode != 204 {
-		return fmt.Errorf("The logout was unsuccessful with status %d", resp.StatusCode)
+		return fmt.Errorf("the logout was unsuccessful with status %d", resp.StatusCode)
 	}
 
 	// If logout successful, delete session
@@ -150,37 +150,37 @@ func (s *AuthenticationService) Logout() error {
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 	if s == nil {
-		return nil, fmt.Errorf("AUthenticaiton Service is not instantiated")
+		return nil, fmt.Errorf("authenticaiton Service is not instantiated")
 	}
 	if s.authType != authTypeSession || s.client.session == nil {
-		return nil, fmt.Errorf("No user is authenticated yet")
+		return nil, fmt.Errorf("no user is authenticated yet")
 	}
 
 	apiEndpoint := "rest/auth/1/session"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
-		return nil, fmt.Errorf("Could not create request for getting user info : %s", err)
+		return nil, fmt.Errorf("could not create request for getting user info : %s", err)
 	}
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return nil, fmt.Errorf("Error sending request to get user info : %s", err)
+		return nil, fmt.Errorf("error sending request to get user info : %s", err)
 	}
 	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("Getting user info failed with status : %d", resp.StatusCode)
+		return nil, fmt.Errorf("getting user info failed with status : %d", resp.StatusCode)
 	}
 
 	defer resp.Body.Close()
 	ret := new(Session)
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("Couldn't read body from the response : %s", err)
+		return nil, fmt.Errorf("couldn't read body from the response : %s", err)
 	}
 
 	err = json.Unmarshal(data, &ret)
 
 	if err != nil {
-		return nil, fmt.Errorf("Could not unmarshall received user info : %s", err)
+		return nil, fmt.Errorf("could not unmarshall received user info : %s", err)
 	}
 
 	return ret, nil

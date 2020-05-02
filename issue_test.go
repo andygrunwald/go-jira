@@ -322,14 +322,15 @@ func TestIssueService_AddLink(t *testing.T) {
 		},
 	}
 	resp, err := testClient.Issue.AddLink(il)
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
 	if resp == nil {
 		t.Error("Expected response. Response is nil")
+		return
 	}
 	if resp.StatusCode != 200 {
 		t.Errorf("Expected Status code 200. Given %d", resp.StatusCode)
-	}
-	if err != nil {
-		t.Errorf("Error given: %s", err)
 	}
 }
 
@@ -344,8 +345,12 @@ func TestIssueService_Get_Fields(t *testing.T) {
 	})
 
 	issue, _, err := testClient.Issue.Get("10002", nil)
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
+		return
 	}
 	if !reflect.DeepEqual(issue.Fields.Labels, []string{"test"}) {
 		t.Error("Expected labels for the returned issue")
@@ -356,10 +361,6 @@ func TestIssueService_Get_Fields(t *testing.T) {
 	}
 	if issue.Fields.Epic == nil {
 		t.Error("Epic expected but not found")
-	}
-
-	if err != nil {
-		t.Errorf("Error given: %s", err)
 	}
 }
 
@@ -374,8 +375,12 @@ func TestIssueService_Get_RenderedFields(t *testing.T) {
 	})
 
 	issue, _, err := testClient.Issue.Get("10002", nil)
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
+		return
 	}
 	if issue.RenderedFields.Updated != "2 hours ago" {
 		t.Error("Expected updated to equla '2 hours ago' for rendered field")
@@ -387,10 +392,6 @@ func TestIssueService_Get_RenderedFields(t *testing.T) {
 	comment := issue.RenderedFields.Comments.Comments[0]
 	if comment.Body != "This <strong>is</strong> HTML" {
 		t.Errorf("Wrong comment body returned in RenderedField. Got %s", comment.Body)
-	}
-
-	if err != nil {
-		t.Errorf("Error given: %s", err)
 	}
 }
 
@@ -408,8 +409,12 @@ func TestIssueService_DownloadAttachment(t *testing.T) {
 	})
 
 	resp, err := testClient.Issue.DownloadAttachment("10000")
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
 	if resp == nil {
 		t.Error("Expected response. Response is nil")
+		return
 	}
 	defer resp.Body.Close()
 
@@ -423,9 +428,6 @@ func TestIssueService_DownloadAttachment(t *testing.T) {
 
 	if resp.StatusCode != 200 {
 		t.Errorf("Expected Status code 200. Given %d", resp.StatusCode)
-	}
-	if err != nil {
-		t.Errorf("Error given: %s", err)
 	}
 }
 
@@ -443,6 +445,7 @@ func TestIssueService_DownloadAttachment_BadStatus(t *testing.T) {
 	resp, err := testClient.Issue.DownloadAttachment("10000")
 	if resp == nil {
 		t.Error("Expected response. Response is nil")
+		return
 	}
 	defer resp.Body.Close()
 
@@ -1638,6 +1641,7 @@ func TestIssueService_Get_Fields_Changelog(t *testing.T) {
 	issue, _, _ := testClient.Issue.Get("10002", &GetQueryOptions{Expand: "changelog"})
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
+		return
 	}
 
 	if len(issue.Changelog.Histories) != 1 {
@@ -1668,6 +1672,7 @@ func TestIssueService_Get_Transitions(t *testing.T) {
 	issue, _, _ := testClient.Issue.Get("10002", &GetQueryOptions{Expand: "transitions"})
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
+		return
 	}
 
 	if len(issue.Transitions) != 1 {
@@ -1696,8 +1701,12 @@ func TestIssueService_Get_Fields_AffectsVersions(t *testing.T) {
 	})
 
 	issue, _, err := testClient.Issue.Get("10002", nil)
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
+		return
 	}
 	if !reflect.DeepEqual(issue.Fields.AffectsVersions, []*AffectsVersion{
 		{
@@ -1711,10 +1720,6 @@ func TestIssueService_Get_Fields_AffectsVersions(t *testing.T) {
 		},
 	}) {
 		t.Error("Expected AffectsVersions for the returned issue")
-	}
-
-	if err != nil {
-		t.Errorf("Error given: %s", err)
 	}
 }
 
@@ -1736,13 +1741,13 @@ func TestIssueService_GetRemoteLinks(t *testing.T) {
 	})
 
 	remoteLinks, _, err := testClient.Issue.GetRemoteLinks("123")
-
 	if err != nil {
 		t.Errorf("Got error: %v", err)
 	}
 
 	if remoteLinks == nil {
 		t.Error("Expected remote links list. Got nil.")
+		return
 	}
 
 	if len(*remoteLinks) != 2 {

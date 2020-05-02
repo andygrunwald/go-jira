@@ -80,8 +80,12 @@ func TestSprintService_GetIssue(t *testing.T) {
 	})
 
 	issue, _, err := testClient.Sprint.GetIssue("10002", nil)
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
 	if issue == nil {
 		t.Errorf("Expected issue. Issue is nil %v", err)
+		return
 	}
 	if !reflect.DeepEqual(issue.Fields.Labels, []string{"test"}) {
 		t.Error("Expected labels for the returned issue")
@@ -109,5 +113,4 @@ func TestSprintService_GetIssue(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error given: %s", err)
 	}
-
 }

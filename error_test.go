@@ -96,8 +96,8 @@ func TestError_BadJSON(t *testing.T) {
 	err := NewJiraError(resp, errors.New("Original http error"))
 	msg := err.Error()
 
-	if !strings.Contains(msg, "Could not parse JSON") {
-		t.Errorf("Expected the 'Could not parse JSON' error message: Got\n%s\n", msg)
+	if !strings.Contains(msg, "could not parse JSON") {
+		t.Errorf("Expected the 'could not parse JSON' error message: Got\n%s\n", msg)
 	}
 }
 

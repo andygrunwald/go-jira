@@ -34,12 +34,12 @@ func NewJiraError(resp *Response, httpError error) error {
 	if strings.HasPrefix(contentType, "application/json") {
 		err = json.Unmarshal(body, &jerr)
 		if err != nil {
-			httpError = errors.Wrap(errors.New("Could not parse JSON"), httpError.Error())
+			httpError = errors.Wrap(errors.New("could not parse JSON"), httpError.Error())
 			return errors.Wrap(err, httpError.Error())
 		}
 	} else {
 		if httpError == nil {
-			return fmt.Errorf("Got Response Status %s:%s", resp.Status, string(body))
+			return fmt.Errorf("got response status %s:%s", resp.Status, string(body))
 		}
 		return errors.Wrap(httpError, fmt.Sprintf("%s: %s", resp.Status, string(body)))
 	}

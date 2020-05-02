@@ -62,7 +62,7 @@ func (s *PermissionSchemeService) Get(schemeID int) (*PermissionScheme, *Respons
 		return nil, resp, jerr
 	}
 	if ps.Self == "" {
-		return nil, resp, fmt.Errorf("No permissionscheme with ID %d found", schemeID)
+		return nil, resp, fmt.Errorf("no permissionscheme with ID %d found", schemeID)
 	}
 
 	return ps, resp, nil

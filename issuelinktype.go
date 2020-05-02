@@ -68,12 +68,12 @@ func (s *IssueLinkTypeService) Create(linkType *IssueLinkType) (*IssueLinkType, 
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		e := fmt.Errorf("Could not read the returned data")
+		e := fmt.Errorf("could not read the returned data")
 		return nil, resp, NewJiraError(resp, e)
 	}
 	err = json.Unmarshal(data, responseLinkType)
 	if err != nil {
-		e := fmt.Errorf("Could no unmarshal the data into struct")
+		e := fmt.Errorf("could no unmarshal the data into struct")
 		return nil, resp, NewJiraError(resp, e)
 	}
 	return linkType, resp, nil

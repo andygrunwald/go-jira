@@ -101,7 +101,7 @@ func (s *IssueService) GetEditMeta(issue *Issue) (*EditMetaInfo, *Response, erro
 // The comparison of the name is case insensitive.
 func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {
 	for _, m := range m.Projects {
-		if strings.ToLower(m.Name) == strings.ToLower(name) {
+		if strings.EqualFold(m.Name, name) {
 			return m
 		}
 	}
@@ -112,7 +112,7 @@ func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {
 // The comparison of the name is case insensitive.
 func (m *CreateMetaInfo) GetProjectWithKey(key string) *MetaProject {
 	for _, m := range m.Projects {
-		if strings.ToLower(m.Key) == strings.ToLower(key) {
+		if strings.EqualFold(m.Key, key) {
 			return m
 		}
 	}
@@ -123,7 +123,7 @@ func (m *CreateMetaInfo) GetProjectWithKey(key string) *MetaProject {
 // The comparison of the name is case insensitive
 func (p *MetaProject) GetIssueTypeWithName(name string) *MetaIssueType {
 	for _, m := range p.IssueTypes {
-		if strings.ToLower(m.Name) == strings.ToLower(name) {
+		if strings.EqualFold(m.Name, name) {
 			return m
 		}
 	}
@@ -199,7 +199,7 @@ func (t *MetaIssueType) CheckCompleteAndAvailable(config map[string]string) (boo
 			for name := range mandatory {
 				requiredFields = append(requiredFields, name)
 			}
-			return false, fmt.Errorf("Required field not found in provided jira.fields. Required are: %#v", requiredFields)
+			return false, fmt.Errorf("required field not found in provided jira.fields. Required are: %#v", requiredFields)
 		}
 	}
 
@@ -210,7 +210,7 @@ func (t *MetaIssueType) CheckCompleteAndAvailable(config map[string]string) (boo
 			for name := range all {
 				availableFields = append(availableFields, name)
 			}
-			return false, fmt.Errorf("Fields in jira.fields are not available in jira. Available are: %#v", availableFields)
+			return false, fmt.Errorf("fields in jira.fields are not available in jira. Available are: %#v", availableFields)
 		}
 	}
 
