@@ -4,23 +4,23 @@
 [![Build Status](https://travis-ci.org/andygrunwald/go-jira.svg?branch=master)](https://travis-ci.org/andygrunwald/go-jira)
 [![Go Report Card](https://goreportcard.com/badge/github.com/andygrunwald/go-jira)](https://goreportcard.com/report/github.com/andygrunwald/go-jira)
 
-[Go](https://golang.org/) client library for [Atlassian JIRA](https://www.atlassian.com/software/jira).
+[Go](https://golang.org/) client library for [Atlassian Jira](https://www.atlassian.com/software/jira).
 
-![Go client library for Atlassian JIRA](./img/logo_small.png "Go client library for Atlassian JIRA.")
+![Go client library for Atlassian Jira](./img/logo_small.png "Go client library for Atlassian Jira.")
 
 ## Features
 
 * Authentication (HTTP Basic, OAuth, Session Cookie)
 * Create and retrieve issues
 * Create and retrieve issue transitions (status updates)
-* Call every API endpoint of the JIRA, even if it is not directly implemented in this library
+* Call every API endpoint of the Jira, even if it is not directly implemented in this library
 
-This package is not JIRA API complete (yet), but you can call every API endpoint you want. See [Call a not implemented API endpoint](#call-a-not-implemented-api-endpoint) how to do this. For all possible API endpoints of JIRA have a look at [latest JIRA REST API documentation](https://docs.atlassian.com/jira/REST/latest/).
+This package is not Jira API complete (yet), but you can call every API endpoint you want. See [Call a not implemented API endpoint](#call-a-not-implemented-api-endpoint) how to do this. For all possible API endpoints of Jira have a look at [latest Jira REST API documentation](https://docs.atlassian.com/jira/REST/latest/).
 
 ## Requirements
 
 * Go >= 1.8
-* JIRA v6.3.4 & v7.1.2.
+* Jira v6.3.4 & v7.1.2.
 
 ## Installation
 
@@ -52,7 +52,7 @@ go test -v ./...
 
 Please have a look at the [GoDoc documentation](https://godoc.org/github.com/andygrunwald/go-jira) for a detailed API description.
 
-The [latest JIRA REST API documentation](https://docs.atlassian.com/jira/REST/latest/) was the base document for this package.
+The [latest Jira REST API documentation](https://docs.atlassian.com/jira/REST/latest/) was the base document for this package.
 
 ## Examples
 
@@ -113,12 +113,12 @@ func main() {
 
 #### Authenticate with session cookie [DEPRECATED]
 
-JIRA [deprecated this authentication method.](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-basic-auth-and-cookie-based-auth/)  It's not longer available for use.
+Jira [deprecated this authentication method.](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-basic-auth-and-cookie-based-auth/)  It's not longer available for use.
 
 
 #### Authenticate with OAuth
 
-If you want to connect via OAuth to your JIRA Cloud instance checkout the [example of using OAuth authentication with JIRA in Go](https://gist.github.com/Lupus/edafe9a7c5c6b13407293d795442fe67) by [@Lupus](https://github.com/Lupus).
+If you want to connect via OAuth to your Jira Cloud instance checkout the [example of using OAuth authentication with Jira in Go](https://gist.github.com/Lupus/edafe9a7c5c6b13407293d795442fe67) by [@Lupus](https://github.com/Lupus).
 
 For more details have a look at the [issue #56](https://github.com/andygrunwald/go-jira/issues/56).
 
@@ -175,9 +175,9 @@ func main() {
 
 ### Call a not implemented API endpoint
 
-Not all API endpoints of the JIRA API are implemented into *go-jira*.
+Not all API endpoints of the Jira API are implemented into *go-jira*.
 But you can call them anyway:
-Lets get all public projects of [Atlassian`s JIRA instance](https://jira.atlassian.com/).
+Lets get all public projects of [Atlassian`s Jira instance](https://jira.atlassian.com/).
 
 ```go
 package main
@@ -209,7 +209,7 @@ func main() {
 
 	// ...
 	// BAM: Bamboo
-	// BAMJ: Bamboo JIRA Plugin
+	// BAMJ: Bamboo Jira Plugin
 	// CLOV: Clover
 	// CONF: Confluence
 	// ...
@@ -218,7 +218,7 @@ func main() {
 
 ## Implementations
 
-* [andygrunwald/jitic](https://github.com/andygrunwald/jitic) - The JIRA Ticket Checker
+* [andygrunwald/jitic](https://github.com/andygrunwald/jitic) - The Jira Ticket Checker
 
 ## Code structure
 
@@ -226,7 +226,7 @@ The code structure of this package was inspired by [google/go-github](https://gi
 
 There is one main part (the client).
 Based on this main client the other endpoints, like Issues or Authentication are extracted in services. E.g. `IssueService` or `AuthenticationService`.
-These services own a responsibility of the single endpoints / usecases of JIRA.
+These services own a responsibility of the single endpoints / usecases of Jira.
 
 ## Contribution
 

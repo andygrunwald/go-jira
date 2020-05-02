@@ -71,7 +71,7 @@
     },
     {
         "self": "https://test.jira.org/rest/api/2/status/10004",
-        "description": "This status is managed internally by JIRA Software",
+        "description": "This status is managed internally by Jira Software",
         "iconUrl": "https://test.jira.org/",
         "name": "QA",
         "id": "10004",
@@ -85,7 +85,7 @@
     },
     {
         "self": "https://test.jira.org/rest/api/2/status/10005",
-        "description": "This status is managed internally by JIRA Software",
+        "description": "This status is managed internally by Jira Software",
         "iconUrl": "https://test.jira.org/",
         "name": "Icebox",
         "id": "10005",
@@ -99,7 +99,7 @@
     },
     {
         "self": "https://test.jira.org/rest/api/2/status/10006",
-        "description": "This status is managed internally by JIRA Software",
+        "description": "This status is managed internally by Jira Software",
         "iconUrl": "https://test.jira.org/",
         "name": "To Be Specced",
         "id": "10006",
@@ -113,7 +113,7 @@
     },
     {
         "self": "https://test.jira.org/rest/api/2/status/10100",
-        "description": "This status is managed internally by JIRA Software",
+        "description": "This status is managed internally by Jira Software",
         "iconUrl": "https://test.jira.org/",
         "name": "Blocked",
         "id": "10100",
@@ -141,7 +141,7 @@
     },
     {
         "self": "https://test.jira.org/rest/api/2/status/10205",
-        "description": "This status is managed internally by JIRA Software",
+        "description": "This status is managed internally by Jira Software",
         "iconUrl": "https://test.jira.org/",
         "name": "Validation",
         "id": "10205",
@@ -155,7 +155,7 @@
     },
     {
         "self": "https://test.jira.org/rest/api/2/status/10300",
-        "description": "This status is managed internally by JIRA Software",
+        "description": "This status is managed internally by Jira Software",
         "iconUrl": "https://test.jira.org/",
         "name": "Graveyard",
         "id": "10300",
@@ -281,7 +281,7 @@
     },
     {
         "self": "https://test.jira.org/rest/api/2/status/10510",
-        "description": "This status is managed internally by JIRA Software",
+        "description": "This status is managed internally by Jira Software",
         "iconUrl": "https://test.jira.org/",
         "name": "cannot reproduce",
         "id": "10510",
@@ -295,7 +295,7 @@
     },
     {
         "self": "https://test.jira.org/rest/api/2/status/10601",
-        "description": "This status is managed internally by JIRA Software",
+        "description": "This status is managed internally by Jira Software",
         "iconUrl": "https://test.jira.org/",
         "name": "Done",
         "id": "10601",
@@ -309,7 +309,7 @@
     },
     {
         "self": "https://test.jira.org/rest/api/2/status/10602",
-        "description": "This status is managed internally by JIRA Software",
+        "description": "This status is managed internally by Jira Software",
         "iconUrl": "https://test.jira.org/",
         "name": "In Progress",
         "id": "10602",
@@ -323,7 +323,7 @@
     },
     {
         "self": "https://test.jira.org/rest/api/2/status/10603",
-        "description": "This status is managed internally by JIRA Software",
+        "description": "This status is managed internally by Jira Software",
         "iconUrl": "https://test.jira.org/",
         "name": "Backlog",
         "id": "10603",
@@ -337,7 +337,7 @@
     },
     {
         "self": "https://test.jira.org/rest/api/2/status/10700",
-        "description": "This status is managed internally by JIRA Software",
+        "description": "This status is managed internally by Jira Software",
         "iconUrl": "https://test.jira.org/",
         "name": "Specs Complete",
         "id": "10700",

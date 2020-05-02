@@ -19,13 +19,13 @@ import (
 )
 
 const (
-	// AssigneeAutomatic represents the value of the "Assignee: Automatic" of JIRA
+	// AssigneeAutomatic represents the value of the "Assignee: Automatic" of Jira
 	AssigneeAutomatic = "-1"
 )
 
-// IssueService handles Issues for the JIRA instance / API.
+// IssueService handles Issues for the Jira instance / API.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue
 type IssueService struct {
 	client *Client
 }
@@ -37,7 +37,7 @@ type UpdateQueryOptions struct {
 	OverrideEditableFlag   bool `url:"overrideEditableFlag,omitempty"`
 }
 
-// Issue represents a JIRA issue.
+// Issue represents a Jira issue.
 type Issue struct {
 	Expand         string               `json:"expand,omitempty" structs:"expand,omitempty"`
 	ID             string               `json:"id,omitempty" structs:"id,omitempty"`
@@ -72,7 +72,7 @@ type Changelog struct {
 	Histories []ChangelogHistory `json:"histories,omitempty"`
 }
 
-// Attachment represents a JIRA attachment
+// Attachment represents a Jira attachment
 type Attachment struct {
 	Self      string `json:"self,omitempty" structs:"self,omitempty"`
 	ID        string `json:"id,omitempty" structs:"id,omitempty"`
@@ -96,8 +96,8 @@ type Epic struct {
 	Done    bool   `json:"done" structs:"done"`
 }
 
-// IssueFields represents single fields of a JIRA issue.
-// Every JIRA issue has several fields attached.
+// IssueFields represents single fields of a Jira issue.
+// Every Jira issue has several fields attached.
 type IssueFields struct {
 	// TODO Missing fields
 	//      * "workratio": -1,
@@ -144,7 +144,7 @@ type IssueFields struct {
 }
 
 // MarshalJSON is a custom JSON marshal function for the IssueFields structs.
-// It handles JIRA custom fields and maps those from / to "Unknowns" key.
+// It handles Jira custom fields and maps those from / to "Unknowns" key.
 func (i *IssueFields) MarshalJSON() ([]byte, error) {
 	m := structs.Map(i)
 	unknowns, okay := m["Unknowns"]
@@ -159,7 +159,7 @@ func (i *IssueFields) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON is a custom JSON marshal function for the IssueFields structs.
-// It handles JIRA custom fields and maps those from / to "Unknowns" key.
+// It handles Jira custom fields and maps those from / to "Unknowns" key.
 func (i *IssueFields) UnmarshalJSON(data []byte) error {
 
 	// Do the normal unmarshalling first
@@ -207,7 +207,7 @@ func (i *IssueFields) UnmarshalJSON(data []byte) error {
 
 }
 
-// IssueRenderedFields represents rendered fields of a JIRA issue.
+// IssueRenderedFields represents rendered fields of a Jira issue.
 // Not all IssueFields are rendered.
 type IssueRenderedFields struct {
 	// TODO Missing fields
@@ -225,7 +225,7 @@ type IssueRenderedFields struct {
 	Description    string    `json:"description,omitempty" structs:"description,omitempty"`
 }
 
-// IssueType represents a type of a JIRA issue.
+// IssueType represents a type of a Jira issue.
 // Typical types are "Request", "Bug", "Story", ...
 type IssueType struct {
 	Self        string `json:"self,omitempty" structs:"self,omitempty"`
@@ -237,7 +237,7 @@ type IssueType struct {
 	AvatarID    int    `json:"avatarId,omitempty" structs:"avatarId,omitempty"`
 }
 
-// Watches represents a type of how many and which user are "observing" a JIRA issue to track the status / updates.
+// Watches represents a type of how many and which user are "observing" a Jira issue to track the status / updates.
 type Watches struct {
 	Self       string     `json:"self,omitempty" structs:"self,omitempty"`
 	WatchCount int        `json:"watchCount,omitempty" structs:"watchCount,omitempty"`
@@ -262,35 +262,35 @@ type AvatarUrls struct {
 	Three2X32 string `json:"32x32,omitempty" structs:"32x32,omitempty"`
 }
 
-// Component represents a "component" of a JIRA issue.
-// Components can be user defined in every JIRA instance.
+// Component represents a "component" of a Jira issue.
+// Components can be user defined in every Jira instance.
 type Component struct {
 	Self string `json:"self,omitempty" structs:"self,omitempty"`
 	ID   string `json:"id,omitempty" structs:"id,omitempty"`
 	Name string `json:"name,omitempty" structs:"name,omitempty"`
 }
 
-// Progress represents the progress of a JIRA issue.
+// Progress represents the progress of a Jira issue.
 type Progress struct {
 	Progress int `json:"progress" structs:"progress"`
 	Total    int `json:"total" structs:"total"`
 	Percent  int `json:"percent" structs:"percent"`
 }
 
-// Parent represents the parent of a JIRA issue, to be used with subtask issue types.
+// Parent represents the parent of a Jira issue, to be used with subtask issue types.
 type Parent struct {
 	ID  string `json:"id,omitempty" structs:"id"`
 	Key string `json:"key,omitempty" structs:"key"`
 }
 
-// Time represents the Time definition of JIRA as a time.Time of go
+// Time represents the Time definition of Jira as a time.Time of go
 type Time time.Time
 
 func (t Time) Equal(u Time) bool {
 	return time.Time(t).Equal(time.Time(u))
 }
 
-// Date represents the Date definition of JIRA as a time.Time of go
+// Date represents the Date definition of Jira as a time.Time of go
 type Date time.Time
 
 // Wrapper struct for search result
@@ -298,7 +298,7 @@ type transitionResult struct {
 	Transitions []Transition `json:"transitions" structs:"transitions"`
 }
 
-// Transition represents an issue transition in JIRA
+// Transition represents an issue transition in Jira
 type Transition struct {
 	ID     string                     `json:"id" structs:"id"`
 	Name   string                     `json:"name" structs:"name"`
@@ -333,8 +333,8 @@ type Option struct {
 	Value string `json:"value" structs:"value"`
 }
 
-// UnmarshalJSON will transform the JIRA time into a time.Time
-// during the transformation of the JIRA JSON response
+// UnmarshalJSON will transform the Jira time into a time.Time
+// during the transformation of the Jira JSON response
 func (t *Time) UnmarshalJSON(b []byte) error {
 	// Ignore null, like in the main JSON package.
 	if string(b) == "null" {
@@ -348,14 +348,14 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-// MarshalJSON will transform the time.Time into a JIRA time
-// during the creation of a JIRA request
+// MarshalJSON will transform the time.Time into a Jira time
+// during the creation of a Jira request
 func (t Time) MarshalJSON() ([]byte, error) {
 	return []byte(time.Time(t).Format("\"2006-01-02T15:04:05.000-0700\"")), nil
 }
 
-// UnmarshalJSON will transform the JIRA date into a time.Time
-// during the transformation of the JIRA JSON response
+// UnmarshalJSON will transform the Jira date into a time.Time
+// during the transformation of the Jira JSON response
 func (t *Date) UnmarshalJSON(b []byte) error {
 	// Ignore null, like in the main JSON package.
 	if string(b) == "null" {
@@ -370,16 +370,16 @@ func (t *Date) UnmarshalJSON(b []byte) error {
 }
 
 // MarshalJSON will transform the Date object into a short
-// date string as JIRA expects during the creation of a
-// JIRA request
+// date string as Jira expects during the creation of a
+// Jira request
 func (t Date) MarshalJSON() ([]byte, error) {
 	time := time.Time(t)
 	return []byte(time.Format("\"2006-01-02\"")), nil
 }
 
-// Worklog represents the work log of a JIRA issue.
+// Worklog represents the work log of a Jira issue.
 // One Worklog contains zero or n WorklogRecords
-// JIRA Wiki: https://confluence.atlassian.com/jira/logging-work-on-an-issue-185729605.html
+// Jira Wiki: https://confluence.atlassian.com/jira/logging-work-on-an-issue-185729605.html
 type Worklog struct {
 	StartAt    int             `json:"startAt" structs:"startAt"`
 	MaxResults int             `json:"maxResults" structs:"maxResults"`
@@ -408,7 +408,7 @@ type EntityProperty struct {
 	Value interface{} `json:"value"`
 }
 
-// TimeTracking represents the timetracking fields of a JIRA issue.
+// TimeTracking represents the timetracking fields of a Jira issue.
 type TimeTracking struct {
 	OriginalEstimate         string `json:"originalEstimate,omitempty" structs:"originalEstimate,omitempty"`
 	RemainingEstimate        string `json:"remainingEstimate,omitempty" structs:"remainingEstimate,omitempty"`
@@ -426,7 +426,7 @@ type Subtasks struct {
 	Fields IssueFields `json:"fields" structs:"fields"`
 }
 
-// IssueLink represents a link between two issues in JIRA.
+// IssueLink represents a link between two issues in Jira.
 type IssueLink struct {
 	ID           string        `json:"id,omitempty" structs:"id,omitempty"`
 	Self         string        `json:"self,omitempty" structs:"self,omitempty"`
@@ -436,7 +436,7 @@ type IssueLink struct {
 	Comment      *Comment      `json:"comment,omitempty" structs:"comment,omitempty"`
 }
 
-// IssueLinkType represents a type of a link between to issues in JIRA.
+// IssueLinkType represents a type of a link between to issues in Jira.
 // Typical issue link types are "Related to", "Duplicate", "Is blocked by", etc.
 type IssueLinkType struct {
 	ID      string `json:"id,omitempty" structs:"id,omitempty"`
@@ -451,7 +451,7 @@ type Comments struct {
 	Comments []*Comment `json:"comments,omitempty" structs:"comments,omitempty"`
 }
 
-// Comment represents a comment by a person to an issue in JIRA.
+// Comment represents a comment by a person to an issue in Jira.
 type Comment struct {
 	ID           string            `json:"id,omitempty" structs:"id,omitempty"`
 	Self         string            `json:"self,omitempty" structs:"self,omitempty"`
@@ -490,7 +490,7 @@ type CommentVisibility struct {
 
 // SearchOptions specifies the optional parameters to various List methods that
 // support pagination.
-// Pagination is used for the JIRA REST APIs to conserve server resources and limit
+// Pagination is used for the Jira REST APIs to conserve server resources and limit
 // response size for resources that return potentially large collection of items.
 // A request to a pages API will result in a values array wrapped in a JSON object with some paging metadata
 // Default Pagination options
@@ -544,8 +544,8 @@ type AddWorklogQueryOptions struct {
 	OverrideEditableFlag bool   `url:"overrideEditableFlag,omitempty"`
 }
 
-// CustomFields represents custom fields of JIRA
-// This can heavily differ between JIRA instances
+// CustomFields represents custom fields of Jira
+// This can heavily differ between Jira instances
 type CustomFields map[string]string
 
 // RemoteLink represents remote links which linked to issues
@@ -587,13 +587,13 @@ type RemoteLinkStatus struct {
 }
 
 // Get returns a full representation of the issue for the given issue key.
-// JIRA will attempt to identify the issue by the issueIdOrKey path parameter.
+// Jira will attempt to identify the issue by the issueIdOrKey path parameter.
 // This can be an issue id, or an issue key.
-// If the issue cannot be found via an exact match, JIRA will also look for the issue in a case-insensitive way, or by looking to see if the issue was moved.
+// If the issue cannot be found via an exact match, Jira will also look for the issue in a case-insensitive way, or by looking to see if the issue was moved.
 //
 // The given options will be appended to the query string
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
 func (s *IssueService) Get(issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -739,7 +739,7 @@ func WithQueryOptions(options interface{}) func(*http.Request) error {
 // Creating a sub-task is similar to creating a regular issue, with two important differences:
 // The issueType field must correspond to a sub-task issue type and you must provide a parent field in the issue create request containing the id or key of the parent issue.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
 func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 	apiEndpoint := "rest/api/2/issue"
 	req, err := s.client.NewRequest("POST", apiEndpoint, issue)
@@ -768,7 +768,7 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 // UpdateWithOptions updates an issue from a JSON representation,
 // while also specifiying query params. The issue is found by key.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
+// Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
 func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", issue.Key)
 	url, err := addOptions(apiEndpoint, opts)
@@ -793,7 +793,7 @@ func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateQueryOptions)
 
 // Update updates an issue from a JSON representation. The issue is found by key.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
+// Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
 func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
 	return s.UpdateWithOptions(issue, nil)
 }
@@ -819,7 +819,7 @@ func (s *IssueService) UpdateIssue(jiraID string, data map[string]interface{}) (
 
 // AddComment adds a new comment to issueID.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-addComment
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-addComment
 func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment", issueID)
 	req, err := s.client.NewRequest("POST", apiEndpoint, comment)
@@ -839,7 +839,7 @@ func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *
 
 // UpdateComment updates the body of a comment, identified by comment.ID, on the issueID.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/comment-updateComment
+// Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/comment-updateComment
 func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment, *Response, error) {
 	reqBody := struct {
 		Body string `json:"body"`
@@ -863,7 +863,7 @@ func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment
 
 // DeleteComment Deletes a comment from an issueID.
 //
-// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-issue-issueIdOrKey-comment-id-delete
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-issue-issueIdOrKey-comment-id-delete
 func (s *IssueService) DeleteComment(issueID, commentID string) error {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, commentID)
 	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
@@ -936,7 +936,7 @@ func (s *IssueService) UpdateWorklogRecord(issueID, worklogID string, record *Wo
 
 // AddLink adds a link between two issues.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issueLink
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issueLink
 func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLink")
 	req, err := s.client.NewRequest("POST", apiEndpoint, issueLink)
@@ -954,7 +954,7 @@ func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
 
 // Search will search for tickets according to the jql
 //
-// JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
+// Jira API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
 func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Response, error) {
 	var u string
 	if options == nil {
@@ -993,7 +993,7 @@ func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Res
 
 // SearchPages will get issues from all pages in a search
 //
-// JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
+// Jira API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
 func (s *IssueService) SearchPages(jql string, options *SearchOptions, f func(Issue) error) error {
 	if options == nil {
 		options = &SearchOptions{
@@ -1075,7 +1075,7 @@ func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *Response,
 // GetTransitions gets a list of the transitions possible for this issue by the current user,
 // along with fields that are required and their types.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getTransitions
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getTransitions
 func (s *IssueService) GetTransitions(id string) ([]Transition, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/transitions?expand=transitions.fields", id)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -1094,7 +1094,7 @@ func (s *IssueService) GetTransitions(id string) ([]Transition, *Response, error
 // DoTransition performs a transition on an issue.
 // When performing the transition you can update or set other issue fields.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
 func (s *IssueService) DoTransition(ticketID, transitionID string) (*Response, error) {
 	payload := CreateTransitionPayload{
 		Transition: TransitionPayload{
@@ -1107,7 +1107,7 @@ func (s *IssueService) DoTransition(ticketID, transitionID string) (*Response, e
 // DoTransitionWithPayload performs a transition on an issue using any payload.
 // When performing the transition you can update or set other issue fields.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
 func (s *IssueService) DoTransitionWithPayload(ticketID, payload interface{}) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/transitions", ticketID)
 
@@ -1223,7 +1223,7 @@ func (s *IssueService) Delete(issueID string) (*Response, error) {
 
 // GetWatchers wil return all the users watching/observing the given issue
 //
-// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-getIssueWatchers
+// Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-getIssueWatchers
 func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
 	watchesAPIEndpoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
@@ -1261,7 +1261,7 @@ func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
 
 // AddWatcher adds watcher to the given issue
 //
-// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-addWatcher
+// Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-addWatcher
 func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
@@ -1280,7 +1280,7 @@ func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, e
 
 // RemoveWatcher removes given user from given issue
 //
-// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-removeWatcher
+// Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-removeWatcher
 func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
@@ -1299,7 +1299,7 @@ func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response
 
 // UpdateAssignee updates the user assigned to work on the given issue
 //
-// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/7.10.2/#api/2/issue-assign
+// Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/7.10.2/#api/2/issue-assign
 func (s *IssueService) UpdateAssignee(issueID string, assignee *User) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/assignee", issueID)
 
@@ -1328,7 +1328,7 @@ func (c ChangelogHistory) CreatedTime() (time.Time, error) {
 
 // GetRemoteLinks gets remote issue links on the issue.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getRemoteIssueLinks
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getRemoteIssueLinks
 func (s *IssueService) GetRemoteLinks(id string) (*[]RemoteLink, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/remotelink", id)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -1346,7 +1346,7 @@ func (s *IssueService) GetRemoteLinks(id string) (*[]RemoteLink, *Response, erro
 
 // AddRemoteLink adds a remote link to issueID.
 //
-// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issue-issueIdOrKey-remotelink-post
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issue-issueIdOrKey-remotelink-post
 func (s *IssueService) AddRemoteLink(issueID string, remotelink *RemoteLink) (*RemoteLink, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/remotelink", issueID)
 	req, err := s.client.NewRequest("POST", apiEndpoint, remotelink)

@@ -2,9 +2,9 @@ package jira
 
 import "fmt"
 
-// PermissionSchemeService handles permissionschemes for the JIRA instance / API.
+// PermissionSchemeService handles permissionschemes for the Jira instance / API.
 //
-// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-group-Permissionscheme
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-group-Permissionscheme
 type PermissionSchemeService struct {
 	client *Client
 }
@@ -27,7 +27,7 @@ type Holder struct {
 
 // GetList returns a list of all permission schemes
 //
-// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-permissionscheme-get
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-permissionscheme-get
 func (s *PermissionSchemeService) GetList() (*PermissionSchemes, *Response, error) {
 	apiEndpoint := "/rest/api/3/permissionscheme"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -47,7 +47,7 @@ func (s *PermissionSchemeService) GetList() (*PermissionSchemes, *Response, erro
 
 // Get returns a full representation of the permission scheme for the schemeID
 //
-// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-permissionscheme-schemeId-get
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-permissionscheme-schemeId-get
 func (s *PermissionSchemeService) Get(schemeID int) (*PermissionScheme, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/3/permissionscheme/%d", schemeID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)

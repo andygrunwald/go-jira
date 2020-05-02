@@ -6,9 +6,9 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-// ProjectService handles projects for the JIRA instance / API.
+// ProjectService handles projects for the Jira instance / API.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project
 type ProjectService struct {
 	client *Client
 }
@@ -34,7 +34,7 @@ type ProjectCategory struct {
 	Description string `json:"description" structs:"description,omitempty"`
 }
 
-// Project represents a JIRA Project.
+// Project represents a Jira Project.
 type Project struct {
 	Expand          string             `json:"expand,omitempty" structs:"expand,omitempty"`
 	Self            string             `json:"self,omitempty" structs:"self,omitempty"`
@@ -80,17 +80,17 @@ type PermissionScheme struct {
 	Permissions []Permission `json:"permissions" structs:"permissions,omitempty"`
 }
 
-// GetList gets all projects form JIRA
+// GetList gets all projects form Jira
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
 func (s *ProjectService) GetList() (*ProjectList, *Response, error) {
 	return s.ListWithOptions(&GetQueryOptions{})
 }
 
-// ListWithOptions gets all projects form JIRA with optional query params, like &GetQueryOptions{Expand: "issueTypes"} to get
+// ListWithOptions gets all projects form Jira with optional query params, like &GetQueryOptions{Expand: "issueTypes"} to get
 // a list of all projects and their supported issuetypes
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
 func (s *ProjectService) ListWithOptions(options *GetQueryOptions) (*ProjectList, *Response, error) {
 	apiEndpoint := "rest/api/2/project"
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -117,10 +117,10 @@ func (s *ProjectService) ListWithOptions(options *GetQueryOptions) (*ProjectList
 }
 
 // Get returns a full representation of the project for the given issue key.
-// JIRA will attempt to identify the project by the projectIdOrKey path parameter.
+// Jira will attempt to identify the project by the projectIdOrKey path parameter.
 // This can be an project id, or an project key.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
 func (s *ProjectService) Get(projectID string) (*Project, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/project/%s", projectID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
@@ -139,10 +139,10 @@ func (s *ProjectService) Get(projectID string) (*Project, *Response, error) {
 }
 
 // GetPermissionScheme returns a full representation of the permission scheme for the project
-// JIRA will attempt to identify the project by the projectIdOrKey path parameter.
+// Jira will attempt to identify the project by the projectIdOrKey path parameter.
 // This can be an project id, or an project key.
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
 func (s *ProjectService) GetPermissionScheme(projectID string) (*PermissionScheme, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/project/%s/permissionscheme", projectID)
 	req, err := s.client.NewRequest("GET", apiEndpoint, nil)

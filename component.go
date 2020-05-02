@@ -1,13 +1,13 @@
 package jira
 
-// ComponentService handles components for the JIRA instance / API.
+// ComponentService handles components for the Jira instance / API.
 //
-// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/7.10.1/#api/2/component
+// Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/7.10.1/#api/2/component
 type ComponentService struct {
 	client *Client
 }
 
-// CreateComponentOptions are passed to the ComponentService.Create function to create a new JIRA component
+// CreateComponentOptions are passed to the ComponentService.Create function to create a new Jira component
 type CreateComponentOptions struct {
 	Name         string `json:"name,omitempty" structs:"name,omitempty"`
 	Description  string `json:"description,omitempty" structs:"description,omitempty"`
@@ -19,7 +19,7 @@ type CreateComponentOptions struct {
 	ProjectID    int    `json:"projectId,omitempty" structs:"projectId,omitempty"`
 }
 
-// Create creates a new JIRA component based on the given options.
+// Create creates a new Jira component based on the given options.
 func (s *ComponentService) Create(options *CreateComponentOptions) (*ProjectComponent, *Response, error) {
 	apiEndpoint := "rest/api/2/component"
 	req, err := s.client.NewRequest("POST", apiEndpoint, options)

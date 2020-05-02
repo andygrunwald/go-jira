@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Error message from JIRA
+// Error message from Jira
 // See https://docs.atlassian.com/jira/REST/cloud/#error-responses
 type Error struct {
 	HTTPError     error
