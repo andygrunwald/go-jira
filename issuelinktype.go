@@ -133,5 +133,5 @@ func (s *IssueLinkTypeService) DeleteWithContext(ctx context.Context, ID string)
 
 // Delete wraps DeleteWithContext using the background context.
 func (s *IssueLinkTypeService) Delete(ID string) (*Response, error) {
-	return s.linkType(context.Background(), ID)
+	return s.DeleteWithContext(context.Background(), ID)
 }
