@@ -11,14 +11,7 @@ jobs:
     name: Test and lint
     strategy:
       matrix:
-        go-version: [
-          1.9.x,
-          1.10.x,
-          1.11.x,
-          1.12.x,
-          1.13.x,
-          1.14.x
-        ]
+        go-version: [1.x, 1.13.x, 1.12.x]
         platform: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
 
