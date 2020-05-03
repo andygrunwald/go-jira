@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -47,7 +48,7 @@ type Session struct {
 	Cookies []*http.Cookie
 }
 
-// AcquireSessionCookie creates a new session for a user in JIRA.
+// AcquireSessionCookieWithContext creates a new session for a user in JIRA.
 // Once a session has been successfully created it can be used to access any of JIRA's remote APIs and also the web UI by passing the appropriate HTTP Cookie header.
 // The header will by automatically applied to every API request.
 // Note that it is generally preferrable to use HTTP BASIC authentication with the REST API.
@@ -56,7 +57,7 @@ type Session struct {
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 //
 // Deprecated: Use CookieAuthTransport instead
-func (s *AuthenticationService) AcquireSessionCookie(username, password string) (bool, error) {
+func (s *AuthenticationService) AcquireSessionCookieWithContext(ctx context.Context, username, password string) (bool, error) {
 	apiEndpoint := "rest/auth/1/session"
 	body := struct {
 		Username string `json:"username"`
@@ -66,7 +67,7 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 		password,
 	}
 
-	req, err := s.client.NewRequest("POST", apiEndpoint, body)
+	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, body)
 	if err != nil {
 		return false, err
 	}
@@ -91,6 +92,13 @@ func (s *AuthenticationService) AcquireSessionCookie(username, password string) 
 	return true, nil
 }
 
+// AcquireSessionCookie wraps AcquireSessionCookieWithContext using the background context.
+//
+// Deprecated: Use CookieAuthTransport instead
+func (s *AuthenticationService) AcquireSessionCookie(username, password string) (bool, error) {
+	return s.AcquireSessionCookieWithContext(context.Background(), username, password)
+}
+
 // SetBasicAuth sets username and password for the basic auth against the JIRA instance.
 //
 // Deprecated: Use BasicAuthTransport instead
@@ -113,19 +121,19 @@ func (s *AuthenticationService) Authenticated() bool {
 	return false
 }
 
-// Logout logs out the current user that has been authenticated and the session in the client is destroyed.
+// LogoutWithContext logs out the current user that has been authenticated and the session in the client is destroyed.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 //
 // Deprecated: Use CookieAuthTransport to create base client.  Logging out is as simple as not using the
 // client anymore
-func (s *AuthenticationService) Logout() error {
+func (s *AuthenticationService) LogoutWithContext(ctx context.Context) error {
 	if s.authType != authTypeSession || s.client.session == nil {
 		return fmt.Errorf("no user is authenticated")
 	}
 
 	apiEndpoint := "rest/auth/1/session"
-	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndpoint, nil)
 	if err != nil {
 		return fmt.Errorf("creating the request to log the user out failed : %s", err)
 	}
@@ -145,10 +153,18 @@ func (s *AuthenticationService) Logout() error {
 
 }
 
-// GetCurrentUser gets the details of the current user.
+// Logout wraps LogoutWithContext using the background context.
+//
+// Deprecated: Use CookieAuthTransport to create base client.  Logging out is as simple as not using the
+// client anymore
+func (s *AuthenticationService) Logout() error {
+	return s.LogoutWithContext(context.Background())
+}
+
+// GetCurrentUserWithContext gets the details of the current user.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
-func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
+func (s *AuthenticationService) GetCurrentUserWithContext(ctx context.Context) (*Session, error) {
 	if s == nil {
 		return nil, fmt.Errorf("authenticaiton Service is not instantiated")
 	}
@@ -157,7 +173,7 @@ func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 	}
 
 	apiEndpoint := "rest/auth/1/session"
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, fmt.Errorf("could not create request for getting user info : %s", err)
 	}
@@ -184,4 +200,9 @@ func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
 	}
 
 	return ret, nil
+}
+
+// GetCurrentUser wraps GetCurrentUserWithContext using the background context.
+func (s *AuthenticationService) GetCurrentUser() (*Session, error) {
+	return s.GetCurrentUserWithContext(context.Background())
 }

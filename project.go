@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/google/go-querystring/query"
@@ -80,20 +81,25 @@ type PermissionScheme struct {
 	Permissions []Permission `json:"permissions" structs:"permissions,omitempty"`
 }
 
-// GetList gets all projects form JIRA
+// GetListWithContext gets all projects form JIRA
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
-func (s *ProjectService) GetList() (*ProjectList, *Response, error) {
-	return s.ListWithOptions(&GetQueryOptions{})
+func (s *ProjectService) GetListWithContext(ctx context.Context) (*ProjectList, *Response, error) {
+	return s.ListWithOptionsWithContext(ctx, &GetQueryOptions{})
 }
 
-// ListWithOptions gets all projects form JIRA with optional query params, like &GetQueryOptions{Expand: "issueTypes"} to get
+// GetList wraps GetListWithContext using the background context.
+func (s *ProjectService) GetList() (*ProjectList, *Response, error) {
+	return s.GetListWithContext(context.Background())
+}
+
+// ListWithOptionsWithContext gets all projects form JIRA with optional query params, like &GetQueryOptions{Expand: "issueTypes"} to get
 // a list of all projects and their supported issuetypes
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
-func (s *ProjectService) ListWithOptions(options *GetQueryOptions) (*ProjectList, *Response, error) {
+func (s *ProjectService) ListWithOptionsWithContext(ctx context.Context, options *GetQueryOptions) (*ProjectList, *Response, error) {
 	apiEndpoint := "rest/api/2/project"
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -116,14 +122,19 @@ func (s *ProjectService) ListWithOptions(options *GetQueryOptions) (*ProjectList
 	return projectList, resp, nil
 }
 
-// Get returns a full representation of the project for the given issue key.
+// ListWithOptions wraps ListWithOptionsWithContext using the background context.
+func (s *ProjectService) ListWithOptions(options *GetQueryOptions) (*ProjectList, *Response, error) {
+	return s.ListWithOptionsWithContext(context.Background(), options)
+}
+
+// GetWithContext returns a full representation of the project for the given issue key.
 // JIRA will attempt to identify the project by the projectIdOrKey path parameter.
 // This can be an project id, or an project key.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
-func (s *ProjectService) Get(projectID string) (*Project, *Response, error) {
+func (s *ProjectService) GetWithContext(ctx context.Context, projectID string) (*Project, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/project/%s", projectID)
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -138,14 +149,19 @@ func (s *ProjectService) Get(projectID string) (*Project, *Response, error) {
 	return project, resp, nil
 }
 
-// GetPermissionScheme returns a full representation of the permission scheme for the project
+// Get wraps GetWithContext using the background context.
+func (s *ProjectService) Get(projectID string) (*Project, *Response, error) {
+	return s.GetWithContext(context.Background(), projectID)
+}
+
+// GetPermissionSchemeWithContext returns a full representation of the permission scheme for the project
 // JIRA will attempt to identify the project by the projectIdOrKey path parameter.
 // This can be an project id, or an project key.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
-func (s *ProjectService) GetPermissionScheme(projectID string) (*PermissionScheme, *Response, error) {
+func (s *ProjectService) GetPermissionSchemeWithContext(ctx context.Context, projectID string) (*PermissionScheme, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/project/%s/permissionscheme", projectID)
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -158,4 +174,9 @@ func (s *ProjectService) GetPermissionScheme(projectID string) (*PermissionSchem
 	}
 
 	return ps, resp, nil
+}
+
+// GetPermissionScheme wraps GetPermissionSchemeWithContext using the background context.
+func (s *ProjectService) GetPermissionScheme(projectID string) (*PermissionScheme, *Response, error) {
+	return s.GetPermissionSchemeWithContext(context.Background(), projectID)
 }
