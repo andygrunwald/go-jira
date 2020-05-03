@@ -451,6 +451,9 @@ func TestIssueService_GetEditMeta_Fail(t *testing.T) {
 		t.Error("Expected to receive an error, received nil instead")
 	}
 
+	t.Logf("Error type %T", err)
+	t.Logf("Error %+v", err)
+
 	expectedError := "connection refused"
 	if !strings.Contains(err.Error(), expectedError) {
 		t.Errorf("Expected to receive error containing %s, received %v instead", expectedError, err.Error())
