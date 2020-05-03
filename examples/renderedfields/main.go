@@ -48,7 +48,7 @@ func main() {
 		return
 	}
 
-	fmt.Printf("Targetting %s for issue %s\n", strings.TrimSpace(jiraURL), key)
+	fmt.Printf("Targeting %s for issue %s\n", strings.TrimSpace(jiraURL), key)
 
 	options := &jira.GetQueryOptions{Expand: "renderedFields"}
 	u, _, err := client.Issue.Get(key, options)

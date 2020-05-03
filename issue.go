@@ -799,7 +799,7 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 }
 
 // UpdateWithOptionsWithContext updates an issue from a JSON representation,
-// while also specifiying query params. The issue is found by key.
+// while also specifying query params. The issue is found by key.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
 func (s *IssueService) UpdateWithOptionsWithContext(ctx context.Context, issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
