@@ -3,7 +3,7 @@ package jira
 import (
 	"fmt"
 	"net/http"
-	"strings"
+	"net/url"
 	"testing"
 )
 
@@ -451,9 +451,8 @@ func TestIssueService_GetEditMeta_Fail(t *testing.T) {
 		t.Error("Expected to receive an error, received nil instead")
 	}
 
-	expectedError := "connection refused"
-	if !strings.Contains(err.Error(), expectedError) {
-		t.Errorf("Expected to receive error containing %s, received %v instead", expectedError, err.Error())
+	if _, ok := err.(*url.Error); !ok {
+		t.Errorf("Expected to receive an *url.Error, got %T instead", err)
 	}
 }
 
