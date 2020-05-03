@@ -106,7 +106,7 @@ func NewClient(httpClient httpClient, baseURL string) (*Client, error) {
 	return c, nil
 }
 
-// NewRawRequest creates an API request.
+// NewRawRequestWithContext creates an API request.
 // A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
 // Allows using an optional native io.Reader for sourcing the request body.
 func (c *Client) NewRawRequestWithContext(ctx context.Context, method, urlStr string, body io.Reader) (*http.Request, error) {

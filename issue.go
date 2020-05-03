@@ -1234,7 +1234,7 @@ func (s *IssueService) DoTransitionWithPayloadWithContext(ctx context.Context, t
 	return resp, err
 }
 
-// XXXXX wraps XXXXXWithContext using the background context.
+// DoTransitionWithPayload wraps DoTransitionWithPayloadWithContext using the background context.
 func (s *IssueService) DoTransitionWithPayload(ticketID, payload interface{}) (*Response, error) {
 	return s.DoTransitionWithPayloadWithContext(context.Background(), ticketID, payload)
 }
