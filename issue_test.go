@@ -471,10 +471,11 @@ func TestIssueService_PostAttachment(t *testing.T) {
 		if err != nil {
 			status = http.StatusNotAcceptable
 		}
+		defer file.Close()
+
 		if file == nil {
 			status = http.StatusNoContent
 		} else {
-
 			// Read the file into memory
 			data, err := ioutil.ReadAll(file)
 			if err != nil {
@@ -483,11 +484,9 @@ func TestIssueService_PostAttachment(t *testing.T) {
 			if string(data) != testAttachment {
 				status = http.StatusNotAcceptable
 			}
-
-			w.WriteHeader(status)
-			fmt.Fprint(w, `[{"self":"http://jira/jira/rest/api/2/attachment/228924","id":"228924","filename":"example.jpg","author":{"self":"http://jira/jira/rest/api/2/user?username=test","name":"test","emailAddress":"test@test.com","avatarUrls":{"16x16":"http://jira/jira/secure/useravatar?size=small&avatarId=10082","48x48":"http://jira/jira/secure/useravatar?avatarId=10082"},"displayName":"Tester","active":true},"created":"2016-05-24T00:25:17.000-0700","size":32280,"mimeType":"image/jpeg","content":"http://jira/jira/secure/attachment/228924/example.jpg","thumbnail":"http://jira/jira/secure/thumbnail/228924/_thumb_228924.png"}]`)
-			file.Close()
 		}
+		w.WriteHeader(status)
+		fmt.Fprint(w, `[{"self":"http://jira/jira/rest/api/2/attachment/228924","id":"228924","filename":"example.jpg","author":{"self":"http://jira/jira/rest/api/2/user?username=test","name":"test","emailAddress":"test@test.com","avatarUrls":{"16x16":"http://jira/jira/secure/useravatar?size=small&avatarId=10082","48x48":"http://jira/jira/secure/useravatar?avatarId=10082"},"displayName":"Tester","active":true},"created":"2016-05-24T00:25:17.000-0700","size":32280,"mimeType":"image/jpeg","content":"http://jira/jira/secure/attachment/228924/example.jpg","thumbnail":"http://jira/jira/secure/thumbnail/228924/_thumb_228924.png"}]`)
 	})
 
 	reader := strings.NewReader(testAttachment)
