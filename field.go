@@ -26,7 +26,7 @@ type FieldSchema struct {
 	System string `json:"system,omitempty" structs:"system,omitempty"`
 }
 
-// GetList gets all fields from JIRA
+// GetListWithContext gets all fields from JIRA
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-field-get
 func (s *FieldService) GetListWithContext(ctx context.Context) ([]Field, *Response, error) {

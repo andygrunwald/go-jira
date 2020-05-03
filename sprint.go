@@ -23,7 +23,7 @@ type IssuesInSprintResult struct {
 	Issues []Issue `json:"issues"`
 }
 
-// MoveIssuesToSprint moves issues to a sprint, for a given sprint Id.
+// MoveIssuesToSprintWithContext moves issues to a sprint, for a given sprint Id.
 // Issues can only be moved to open or active sprints.
 // The maximum number of issues that can be moved in one operation is 50.
 //
@@ -51,7 +51,7 @@ func (s *SprintService) MoveIssuesToSprint(sprintID int, issueIDs []string) (*Re
 	return s.MoveIssuesToSprintWithContext(context.Background(), sprintID, issueIDs)
 }
 
-// GetIssuesForSprint returns all issues in a sprint, for a given sprint Id.
+// GetIssuesForSprintWithContext returns all issues in a sprint, for a given sprint Id.
 // This only includes issues that the user has permission to view.
 // By default, the returned issues are ordered by rank.
 //
@@ -79,7 +79,7 @@ func (s *SprintService) GetIssuesForSprint(sprintID int) ([]Issue, *Response, er
 	return s.GetIssuesForSprintWithContext(context.Background(), sprintID)
 }
 
-// GetIssue returns a full representation of the issue for the given issue key.
+// GetIssueWithContext returns a full representation of the issue for the given issue key.
 // JIRA will attempt to identify the issue by the issueIdOrKey path parameter.
 // This can be an issue id, or an issue key.
 // If the issue cannot be found via an exact match, JIRA will also look for the issue in a case-insensitive way, or by looking to see if the issue was moved.

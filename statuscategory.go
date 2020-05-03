@@ -27,7 +27,7 @@ const (
 	StatusCategoryUndefined  = "undefined"
 )
 
-// GetList gets all status categories from JIRA
+// GetListWithContext gets all status categories from JIRA
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-statuscategory-get
 func (s *StatusCategoryService) GetListWithContext(ctx context.Context) ([]StatusCategory, *Response, error) {

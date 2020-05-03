@@ -119,7 +119,7 @@ type FilterSearchOptions struct {
 	Expand string `url:"expand,omitempty"`
 }
 
-// GetList retrieves all filters from Jira
+// GetListWithContext retrieves all filters from Jira
 func (fs *FilterService) GetListWithContext(ctx context.Context) ([]*Filter, *Response, error) {
 
 	options := &GetQueryOptions{}
@@ -151,7 +151,7 @@ func (fs *FilterService) GetList() ([]*Filter, *Response, error) {
 	return fs.GetListWithContext(context.Background())
 }
 
-// GetFavouriteList retrieves the user's favourited filters from Jira
+// GetFavouriteListWithContext retrieves the user's favourited filters from Jira
 func (fs *FilterService) GetFavouriteListWithContext(ctx context.Context) ([]*Filter, *Response, error) {
 	apiEndpoint := "rest/api/2/filter/favourite"
 	req, err := fs.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
@@ -172,7 +172,7 @@ func (fs *FilterService) GetFavouriteList() ([]*Filter, *Response, error) {
 	return fs.GetFavouriteListWithContext(context.Background())
 }
 
-// Get retrieves a single Filter from Jira
+// GetWithContext retrieves a single Filter from Jira
 func (fs *FilterService) GetWithContext(ctx context.Context, filterID int) (*Filter, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/filter/%d", filterID)
 	req, err := fs.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
@@ -194,7 +194,7 @@ func (fs *FilterService) Get(filterID int) (*Filter, *Response, error) {
 	return fs.GetWithContext(context.Background(), filterID)
 }
 
-// GetMyFilters retrieves the my Filters.
+// GetMyFiltersWithContext retrieves the my Filters.
 //
 // https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-rest-api-3-filter-my-get
 func (fs *FilterService) GetMyFiltersWithContext(ctx context.Context, opts *GetMyFiltersQueryOptions) ([]*Filter, *Response, error) {
@@ -222,7 +222,7 @@ func (fs *FilterService) GetMyFilters(opts *GetMyFiltersQueryOptions) ([]*Filter
 	return fs.GetMyFiltersWithContext(context.Background(), opts)
 }
 
-// Search will search for filter according to the search options
+// SearchWithContext will search for filter according to the search options
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-rest-api-3-filter-search-get
 func (fs *FilterService) SearchWithContext(ctx context.Context, opt *FilterSearchOptions) (*FiltersList, *Response, error) {

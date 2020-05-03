@@ -36,7 +36,7 @@ type ActorUser struct {
 	AccountID string `json:"accountId" structs:"accountId"`
 }
 
-// GetList returns a list of all available project roles
+// GetListWithContext returns a list of all available project roles
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-role-get
 func (s *RoleService) GetListWithContext(ctx context.Context) (*[]Role, *Response, error) {
@@ -59,7 +59,7 @@ func (s *RoleService) GetList() (*[]Role, *Response, error) {
 	return s.GetListWithContext(context.Background())
 }
 
-// Get retreives a single Role from Jira
+// GetWithContext retreives a single Role from Jira
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-role-id-get
 func (s *RoleService) GetWithContext(ctx context.Context, roleID int) (*Role, *Response, error) {

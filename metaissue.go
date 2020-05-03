@@ -48,7 +48,7 @@ type MetaIssueType struct {
 	Fields      tcontainer.MarshalMap `json:"fields,omitempty"`
 }
 
-// GetCreateMeta makes the api call to get the meta information required to create a ticket
+// GetCreateMetaWithContext makes the api call to get the meta information required to create a ticket
 func (s *IssueService) GetCreateMetaWithContext(ctx context.Context, projectkeys string) (*CreateMetaInfo, *Response, error) {
 	return s.GetCreateMetaWithOptionsWithContext(ctx, &GetQueryOptions{ProjectKeys: projectkeys, Expand: "projects.issuetypes.fields"})
 }
@@ -58,9 +58,7 @@ func (s *IssueService) GetCreateMeta(projectkeys string) (*CreateMetaInfo, *Resp
 	return s.GetCreateMetaWithContext(context.Background(), projectkeys)
 }
 
-// GetCreateMetaWithOptions makes the api call to get the meta information without requiring to have a projectKey
-// todo: the name should be reconsidered, GetCreateMetaWithOptions could be replace with simply
-//  GetCreateMeta and chick if the options is nil will pass the default options
+// GetCreateMetaWithOptionsWithContext makes the api call to get the meta information without requiring to have a projectKey
 func (s *IssueService) GetCreateMetaWithOptionsWithContext(ctx context.Context, options *GetQueryOptions) (*CreateMetaInfo, *Response, error) {
 	apiEndpoint := "rest/api/2/issue/createmeta"
 

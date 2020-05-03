@@ -21,7 +21,7 @@ type CreateComponentOptions struct {
 	ProjectID    int    `json:"projectId,omitempty" structs:"projectId,omitempty"`
 }
 
-// Create creates a new JIRA component based on the given options.
+// CreateWithContext creates a new JIRA component based on the given options.
 func (s *ComponentService) CreateWithContext(ctx context.Context, options *CreateComponentOptions) (*ProjectComponent, *Response, error) {
 	apiEndpoint := "rest/api/2/component"
 	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, options)

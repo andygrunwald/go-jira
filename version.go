@@ -28,7 +28,7 @@ type Version struct {
 	StartDate       string `json:"startDate,omitempty" structs:"startDate,omitempty"`
 }
 
-// Get gets version info from JIRA
+// GetWithContext gets version info from JIRA
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-version-id-get
 func (s *VersionService) GetWithContext(ctx context.Context, versionID int) (*Version, *Response, error) {
@@ -51,7 +51,7 @@ func (s *VersionService) Get(versionID int) (*Version, *Response, error) {
 	return s.GetWithContext(context.Background(), versionID)
 }
 
-// Create creates a version in JIRA.
+// CreateWithContext creates a version in JIRA.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-version-post
 func (s *VersionService) CreateWithContext(ctx context.Context, version *Version) (*Version, *Response, error) {
@@ -86,7 +86,7 @@ func (s *VersionService) Create(version *Version) (*Version, *Response, error) {
 	return s.CreateWithContext(context.Background(), version)
 }
 
-// Update updates a version from a JSON representation.
+// UpdateWithContext updates a version from a JSON representation.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-version-id-put
 func (s *VersionService) UpdateWithContext(ctx context.Context, version *Version) (*Version, *Response, error) {

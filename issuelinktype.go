@@ -14,7 +14,7 @@ type IssueLinkTypeService struct {
 	client *Client
 }
 
-// GetList gets all of the issue link types from JIRA.
+// GetListWithContext gets all of the issue link types from JIRA.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-get
 func (s *IssueLinkTypeService) GetListWithContext(ctx context.Context) ([]IssueLinkType, *Response, error) {
@@ -37,7 +37,7 @@ func (s *IssueLinkTypeService) GetList() ([]IssueLinkType, *Response, error) {
 	return s.GetListWithContext(context.Background())
 }
 
-// Get gets info of a specific issue link type from JIRA.
+// GetWithContext gets info of a specific issue link type from JIRA.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-get
 func (s *IssueLinkTypeService) GetWithContext(ctx context.Context, ID string) (*IssueLinkType, *Response, error) {
@@ -60,7 +60,7 @@ func (s *IssueLinkTypeService) Get(ID string) (*IssueLinkType, *Response, error)
 	return s.GetWithContext(context.Background(), ID)
 }
 
-// Create creates an issue link type in JIRA.
+// CreateWithContext creates an issue link type in JIRA.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-post
 func (s *IssueLinkTypeService) CreateWithContext(ctx context.Context, linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
@@ -117,7 +117,7 @@ func (s *IssueLinkTypeService) Update(linkType *IssueLinkType) (*IssueLinkType, 
 	return s.UpdateWithContext(context.Background(), linkType)
 }
 
-// Delete deletes an issue link type based on provided ID.
+// DeleteWithContext deletes an issue link type based on provided ID.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-delete
 func (s *IssueLinkTypeService) DeleteWithContext(ctx context.Context, ID string) (*Response, error) {

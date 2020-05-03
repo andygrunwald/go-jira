@@ -149,7 +149,7 @@ func (c *Client) NewRawRequest(method, urlStr string, body io.Reader) (*http.Req
 	return c.NewRawRequestWithContext(context.Background(), method, urlStr, body)
 }
 
-// NewRequest creates an API request.
+// NewRequestWithContext creates an API request.
 // A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
 // If specified, the value pointed to by body is JSON encoded and included as the request body.
 func (c *Client) NewRequestWithContext(ctx context.Context, method, urlStr string, body interface{}) (*http.Request, error) {
@@ -223,7 +223,7 @@ func addOptions(s string, opt interface{}) (string, error) {
 	return u.String(), nil
 }
 
-// NewMultiPartRequest creates an API request including a multi-part file.
+// NewMultiPartRequestWithContext creates an API request including a multi-part file.
 // A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
 // If specified, the value pointed to by buf is a multipart form.
 func (c *Client) NewMultiPartRequestWithContext(ctx context.Context, method, urlStr string, buf *bytes.Buffer) (*http.Request, error) {

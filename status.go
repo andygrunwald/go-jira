@@ -21,7 +21,7 @@ type Status struct {
 	StatusCategory StatusCategory `json:"statusCategory" structs:"statusCategory"`
 }
 
-// GetAllStatuses returns a list of all statuses associated with workflows.
+// GetAllStatusesWithContext returns a list of all statuses associated with workflows.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-status-get
 func (s *StatusService) GetAllStatusesWithContext(ctx context.Context) ([]Status, *Response, error) {

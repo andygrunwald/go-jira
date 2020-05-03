@@ -28,7 +28,7 @@ type Holder struct {
 	Expand    string `json:"expand" structs:"expand"`
 }
 
-// GetList returns a list of all permission schemes
+// GetListWithContext returns a list of all permission schemes
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-permissionscheme-get
 func (s *PermissionSchemeService) GetListWithContext(ctx context.Context) (*PermissionSchemes, *Response, error) {
@@ -53,7 +53,7 @@ func (s *PermissionSchemeService) GetList() (*PermissionSchemes, *Response, erro
 	return s.GetListWithContext(context.Background())
 }
 
-// Get returns a full representation of the permission scheme for the schemeID
+// GetWithContext returns a full representation of the permission scheme for the schemeID
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-permissionscheme-schemeId-get
 func (s *PermissionSchemeService) GetWithContext(ctx context.Context, schemeID int) (*PermissionScheme, *Response, error) {

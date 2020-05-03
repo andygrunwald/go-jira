@@ -48,7 +48,7 @@ type Session struct {
 	Cookies []*http.Cookie
 }
 
-// AcquireSessionCookie creates a new session for a user in JIRA.
+// AcquireSessionCookieWithContext creates a new session for a user in JIRA.
 // Once a session has been successfully created it can be used to access any of JIRA's remote APIs and also the web UI by passing the appropriate HTTP Cookie header.
 // The header will by automatically applied to every API request.
 // Note that it is generally preferrable to use HTTP BASIC authentication with the REST API.
@@ -121,7 +121,7 @@ func (s *AuthenticationService) Authenticated() bool {
 	return false
 }
 
-// Logout logs out the current user that has been authenticated and the session in the client is destroyed.
+// LogoutWithContext logs out the current user that has been authenticated and the session in the client is destroyed.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 //
@@ -161,7 +161,7 @@ func (s *AuthenticationService) Logout() error {
 	return s.LogoutWithContext(context.Background())
 }
 
-// GetCurrentUser gets the details of the current user.
+// GetCurrentUserWithContext gets the details of the current user.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 func (s *AuthenticationService) GetCurrentUserWithContext(ctx context.Context) (*Session, error) {

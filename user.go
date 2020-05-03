@@ -48,7 +48,7 @@ type userSearch []userSearchParam
 
 type userSearchF func(userSearch) userSearch
 
-// Get gets user info from JIRA
+// GetWithContext gets user info from JIRA
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUser
 //
@@ -75,7 +75,7 @@ func (s *UserService) Get(username string) (*User, *Response, error) {
 	return s.GetWithContext(context.Background(), username)
 }
 
-// Get gets user info from JIRA
+// GetByAccountIDWithContext gets user info from JIRA
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUser
 func (s *UserService) GetByAccountIDWithContext(ctx context.Context, accountID string) (*User, *Response, error) {
@@ -98,7 +98,7 @@ func (s *UserService) GetByAccountID(accountID string) (*User, *Response, error)
 	return s.GetByAccountIDWithContext(context.Background(), accountID)
 }
 
-// Create creates an user in JIRA.
+// CreateWithContext creates an user in JIRA.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-createUser
 func (s *UserService) CreateWithContext(ctx context.Context, user *User) (*User, *Response, error) {
@@ -133,7 +133,7 @@ func (s *UserService) Create(user *User) (*User, *Response, error) {
 	return s.CreateWithContext(context.Background(), user)
 }
 
-// Delete deletes an user from JIRA.
+// DeleteWithContext deletes an user from JIRA.
 // Returns http.StatusNoContent on success.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-user-delete
@@ -156,7 +156,7 @@ func (s *UserService) Delete(username string) (*Response, error) {
 	return s.DeleteWithContext(context.Background(), username)
 }
 
-// GetGroups returns the groups which the user belongs to
+// GetGroupsWithContext returns the groups which the user belongs to
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUserGroups
 func (s *UserService) GetGroupsWithContext(ctx context.Context, username string) (*[]UserGroup, *Response, error) {
@@ -179,7 +179,7 @@ func (s *UserService) GetGroups(username string) (*[]UserGroup, *Response, error
 	return s.GetGroupsWithContext(context.Background(), username)
 }
 
-// Get information about the current logged-in user
+// GetSelfWithContext information about the current logged-in user
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-myself-get
 func (s *UserService) GetSelfWithContext(ctx context.Context) (*User, *Response, error) {
@@ -233,7 +233,7 @@ func WithInactive(inactive bool) userSearchF {
 	}
 }
 
-// Find searches for user info from JIRA:
+// FindWithContext searches for user info from JIRA:
 // It can find users by email, username or name
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-findUsers
@@ -267,6 +267,7 @@ func (s *UserService) FindWithContext(ctx context.Context, property string, twea
 	return users, resp, nil
 }
 
+// Find wraps FindWithContext using the background context.
 func (s *UserService) Find(property string, tweaks ...userSearchF) ([]User, *Response, error) {
 	return s.FindWithContext(context.Background(), property, tweaks...)
 }

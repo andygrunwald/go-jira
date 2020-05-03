@@ -20,7 +20,7 @@ type Priority struct {
 	Description string `json:"description,omitempty" structs:"description,omitempty"`
 }
 
-// GetList gets all priorities from JIRA
+// GetListWithContext gets all priorities from JIRA
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-priority-get
 func (s *PriorityService) GetListWithContext(ctx context.Context) ([]Priority, *Response, error) {

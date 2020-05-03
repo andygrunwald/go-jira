@@ -59,7 +59,7 @@ type GroupSearchOptions struct {
 	IncludeInactiveUsers bool
 }
 
-// Get returns a paginated list of users who are members of the specified group and its subgroups.
+// GetWithContext returns a paginated list of users who are members of the specified group and its subgroups.
 // Users in the page are ordered by user names.
 // User of this resource is required to have sysadmin or admin permissions.
 //
@@ -87,7 +87,7 @@ func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
 	return s.GetWithContext(context.Background(), name)
 }
 
-// GetWithOptions returns a paginated list of members of the specified group and its subgroups.
+// GetWithOptionsWithContext returns a paginated list of members of the specified group and its subgroups.
 // Users in the page are ordered by user names.
 // User of this resource is required to have sysadmin or admin permissions.
 //
@@ -123,7 +123,7 @@ func (s *GroupService) GetWithOptions(name string, options *GroupSearchOptions) 
 	return s.GetWithOptionsWithContext(context.Background(), name, options)
 }
 
-// Add adds user to group
+// AddWithContext adds user to group
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-addUserToGroup
 func (s *GroupService) AddWithContext(ctx context.Context, groupname string, username string) (*Group, *Response, error) {
@@ -152,7 +152,7 @@ func (s *GroupService) Add(groupname string, username string) (*Group, *Response
 	return s.AddWithContext(context.Background(), groupname, username)
 }
 
-// Remove removes user from group
+// RemoveWithContext removes user from group
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-removeUserFromGroup
 func (s *GroupService) RemoveWithContext(ctx context.Context, groupname string, username string) (*Response, error) {

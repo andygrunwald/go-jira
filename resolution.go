@@ -18,7 +18,7 @@ type Resolution struct {
 	Name        string `json:"name" structs:"name"`
 }
 
-// GetList gets all resolutions from JIRA
+// GetListWithContext gets all resolutions from JIRA
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-resolution-get
 func (s *ResolutionService) GetListWithContext(ctx context.Context) ([]Resolution, *Response, error) {

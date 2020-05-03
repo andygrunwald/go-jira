@@ -589,7 +589,7 @@ type RemoteLinkStatus struct {
 	Icon     *RemoteLinkIcon
 }
 
-// Get returns a full representation of the issue for the given issue key.
+// GetWithContext returns a full representation of the issue for the given issue key.
 // JIRA will attempt to identify the issue by the issueIdOrKey path parameter.
 // This can be an issue id, or an issue key.
 // If the issue cannot be found via an exact match, JIRA will also look for the issue in a case-insensitive way, or by looking to see if the issue was moved.
@@ -627,7 +627,7 @@ func (s *IssueService) Get(issueID string, options *GetQueryOptions) (*Issue, *R
 	return s.GetWithContext(context.Background(), issueID, options)
 }
 
-// DownloadAttachment returns a Response of an attachment for a given attachmentID.
+// DownloadAttachmentWithContext returns a Response of an attachment for a given attachmentID.
 // The attachment is in the Response.Body of the response.
 // This is an io.ReadCloser.
 // The caller should close the resp.Body.
@@ -652,7 +652,7 @@ func (s *IssueService) DownloadAttachment(attachmentID string) (*Response, error
 	return s.DownloadAttachmentWithContext(context.Background(), attachmentID)
 }
 
-// PostAttachment uploads r (io.Reader) as an attachment to a given issueID
+// PostAttachmentWithContext uploads r (io.Reader) as an attachment to a given issueID
 func (s *IssueService) PostAttachmentWithContext(ctx context.Context, issueID string, r io.Reader, attachmentName string) (*[]Attachment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/attachments", issueID)
 
@@ -695,7 +695,7 @@ func (s *IssueService) PostAttachment(issueID string, r io.Reader, attachmentNam
 	return s.PostAttachmentWithContext(context.Background(), issueID, r, attachmentName)
 }
 
-// DeleteAttachment deletes an attachment of a given attachmentID
+// DeleteAttachmentWithContext deletes an attachment of a given attachmentID
 func (s *IssueService) DeleteAttachmentWithContext(ctx context.Context, attachmentID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/attachment/%s", attachmentID)
 
@@ -718,7 +718,7 @@ func (s *IssueService) DeleteAttachment(attachmentID string) (*Response, error) 
 	return s.DeleteAttachmentWithContext(context.Background(), attachmentID)
 }
 
-// GetWorklogs gets all the worklogs for an issue.
+// GetWorklogsWithContext gets all the worklogs for an issue.
 // This method is especially important if you need to read all the worklogs, not just the first page.
 //
 // https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/worklog-getIssueWorklog
@@ -763,7 +763,7 @@ func WithQueryOptions(options interface{}) func(*http.Request) error {
 	}
 }
 
-// Create creates an issue or a sub-task from a JSON representation.
+// CreateWithContext creates an issue or a sub-task from a JSON representation.
 // Creating a sub-task is similar to creating a regular issue, with two important differences:
 // The issueType field must correspond to a sub-task issue type and you must provide a parent field in the issue create request containing the id or key of the parent issue.
 //
@@ -798,7 +798,7 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 	return s.CreateWithContext(context.Background(), issue)
 }
 
-// UpdateWithOptions updates an issue from a JSON representation,
+// UpdateWithOptionsWithContext updates an issue from a JSON representation,
 // while also specifiying query params. The issue is found by key.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
@@ -829,7 +829,7 @@ func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateQueryOptions)
 	return s.UpdateWithOptionsWithContext(context.Background(), issue, opts)
 }
 
-// Update updates an issue from a JSON representation. The issue is found by key.
+// UpdateWithContext updates an issue from a JSON representation. The issue is found by key.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
 func (s *IssueService) UpdateWithContext(ctx context.Context, issue *Issue) (*Issue, *Response, error) {
@@ -841,7 +841,7 @@ func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
 	return s.UpdateWithContext(context.Background(), issue)
 }
 
-// UpdateIssue updates an issue from a JSON representation. The issue is found by key.
+// UpdateIssueWithContext updates an issue from a JSON representation. The issue is found by key.
 //
 // https://docs.atlassian.com/jira/REST/7.4.0/#api/2/issue-editIssue
 func (s *IssueService) UpdateIssueWithContext(ctx context.Context, jiraID string, data map[string]interface{}) (*Response, error) {
@@ -865,7 +865,7 @@ func (s *IssueService) UpdateIssue(jiraID string, data map[string]interface{}) (
 	return s.UpdateIssueWithContext(context.Background(), jiraID, data)
 }
 
-// AddComment adds a new comment to issueID.
+// AddCommentWithContext adds a new comment to issueID.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-addComment
 func (s *IssueService) AddCommentWithContext(ctx context.Context, issueID string, comment *Comment) (*Comment, *Response, error) {
@@ -890,7 +890,7 @@ func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *
 	return s.AddCommentWithContext(context.Background(), issueID, comment)
 }
 
-// UpdateComment updates the body of a comment, identified by comment.ID, on the issueID.
+// UpdateCommentWithContext updates the body of a comment, identified by comment.ID, on the issueID.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/comment-updateComment
 func (s *IssueService) UpdateCommentWithContext(ctx context.Context, issueID string, comment *Comment) (*Comment, *Response, error) {
@@ -919,7 +919,7 @@ func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment
 	return s.UpdateCommentWithContext(context.Background(), issueID, comment)
 }
 
-// DeleteComment Deletes a comment from an issueID.
+// DeleteCommentWithContext Deletes a comment from an issueID.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-issue-issueIdOrKey-comment-id-delete
 func (s *IssueService) DeleteCommentWithContext(ctx context.Context, issueID, commentID string) error {
@@ -943,7 +943,7 @@ func (s *IssueService) DeleteComment(issueID, commentID string) error {
 	return s.DeleteCommentWithContext(context.Background(), issueID, commentID)
 }
 
-// AddWorklogRecord adds a new worklog record to issueID.
+// AddWorklogRecordWithContext adds a new worklog record to issueID.
 //
 // https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-issue-issueIdOrKey-worklog-post
 func (s *IssueService) AddWorklogRecordWithContext(ctx context.Context, issueID string, record *WorklogRecord, options ...func(*http.Request) error) (*WorklogRecord, *Response, error) {
@@ -975,7 +975,7 @@ func (s *IssueService) AddWorklogRecord(issueID string, record *WorklogRecord, o
 	return s.AddWorklogRecordWithContext(context.Background(), issueID, record, options...)
 }
 
-// UpdateWorklogRecord updates a worklog record.
+// UpdateWorklogRecordWithContext updates a worklog record.
 //
 // https://docs.atlassian.com/software/jira/docs/api/REST/7.1.2/#api/2/issue-updateWorklog
 func (s *IssueService) UpdateWorklogRecordWithContext(ctx context.Context, issueID, worklogID string, record *WorklogRecord, options ...func(*http.Request) error) (*WorklogRecord, *Response, error) {
@@ -1007,7 +1007,7 @@ func (s *IssueService) UpdateWorklogRecord(issueID, worklogID string, record *Wo
 	return s.UpdateWorklogRecordWithContext(context.Background(), issueID, worklogID, record, options...)
 }
 
-// AddLink adds a link between two issues.
+// AddLinkWithContext adds a link between two issues.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issueLink
 func (s *IssueService) AddLinkWithContext(ctx context.Context, issueLink *IssueLink) (*Response, error) {
@@ -1030,7 +1030,7 @@ func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
 	return s.AddLinkWithContext(context.Background(), issueLink)
 }
 
-// Search will search for tickets according to the jql
+// SearchWithContext will search for tickets according to the jql
 //
 // JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
 func (s *IssueService) SearchWithContext(ctx context.Context, jql string, options *SearchOptions) ([]Issue, *Response, error) {
@@ -1081,7 +1081,7 @@ func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Res
 	return s.SearchWithContext(context.Background(), jql, options)
 }
 
-// SearchPages will get issues from all pages in a search
+// SearchPagesWithContext will get issues from all pages in a search
 //
 // JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
 func (s *IssueService) SearchPagesWithContext(ctx context.Context, jql string, options *SearchOptions, f func(Issue) error) error {
@@ -1130,7 +1130,7 @@ func (s *IssueService) SearchPages(jql string, options *SearchOptions, f func(Is
 	return s.SearchPagesWithContext(context.Background(), jql, options, f)
 }
 
-// GetCustomFields returns a map of customfield_* keys with string values
+// GetCustomFieldsWithContext returns a map of customfield_* keys with string values
 func (s *IssueService) GetCustomFieldsWithContext(ctx context.Context, issueID string) (CustomFields, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
@@ -1172,7 +1172,7 @@ func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *Response,
 	return s.GetCustomFieldsWithContext(context.Background(), issueID)
 }
 
-// GetTransitions gets a list of the transitions possible for this issue by the current user,
+// GetTransitionsWithContext gets a list of the transitions possible for this issue by the current user,
 // along with fields that are required and their types.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getTransitions
@@ -1196,7 +1196,7 @@ func (s *IssueService) GetTransitions(id string) ([]Transition, *Response, error
 	return s.GetTransitionsWithContext(context.Background(), id)
 }
 
-// DoTransition performs a transition on an issue.
+// DoTransitionWithContext performs a transition on an issue.
 // When performing the transition you can update or set other issue fields.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
@@ -1214,7 +1214,7 @@ func (s *IssueService) DoTransition(ticketID, transitionID string) (*Response, e
 	return s.DoTransitionWithContext(context.Background(), ticketID, transitionID)
 }
 
-// DoTransitionWithPayload performs a transition on an issue using any payload.
+// DoTransitionWithPayloadWithContext performs a transition on an issue using any payload.
 // When performing the transition you can update or set other issue fields.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
@@ -1318,7 +1318,7 @@ func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIss
 	return issue, nil
 }
 
-// Delete will delete a specified issue.
+// DeleteWithContext will delete a specified issue.
 func (s *IssueService) DeleteWithContext(ctx context.Context, issueID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 
@@ -1341,7 +1341,7 @@ func (s *IssueService) Delete(issueID string) (*Response, error) {
 	return s.DeleteWithContext(context.Background(), issueID)
 }
 
-// GetWatchers wil return all the users watching/observing the given issue
+// GetWatchersWithContext wil return all the users watching/observing the given issue
 //
 // JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-getIssueWatchers
 func (s *IssueService) GetWatchersWithContext(ctx context.Context, issueID string) (*[]User, *Response, error) {
@@ -1384,7 +1384,7 @@ func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
 	return s.GetWatchersWithContext(context.Background(), issueID)
 }
 
-// AddWatcher adds watcher to the given issue
+// AddWatcherWithContext adds watcher to the given issue
 //
 // JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-addWatcher
 func (s *IssueService) AddWatcherWithContext(ctx context.Context, issueID string, userName string) (*Response, error) {
@@ -1408,7 +1408,7 @@ func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, e
 	return s.AddWatcherWithContext(context.Background(), issueID, userName)
 }
 
-// RemoveWatcher removes given user from given issue
+// RemoveWatcherWithContext removes given user from given issue
 //
 // JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-removeWatcher
 func (s *IssueService) RemoveWatcherWithContext(ctx context.Context, issueID string, userName string) (*Response, error) {
@@ -1432,7 +1432,7 @@ func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response
 	return s.RemoveWatcherWithContext(context.Background(), issueID, userName)
 }
 
-// UpdateAssignee updates the user assigned to work on the given issue
+// UpdateAssigneeWithContext updates the user assigned to work on the given issue
 //
 // JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/7.10.2/#api/2/issue-assign
 func (s *IssueService) UpdateAssigneeWithContext(ctx context.Context, issueID string, assignee *User) (*Response, error) {
@@ -1466,7 +1466,7 @@ func (c ChangelogHistory) CreatedTime() (time.Time, error) {
 	return t, err
 }
 
-// GetRemoteLinks gets remote issue links on the issue.
+// GetRemoteLinksWithContext gets remote issue links on the issue.
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getRemoteIssueLinks
 func (s *IssueService) GetRemoteLinksWithContext(ctx context.Context, id string) (*[]RemoteLink, *Response, error) {
@@ -1489,7 +1489,7 @@ func (s *IssueService) GetRemoteLinks(id string) (*[]RemoteLink, *Response, erro
 	return s.GetRemoteLinksWithContext(context.Background(), id)
 }
 
-// AddRemoteLink adds a remote link to issueID.
+// AddRemoteLinkWithContext adds a remote link to issueID.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issue-issueIdOrKey-remotelink-post
 func (s *IssueService) AddRemoteLinkWithContext(ctx context.Context, issueID string, remotelink *RemoteLink) (*RemoteLink, *Response, error) {

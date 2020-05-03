@@ -81,7 +81,7 @@ type PermissionScheme struct {
 	Permissions []Permission `json:"permissions" structs:"permissions,omitempty"`
 }
 
-// GetList gets all projects form JIRA
+// GetListWithContext gets all projects form JIRA
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
 func (s *ProjectService) GetListWithContext(ctx context.Context) (*ProjectList, *Response, error) {
@@ -93,7 +93,7 @@ func (s *ProjectService) GetList() (*ProjectList, *Response, error) {
 	return s.GetListWithContext(context.Background())
 }
 
-// ListWithOptions gets all projects form JIRA with optional query params, like &GetQueryOptions{Expand: "issueTypes"} to get
+// ListWithOptionsWithContext gets all projects form JIRA with optional query params, like &GetQueryOptions{Expand: "issueTypes"} to get
 // a list of all projects and their supported issuetypes
 //
 // JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
@@ -127,7 +127,7 @@ func (s *ProjectService) ListWithOptions(options *GetQueryOptions) (*ProjectList
 	return s.ListWithOptionsWithContext(context.Background(), options)
 }
 
-// Get returns a full representation of the project for the given issue key.
+// GetWithContext returns a full representation of the project for the given issue key.
 // JIRA will attempt to identify the project by the projectIdOrKey path parameter.
 // This can be an project id, or an project key.
 //
@@ -154,7 +154,7 @@ func (s *ProjectService) Get(projectID string) (*Project, *Response, error) {
 	return s.GetWithContext(context.Background(), projectID)
 }
 
-// GetPermissionScheme returns a full representation of the permission scheme for the project
+// GetPermissionSchemeWithContext returns a full representation of the permission scheme for the project
 // JIRA will attempt to identify the project by the projectIdOrKey path parameter.
 // This can be an project id, or an project key.
 //
