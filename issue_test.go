@@ -583,13 +583,10 @@ func TestIssueService_DeleteAttachment(t *testing.T) {
 		if resp.StatusCode == 404 {
 			t.Error("Attachment not found")
 		}
-	} else {
-		t.Log("Attachment deleted")
 	}
+
 	if err != nil {
 		t.Errorf("Error given: %s", err)
-	} else {
-		t.Log("No error")
 	}
 }
 
