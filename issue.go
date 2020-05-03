@@ -963,7 +963,7 @@ func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Res
 	}
 	uv := url.Values{}
 	if jql != "" {
-		uv.Add("jql", url.QueryEscape(jql))
+		uv.Add("jql", jql)
 	}
 
 	if options != nil {
