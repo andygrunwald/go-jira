@@ -322,14 +322,15 @@ func TestIssueService_AddLink(t *testing.T) {
 		},
 	}
 	resp, err := testClient.Issue.AddLink(il)
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
 	if resp == nil {
 		t.Error("Expected response. Response is nil")
+		return
 	}
 	if resp.StatusCode != 200 {
 		t.Errorf("Expected Status code 200. Given %d", resp.StatusCode)
-	}
-	if err != nil {
-		t.Errorf("Error given: %s", err)
 	}
 }
 
@@ -344,8 +345,12 @@ func TestIssueService_Get_Fields(t *testing.T) {
 	})
 
 	issue, _, err := testClient.Issue.Get("10002", nil)
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
+		return
 	}
 	if !reflect.DeepEqual(issue.Fields.Labels, []string{"test"}) {
 		t.Error("Expected labels for the returned issue")
@@ -356,10 +361,6 @@ func TestIssueService_Get_Fields(t *testing.T) {
 	}
 	if issue.Fields.Epic == nil {
 		t.Error("Epic expected but not found")
-	}
-
-	if err != nil {
-		t.Errorf("Error given: %s", err)
 	}
 }
 
@@ -374,8 +375,12 @@ func TestIssueService_Get_RenderedFields(t *testing.T) {
 	})
 
 	issue, _, err := testClient.Issue.Get("10002", nil)
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
+		return
 	}
 	if issue.RenderedFields.Updated != "2 hours ago" {
 		t.Error("Expected updated to equla '2 hours ago' for rendered field")
@@ -387,10 +392,6 @@ func TestIssueService_Get_RenderedFields(t *testing.T) {
 	comment := issue.RenderedFields.Comments.Comments[0]
 	if comment.Body != "This <strong>is</strong> HTML" {
 		t.Errorf("Wrong comment body returned in RenderedField. Got %s", comment.Body)
-	}
-
-	if err != nil {
-		t.Errorf("Error given: %s", err)
 	}
 }
 
@@ -408,8 +409,12 @@ func TestIssueService_DownloadAttachment(t *testing.T) {
 	})
 
 	resp, err := testClient.Issue.DownloadAttachment("10000")
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
 	if resp == nil {
 		t.Error("Expected response. Response is nil")
+		return
 	}
 	defer resp.Body.Close()
 
@@ -423,9 +428,6 @@ func TestIssueService_DownloadAttachment(t *testing.T) {
 
 	if resp.StatusCode != 200 {
 		t.Errorf("Expected Status code 200. Given %d", resp.StatusCode)
-	}
-	if err != nil {
-		t.Errorf("Error given: %s", err)
 	}
 }
 
@@ -443,6 +445,7 @@ func TestIssueService_DownloadAttachment_BadStatus(t *testing.T) {
 	resp, err := testClient.Issue.DownloadAttachment("10000")
 	if resp == nil {
 		t.Error("Expected response. Response is nil")
+		return
 	}
 	defer resp.Body.Close()
 
@@ -468,10 +471,11 @@ func TestIssueService_PostAttachment(t *testing.T) {
 		if err != nil {
 			status = http.StatusNotAcceptable
 		}
+		defer file.Close()
+
 		if file == nil {
 			status = http.StatusNoContent
 		} else {
-
 			// Read the file into memory
 			data, err := ioutil.ReadAll(file)
 			if err != nil {
@@ -480,11 +484,9 @@ func TestIssueService_PostAttachment(t *testing.T) {
 			if string(data) != testAttachment {
 				status = http.StatusNotAcceptable
 			}
-
-			w.WriteHeader(status)
-			fmt.Fprint(w, `[{"self":"http://jira/jira/rest/api/2/attachment/228924","id":"228924","filename":"example.jpg","author":{"self":"http://jira/jira/rest/api/2/user?username=test","name":"test","emailAddress":"test@test.com","avatarUrls":{"16x16":"http://jira/jira/secure/useravatar?size=small&avatarId=10082","48x48":"http://jira/jira/secure/useravatar?avatarId=10082"},"displayName":"Tester","active":true},"created":"2016-05-24T00:25:17.000-0700","size":32280,"mimeType":"image/jpeg","content":"http://jira/jira/secure/attachment/228924/example.jpg","thumbnail":"http://jira/jira/secure/thumbnail/228924/_thumb_228924.png"}]`)
-			file.Close()
 		}
+		w.WriteHeader(status)
+		fmt.Fprint(w, `[{"self":"http://jira/jira/rest/api/2/attachment/228924","id":"228924","filename":"example.jpg","author":{"self":"http://jira/jira/rest/api/2/user?username=test","name":"test","emailAddress":"test@test.com","avatarUrls":{"16x16":"http://jira/jira/secure/useravatar?size=small&avatarId=10082","48x48":"http://jira/jira/secure/useravatar?avatarId=10082"},"displayName":"Tester","active":true},"created":"2016-05-24T00:25:17.000-0700","size":32280,"mimeType":"image/jpeg","content":"http://jira/jira/secure/attachment/228924/example.jpg","thumbnail":"http://jira/jira/secure/thumbnail/228924/_thumb_228924.png"}]`)
 	})
 
 	reader := strings.NewReader(testAttachment)
@@ -580,13 +582,10 @@ func TestIssueService_DeleteAttachment(t *testing.T) {
 		if resp.StatusCode == 404 {
 			t.Error("Attachment not found")
 		}
-	} else {
-		t.Log("Attachment deleted")
 	}
+
 	if err != nil {
 		t.Errorf("Error given: %s", err)
-	} else {
-		t.Log("No error")
 	}
 }
 
@@ -595,13 +594,44 @@ func TestIssueService_Search(t *testing.T) {
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/search", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testRequestURL(t, r, "/rest/api/2/search?jql=something&startAt=1&amp;maxResults=40&expand=foo")
+		testRequestURL(t, r, "/rest/api/2/search?expand=foo&jql=type+%3D+Bug+and+Status+NOT+IN+%28Resolved%29&maxResults=40&startAt=1")
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, `{"expand": "schema,names","startAt": 1,"maxResults": 40,"total": 6,"issues": [{"expand": "html","id": "10230","self": "http://kelpie9:8081/rest/api/2/issue/BULK-62","key": "BULK-62","fields": {"summary": "testing","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/5","id": "5","description": "The sub-task of the issue","iconUrl": "http://kelpie9:8081/images/icons/issue_subtask.gif","name": "Sub-task","subtask": true},"customfield_10071": null}},{"expand": "html","id": "10004","self": "http://kelpie9:8081/rest/api/2/issue/BULK-47","key": "BULK-47","fields": {"summary": "Cheese v1 2.0 issue","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/3","id": "3","description": "A task that needs to be done.","iconUrl": "http://kelpie9:8081/images/icons/task.gif","name": "Task","subtask": false}}}]}`)
 	})
 
 	opt := &SearchOptions{StartAt: 1, MaxResults: 40, Expand: "foo"}
-	_, resp, err := testClient.Issue.Search("something", opt)
+	_, resp, err := testClient.Issue.Search("type = Bug and Status NOT IN (Resolved)", opt)
+
+	if resp == nil {
+		t.Errorf("Response given: %+v", resp)
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+
+	if resp.StartAt != 1 {
+		t.Errorf("StartAt should populate with 1, %v given", resp.StartAt)
+	}
+	if resp.MaxResults != 40 {
+		t.Errorf("StartAt should populate with 40, %v given", resp.MaxResults)
+	}
+	if resp.Total != 6 {
+		t.Errorf("StartAt should populate with 6, %v given", resp.Total)
+	}
+}
+
+func TestIssueService_SearchEmptyJQL(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/search", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, "/rest/api/2/search?expand=foo&maxResults=40&startAt=1")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, `{"expand": "schema,names","startAt": 1,"maxResults": 40,"total": 6,"issues": [{"expand": "html","id": "10230","self": "http://kelpie9:8081/rest/api/2/issue/BULK-62","key": "BULK-62","fields": {"summary": "testing","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/5","id": "5","description": "The sub-task of the issue","iconUrl": "http://kelpie9:8081/images/icons/issue_subtask.gif","name": "Sub-task","subtask": true},"customfield_10071": null}},{"expand": "html","id": "10004","self": "http://kelpie9:8081/rest/api/2/issue/BULK-47","key": "BULK-47","fields": {"summary": "Cheese v1 2.0 issue","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/3","id": "3","description": "A task that needs to be done.","iconUrl": "http://kelpie9:8081/images/icons/task.gif","name": "Task","subtask": false}}}]}`)
+	})
+
+	opt := &SearchOptions{StartAt: 1, MaxResults: 40, Expand: "foo"}
+	_, resp, err := testClient.Issue.Search("", opt)
 
 	if resp == nil {
 		t.Errorf("Response given: %+v", resp)
@@ -630,7 +660,6 @@ func TestIssueService_Search_WithoutPaging(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, `{"expand": "schema,names","startAt": 0,"maxResults": 50,"total": 6,"issues": [{"expand": "html","id": "10230","self": "http://kelpie9:8081/rest/api/2/issue/BULK-62","key": "BULK-62","fields": {"summary": "testing","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/5","id": "5","description": "The sub-task of the issue","iconUrl": "http://kelpie9:8081/images/icons/issue_subtask.gif","name": "Sub-task","subtask": true},"customfield_10071": null}},{"expand": "html","id": "10004","self": "http://kelpie9:8081/rest/api/2/issue/BULK-47","key": "BULK-47","fields": {"summary": "Cheese v1 2.0 issue","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/3","id": "3","description": "A task that needs to be done.","iconUrl": "http://kelpie9:8081/images/icons/task.gif","name": "Task","subtask": false}}}]}`)
 	})
-
 	_, resp, err := testClient.Issue.Search("something", nil)
 
 	if resp == nil {
@@ -656,15 +685,15 @@ func TestIssueService_SearchPages(t *testing.T) {
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/search", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		if r.URL.String() == "/rest/api/2/search?jql=something&startAt=1&amp;maxResults=2&expand=foo&validateQuery=warn" {
+		if r.URL.String() == "/rest/api/2/search?expand=foo&jql=something&maxResults=2&startAt=1&validateQuery=warn" {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprint(w, `{"expand": "schema,names","startAt": 1,"maxResults": 2,"total": 6,"issues": [{"expand": "html","id": "10230","self": "http://kelpie9:8081/rest/api/2/issue/BULK-62","key": "BULK-62","fields": {"summary": "testing","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/5","id": "5","description": "The sub-task of the issue","iconUrl": "http://kelpie9:8081/images/icons/issue_subtask.gif","name": "Sub-task","subtask": true},"customfield_10071": null}},{"expand": "html","id": "10004","self": "http://kelpie9:8081/rest/api/2/issue/BULK-47","key": "BULK-47","fields": {"summary": "Cheese v1 2.0 issue","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/3","id": "3","description": "A task that needs to be done.","iconUrl": "http://kelpie9:8081/images/icons/task.gif","name": "Task","subtask": false}}}]}`)
 			return
-		} else if r.URL.String() == "/rest/api/2/search?jql=something&startAt=3&amp;maxResults=2&expand=foo&validateQuery=warn" {
+		} else if r.URL.String() == "/rest/api/2/search?expand=foo&jql=something&maxResults=2&startAt=3&validateQuery=warn" {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprint(w, `{"expand": "schema,names","startAt": 3,"maxResults": 2,"total": 6,"issues": [{"expand": "html","id": "10230","self": "http://kelpie9:8081/rest/api/2/issue/BULK-62","key": "BULK-62","fields": {"summary": "testing","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/5","id": "5","description": "The sub-task of the issue","iconUrl": "http://kelpie9:8081/images/icons/issue_subtask.gif","name": "Sub-task","subtask": true},"customfield_10071": null}},{"expand": "html","id": "10004","self": "http://kelpie9:8081/rest/api/2/issue/BULK-47","key": "BULK-47","fields": {"summary": "Cheese v1 2.0 issue","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/3","id": "3","description": "A task that needs to be done.","iconUrl": "http://kelpie9:8081/images/icons/task.gif","name": "Task","subtask": false}}}]}`)
 			return
-		} else if r.URL.String() == "/rest/api/2/search?jql=something&startAt=5&amp;maxResults=2&expand=foo&validateQuery=warn" {
+		} else if r.URL.String() == "/rest/api/2/search?expand=foo&jql=something&maxResults=2&startAt=5&validateQuery=warn" {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprint(w, `{"expand": "schema,names","startAt": 5,"maxResults": 2,"total": 6,"issues": [{"expand": "html","id": "10230","self": "http://kelpie9:8081/rest/api/2/issue/BULK-62","key": "BULK-62","fields": {"summary": "testing","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/5","id": "5","description": "The sub-task of the issue","iconUrl": "http://kelpie9:8081/images/icons/issue_subtask.gif","name": "Sub-task","subtask": true},"customfield_10071": null}}]}`)
 			return
@@ -694,7 +723,7 @@ func TestIssueService_SearchPages_EmptyResult(t *testing.T) {
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/search", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		if r.URL.String() == "/rest/api/2/search?jql=something&startAt=1&amp;maxResults=50&expand=foo&validateQuery=warn" {
+		if r.URL.String() == "/rest/api/2/search?expand=foo&jql=something&maxResults=50&startAt=1&validateQuery=warn" {
 			w.WriteHeader(http.StatusOK)
 			// This is what Jira outputs when the &maxResult= issue occurs. It used to cause SearchPages to go into an endless loop.
 			fmt.Fprint(w, `{"expand": "schema,names","startAt": 0,"maxResults": 0,"total": 6,"issues": []}`)
@@ -1638,6 +1667,7 @@ func TestIssueService_Get_Fields_Changelog(t *testing.T) {
 	issue, _, _ := testClient.Issue.Get("10002", &GetQueryOptions{Expand: "changelog"})
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
+		return
 	}
 
 	if len(issue.Changelog.Histories) != 1 {
@@ -1668,6 +1698,7 @@ func TestIssueService_Get_Transitions(t *testing.T) {
 	issue, _, _ := testClient.Issue.Get("10002", &GetQueryOptions{Expand: "transitions"})
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
+		return
 	}
 
 	if len(issue.Transitions) != 1 {
@@ -1696,8 +1727,12 @@ func TestIssueService_Get_Fields_AffectsVersions(t *testing.T) {
 	})
 
 	issue, _, err := testClient.Issue.Get("10002", nil)
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
+		return
 	}
 	if !reflect.DeepEqual(issue.Fields.AffectsVersions, []*AffectsVersion{
 		{
@@ -1711,10 +1746,6 @@ func TestIssueService_Get_Fields_AffectsVersions(t *testing.T) {
 		},
 	}) {
 		t.Error("Expected AffectsVersions for the returned issue")
-	}
-
-	if err != nil {
-		t.Errorf("Error given: %s", err)
 	}
 }
 
@@ -1736,13 +1767,13 @@ func TestIssueService_GetRemoteLinks(t *testing.T) {
 	})
 
 	remoteLinks, _, err := testClient.Issue.GetRemoteLinks("123")
-
 	if err != nil {
 		t.Errorf("Got error: %v", err)
 	}
 
 	if remoteLinks == nil {
 		t.Error("Expected remote links list. Got nil.")
+		return
 	}
 
 	if len(*remoteLinks) != 2 {

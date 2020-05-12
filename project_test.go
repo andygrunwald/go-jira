@@ -71,11 +71,12 @@ func TestProjectService_Get(t *testing.T) {
 	})
 
 	projects, _, err := testClient.Project.Get("12310505")
-	if projects == nil {
-		t.Error("Expected project list. Project list is nil")
-	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)
+	}
+	if projects == nil {
+		t.Error("Expected project list. Project list is nil")
+		return
 	}
 	if len(projects.Roles) != 9 {
 		t.Errorf("Expected 9 roles but got %d", len(projects.Roles))

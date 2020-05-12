@@ -80,8 +80,12 @@ func TestSprintService_GetIssue(t *testing.T) {
 	})
 
 	issue, _, err := testClient.Sprint.GetIssue("10002", nil)
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
 	if issue == nil {
 		t.Errorf("Expected issue. Issue is nil %v", err)
+		return
 	}
 	if !reflect.DeepEqual(issue.Fields.Labels, []string{"test"}) {
 		t.Error("Expected labels for the returned issue")
@@ -89,8 +93,24 @@ func TestSprintService_GetIssue(t *testing.T) {
 	if len(issue.Fields.Comments.Comments) != 1 {
 		t.Errorf("Expected one comment, %v found", len(issue.Fields.Comments.Comments))
 	}
+	if len(issue.Names) != 10 {
+		t.Errorf("Expected 10 names, %v found", len(issue.Names))
+	}
+	if !reflect.DeepEqual(issue.Names, map[string]string{
+		"watcher":      "watcher",
+		"attachment":   "attachment",
+		"sub-tasks":    "sub-tasks",
+		"description":  "description",
+		"project":      "project",
+		"comment":      "comment",
+		"issuelinks":   "issuelinks",
+		"worklog":      "worklog",
+		"updated":      "updated",
+		"timetracking": "timetracking",
+	}) {
+		t.Error("Expected names for the returned issue")
+	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)
 	}
-
 }

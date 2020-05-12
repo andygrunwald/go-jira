@@ -28,8 +28,6 @@ var (
 	testServer *httptest.Server
 )
 
-type testValues map[string]string
-
 // setup sets up a test HTTP server along with a jira.Client that is configured to talk to that test server.
 // Tests should register handlers on mux which provide mock responses for the API method being tested.
 func setup() {
@@ -88,13 +86,14 @@ func TestNewClient_WrongUrl(t *testing.T) {
 func TestNewClient_WithHttpClient(t *testing.T) {
 	httpClient := http.DefaultClient
 	httpClient.Timeout = 10 * time.Minute
-	c, err := NewClient(httpClient, testJiraInstanceURL)
 
+	c, err := NewClient(httpClient, testJiraInstanceURL)
 	if err != nil {
 		t.Errorf("Got an error: %s", err)
 	}
 	if c == nil {
 		t.Error("Expected a client. Got none")
+		return
 	}
 	if !reflect.DeepEqual(c.client, httpClient) {
 		t.Errorf("HTTP clients are not equal. Injected %+v, got %+v", httpClient, c.client)
@@ -377,10 +376,6 @@ func TestClient_Do(t *testing.T) {
 func TestClient_Do_HTTPResponse(t *testing.T) {
 	setup()
 	defer teardown()
-
-	type foo struct {
-		A string
-	}
 
 	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if m := "GET"; m != r.Method {

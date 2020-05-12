@@ -19,10 +19,10 @@ func TestAuthenticationService_AcquireSessionCookie_Failure(t *testing.T) {
 		if err != nil {
 			t.Errorf("Error in read body: %s", err)
 		}
-		if bytes.Index(b, []byte(`"username":"foo"`)) < 0 {
+		if !bytes.Contains(b, []byte(`"username":"foo"`)) {
 			t.Error("No username found")
 		}
-		if bytes.Index(b, []byte(`"password":"bar"`)) < 0 {
+		if !bytes.Contains(b, []byte(`"password":"bar"`)) {
 			t.Error("No password found")
 		}
 
@@ -53,10 +53,10 @@ func TestAuthenticationService_AcquireSessionCookie_Success(t *testing.T) {
 		if err != nil {
 			t.Errorf("Error in read body: %s", err)
 		}
-		if bytes.Index(b, []byte(`"username":"foo"`)) < 0 {
+		if !bytes.Contains(b, []byte(`"username":"foo"`)) {
 			t.Error("No username found")
 		}
-		if bytes.Index(b, []byte(`"password":"bar"`)) < 0 {
+		if !bytes.Contains(b, []byte(`"password":"bar"`)) {
 			t.Error("No password found")
 		}
 
@@ -144,10 +144,10 @@ func TestAithenticationService_GetUserInfo_AccessForbidden_Fail(t *testing.T) {
 			if err != nil {
 				t.Errorf("Error in read body: %s", err)
 			}
-			if bytes.Index(b, []byte(`"username":"foo"`)) < 0 {
+			if !bytes.Contains(b, []byte(`"username":"foo"`)) {
 				t.Error("No username found")
 			}
-			if bytes.Index(b, []byte(`"password":"bar"`)) < 0 {
+			if !bytes.Contains(b, []byte(`"password":"bar"`)) {
 				t.Error("No password found")
 			}
 
@@ -182,10 +182,10 @@ func TestAuthenticationService_GetUserInfo_NonOkStatusCode_Fail(t *testing.T) {
 			if err != nil {
 				t.Errorf("Error in read body: %s", err)
 			}
-			if bytes.Index(b, []byte(`"username":"foo"`)) < 0 {
+			if !bytes.Contains(b, []byte(`"username":"foo"`)) {
 				t.Error("No username found")
 			}
-			if bytes.Index(b, []byte(`"password":"bar"`)) < 0 {
+			if !bytes.Contains(b, []byte(`"password":"bar"`)) {
 				t.Error("No password found")
 			}
 
@@ -238,10 +238,10 @@ func TestAuthenticationService_GetUserInfo_Success(t *testing.T) {
 			if err != nil {
 				t.Errorf("Error in read body: %s", err)
 			}
-			if bytes.Index(b, []byte(`"username":"foo"`)) < 0 {
+			if !bytes.Contains(b, []byte(`"username":"foo"`)) {
 				t.Error("No username found")
 			}
-			if bytes.Index(b, []byte(`"password":"bar"`)) < 0 {
+			if !bytes.Contains(b, []byte(`"password":"bar"`)) {
 				t.Error("No password found")
 			}
 
@@ -280,10 +280,10 @@ func TestAuthenticationService_Logout_Success(t *testing.T) {
 			if err != nil {
 				t.Errorf("Error in read body: %s", err)
 			}
-			if bytes.Index(b, []byte(`"username":"foo"`)) < 0 {
+			if !bytes.Contains(b, []byte(`"username":"foo"`)) {
 				t.Error("No username found")
 			}
-			if bytes.Index(b, []byte(`"password":"bar"`)) < 0 {
+			if !bytes.Contains(b, []byte(`"password":"bar"`)) {
 				t.Error("No password found")
 			}
 

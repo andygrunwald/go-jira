@@ -20,7 +20,7 @@ func TestRoleService_GetList_NoList(t *testing.T) {
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		testRequestURL(t, r, testAPIEndpoint)
-		fmt.Fprintf(w, string(raw))
+		fmt.Fprint(w, string(raw))
 	})
 
 	roles, _, err := testClient.Role.GetList()
@@ -44,18 +44,19 @@ func TestRoleService_GetList(t *testing.T) {
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		testRequestURL(t, r, testAPIEndpoint)
-		fmt.Fprintf(w, string(raw))
+		fmt.Fprint(w, string(raw))
 	})
 
 	roles, _, err := testClient.Role.GetList()
+	if err != nil {
+		t.Errorf("Error given: %v", err)
+	}
 	if roles == nil {
 		t.Error("Expected role list. Role list is nil")
+		return
 	}
 	if len(*roles) != 2 {
 		t.Errorf("Expected %d roles but got %d", 2, len(*roles))
-	}
-	if err != nil {
-		t.Errorf("Error given: %v", err)
 	}
 }
 
@@ -70,7 +71,7 @@ func TestRoleService_Get_NoRole(t *testing.T) {
 	testMux.HandleFunc(testAPIEdpoint, func(writer http.ResponseWriter, request *http.Request) {
 		testMethod(t, request, "GET")
 		testRequestURL(t, request, testAPIEdpoint)
-		fmt.Fprintf(writer, string(raw))
+		fmt.Fprint(writer, string(raw))
 	})
 
 	role, _, err := testClient.Role.Get(99999)
@@ -93,7 +94,7 @@ func TestRoleService_Get(t *testing.T) {
 	testMux.HandleFunc(testAPIEdpoint, func(writer http.ResponseWriter, request *http.Request) {
 		testMethod(t, request, "GET")
 		testRequestURL(t, request, testAPIEdpoint)
-		fmt.Fprintf(writer, string(raw))
+		fmt.Fprint(writer, string(raw))
 	})
 
 	role, _, err := testClient.Role.Get(10002)

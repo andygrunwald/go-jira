@@ -3,6 +3,7 @@ package jira
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"testing"
 )
 
@@ -376,6 +377,83 @@ func TestIssueService_GetCreateMeta_Success(t *testing.T) {
 		}
 	}
 
+}
+
+func TestIssueService_GetEditMeta_Success(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testAPIEndpoint := "/rest/api/2/issue/PROJ-9001/editmeta"
+
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, testAPIEndpoint)
+
+		fmt.Fprint(w, `{
+	"fields": {
+		"summary": {
+			"required": true,
+			"schema": {
+				"type": "string",
+				"system": "summary"
+			},
+			"name": "Summary",
+			"hasDefaultValue": false,
+			"operations": [
+				"set"
+			]
+		},
+		"attachment": {
+			"required": false,
+			"schema": {
+				"type": "array",
+				"items": "attachment",
+				"system": "attachment"
+			},
+			"name": "Attachment",
+			"hasDefaultValue": false,
+			"operations": [
+
+			]
+		}
+	}
+	}`)
+	})
+
+	editMeta, _, err := testClient.Issue.GetEditMeta(&Issue{Key: "PROJ-9001"})
+	if err != nil {
+		t.Errorf("Expected nil error but got %s", err)
+	}
+
+	requiredFields := 0
+	fields := editMeta.Fields
+	for _, value := range fields {
+		for key, value := range value.(map[string]interface{}) {
+			if key == "required" && value == true {
+				requiredFields = requiredFields + 1
+			}
+		}
+
+	}
+	summary := fields["summary"].(map[string]interface{})
+	attachment := fields["attachment"].(map[string]interface{})
+	if summary["required"] != true {
+		t.Error("Expected summary to be required")
+	}
+	if attachment["required"] != false {
+		t.Error("Expected attachment to not be required")
+	}
+}
+
+func TestIssueService_GetEditMeta_Fail(t *testing.T) {
+	_, _, err := testClient.Issue.GetEditMeta(&Issue{Key: "PROJ-9001"})
+	if err == nil {
+		t.Error("Expected to receive an error, received nil instead")
+	}
+
+	if _, ok := err.(*url.Error); !ok {
+		t.Errorf("Expected to receive an *url.Error, got %T instead", err)
+	}
 }
 
 func TestMetaIssueType_GetCreateMetaWithOptions(t *testing.T) {

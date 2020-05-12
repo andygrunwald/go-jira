@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -13,12 +14,12 @@ type IssueLinkTypeService struct {
 	client *Client
 }
 
-// GetList gets all of the issue link types from Jira.
+// GetListWithContext gets all of the issue link types from Jira.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-get
-func (s *IssueLinkTypeService) GetList() ([]IssueLinkType, *Response, error) {
+func (s *IssueLinkTypeService) GetListWithContext(ctx context.Context) ([]IssueLinkType, *Response, error) {
 	apiEndpoint := "rest/api/2/issueLinkType"
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -31,12 +32,17 @@ func (s *IssueLinkTypeService) GetList() ([]IssueLinkType, *Response, error) {
 	return linkTypeList, resp, nil
 }
 
-// Get gets info of a specific issue link type from Jira.
+// GetList wraps GetListWithContext using the background context.
+func (s *IssueLinkTypeService) GetList() ([]IssueLinkType, *Response, error) {
+	return s.GetListWithContext(context.Background())
+}
+
+// GetWithContext gets info of a specific issue link type from Jira.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-get
-func (s *IssueLinkTypeService) Get(ID string) (*IssueLinkType, *Response, error) {
+func (s *IssueLinkTypeService) GetWithContext(ctx context.Context, ID string) (*IssueLinkType, *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", ID)
-	req, err := s.client.NewRequest("GET", apiEndPoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndPoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -49,12 +55,17 @@ func (s *IssueLinkTypeService) Get(ID string) (*IssueLinkType, *Response, error)
 	return linkType, resp, nil
 }
 
-// Create creates an issue link type in Jira.
+// Get wraps GetWithContext using the background context.
+func (s *IssueLinkTypeService) Get(ID string) (*IssueLinkType, *Response, error) {
+	return s.GetWithContext(context.Background(), ID)
+}
+
+// CreateWithContext creates an issue link type in Jira.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-post
-func (s *IssueLinkTypeService) Create(linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
+func (s *IssueLinkTypeService) CreateWithContext(ctx context.Context, linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
 	apiEndpoint := "/rest/api/2/issueLinkType"
-	req, err := s.client.NewRequest("POST", apiEndpoint, linkType)
+	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, linkType)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -68,23 +79,28 @@ func (s *IssueLinkTypeService) Create(linkType *IssueLinkType) (*IssueLinkType, 
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		e := fmt.Errorf("Could not read the returned data")
+		e := fmt.Errorf("could not read the returned data")
 		return nil, resp, NewJiraError(resp, e)
 	}
 	err = json.Unmarshal(data, responseLinkType)
 	if err != nil {
-		e := fmt.Errorf("Could no unmarshal the data into struct")
+		e := fmt.Errorf("could no unmarshal the data into struct")
 		return nil, resp, NewJiraError(resp, e)
 	}
 	return linkType, resp, nil
 }
 
-// Update updates an issue link type.  The issue is found by key.
+// Create wraps CreateWithContext using the background context.
+func (s *IssueLinkTypeService) Create(linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
+	return s.CreateWithContext(context.Background(), linkType)
+}
+
+// UpdateWithContext updates an issue link type.  The issue is found by key.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-put
-func (s *IssueLinkTypeService) Update(linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
+func (s *IssueLinkTypeService) UpdateWithContext(ctx context.Context, linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", linkType.ID)
-	req, err := s.client.NewRequest("PUT", apiEndpoint, linkType)
+	req, err := s.client.NewRequestWithContext(ctx, "PUT", apiEndpoint, linkType)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -96,16 +112,26 @@ func (s *IssueLinkTypeService) Update(linkType *IssueLinkType) (*IssueLinkType, 
 	return &ret, resp, nil
 }
 
-// Delete deletes an issue link type based on provided ID.
+// Update wraps UpdateWithContext using the background context.
+func (s *IssueLinkTypeService) Update(linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
+	return s.UpdateWithContext(context.Background(), linkType)
+}
+
+// DeleteWithContext deletes an issue link type based on provided ID.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-delete
-func (s *IssueLinkTypeService) Delete(ID string) (*Response, error) {
+func (s *IssueLinkTypeService) DeleteWithContext(ctx context.Context, ID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", ID)
-	req, err := s.client.NewRequest("DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndpoint, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	resp, err := s.client.Do(req, nil)
 	return resp, err
+}
+
+// Delete wraps DeleteWithContext using the background context.
+func (s *IssueLinkTypeService) Delete(ID string) (*Response, error) {
+	return s.DeleteWithContext(context.Background(), ID)
 }
