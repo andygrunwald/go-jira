@@ -2,13 +2,14 @@ package jira
 
 import (
 	"context"
+	"fmt"
+
 	"github.com/google/go-querystring/query"
 )
-import "fmt"
 
-// FilterService handles fields for the JIRA instance / API.
+// FilterService handles fields for the Jira instance / API.
 //
-// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-group-Filter
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-group-Filter
 type FilterService struct {
 	client *Client
 }
@@ -224,7 +225,7 @@ func (fs *FilterService) GetMyFilters(opts *GetMyFiltersQueryOptions) ([]*Filter
 
 // SearchWithContext will search for filter according to the search options
 //
-// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-rest-api-3-filter-search-get
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-rest-api-3-filter-search-get
 func (fs *FilterService) SearchWithContext(ctx context.Context, opt *FilterSearchOptions) (*FiltersList, *Response, error) {
 	apiEndpoint := "rest/api/3/filter/search"
 	url, err := addOptions(apiEndpoint, opt)

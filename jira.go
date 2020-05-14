@@ -26,7 +26,7 @@ type httpClient interface {
 	Do(request *http.Request) (response *http.Response, err error)
 }
 
-// A Client manages communication with the JIRA API.
+// A Client manages communication with the Jira API.
 type Client struct {
 	// HTTP client used to communicate with the API.
 	client httpClient
@@ -37,7 +37,7 @@ type Client struct {
 	// Session storage if the user authenticates with a Session cookie
 	session *Session
 
-	// Services used for talking to different parts of the JIRA API.
+	// Services used for talking to different parts of the Jira API.
 	Authentication   *AuthenticationService
 	Issue            *IssueService
 	Project          *ProjectService
@@ -58,13 +58,13 @@ type Client struct {
 	IssueLinkType    *IssueLinkTypeService
 }
 
-// NewClient returns a new JIRA API client.
+// NewClient returns a new Jira API client.
 // If a nil httpClient is provided, http.DefaultClient will be used.
 // To use API methods which require authentication you can follow the preferred solution and
 // provide an http.Client that will perform the authentication for you with OAuth and HTTP Basic (such as that provided by the golang.org/x/oauth2 library).
 // As an alternative you can use Session Cookie based authentication provided by this package as well.
 // See https://docs.atlassian.com/jira/REST/latest/#authentication
-// baseURL is the HTTP endpoint of your JIRA instance and should always be specified with a trailing slash.
+// baseURL is the HTTP endpoint of your Jira instance and should always be specified with a trailing slash.
 func NewClient(httpClient httpClient, baseURL string) (*Client, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
@@ -295,7 +295,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 // CheckResponse checks the API response for errors, and returns them if present.
 // A response is considered an error if it has a status code outside the 200 range.
 // The caller is responsible to analyze the response body.
-// The body can contain JSON (if the error is intended) or xml (sometimes JIRA just failes).
+// The body can contain JSON (if the error is intended) or xml (sometimes Jira just failes).
 func CheckResponse(r *http.Response) error {
 	if c := r.StatusCode; 200 <= c && c <= 299 {
 		return nil
@@ -311,7 +311,7 @@ func (c *Client) GetBaseURL() url.URL {
 	return *c.baseURL
 }
 
-// Response represents JIRA API response. It wraps http.Response returned from
+// Response represents Jira API response. It wraps http.Response returned from
 // API and provides information about paging.
 type Response struct {
 	*http.Response
@@ -382,9 +382,9 @@ func (t *BasicAuthTransport) transport() http.RoundTripper {
 // using Jira's cookie-based authentication.
 //
 // Note that it is generally preferable to use HTTP BASIC authentication with the REST API.
-// However, this resource may be used to mimic the behaviour of JIRA's log-in page (e.g. to display log-in errors to a user).
+// However, this resource may be used to mimic the behaviour of Jira's log-in page (e.g. to display log-in errors to a user).
 //
-// JIRA API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#auth/1/session
 type CookieAuthTransport struct {
 	Username string
 	Password string
@@ -479,7 +479,7 @@ func (t *CookieAuthTransport) transport() http.RoundTripper {
 //
 // NOTE: this form of auth should be used by add-ons installed from the Atlassian marketplace.
 //
-// JIRA docs: https://developer.atlassian.com/cloud/jira/platform/understanding-jwt
+// Jira docs: https://developer.atlassian.com/cloud/jira/platform/understanding-jwt
 // Examples in other languages:
 //    https://bitbucket.org/atlassian/atlassian-jwt-ruby/src/d44a8e7a4649e4f23edaa784402655fda7c816ea/lib/atlassian/jwt.rb
 //    https://bitbucket.org/atlassian/atlassian-jwt-py/src/master/atlassian_jwt/url_utils.py

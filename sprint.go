@@ -7,7 +7,7 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-// SprintService handles sprints in JIRA Agile API.
+// SprintService handles sprints in Jira Agile API.
 // See https://docs.atlassian.com/jira-software/REST/cloud/
 type SprintService struct {
 	client *Client
@@ -27,7 +27,7 @@ type IssuesInSprintResult struct {
 // Issues can only be moved to open or active sprints.
 // The maximum number of issues that can be moved in one operation is 50.
 //
-// JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/sprint-moveIssuesToSprint
+// Jira API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/sprint-moveIssuesToSprint
 func (s *SprintService) MoveIssuesToSprintWithContext(ctx context.Context, sprintID int, issueIDs []string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/sprint/%d/issue", sprintID)
 
@@ -55,7 +55,7 @@ func (s *SprintService) MoveIssuesToSprint(sprintID int, issueIDs []string) (*Re
 // This only includes issues that the user has permission to view.
 // By default, the returned issues are ordered by rank.
 //
-//  JIRA API Docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/sprint-getIssuesForSprint
+// Jira API Docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/sprint-getIssuesForSprint
 func (s *SprintService) GetIssuesForSprintWithContext(ctx context.Context, sprintID int) ([]Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/sprint/%d/issue", sprintID)
 
@@ -80,13 +80,13 @@ func (s *SprintService) GetIssuesForSprint(sprintID int) ([]Issue, *Response, er
 }
 
 // GetIssueWithContext returns a full representation of the issue for the given issue key.
-// JIRA will attempt to identify the issue by the issueIdOrKey path parameter.
+// Jira will attempt to identify the issue by the issueIdOrKey path parameter.
 // This can be an issue id, or an issue key.
-// If the issue cannot be found via an exact match, JIRA will also look for the issue in a case-insensitive way, or by looking to see if the issue was moved.
+// If the issue cannot be found via an exact match, Jira will also look for the issue in a case-insensitive way, or by looking to see if the issue was moved.
 //
 // The given options will be appended to the query string
 //
-// JIRA API docs: https://docs.atlassian.com/jira-software/REST/7.3.1/#agile/1.0/issue-getIssue
+// Jira API docs: https://docs.atlassian.com/jira-software/REST/7.3.1/#agile/1.0/issue-getIssue
 //
 // TODO: create agile service for holding all agile apis' implementation
 func (s *SprintService) GetIssueWithContext(ctx context.Context, issueID string, options *GetQueryOptions) (*Issue, *Response, error) {

@@ -78,9 +78,9 @@
     {
       "self": "https://issues.apache.org/jira/rest/api/2/issuetype/8",
       "id": "8",
-      "description": "A request for a new JIRA project to be set up",
+      "description": "A request for a new Jira project to be set up",
       "iconUrl": "https://issues.apache.org/jira/images/icons/jiraman18.gif",
-      "name": "New JIRA Project",
+      "name": "New Jira Project",
       "subtask": false
     },
     {
@@ -102,7 +102,7 @@
     {
       "self": "https://issues.apache.org/jira/rest/api/2/issuetype/11",
       "id": "11",
-      "description": "A formal question. Initially added for the Legal JIRA.",
+      "description": "A formal question. Initially added for the Legal Jira.",
       "iconUrl": "https://issues.apache.org/jira/images/icons/issuetypes/genericissue.png",
       "name": "Question",
       "subtask": false
@@ -134,7 +134,7 @@
     {
       "self": "https://issues.apache.org/jira/rest/api/2/issuetype/15",
       "id": "15",
-      "description": "Created by JIRA Agile - do not edit or delete. Issue type for a big user story that needs to be broken down.",
+      "description": "Created by Jira Agile - do not edit or delete. Issue type for a big user story that needs to be broken down.",
       "iconUrl": "https://issues.apache.org/jira/images/icons/issuetypes/epic.png",
       "name": "Epic",
       "subtask": false
@@ -142,7 +142,7 @@
     {
       "self": "https://issues.apache.org/jira/rest/api/2/issuetype/16",
       "id": "16",
-      "description": "Created by JIRA Agile - do not edit or delete. Issue type for a user story.",
+      "description": "Created by Jira Agile - do not edit or delete. Issue type for a user story.",
       "iconUrl": "https://issues.apache.org/jira/images/icons/issuetypes/story.png",
       "name": "Story",
       "subtask": false
@@ -278,7 +278,7 @@
     {
       "self": "https://issues.apache.org/jira/rest/api/2/issuetype/10300",
       "id": "10300",
-      "description": "For general IT problems and questions. Created by JIRA Service Desk.",
+      "description": "For general IT problems and questions. Created by Jira Service Desk.",
       "iconUrl": "https://issues.apache.org/jira/servicedesk/issue-type-icons?icon=it-help",
       "name": "IT Help",
       "subtask": false
@@ -286,7 +286,7 @@
     {
       "self": "https://issues.apache.org/jira/rest/api/2/issuetype/10301",
       "id": "10301",
-      "description": "For new system accounts or passwords. Created by JIRA Service Desk.",
+      "description": "For new system accounts or passwords. Created by Jira Service Desk.",
       "iconUrl": "https://issues.apache.org/jira/servicedesk/issue-type-icons?icon=access",
       "name": "Access",
       "subtask": false

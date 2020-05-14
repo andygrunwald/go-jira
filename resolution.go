@@ -2,14 +2,14 @@ package jira
 
 import "context"
 
-// ResolutionService handles resolutions for the JIRA instance / API.
+// ResolutionService handles resolutions for the Jira instance / API.
 //
-// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-Resolution
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-Resolution
 type ResolutionService struct {
 	client *Client
 }
 
-// Resolution represents a resolution of a JIRA issue.
+// Resolution represents a resolution of a Jira issue.
 // Typical types are "Fixed", "Suspended", "Won't Fix", ...
 type Resolution struct {
 	Self        string `json:"self" structs:"self"`
@@ -18,9 +18,9 @@ type Resolution struct {
 	Name        string `json:"name" structs:"name"`
 }
 
-// GetListWithContext gets all resolutions from JIRA
+// GetListWithContext gets all resolutions from Jira
 //
-// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-resolution-get
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-resolution-get
 func (s *ResolutionService) GetListWithContext(ctx context.Context) ([]Resolution, *Response, error) {
 	apiEndpoint := "rest/api/2/resolution"
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
