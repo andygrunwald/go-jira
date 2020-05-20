@@ -1512,3 +1512,27 @@ func (s *IssueService) AddRemoteLinkWithContext(ctx context.Context, issueID str
 func (s *IssueService) AddRemoteLink(issueID string, remotelink *RemoteLink) (*RemoteLink, *Response, error) {
 	return s.AddRemoteLinkWithContext(context.Background(), issueID, remotelink)
 }
+
+//Get all issues type with context
+func (s *IssueService) GetIssueWithContext(ctx context.Context) ([]IssueType, *Response, error) {
+
+	apiEndpoint := "/rest/api/2/issuetype"
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	IssueList := []IssueType{}
+	resp, err := s.client.Do(req, &IssueList)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
+	}
+
+	return IssueList, resp, nil
+}
+
+//Get all issue type
+func (s *IssueService) GetAllIssueType() ([]IssueType, *Response, error) {
+	return s.GetIssueWithContext(context.Background())
+}
