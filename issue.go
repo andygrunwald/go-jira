@@ -1365,12 +1365,6 @@ func (s *IssueService) GetWatchersWithContext(ctx context.Context, issueID strin
 			if err != nil {
 				return nil, resp, NewJiraError(resp, err)
 			}
-		} else {
-			// try fallback deprecated method
-			user, resp, err = s.client.User.Get(watcher.Name)
-			if err != nil {
-				return nil, resp, NewJiraError(resp, err)
-			}
 		}
 		result = append(result, *user)
 	}
