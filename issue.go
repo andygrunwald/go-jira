@@ -1514,7 +1514,7 @@ func (s *IssueService) AddRemoteLink(issueID string, remotelink *RemoteLink) (*R
 }
 
 //Get all issues type with context
-func (s *IssueService) GetIssueWithContext(ctx context.Context) ([]IssueType, *Response, error) {
+func (s *IssueService) GetIssueTypesWithContext(ctx context.Context) ([]IssueType, *Response, error) {
 
 	apiEndpoint := "/rest/api/2/issuetype"
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
