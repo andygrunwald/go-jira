@@ -22,7 +22,7 @@ jobs:
           go-version: 1.14
 
       # Caching go modules to speed up the run
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
