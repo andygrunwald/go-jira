@@ -598,7 +598,9 @@ type RemoteLinkStatus struct {
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
 func (s *IssueService) GetWithContext(ctx context.Context, issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
+	// rest/api/2 endpoint does not fetch the epic link, thus we use another api endpoint
+	// apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
+	apiEndpoint := fmt.Sprintf("rest/agile/1.0/issue/%s", issueID)
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
