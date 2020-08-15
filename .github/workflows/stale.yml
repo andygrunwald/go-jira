@@ -14,6 +14,6 @@ jobs:
           This issue has been automatically marked as stale because it has not had
           recent activity in the last 60 days. It will be closed in 7 days if no further activity occurs.
           Thank you for your contributions.
-        days-before-stale: 60
-        days-before-close: 7
+        days-before-stale: 9999
+        days-before-close: 9999
         stale-issue-label: stale
