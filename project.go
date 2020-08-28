@@ -39,7 +39,7 @@ type ProjectCategory struct {
 // Insight represents some simple insights of a project's issues
 type Insight struct {
 	TotalIssueCount     int   `json:"totalIssueCount,omitempty" structs:"totalIssueCount,omitempty"`
-	LastIssueUpdateTime *Time `json:"totalIssueCount,omitempty" structs:"totalIssueCount,omitempty"`
+	LastIssueUpdateTime *Time `json:"lastIssueUpdateTime,omitempty" structs:"lastIssueUpdateTime,omitempty"`
 }
 
 // Project represents a Jira Project.
