@@ -25,6 +25,7 @@ type ProjectList []struct {
 	ProjectTypeKey  string          `json:"projectTypeKey" structs:"projectTypeKey"`
 	ProjectCategory ProjectCategory `json:"projectCategory,omitempty" structs:"projectsCategory,omitempty"`
 	IssueTypes      []IssueType     `json:"issueTypes,omitempty" structs:"issueTypes,omitempty"`
+	Insight         Insight         `json:"insight,omitempty" structs:"insight,omitempty"`
 }
 
 // ProjectCategory represents a single project category
@@ -33,6 +34,12 @@ type ProjectCategory struct {
 	ID          string `json:"id" structs:"id,omitempty"`
 	Name        string `json:"name" structs:"name,omitempty"`
 	Description string `json:"description" structs:"description,omitempty"`
+}
+
+// Insight represents some simple insights of a project's issues
+type Insight struct {
+	TotalIssueCount     int   `json:"totalIssueCount,omitempty" structs:"totalIssueCount,omitempty"`
+	LastIssueUpdateTime *Time `json:"totalIssueCount,omitempty" structs:"totalIssueCount,omitempty"`
 }
 
 // Project represents a Jira Project.
