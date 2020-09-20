@@ -173,6 +173,49 @@ func main() {
 }
 ```
 
+### Change an issue status
+
+This is how one can change an issue status. In this example, we change the issue from "To Do" to "In Progress."
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/andygrunwald/go-jira"
+)
+
+func main() {
+	base := "https://my.jira.com"
+	tp := jira.BasicAuthTransport{
+		Username: "username",
+		Password: "token",
+	}
+
+	jiraClient, err := jira.NewClient(tp.Client(), base)
+	if err != nil {
+		panic(err)
+	}
+
+	issue, _, _ := jiraClient.Issue.Get("FART-1", nil)
+	currentStatus := issue.Fields.Status.Name
+	fmt.Printf("Current status: %s\n", currentStatus)
+
+	var transitionID string
+	possibleTransitions, _, _ := jiraClient.Issue.GetTransitions("FART-1")
+	for _, v := range possibleTransitions {
+		if v.Name == "In Progress" {
+			transitionID = v.ID
+			break
+		}
+	}
+
+	jiraClient.Issue.DoTransition("FART-1", transitionID)
+	issue, _, _ = jiraClient.Issue.Get(testIssueID, nil)
+	fmt.Printf("Status after transition: %+v\n", issue.Fields.Status.Name)
+}
+```
+
 ### Call a not implemented API endpoint
 
 Not all API endpoints of the Jira API are implemented into *go-jira*.
