@@ -92,9 +92,11 @@ an `http.Client`.  That client can then be passed into the `NewClient` function 
 
 For convenience, capability for basic and cookie-based authentication is included in the main library.
 
-#### Basic auth example
+#### Token (Jira on Atlassian Cloud)
 
-A more thorough, [runnable example](examples/basicauth/main.go) is provided in the examples directory. **It's worth noting that using passwords in basic auth is now deprecated and will be removed.** Jira gives you the ability to [create tokens now.](https://confluence.atlassian.com/cloud/api-tokens-938839638.html)
+Token-based authentication uses the basic authentication scheme, with a user-generated API token in place of a user's password. You can generate a token for your user [here](https://id.atlassian.com/manage-profile/security/api-tokens). Additional information about Atlassian Cloud API tokens can be found [here](https://confluence.atlassian.com/cloud/api-tokens-938839638.html).
+
+A more thorough, [runnable example](examples/basicauth/main.go) is provided in the examples directory.
 
 ```go
 func main() {
@@ -111,10 +113,11 @@ func main() {
 }
 ```
 
-#### Authenticate with session cookie [DEPRECATED]
+#### Basic (self-hosted Jira)
 
-Jira [deprecated this authentication method.](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-basic-auth-and-cookie-based-auth/)  It's not longer available for use.
+Password-based API authentication works for self-hosted Jira **only**, and has been [deprecated for users of Atlassian Cloud](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-basic-auth-and-cookie-based-auth/).
 
+The above token authentication example may be used, substituting a user's password for a generated token.
 
 #### Authenticate with OAuth
 
