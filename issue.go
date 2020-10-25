@@ -585,8 +585,8 @@ type RemoteLinkIcon struct {
 
 // RemoteLinkStatus if the link is a resolvable object (issue, epic) - the structure represent its status
 type RemoteLinkStatus struct {
-	Resolved bool
-	Icon     *RemoteLinkIcon
+	Resolved bool            `json:"resolved,omitempty" structs:"resolved,omitempty"`
+	Icon     *RemoteLinkIcon `json:"icon,omitempty" structs:"icon,omitempty"`
 }
 
 // GetWithContext returns a full representation of the issue for the given issue key.
