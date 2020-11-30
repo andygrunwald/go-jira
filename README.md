@@ -19,8 +19,11 @@ This package is not Jira API complete (yet), but you can call every API endpoint
 
 ## Requirements
 
-* Go >= 1.8
+* Go >= 1.14
 * Jira v6.3.4 & v7.1.2.
+
+Note that we also run our tests against 1.13, though only the last two versions
+of Go are officially supported.
 
 ## Installation
 
