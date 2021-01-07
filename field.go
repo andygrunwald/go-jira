@@ -24,8 +24,8 @@ type Field struct {
 // FieldSchema represents a schema of a Jira field.
 type FieldSchema struct {
 	Type   string `json:"type,omitempty" structs:"type,omitempty"`
-	Items  string `json:"items,omitempty", structs:"items,omitempty"`
-	Custom string `json:"custom,omitempty", structs:"items,omitempty"`
+	Items  string `json:"items,omitempty" structs:"items,omitempty"`
+	Custom string `json:"custom,omitempty" structs:"items,omitempty"`
 	System string `json:"system,omitempty" structs:"system,omitempty"`
 }
 
