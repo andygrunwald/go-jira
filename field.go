@@ -21,9 +21,14 @@ type Field struct {
 	Schema      FieldSchema `json:"schema,omitempty" structs:"schema,omitempty"`
 }
 
+// FieldSchema represents a schema of a Jira field.
+// Documentation: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-fields/#api-rest-api-2-field-get
 type FieldSchema struct {
-	Type   string `json:"type,omitempty" structs:"type,omitempty"`
-	System string `json:"system,omitempty" structs:"system,omitempty"`
+	Type     string `json:"type,omitempty" structs:"type,omitempty"`
+	Items    string `json:"items,omitempty" structs:"items,omitempty"`
+	Custom   string `json:"custom,omitempty" structs:"custom,omitempty"`
+	System   string `json:"system,omitempty" structs:"system,omitempty"`
+	CustomID int64  `json:"customId,omitempty" structs:"customId,omitempty"`
 }
 
 // GetListWithContext gets all fields from Jira
