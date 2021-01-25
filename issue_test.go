@@ -1739,8 +1739,8 @@ func TestIssueService_Get_Fields_AffectsVersions(t *testing.T) {
 			Name:        "2.1.0-rc3",
 			Self:        "http://www.example.com/jira/rest/api/2/version/10705",
 			ReleaseDate: "2018-09-30",
-			Released:    false,
-			Archived:    false,
+			Released:    Bool(false),
+			Archived:    Bool(false),
 			Description: "test description",
 		},
 	}) {
