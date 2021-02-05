@@ -589,6 +589,33 @@ func TestIssueService_DeleteAttachment(t *testing.T) {
 	}
 }
 
+func TestIssueService_DeleteLink(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issueLink/10054", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+		testRequestURL(t, r, "/rest/api/2/issueLink/10054")
+
+		w.WriteHeader(http.StatusNoContent)
+		fmt.Fprint(w, `{}`)
+	})
+
+	resp, err := testClient.Issue.DeleteLink("10054")
+	if resp.StatusCode != 204 {
+		t.Error("Expected link not deleted.")
+		if resp.StatusCode == 403 {
+			t.Error("User not permitted to delete link")
+		}
+		if resp.StatusCode == 404 {
+			t.Error("Link not found")
+		}
+	}
+
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
 func TestIssueService_Search(t *testing.T) {
 	setup()
 	defer teardown()
