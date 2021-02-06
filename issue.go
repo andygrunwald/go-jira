@@ -718,6 +718,29 @@ func (s *IssueService) DeleteAttachment(attachmentID string) (*Response, error) 
 	return s.DeleteAttachmentWithContext(context.Background(), attachmentID)
 }
 
+// DeleteLinkWithContext deletes a link of a given linkID
+func (s *IssueService) DeleteLinkWithContext(ctx context.Context, linkID string) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issueLink/%s", linkID)
+
+	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return resp, jerr
+	}
+
+	return resp, nil
+}
+
+// DeleteLink wraps DeleteLinkWithContext using the background context.
+func (s *IssueService) DeleteLink(linkID string) (*Response, error) {
+	return s.DeleteLinkWithContext(context.Background(), linkID)
+}
+
 // GetWorklogsWithContext gets all the worklogs for an issue.
 // This method is especially important if you need to read all the worklogs, not just the first page.
 //
