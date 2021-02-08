@@ -533,9 +533,10 @@ type GetQueryOptions struct {
 
 // GetWorklogsQueryOptions specifies the optional parameters for the Get Worklogs method
 type GetWorklogsQueryOptions struct {
-	StartAt    int64  `url:"startAt,omitempty"`
-	MaxResults int32  `url:"maxResults,omitempty"`
-	Expand     string `url:"expand,omitempty"`
+	StartAt    	int64  `url:"startAt,omitempty"`
+	MaxResults 	int32  `url:"maxResults,omitempty"`
+	StartedAfter    int64  `url:"startedAfter,omitempty"`
+	Expand     	string `url:"expand,omitempty"`
 }
 
 type AddWorklogQueryOptions struct {
