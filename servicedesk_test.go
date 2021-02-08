@@ -56,9 +56,7 @@ func TestServiceDeskService_GetOrganizations(t *testing.T) {
 
 	if orgs == nil {
 		t.Error("Expected Organizations. Result is nil")
-	}
-
-	if orgs.Size != 3 {
+	} else if orgs.Size != 3 {
 		t.Errorf("Expected size to be 3, but got %d", orgs.Size)
 	}
 

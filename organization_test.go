@@ -22,9 +22,7 @@ func TestOrganizationService_GetAllOrganizationsWithContext(t *testing.T) {
 
 	if result == nil {
 		t.Error("Expected Organizations. Result is nil")
-	}
-
-	if result.Size != 1 {
+	} else if result.Size != 1 {
 		t.Errorf("Expected size to be 1, but got %d", result.Size)
 	}
 
@@ -51,9 +49,7 @@ func TestOrganizationService_CreateOrganization(t *testing.T) {
 
 	if o == nil {
 		t.Error("Expected Organization. Result is nil")
-	}
-
-	if o.Name != name {
+	} else if o.Name != name {
 		t.Errorf("Expected name to be %s, but got %s", name, o.Name)
 	}
 
@@ -82,9 +78,7 @@ func TestOrganizationService_GetOrganization(t *testing.T) {
 
 	if o == nil {
 		t.Error("Expected Organization. Result is nil")
-	}
-
-	if o.Name != "name" {
+	} else if o.Name != "name" {
 		t.Errorf("Expected name to be name, but got %s", o.Name)
 	}
 }
@@ -132,9 +126,7 @@ func TestOrganizationService_GetPropertiesKeys(t *testing.T) {
 
 	if pk == nil {
 		t.Error("Expected Keys. Result is nil")
-	}
-
-	if pk.Keys[0].Key != "organization.attributes" {
+	} else if pk.Keys[0].Key != "organization.attributes" {
 		t.Errorf("Expected name to be organization.attributes, but got %s", pk.Keys[0].Key)
 	}
 }
@@ -165,9 +157,7 @@ func TestOrganizationService_GetProperty(t *testing.T) {
 
 	if ep == nil {
 		t.Error("Expected Entity. Result is nil")
-	}
-
-	if ep.Key != key {
+	} else if ep.Key != key {
 		t.Errorf("Expected name to be %s, but got %s", key, ep.Key)
 	}
 }
@@ -279,9 +269,7 @@ func TestOrganizationService_GetUsers(t *testing.T) {
 
 	if users == nil {
 		t.Error("Expected Organizations. Result is nil")
-	}
-
-	if users.Size != 1 {
+	} else if users.Size != 1 {
 		t.Errorf("Expected size to be 1, but got %d", users.Size)
 	}
 
