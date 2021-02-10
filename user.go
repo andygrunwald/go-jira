@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"strings"
 )
 
 // UserService handles users for the Jira instance / API.
@@ -249,6 +250,40 @@ func (s *UserService) FindWithContext(ctx context.Context, property string, twea
 	}
 
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user/search?%s", queryString[:len(queryString)-1])
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	users := []User{}
+	resp, err := s.client.Do(req, &users)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+	return users, resp, nil
+}
+
+// FindForProjectWithContext searches for user info from Jira:
+// It can find users that are assignable for specific projects
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-user-search/#api-rest-api-3-user-assignable-multiprojectsearch-get
+func (s *UserService) FindForProjectWithContext(ctx context.Context, proj []string, tweaks ...userSearchF) ([]User, *Response, error) {
+	search := []userSearchParam{
+		{
+			name:  "projectKeys",
+			value: strings.Join(proj, ","),
+		},
+	}
+	for _, f := range tweaks {
+		search = f(search)
+	}
+
+	var queryString = ""
+	for _, param := range search {
+		queryString += param.name + "=" + param.value + "&"
+	}
+
+	apiEndpoint := fmt.Sprintf("/rest/api/3/user/assignable/multiProjectSearch?%s", queryString[:len(queryString)-1])
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
