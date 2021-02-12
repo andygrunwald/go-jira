@@ -8,8 +8,8 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/trivago/tgo/tcontainer"
 	jira "github.com/andygrunwald/go-jira"
+	"github.com/trivago/tgo/tcontainer"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -66,7 +66,7 @@ func main() {
 			Project: jira.Project{
 				Key: "PROJ1",
 			},
-			Summary: "Just a demo issue",
+			Summary:  "Just a demo issue",
 			Unknowns: unknowns,
 		},
 	}
@@ -82,4 +82,3 @@ func main() {
 	// Jira versions (>8.x)
 	fmt.Printf(printStruct(issue))
 }
-
