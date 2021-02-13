@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -13,11 +12,6 @@ import (
 	"github.com/trivago/tgo/tcontainer"
 	"golang.org/x/crypto/ssh/terminal"
 )
-
-func printStruct(i interface{}) string {
-	s, _ := json.MarshalIndent(i, "", "\t")
-	return string(s)
-}
 
 func main() {
 	r := bufio.NewReader(os.Stdin)
