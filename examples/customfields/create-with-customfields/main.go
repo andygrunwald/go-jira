@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 	"syscall"
@@ -71,14 +72,14 @@ func main() {
 		},
 	}
 
-	issue, _, err := client.Issue.Create(&i)
+	issue, resp, err := client.Issue.Create(&i)
 	if err != nil {
+		body, err := ioutil.ReadAll(resp.Body)
+		fmt.Printf("Response body: %s\n", string(body))
 		panic(err)
 	}
 
 	// Please not that modern Jira versions (>8.x) does not include Summary field in the response
 	// fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
-
-	// Jira versions (>8.x)
-	fmt.Printf(printStruct(issue))
+	fmt.Printf("%s: %v\n", issue.Key, issue.Self)
 }
