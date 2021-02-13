@@ -54,7 +54,41 @@ func TestSprintService_GetIssuesForSprint(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	issues, _, err := testClient.Sprint.GetIssuesForSprint(123)
+	issues, _, err := testClient.Sprint.GetIssuesForSprint(123, nil)
+	if err != nil {
+		t.Errorf("Error given: %v", err)
+	}
+	if issues == nil {
+		t.Error("Expected issues in sprint list. Issues list is nil")
+	}
+	if len(issues) != 1 {
+		t.Errorf("Expect there to be 1 issue in the sprint, found %v", len(issues))
+	}
+
+}
+
+func TestSprintService_GetIssuesForSprint_WithFilter(t *testing.T) {
+	setup()
+	defer teardown()
+	testAPIEdpoint := "/rest/agile/1.0/sprint/123/issue"
+
+	raw, err := ioutil.ReadFile("./mocks/issues_in_sprint.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, testAPIEdpoint)
+		testRequestParams(t, r, map[string]string{"jql": "assignee=foo", "expand": "bar"})
+		fmt.Fprint(w, string(raw))
+	})
+
+	issues, _, err := testClient.Sprint.GetIssuesForSprint(123, &GetIssuesForSprintOptions{
+		SearchOptions: SearchOptions{
+			Expand: "bar",
+		},
+		Jql: "assignee=foo",
+	})
 	if err != nil {
 		t.Errorf("Error given: %v", err)
 	}
