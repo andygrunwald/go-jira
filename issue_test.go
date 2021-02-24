@@ -160,9 +160,9 @@ func TestIssueService_CreateInBulk(t *testing.T) {
 	})
 
 	is := []*Issue{
-		&Issue{Fields: &IssueFields{Description: "example bug report 1"}},
-		&Issue{Fields: &IssueFields{Description: "example bug report 2"}},
-		&Issue{Fields: &IssueFields{Description: "example bug report 3"}},
+		{Fields: &IssueFields{Description: "example bug report 1"}},
+		{Fields: &IssueFields{Description: "example bug report 2"}},
+		{Fields: &IssueFields{Description: "example bug report 3"}},
 	}
 	var resultingIssues []*Issue
 	resultingIssues, _, err := testClient.Issue.CreateInBulk(is)
