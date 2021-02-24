@@ -859,7 +859,7 @@ func (s *IssueService) CreateInBulkWithContext(ctx context.Context, issues []*Is
 		return nil, resp, fmt.Errorf("could not unmarshall the data into struct")
 	}
 	if len(responseIssues.Errors) > 0 {
-		return nil, resp, fmt.Errorf("Errors were present in the response JSON payload: %v", string(data))
+		return nil, resp, fmt.Errorf("errors were present in the response JSON payload: %v", string(data))
 	}
 	return responseIssues.Issues, resp, nil
 }
