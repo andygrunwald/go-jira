@@ -228,6 +228,18 @@ type IssueRenderedFields struct {
 	Description    string    `json:"description,omitempty" structs:"description,omitempty"`
 }
 
+// IssueBulkCreate represents the payload of a POST request to create multiple issues with a single API call
+// Issue.Fields is the only field that must be populated.
+type IssueBulkCreate struct {
+	Issues []*Issue `json:"issueUpdates,omitempty" structs:"issueUpdates,omitempty"`
+}
+
+// IssueBulkCreateResponse represents the response JSON payload of a IssueBulkCreate POST request
+type IssueBulkCreateResponse struct {
+	Issues []*Issue      `json:"issues" structs:"issues"`
+	Errors []interface{} `json:"errors" structs:"errors"`
+}
+
 // IssueType represents a type of a Jira issue.
 // Typical types are "Request", "Bug", "Story", ...
 type IssueType struct {
@@ -791,7 +803,7 @@ func WithQueryOptions(options interface{}) func(*http.Request) error {
 // Creating a sub-task is similar to creating a regular issue, with two important differences:
 // The issueType field must correspond to a sub-task issue type and you must provide a parent field in the issue create request containing the id or key of the parent issue.
 //
-// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssue
 func (s *IssueService) CreateWithContext(ctx context.Context, issue *Issue) (*Issue, *Response, error) {
 	apiEndpoint := "rest/api/2/issue"
 	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, issue)
@@ -820,6 +832,41 @@ func (s *IssueService) CreateWithContext(ctx context.Context, issue *Issue) (*Is
 // Create wraps CreateWithContext using the background context.
 func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 	return s.CreateWithContext(context.Background(), issue)
+}
+
+// CreateInBulkWithContext creates multiple issues or sub-tasks with a single API call from a JSON representation.
+// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
+func (s *IssueService) CreateInBulkWithContext(ctx context.Context, issues []*Issue) ([]*Issue, *Response, error) {
+	apiEndpoint := "rest/api/2/issue/bulk"
+	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, issues)
+	if err != nil {
+		return nil, nil, err
+	}
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		// incase of error return the resp for further inspection
+		return nil, resp, err
+	}
+
+	responseIssues := new(IssueBulkCreateResponse)
+	defer resp.Body.Close()
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, resp, fmt.Errorf("could not read the returned data")
+	}
+	err = json.Unmarshal(data, responseIssues)
+	if err != nil {
+		return nil, resp, fmt.Errorf("could not unmarshall the data into struct")
+	}
+	if len(responseIssues.Errors) > 0 {
+		return nil, resp, fmt.Errorf("Errors were present in the response JSON payload: %v", string(data))
+	}
+	return responseIssues.Issues, resp, nil
+}
+
+// CreateInBulk wraps CreateInBulkWithContext using the background context.
+func (s *IssueService) CreateInBulk(issues []*Issue) ([]*Issue, *Response, error) {
+	return s.CreateInBulkWithContext(context.Background(), issues)
 }
 
 // UpdateWithOptionsWithContext updates an issue from a JSON representation,
