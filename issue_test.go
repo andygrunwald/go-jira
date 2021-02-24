@@ -129,6 +129,51 @@ func TestIssueService_CreateThenGet(t *testing.T) {
 	}
 }
 
+func TestIssueService_CreateInBulk(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/bulk", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, "/rest/api/2/issue/bulk")
+
+		w.WriteHeader(http.StatusCreated)
+		fmt.Fprint(w, `{
+			"issues": [
+				{
+					"id": "10003",
+					"key": "TST-05",
+					"self": "http://www.example.com/jira/rest/api/2/issue/10003"
+				},
+				{
+					"id": "10004",
+					"key": "TST-06",
+					"self": "http://www.example.com/jira/rest/api/2/issue/10004"
+				},
+				{
+					"id": "10005",
+					"key": "TST-07",
+					"self": "http://www.example.com/jira/rest/api/2/issue/10005"
+				}
+			],
+			"errors": []
+		}`)
+	})
+
+	is := []*Issue{
+		&Issue{Fields: &IssueFields{Description: "example bug report 1"}},
+		&Issue{Fields: &IssueFields{Description: "example bug report 2"}},
+		&Issue{Fields: &IssueFields{Description: "example bug report 3"}},
+	}
+	var resultingIssues []*Issue
+	resultingIssues, _, err := testClient.Issue.CreateInBulk(is)
+	if resultingIssues == nil || len(resultingIssues) < 1 {
+		t.Error("Expected resultingIssues. resultingIssues is nil")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
 func TestIssueService_Update(t *testing.T) {
 	setup()
 	defer teardown()

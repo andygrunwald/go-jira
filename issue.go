@@ -838,19 +838,7 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
 func (s *IssueService) CreateInBulkWithContext(ctx context.Context, issues []*Issue) ([]*Issue, *Response, error) {
 	apiEndpoint := "rest/api/2/issue/bulk"
-
-	issuesBulkCreatePayload := IssueBulkCreate{Issues: issues}
-
-	// TEMP
-	buf := new(bytes.Buffer)
-	err := json.NewEncoder(buf).Encode(issuesBulkCreatePayload)
-	if err != nil {
-		return nil, nil, err
-	}
-	fmt.Println("issuesBulkCreatePayload JSON:")
-	fmt.Println(buf.String())
-
-	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, issuesBulkCreatePayload)
+	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, IssueBulkCreate{Issues: issues})
 	if err != nil {
 		return nil, nil, err
 	}
