@@ -640,10 +640,10 @@ func TestIssueService_Search(t *testing.T) {
 		t.Errorf("StartAt should populate with 1, %v given", resp.StartAt)
 	}
 	if resp.MaxResults != 40 {
-		t.Errorf("StartAt should populate with 40, %v given", resp.MaxResults)
+		t.Errorf("MaxResults should populate with 40, %v given", resp.MaxResults)
 	}
 	if resp.Total != 6 {
-		t.Errorf("StartAt should populate with 6, %v given", resp.Total)
+		t.Errorf("Total should populate with 6, %v given", resp.Total)
 	}
 }
 
