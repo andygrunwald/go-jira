@@ -24,8 +24,8 @@ func GetAllIssues(client *jira.Client, searchString string) ([]jira.Issue, error
 			return nil, err
 		}
 
+		total := resp.Total
 		if issues == nil {
-			total := resp.Total
 			issues = make([]jira.Issue, 0, total)
 		}
 		issues = append(issues, chunk...)
