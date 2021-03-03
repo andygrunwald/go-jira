@@ -225,9 +225,11 @@ func main() {
 Jira API has limit on maxResults it can return. You may have a usecase where you need to get all issues for given JQL.
 This example shows reference implementation of GetAllIssues function which does pagination on Jira API to get all the issues for given JQL
 
-please look at examples/pagination/main.go
+please look at [Pagination Example](https://github.com/andygrunwald/go-jira/blob/master/examples/pagination/main.go)
 
-```
+
+
+
 ### Call a not implemented API endpoint
 
 Not all API endpoints of the Jira API are implemented into *go-jira*.

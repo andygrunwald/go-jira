@@ -15,7 +15,7 @@ func GetAllIssues(client *jira.Client, searchString string) ([]jira.Issue, error
 	var issues []jira.Issue
 	for {
 		opt := &jira.SearchOptions{
-			MaxResults: 1000, // Max results can go upto 1000
+			MaxResults: 1000, // Max results can go up to 1000
 			StartAt:    last,
 		}
 
@@ -34,7 +34,7 @@ func GetAllIssues(client *jira.Client, searchString string) ([]jira.Issue, error
 			return issues, nil
 		}
 	}
-	return issues, nil
+
 }
 
 func main() {
