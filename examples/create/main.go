@@ -59,5 +59,5 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("%s: %+v\n", issue.Key, issue.Fields.Summary)
+	fmt.Printf("%s: %+v\n", issue.Key, issue.Self)
 }
