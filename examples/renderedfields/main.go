@@ -3,13 +3,13 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"golang.org/x/term"
 	"net/http"
 	"os"
 	"strings"
 	"syscall"
 
 	jira "github.com/andygrunwald/go-jira"
-	"golang.org/x/crypto/ssh/terminal"
 )
 
 func main() {
@@ -26,7 +26,7 @@ func main() {
 	username, _ := r.ReadString('\n')
 
 	fmt.Print("Jira Password: ")
-	bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
+	bytePassword, _ := term.ReadPassword(int(syscall.Stdin))
 	password := string(bytePassword)
 
 	var tp *http.Client
