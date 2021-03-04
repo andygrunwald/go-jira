@@ -3,14 +3,13 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 	"syscall"
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/trivago/tgo/tcontainer"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 func main() {
@@ -23,7 +22,7 @@ func main() {
 	username, _ := r.ReadString('\n')
 
 	fmt.Print("Jira Password: ")
-	bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
+	bytePassword, _ := term.ReadPassword(int(syscall.Stdin))
 	password := string(bytePassword)
 
 	fmt.Print("Custom field name (i.e. customfield_10220): ")
@@ -40,7 +39,7 @@ func main() {
 	client, err := jira.NewClient(tp.Client(), strings.TrimSpace(jiraURL))
 	if err != nil {
 		fmt.Printf("\nerror: %v\n", err)
-		return
+		os.Exit(1)
 	}
 
 	unknowns := tcontainer.NewMarshalMap()
@@ -66,9 +65,8 @@ func main() {
 		},
 	}
 
-	issue, resp, err := client.Issue.Create(&i)
+	issue, _, err := client.Issue.Create(&i)
 	if err != nil {
-		_, err := ioutil.ReadAll(resp.Body)
 		panic(err)
 	}
 
