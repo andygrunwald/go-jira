@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	jira "github.com/andygrunwald/go-jira"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 	"log"
 	"os"
 	"strings"
@@ -22,7 +22,7 @@ func main() {
 	username, _ := r.ReadString('\n')
 
 	fmt.Print("Jira Password: ")
-	bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
+	bytePassword, _ := term.ReadPassword(int(syscall.Stdin))
 	password := string(bytePassword)
 
 	fmt.Print("\nJira Project Key: ") // e.g. TES or WOW
