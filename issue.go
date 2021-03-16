@@ -857,7 +857,7 @@ func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateQueryOptions)
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
 func (s *IssueService) UpdateWithContext(ctx context.Context, issue *Issue) (*Issue, *Response, error) {
-	return s.UpdateWithOptions(issue, nil)
+	return s.UpdateWithOptionsWithContext(ctx, issue, nil)
 }
 
 // Update wraps UpdateWithContext using the background context.
@@ -1119,7 +1119,7 @@ func (s *IssueService) SearchPagesWithContext(ctx context.Context, jql string, o
 		options.MaxResults = 50
 	}
 
-	issues, resp, err := s.Search(jql, options)
+	issues, resp, err := s.SearchWithContext(ctx, jql, options)
 	if err != nil {
 		return err
 	}
@@ -1141,7 +1141,7 @@ func (s *IssueService) SearchPagesWithContext(ctx context.Context, jql string, o
 		}
 
 		options.StartAt += resp.MaxResults
-		issues, resp, err = s.Search(jql, options)
+		issues, resp, err = s.SearchWithContext(ctx, jql, options)
 		if err != nil {
 			return err
 		}
