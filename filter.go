@@ -130,13 +130,11 @@ func (fs *FilterService) GetListWithContext(ctx context.Context) ([]*Filter, *Re
 		return nil, nil, err
 	}
 
-	if options != nil {
-		q, err := query.Values(options)
-		if err != nil {
-			return nil, nil, err
-		}
-		req.URL.RawQuery = q.Encode()
+	q, err := query.Values(options)
+	if err != nil {
+		return nil, nil, err
 	}
+	req.URL.RawQuery = q.Encode()
 
 	filters := []*Filter{}
 	resp, err := fs.client.Do(req, &filters)
