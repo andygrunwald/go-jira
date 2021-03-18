@@ -268,9 +268,10 @@ type AvatarUrls struct {
 // Component represents a "component" of a Jira issue.
 // Components can be user defined in every Jira instance.
 type Component struct {
-	Self string `json:"self,omitempty" structs:"self,omitempty"`
-	ID   string `json:"id,omitempty" structs:"id,omitempty"`
-	Name string `json:"name,omitempty" structs:"name,omitempty"`
+	Self        string `json:"self,omitempty" structs:"self,omitempty"`
+	ID          string `json:"id,omitempty" structs:"id,omitempty"`
+	Name        string `json:"name,omitempty" structs:"name,omitempty"`
+	Description string `json:"description,omitempty" structs:"description,omitempty"`
 }
 
 // Progress represents the progress of a Jira issue.
