@@ -513,11 +513,14 @@ type SearchOptions struct {
 // searchResult is only a small wrapper around the Search (with JQL) method
 // to be able to parse the results
 type searchResult struct {
-	Issues     []Issue `json:"issues" structs:"issues"`
-	StartAt    int     `json:"startAt" structs:"startAt"`
-	MaxResults int     `json:"maxResults" structs:"maxResults"`
-	Total      int     `json:"total" structs:"total"`
+	Issues          []Issue      `json:"issues" structs:"issues"`
+	StartAt         int          `json:"startAt" structs:"startAt"`
+	MaxResults      int          `json:"maxResults" structs:"maxResults"`
+	Total           int          `json:"total" structs:"total"`
+	WarningMessages []WarningMsg `json:"warningMessages,omitempty" structs:"warningMessages,omitempty"`
 }
+
+type WarningMsg string
 
 // GetQueryOptions specifies the optional parameters for the Get Issue methods
 type GetQueryOptions struct {
@@ -1058,7 +1061,7 @@ func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
 // SearchWithContext will search for tickets according to the jql
 //
 // Jira API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
-func (s *IssueService) SearchWithContext(ctx context.Context, jql string, options *SearchOptions) ([]Issue, *Response, error) {
+func (s *IssueService) SearchWithContext(ctx context.Context, jql string, options *SearchOptions) ([]Issue, *Response, []WarningMsg, error) {
 	u := url.URL{
 		Path: "rest/api/2/search",
 	}
@@ -1089,7 +1092,7 @@ func (s *IssueService) SearchWithContext(ctx context.Context, jql string, option
 
 	req, err := s.client.NewRequestWithContext(ctx, "GET", u.String(), nil)
 	if err != nil {
-		return []Issue{}, nil, err
+		return []Issue{}, nil, nil, err
 	}
 
 	v := new(searchResult)
@@ -1097,11 +1100,12 @@ func (s *IssueService) SearchWithContext(ctx context.Context, jql string, option
 	if err != nil {
 		err = NewJiraError(resp, err)
 	}
-	return v.Issues, resp, err
+
+	return v.Issues, resp, v.WarningMessages, err
 }
 
 // Search wraps SearchWithContext using the background context.
-func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Response, error) {
+func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Response, []WarningMsg, error) {
 	return s.SearchWithContext(context.Background(), jql, options)
 }
 
@@ -1120,7 +1124,7 @@ func (s *IssueService) SearchPagesWithContext(ctx context.Context, jql string, o
 		options.MaxResults = 50
 	}
 
-	issues, resp, err := s.SearchWithContext(ctx, jql, options)
+	issues, resp, _, err := s.SearchWithContext(ctx, jql, options)
 	if err != nil {
 		return err
 	}
@@ -1142,7 +1146,7 @@ func (s *IssueService) SearchPagesWithContext(ctx context.Context, jql string, o
 		}
 
 		options.StartAt += resp.MaxResults
-		issues, resp, err = s.SearchWithContext(ctx, jql, options)
+		issues, resp, _, err = s.SearchWithContext(ctx, jql, options)
 		if err != nil {
 			return err
 		}
