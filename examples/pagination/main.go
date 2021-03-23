@@ -19,10 +19,12 @@ func GetAllIssues(client *jira.Client, searchString string) ([]jira.Issue, error
 			StartAt:    last,
 		}
 
-		chunk, resp, err := client.Issue.Search(searchString, opt)
+		chunk, resp, warningMessages, err := client.Issue.Search(searchString, opt)
 		if err != nil {
 			return nil, err
 		}
+
+		checkWarnings(warningMessages)
 
 		total := resp.Total
 		if issues == nil {
@@ -52,4 +54,13 @@ func main() {
 	}
 	fmt.Println(issues)
 
+}
+
+func checkWarnings(warningMessages []jira.WarningMsg) {
+	if len(warningMessages) > 0 {
+		fmt.Printf("Warning messages in response:\n")
+		for i, warn := range warningMessages {
+			fmt.Printf("Warning %d: %s\n", i, warn)
+		}
+	}
 }

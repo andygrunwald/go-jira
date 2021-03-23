@@ -627,7 +627,7 @@ func TestIssueService_Search(t *testing.T) {
 	})
 
 	opt := &SearchOptions{StartAt: 1, MaxResults: 40, Expand: "foo"}
-	_, resp, err := testClient.Issue.Search("type = Bug and Status NOT IN (Resolved)", opt)
+	_, resp, _, err := testClient.Issue.Search("type = Bug and Status NOT IN (Resolved)", opt)
 
 	if resp == nil {
 		t.Errorf("Response given: %+v", resp)
@@ -647,6 +647,31 @@ func TestIssueService_Search(t *testing.T) {
 	}
 }
 
+func TestIssueService_SearchWithWarnings(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/search", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, "/rest/api/2/search?expand=foo&jql=worklogauthor+%3D+123+and+type+%3D+Bug+and+Status+NOT+IN+%28Resolved%29&maxResults=10&startAt=1")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, `{"expand": "schema,names","startAt": 1,"maxResults": 10,"total": 6,"issues": [],"warningMessages": ["The value '123' does not exist for the field 'worklogAuthor'."]}`)
+	})
+
+	opt := &SearchOptions{StartAt: 1, MaxResults: 10, Expand: "foo"}
+	_, resp, warningMessages, err := testClient.Issue.Search("worklogauthor = 123 and type = Bug and Status NOT IN (Resolved)", opt)
+
+	if resp == nil {
+		t.Errorf("Response given: %+v", resp)
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+
+	if len(warningMessages) != 1 {
+		t.Errorf("Expected 1 warning message, %v given", len(warningMessages))
+	}
+}
+
 func TestIssueService_SearchEmptyJQL(t *testing.T) {
 	setup()
 	defer teardown()
@@ -658,7 +683,7 @@ func TestIssueService_SearchEmptyJQL(t *testing.T) {
 	})
 
 	opt := &SearchOptions{StartAt: 1, MaxResults: 40, Expand: "foo"}
-	_, resp, err := testClient.Issue.Search("", opt)
+	_, resp, _, err := testClient.Issue.Search("", opt)
 
 	if resp == nil {
 		t.Errorf("Response given: %+v", resp)
@@ -687,7 +712,7 @@ func TestIssueService_Search_WithoutPaging(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, `{"expand": "schema,names","startAt": 0,"maxResults": 50,"total": 6,"issues": [{"expand": "html","id": "10230","self": "http://kelpie9:8081/rest/api/2/issue/BULK-62","key": "BULK-62","fields": {"summary": "testing","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/5","id": "5","description": "The sub-task of the issue","iconUrl": "http://kelpie9:8081/images/icons/issue_subtask.gif","name": "Sub-task","subtask": true},"customfield_10071": null}},{"expand": "html","id": "10004","self": "http://kelpie9:8081/rest/api/2/issue/BULK-47","key": "BULK-47","fields": {"summary": "Cheese v1 2.0 issue","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/2/issuetype/3","id": "3","description": "A task that needs to be done.","iconUrl": "http://kelpie9:8081/images/icons/task.gif","name": "Task","subtask": false}}}]}`)
 	})
-	_, resp, err := testClient.Issue.Search("something", nil)
+	_, resp, _, err := testClient.Issue.Search("something", nil)
 
 	if resp == nil {
 		t.Errorf("Response given: %+v", resp)
