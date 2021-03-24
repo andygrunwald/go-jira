@@ -25,6 +25,7 @@ type ProjectList []struct {
 	ProjectTypeKey  string          `json:"projectTypeKey" structs:"projectTypeKey"`
 	ProjectCategory ProjectCategory `json:"projectCategory,omitempty" structs:"projectsCategory,omitempty"`
 	IssueTypes      []IssueType     `json:"issueTypes,omitempty" structs:"issueTypes,omitempty"`
+	Simplified      bool            `json:"simplified,omitempty"`
 }
 
 // ProjectCategory represents a single project category
@@ -53,6 +54,7 @@ type Project struct {
 	Roles           map[string]string  `json:"roles,omitempty" structs:"roles,omitempty"`
 	AvatarUrls      AvatarUrls         `json:"avatarUrls,omitempty" structs:"avatarUrls,omitempty"`
 	ProjectCategory ProjectCategory    `json:"projectCategory,omitempty" structs:"projectCategory,omitempty"`
+	Simplified      bool               `json:"simplified,omitempty"`
 }
 
 // ProjectComponent represents a single component of a project
