@@ -38,10 +38,10 @@ func main() {
 	i := jira.Issue{
 		Fields: &jira.IssueFields{
 			Assignee: &jira.User{
-				Name: "myuser",
+				AccountID: "myatlassianid",
 			},
 			Reporter: &jira.User{
-				Name: "youruser",
+				AccountID: "myatlassianid",
 			},
 			Description: "Test Issue",
 			Type: jira.IssueType{
