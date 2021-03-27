@@ -26,7 +26,7 @@ const DateFormatJira = "2006-01-02T15:04:05.999-0700"
 
 // Search methods find the auditing record filtering by date, project associated, entity and user who triggered the action
 // Docs: https://docs.atlassian.com/software/jira/docs/api/REST/8.5.13/#api/2/auditing-getRecords
-func (a *AuditService) Search(ctx context.Context, opts *AuditSearchOptionsScheme, offset, limit int) (result *AuditRecordScheme, response *Response, err error) {
+func (a *AuditService) Search(ctx context.Context, opts *AuditSearchOptionsScheme, offset, limit int) (result *AuditRecordPage, response *Response, err error) {
 
 	if ctx == nil {
 		return nil, nil, fmt.Errorf("error!, please provide a valid ctx value")
@@ -93,7 +93,7 @@ func (a *AuditService) Search(ctx context.Context, opts *AuditSearchOptionsSchem
 		return
 	}
 
-	result = new(AuditRecordScheme)
+	result = new(AuditRecordPage)
 	response, err = a.client.Do(request, result)
 	if err != nil {
 		return nil, nil, NewJiraError(response, err)
@@ -102,31 +102,69 @@ func (a *AuditService) Search(ctx context.Context, opts *AuditSearchOptionsSchem
 	return
 }
 
-type AuditRecordScheme struct {
-	Offset  int `json:"offset"`
-	Limit   int `json:"limit"`
-	Total   int `json:"total"`
-	Records []struct {
-		ID            int    `json:"id"`
-		Summary       string `json:"summary"`
-		RemoteAddress string `json:"remoteAddress"`
-		AuthorKey     string `json:"authorKey"`
-		Created       string `json:"created"`
-		Category      string `json:"category"`
-		EventSource   string `json:"eventSource"`
-		ObjectItem    struct {
-			ID       string `json:"id"`
-			Name     string `json:"name"`
-			TypeName string `json:"typeName"`
-		} `json:"objectItem"`
-		ChangedValues []struct {
-			FieldName string `json:"fieldName"`
-			ChangedTo string `json:"changedTo"`
-		} `json:"changedValues,omitempty"`
-		AssociatedItems []struct {
-			ID       string `json:"id"`
-			Name     string `json:"name"`
-			TypeName string `json:"typeName"`
-		} `json:"associatedItems"`
-	} `json:"records"`
+// Store a record in Audit Log
+// Docs: https://docs.atlassian.com/software/jira/docs/api/REST/8.5.13/#api/2/auditing-getRecords
+func (a *AuditService) Add(ctx context.Context, record *AuditRecord) (response *Response, err error) {
+
+	if ctx == nil {
+		return nil, fmt.Errorf("error!, please provide a valid ctx value")
+	}
+
+	if record == nil {
+		return nil, fmt.Errorf("error!, please provide a valid AuditRecord pointer value")
+	}
+
+	var endpoint = "rest/api/2/auditing/record"
+
+	request, err := a.client.NewRequestWithContext(ctx, http.MethodPost, endpoint, record)
+	if err != nil {
+		return
+	}
+
+	response, err = a.client.Do(request, nil)
+	if err != nil {
+		return nil, NewJiraError(response, err)
+	}
+
+	return
+}
+
+type AuditRecordPage struct {
+	Offset  int            `json:"offset"`
+	Limit   int            `json:"limit"`
+	Total   int            `json:"total"`
+	Records []*AuditRecord `json:"records,omitempty"`
+}
+
+type AuditRecord struct {
+	ID              int                          `json:"id,omitempty"`
+	Summary         string                       `json:"summary,omitempty"`
+	RemoteAddress   string                       `json:"remoteAddress,omitempty"`
+	AuthorKey       string                       `json:"authorKey,omitempty"`
+	Created         string                       `json:"created,omitempty"`
+	Category        string                       `json:"category,omitempty"`
+	EventSource     string                       `json:"eventSource,omitempty"`
+	ObjectItem      *AuditRecordObjectItem       `json:"objectItem,omitempty"`
+	ChangedValues   []*AuditRecordChangedValue   `json:"changedValues,omitempty"`
+	AssociatedItems []*AuditRecordAssociatedItem `json:"associatedItems,omitempty"`
+}
+
+type AuditRecordObjectItem struct {
+	ID       string `json:"id,omitempty"`
+	Name     string `json:"name,omitempty"`
+	TypeName string `json:"typeName,omitempty"`
+}
+
+type AuditRecordChangedValue struct {
+	FieldName   string `json:"fieldName,omitempty"`
+	ChangedFrom string `json:"changedFrom,omitempty"`
+	ChangedTo   string `json:"changedTo,omitempty"`
+}
+
+type AuditRecordAssociatedItem struct {
+	ID         string `json:"id,omitempty"`
+	Name       string `json:"name,omitempty"`
+	TypeName   string `json:"typeName,omitempty"`
+	ParentID   string `json:"parentId,omitempty"`
+	ParentName string `json:"parentName,omitempty"`
 }
