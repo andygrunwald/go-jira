@@ -183,3 +183,136 @@ func ErrorContains(out error, want string) bool {
 	}
 	return strings.Contains(out.Error(), want)
 }
+
+func TestAuditService_Add(t *testing.T) {
+
+	testCases := []struct {
+		name               string
+		wantHTTPMethod     string
+		endpoint           string
+		record             *AuditRecord
+		context            context.Context
+		wantHTTPCodeReturn int
+		wantErr            bool
+		errorMjs           string
+	}{
+		{
+			name: "AddAuditRecordsWhenTheParametersAreCorrect",
+			record: &AuditRecord{
+				Summary:  "User created",
+				Category: "USER_MANAGEMENT",
+				ObjectItem: &AuditRecordObjectItem{
+					ID:       "usr",
+					Name:     "user",
+					TypeName: "USER",
+				},
+				ChangedValues: []*AuditRecordChangedValue{
+					{
+						FieldName:   "email",
+						ChangedTo:   "newuser@atlassian.com",
+						ChangedFrom: "user@atlassian.com",
+					},
+				},
+
+				AssociatedItems: []*AuditRecordAssociatedItem{
+					{
+						ID:         "jira-software-users",
+						Name:       "jira-software-users",
+						TypeName:   "GROUP",
+						ParentID:   "1",
+						ParentName: "Jira Internal Directory",
+					},
+				},
+			},
+			context:            context.Background(),
+			endpoint:           "/rest/api/2/auditing/record",
+			wantHTTPCodeReturn: http.StatusCreated,
+			wantHTTPMethod:     http.MethodPost,
+			wantErr:            false,
+		},
+
+		{
+			name: "AddAuditRecordsWhenTheContextIsNil",
+			record: &AuditRecord{
+				Summary:  "User created",
+				Category: "USER_MANAGEMENT",
+				ObjectItem: &AuditRecordObjectItem{
+					ID:       "usr",
+					Name:     "user",
+					TypeName: "USER",
+				},
+				ChangedValues: []*AuditRecordChangedValue{
+					{
+						FieldName:   "email",
+						ChangedTo:   "newuser@atlassian.com",
+						ChangedFrom: "user@atlassian.com",
+					},
+				},
+
+				AssociatedItems: []*AuditRecordAssociatedItem{
+					{
+						ID:         "jira-software-users",
+						Name:       "jira-software-users",
+						TypeName:   "GROUP",
+						ParentID:   "1",
+						ParentName: "Jira Internal Directory",
+					},
+				},
+			},
+			context:            nil,
+			endpoint:           "/rest/api/2/auditing/record",
+			wantHTTPCodeReturn: http.StatusCreated,
+			wantHTTPMethod:     http.MethodPost,
+			wantErr:            true,
+			errorMjs:           "error!, please provide a valid ctx value",
+		},
+
+		{
+			name:               "AddAuditRecordsWhenTheRecordIsNotSet",
+			record:             nil,
+			context:            context.Background(),
+			endpoint:           "/rest/api/2/auditing/record",
+			wantHTTPCodeReturn: http.StatusCreated,
+			wantHTTPMethod:     http.MethodPost,
+			wantErr:            true,
+			errorMjs:           "error!, please provide a valid AuditRecord pointer value",
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+
+			//Init the HTTP mock server
+			setup()
+			defer teardown()
+
+			//Create the custom HTTP handle
+			testMux.HandleFunc(testCase.endpoint, func(w http.ResponseWriter, r *http.Request) {
+				testMethod(t, r, testCase.wantHTTPMethod)
+				testRequestURL(t, r, testCase.endpoint)
+			})
+
+			response, err := testClient.Audit.Add(testCase.context, testCase.record)
+
+			if testCase.wantErr {
+
+				if !ErrorContains(err, testCase.errorMjs) {
+					t.Fatalf("Error Wanted: (%v), Error Returned: (%v)", testCase.errorMjs, err)
+				}
+
+				t.Logf("Error Wanted: (%v), Error Returned: (%v)", testCase.errorMjs, err)
+				return
+			}
+
+			if err != nil {
+				if response != nil {
+					t.Fatal("Response HTTP Response", response.StatusCode)
+				}
+
+				t.Fatal(err)
+			}
+
+		})
+	}
+
+}
