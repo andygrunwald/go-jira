@@ -8,10 +8,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"reflect"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -19,6 +21,27 @@ import (
 	"github.com/google/go-querystring/query"
 	"github.com/pkg/errors"
 )
+
+const (
+	retryIntervalDefault = 30 * time.Second
+	retryStepSeconds     = 1
+)
+
+var retryStatusCodes = map[int]struct{}{
+	http.StatusTooManyRequests: {},
+}
+
+type failFastKey struct{}
+
+// WithFailFast disables retries on rate limit.
+func WithFailFast(ctx context.Context) context.Context {
+	return context.WithValue(ctx, failFastKey{}, true)
+}
+
+func failFast(ctx context.Context) bool {
+	ok, _ := ctx.Value(failFastKey{}).(bool)
+	return ok
+}
 
 // httpClient defines an interface for an http.Client implementation so that alternative
 // http Clients can be passed in for making requests
@@ -267,9 +290,71 @@ func (c *Client) NewMultiPartRequest(method, urlStr string, buf *bytes.Buffer) (
 	return c.NewMultiPartRequestWithContext(context.Background(), method, urlStr, buf)
 }
 
+func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
+	return c.doWithDeadline(req, v)
+}
+
+func (c *Client) doWithDeadline(req *http.Request, v interface{}) (*Response, error) {
+	ctx := req.Context()
+	if failFast(ctx) {
+		return c.do(req, v)
+	}
+
+	deadline, deadlineIsSet := ctx.Deadline()
+	if !deadlineIsSet {
+		deadline = time.Now().Add(retryIntervalDefault)
+		dctx, cancel := context.WithDeadline(ctx, deadline)
+		defer cancel()
+		ctx = dctx
+		req = req.WithContext(ctx)
+	}
+	errDeadlineWrapped := func(resp *Response, err error) error {
+		return errors.Wrapf(context.DeadlineExceeded, "path: %s, err: %+v, code: %d", req.URL.String(), err, resp.StatusCode)
+	}
+
+	for {
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		default:
+		}
+
+		resp, err := c.do(req, v)
+		if resp != nil {
+			if _, ok := retryStatusCodes[resp.StatusCode]; !ok {
+				return resp, err
+			}
+			retrySeconds := retryStepSeconds
+			retryAfter := resp.Header.Get("retry-after")
+			if retryAfter != "" {
+				retryAfterSeconds, errConv := strconv.Atoi(retryAfter)
+				if errConv != nil {
+					log.Println("failed to parse retry-after:", err)
+				}
+				if retryAfterSeconds != 0 {
+					retrySeconds = retryAfterSeconds
+				}
+			}
+			retryAfterStep := time.Duration(retrySeconds) * time.Second
+			t := time.NewTimer(retryAfterStep)
+			select {
+			case <-ctx.Done():
+				t.Stop()
+				return nil, errDeadlineWrapped(resp, err)
+			case <-t.C:
+			}
+			continue
+		} else if err != nil {
+			return nil, err
+		} else {
+			return resp, err
+		}
+	}
+}
+
 // Do sends an API request and returns the API response.
 // The API response is JSON decoded and stored in the value pointed to by v, or returned as an error if an API error has occurred.
-func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
+func (c *Client) do(req *http.Request, v interface{}) (*Response, error) {
 	httpResp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
