@@ -23,6 +23,11 @@ type IssuesInSprintResult struct {
 	Issues []Issue `json:"issues"`
 }
 
+type GetIssuesForSprintOptions struct {
+	SearchOptions
+	Jql string `url:"jql,omitempty"`
+}
+
 // MoveIssuesToSprintWithContext moves issues to a sprint, for a given sprint Id.
 // Issues can only be moved to open or active sprints.
 // The maximum number of issues that can be moved in one operation is 50.
@@ -56,10 +61,15 @@ func (s *SprintService) MoveIssuesToSprint(sprintID int, issueIDs []string) (*Re
 // By default, the returned issues are ordered by rank.
 //
 // Jira API Docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/sprint-getIssuesForSprint
-func (s *SprintService) GetIssuesForSprintWithContext(ctx context.Context, sprintID int) ([]Issue, *Response, error) {
+func (s *SprintService) GetIssuesForSprintWithContext(ctx context.Context, sprintID int, options *GetIssuesForSprintOptions) ([]Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/sprint/%d/issue", sprintID)
 
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	url, err := addOptions(apiEndpoint, options)
+	if err != nil {
+		return nil, nil, fmt.Errorf("add options: %w", err)
+	}
+
+	req, err := s.client.NewRequestWithContext(ctx, "GET", url, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -75,8 +85,8 @@ func (s *SprintService) GetIssuesForSprintWithContext(ctx context.Context, sprin
 }
 
 // GetIssuesForSprint wraps GetIssuesForSprintWithContext using the background context.
-func (s *SprintService) GetIssuesForSprint(sprintID int) ([]Issue, *Response, error) {
-	return s.GetIssuesForSprintWithContext(context.Background(), sprintID)
+func (s *SprintService) GetIssuesForSprint(sprintID int, options *GetIssuesForSprintOptions) ([]Issue, *Response, error) {
+	return s.GetIssuesForSprintWithContext(context.Background(), sprintID, options)
 }
 
 // GetIssueWithContext returns a full representation of the issue for the given issue key.
