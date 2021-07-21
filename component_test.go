@@ -2,6 +2,7 @@ package jira
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"testing"
 )
@@ -24,6 +25,55 @@ func TestComponentService_Create_Success(t *testing.T) {
 		t.Error("Expected component. Component is nil")
 	}
 	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
+func TestComponentService_Get(t *testing.T) {
+	setup()
+	defer teardown()
+	testAPIEdpoint := "/rest/api/2/component/42102"
+
+	raw, err := ioutil.ReadFile("./mocks/component.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, testAPIEdpoint)
+		fmt.Fprint(w, string(raw))
+	})
+
+	component, _, err := testClient.Component.Get("42102")
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+	if component == nil {
+		t.Error("Expected component. Component is nil")
+		return
+	}
+}
+
+func TestComponentService_Get_NoComponent(t *testing.T) {
+	setup()
+	defer teardown()
+	testAPIEdpoint := "/rest/api/2/component/99999999"
+
+	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, testAPIEdpoint)
+		fmt.Fprint(w, nil)
+	})
+
+	component, resp, err := testClient.Component.Get("99999999")
+	if component != nil {
+		t.Errorf("Expected nil. Got %+v", component)
+	}
+
+	if resp.Status == "404" {
+		t.Errorf("Expected status 404. Got %s", resp.Status)
+	}
+	if err == nil {
 		t.Errorf("Error given: %s", err)
 	}
 }
