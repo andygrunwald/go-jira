@@ -4,7 +4,7 @@ go 1.12
 
 require (
 	github.com/fatih/structs v1.1.0
-	github.com/golang-jwt/jwt v3.2.1+incompatible
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/go-cmp v0.5.6
 	github.com/google/go-querystring v0.0.0-20170111101155-53e6ce116135
 	github.com/pkg/errors v0.9.1
