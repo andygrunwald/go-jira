@@ -17,7 +17,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	"github.com/google/go-querystring/query"
 	"github.com/pkg/errors"
 )
