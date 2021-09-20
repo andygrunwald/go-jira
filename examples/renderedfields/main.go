@@ -8,7 +8,7 @@ import (
 	"strings"
 	"syscall"
 
-	jira "github.com/andygrunwald/go-jira"
+	jira "github.com/lwsanty/go-jira"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
