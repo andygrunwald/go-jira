@@ -444,6 +444,7 @@ func (t *CookieAuthTransport) setSessionObject() error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 
 	t.SessionObject = resp.Cookies()
 	return nil

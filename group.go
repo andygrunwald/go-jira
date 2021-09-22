@@ -155,6 +155,7 @@ func (s *GroupService) Add(groupname string, username string) (*Group, *Response
 // RemoveWithContext removes user from group
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-removeUserFromGroup
+// Caller must close resp.Body
 func (s *GroupService) RemoveWithContext(ctx context.Context, groupname string, username string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s&username=%s", groupname, username)
 	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndpoint, nil)
@@ -172,6 +173,7 @@ func (s *GroupService) RemoveWithContext(ctx context.Context, groupname string, 
 }
 
 // Remove wraps RemoveWithContext using the background context.
+// Caller must close resp.Body
 func (s *GroupService) Remove(groupname string, username string) (*Response, error) {
 	return s.RemoveWithContext(context.Background(), groupname, username)
 }
