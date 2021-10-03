@@ -1,4 +1,4 @@
-# go-jira
+# go-Jira
 
 [![GoDoc](https://godoc.org/github.com/andygrunwald/go-jira?status.svg)](https://godoc.org/github.com/andygrunwald/go-jira)
 [![Build Status](https://github.com/andygrunwald/go-jira/actions/workflows/testing.yml/badge.svg)](https://github.com/andygrunwald/go-jira/actions/workflows/testing.yml)
@@ -33,7 +33,7 @@ It is go gettable
 go get github.com/andygrunwald/go-jira
 ```
 
-For stable versions you can use one of our tags with [gopkg.in](http://labix.org/gopkg.in). E.g.
+For stable versions, you can use one of our tags with [gopkg.in](http://labix.org/gopkg.in). E.g.
 
 ```go
 package main
@@ -59,7 +59,7 @@ The [latest Jira REST API documentation](https://docs.atlassian.com/jira/REST/la
 
 ## Examples
 
-Further a few examples how the API can be used.
+Further a few examples of how the API can be used.
 A few more examples are available in the [GoDoc examples section](https://godoc.org/github.com/andygrunwald/go-jira#pkg-examples).
 
 ### Get a single issue
@@ -91,9 +91,9 @@ func main() {
 ### Authentication
 
 The `go-jira` library does not handle most authentication directly.  Instead, authentication should be handled within
-an `http.Client`.  That client can then be passed into the `NewClient` function when creating a jira client.
+an `http.Client`.  That client can then be passed into the `NewClient` function when creating a Jira client.
 
-For convenience, capability for basic and cookie-based authentication is included in the main library.
+For convenience, the capability for basic and cookie-based authentication is included in the main library.
 
 #### Token (Jira on Atlassian Cloud)
 
@@ -130,7 +130,7 @@ For more details have a look at the [issue #56](https://github.com/andygrunwald/
 
 ### Create an issue
 
-Example how to create an issue.
+Example of how to create an issue.
 
 ```go
 package main
@@ -222,7 +222,7 @@ func main() {
 }
 ```
 ### Get all the issues for JQL with Pagination
-Jira API has limit on maxResults it can return. You may have a usecase where you need to get all issues for given JQL.
+Jira API has a limit on maxResults it can return. You may have a usecase where you need to get all issues for given JQL.
 This example shows reference implementation of GetAllIssues function which does pagination on Jira API to get all the issues for given JQL
 
 please look at [Pagination Example](https://github.com/andygrunwald/go-jira/blob/master/examples/pagination/main.go)
@@ -234,7 +234,7 @@ please look at [Pagination Example](https://github.com/andygrunwald/go-jira/blob
 
 Not all API endpoints of the Jira API are implemented into *go-jira*.
 But you can call them anyway:
-Lets get all public projects of [Atlassian`s Jira instance](https://jira.atlassian.com/).
+Let's get all public projects of [Atlassian`s Jira instance](https://jira.atlassian.com/).
 
 ```go
 package main
@@ -297,7 +297,7 @@ A few examples:
 * Correct typos in the README / documentation
 * Reporting bugs
 * Implement a new feature or endpoint
-* Sharing the love of [go-jira](https://github.com/andygrunwald/go-jira) and help people to get use to it
+* Sharing the love of [go-jira](https://github.com/andygrunwald/go-jira) and help people to get used to it
 
 If you are new to pull requests, checkout [Collaborating on projects using issues and pull requests / Creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
 
