@@ -802,6 +802,7 @@ func (s *IssueService) CreateWithContext(ctx context.Context, issue *Issue) (*Is
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
 		// incase of error return the resp for further inspection
+		BodyLog(resp.Body)
 		return nil, resp, err
 	}
 
@@ -809,6 +810,7 @@ func (s *IssueService) CreateWithContext(ctx context.Context, issue *Issue) (*Is
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+
 		return nil, resp, fmt.Errorf("could not read the returned data")
 	}
 	err = json.Unmarshal(data, responseIssue)
