@@ -810,7 +810,6 @@ func (s *IssueService) CreateWithContext(ctx context.Context, issue *Issue) (*Is
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-
 		return nil, resp, fmt.Errorf("could not read the returned data")
 	}
 	err = json.Unmarshal(data, responseIssue)
