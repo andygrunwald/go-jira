@@ -1855,6 +1855,46 @@ func TestIssueService_AddRemoteLink(t *testing.T) {
 	}
 }
 
+func TestIssueService_UpdateRemoteLink(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/100/remotelink/200", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+		testRequestURL(t, r, "/rest/api/2/issue/100/remotelink/200")
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+	r := &RemoteLink{
+		Application: &RemoteLinkApplication{
+			Name: "My Acme Tracker",
+			Type: "com.acme.tracker",
+		},
+		GlobalID:     "system=http://www.mycompany.com/support&id=1",
+		Relationship: "causes",
+		Object: &RemoteLinkObject{
+			Summary: "Customer support issue",
+			Icon: &RemoteLinkIcon{
+				Url16x16: "http://www.mycompany.com/support/ticket.png",
+				Title:    "Support Ticket",
+			},
+			Title: "TSTSUP-111",
+			URL:   "http://www.mycompany.com/support?id=1",
+			Status: &RemoteLinkStatus{
+				Icon: &RemoteLinkIcon{
+					Url16x16: "http://www.mycompany.com/support/resolved.png",
+					Title:    "Case Closed",
+					Link:     "http://www.mycompany.com/support?id=1&details=closed",
+				},
+				Resolved: true,
+			},
+		},
+	}
+	_, err := testClient.Issue.UpdateRemoteLink("100", 200, r)
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
 func TestTime_MarshalJSON(t *testing.T) {
 	timeFormatParseFrom := "2006-01-02T15:04:05.999Z"
 	testCases := []struct {
