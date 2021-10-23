@@ -60,16 +60,91 @@ func TestUserService_Create(t *testing.T) {
 		testRequestURL(t, r, "/rest/api/2/user")
 
 		w.WriteHeader(http.StatusCreated)
-		fmt.Fprint(w, `{"name":"charlie","password":"abracadabra","emailAddress":"charlie@atlassian.com",
-        "displayName":"Charlie of Atlassian","applicationKeys":["jira-core"]}`)
+		fmt.Fprint(w, `
+		{
+			"name": "charlie",
+			"password": "abracadabra",
+			"emailAddress": "charlie@atlassian.com",
+			"displayName": "Charlie of Atlassian",
+			"applicationRoles": {
+				"size": 1,
+				"max-results": 1,
+				"items": [{
+					"key": "jira-software",
+					"groups": [
+						"jira-software-users",
+						"jira-testers"
+					],
+					"name": "Jira Software",
+					"defaultGroups": [
+						"jira-software-users"
+					],
+					"selectedByDefault": false,
+					"defined": false,
+					"numberOfSeats": 10,
+					"remainingSeats": 5,
+					"userCount": 5,
+					"userCountDescription": "5 developers",
+					"hasUnlimitedSeats": false,
+					"platform": false
+				}]
+			},
+			"groups": {
+				"size": 2,
+				"max-results": 2,
+				"items": [{
+						"name": "jira-core",
+						"self": "jira-core"
+					},
+					{
+						"name": "jira-test",
+						"self": "jira-test"
+					}
+				]
+			}
+		}
+		`)
 	})
 
 	u := &User{
-		Name:            "charlie",
-		Password:        "abracadabra",
-		EmailAddress:    "charlie@atlassian.com",
-		DisplayName:     "Charlie of Atlassian",
-		ApplicationKeys: []string{"jira-core"},
+		Name:         "charlie",
+		Password:     "abracadabra",
+		EmailAddress: "charlie@atlassian.com",
+		DisplayName:  "Charlie of Atlassian",
+		Groups: UserGroups{
+			Size:       2,
+			MaxResults: 2,
+			Items: []UserGroup{
+				{
+					Name: "jira-core",
+					Self: "jira-core",
+				},
+				{
+					Name: "jira-test",
+					Self: "jira-test",
+				},
+			},
+		},
+		ApplicationRoles: ApplicationRoles{
+			Size:       1,
+			MaxResults: 1,
+			Items: []ApplicationRole{
+				{
+					Key:                  "jira-software",
+					Groups:               []string{"jira-software-users", "jira-testers"},
+					Name:                 "Jira Software",
+					DefaultGroups:        []string{"jira-software-users"},
+					SelectedByDefault:    false,
+					Defined:              false,
+					NumberOfSeats:        10,
+					RemainingSeats:       5,
+					UserCount:            5,
+					UserCountDescription: "5 developers",
+					HasUnlimitedSeats:    false,
+					Platform:             false,
+				},
+			},
+		},
 	}
 
 	if user, _, err := testClient.User.Create(u); err != nil {

@@ -16,19 +16,54 @@ type UserService struct {
 
 // User represents a Jira user.
 type User struct {
-	Self            string     `json:"self,omitempty" structs:"self,omitempty"`
-	AccountID       string     `json:"accountId,omitempty" structs:"accountId,omitempty"`
-	AccountType     string     `json:"accountType,omitempty" structs:"accountType,omitempty"`
-	Name            string     `json:"name,omitempty" structs:"name,omitempty"`
-	Key             string     `json:"key,omitempty" structs:"key,omitempty"`
-	Password        string     `json:"-"`
-	EmailAddress    string     `json:"emailAddress,omitempty" structs:"emailAddress,omitempty"`
-	AvatarUrls      AvatarUrls `json:"avatarUrls,omitempty" structs:"avatarUrls,omitempty"`
-	DisplayName     string     `json:"displayName,omitempty" structs:"displayName,omitempty"`
-	Active          bool       `json:"active,omitempty" structs:"active,omitempty"`
-	TimeZone        string     `json:"timeZone,omitempty" structs:"timeZone,omitempty"`
-	Locale          string     `json:"locale,omitempty" structs:"locale,omitempty"`
-	ApplicationKeys []string   `json:"applicationKeys,omitempty" structs:"applicationKeys,omitempty"`
+	Self             string           `json:"self,omitempty" structs:"self,omitempty"`
+	AccountID        string           `json:"accountId,omitempty" structs:"accountId,omitempty"`
+	AccountType      string           `json:"accountType,omitempty" structs:"accountType,omitempty"`
+	Name             string           `json:"name,omitempty" structs:"name,omitempty"`
+	Key              string           `json:"key,omitempty" structs:"key,omitempty"`
+	Password         string           `json:"-"`
+	EmailAddress     string           `json:"emailAddress,omitempty" structs:"emailAddress,omitempty"`
+	AvatarUrls       AvatarUrls       `json:"avatarUrls,omitempty" structs:"avatarUrls,omitempty"`
+	DisplayName      string           `json:"displayName,omitempty" structs:"displayName,omitempty"`
+	Active           bool             `json:"active,omitempty" structs:"active,omitempty"`
+	TimeZone         string           `json:"timeZone,omitempty" structs:"timeZone,omitempty"`
+	Locale           string           `json:"locale,omitempty" structs:"locale,omitempty"`
+	Groups           UserGroups       `json:"groups,omitempty" structs:"groups,omitempty"`
+	ApplicationRoles ApplicationRoles `json:"applicationRoles,omitempty" structs:"applicationRoles,omitempty"`
+}
+
+// Groups is a wrapper for UserGroup
+type UserGroups struct {
+	Size           int         `json:"size,omitempty" structs:"size,omitempty"`
+	Items          []UserGroup `json:"items,omitempty" structs:"items,omitempty"`
+	PagingCallback struct{}    `json:"pagingCallback,omitempty" structs:"pagingCallback,omitempty"`
+	Callback       struct{}    `json:"callback,omitempty" structs:"callback,omitempty"`
+	MaxResults     int         `json:"max-results,omitempty" structs:"max-results,omitempty"`
+}
+
+//ApplicationRoles is a wrapper for ApplicationRole
+type ApplicationRoles struct {
+	Size           int               `json:"size,omitempty" structs:"size,omitempty"`
+	Items          []ApplicationRole `json:"items,omitempty" structs:"items,omitempty"`
+	PagingCallback struct{}          `json:"pagingCallback,omitempty" structs:"pagingCallback,omitempty"`
+	Callback       struct{}          `json:"callback,omitempty" structs:"callback,omitempty"`
+	MaxResults     int               `json:"max-results,omitempty" structs:"max-results,omitempty"`
+}
+
+// ApplicationRole represents the roles assigned to a user
+type ApplicationRole struct {
+	Key                  string   `json:"key"`
+	Groups               []string `json:"groups"`
+	Name                 string   `json:"name"`
+	DefaultGroups        []string `json:"defaultGroups"`
+	SelectedByDefault    bool     `json:"selectedByDefault"`
+	Defined              bool     `json:"defined"`
+	NumberOfSeats        int      `json:"numberOfSeats"`
+	RemainingSeats       int      `json:"remainingSeats"`
+	UserCount            int      `json:"userCount"`
+	UserCountDescription string   `json:"userCountDescription"`
+	HasUnlimitedSeats    bool     `json:"hasUnlimitedSeats"`
+	Platform             bool     `json:"platform"`
 }
 
 // UserGroup represents the group list
@@ -72,7 +107,7 @@ func (s *UserService) Get(accountId string) (*User, *Response, error) {
 // GetByAccountIDWithContext gets user info from Jira
 // Searching by another parameter that is not accountId is deprecated,
 // but this method is kept for backwards compatibility
-// Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUser
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-users/#api-rest-api-2-user-get
 func (s *UserService) GetByAccountIDWithContext(ctx context.Context, accountID string) (*User, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user?accountId=%s", accountID)
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
@@ -95,7 +130,7 @@ func (s *UserService) GetByAccountID(accountID string) (*User, *Response, error)
 
 // CreateWithContext creates an user in Jira.
 //
-// Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-createUser
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-users/#api-rest-api-2-user-post
 func (s *UserService) CreateWithContext(ctx context.Context, user *User) (*User, *Response, error) {
 	apiEndpoint := "/rest/api/2/user"
 	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, user)
@@ -176,7 +211,7 @@ func (s *UserService) GetGroups(accountId string) (*[]UserGroup, *Response, erro
 
 // GetSelfWithContext information about the current logged-in user
 //
-// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-myself-get
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-myself/#api-rest-api-2-myself-get
 func (s *UserService) GetSelfWithContext(ctx context.Context) (*User, *Response, error) {
 	const apiEndpoint = "rest/api/2/myself"
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
