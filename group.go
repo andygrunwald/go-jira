@@ -24,19 +24,19 @@ type groupMembersResult struct {
 
 // Group represents a Jira group
 type Group struct {
-	ID                   string          `json:"id"`
-	Title                string          `json:"title"`
-	Type                 string          `json:"type"`
-	Properties           groupProperties `json:"properties"`
-	AdditionalProperties bool            `json:"additionalProperties"`
+	Name         string       `json:"name,omitempty" structs:"name,omitempty"`
+	Self         string       `json:"self,omitempty" structs:"self,omitempty"`
+	GroupMembers GroupMembers `json:"users,omitempty" structs:"users,omitempty"`
+	Expand       string       `json:"expand,omitempty" structs:"expand,omitempty"`
 }
 
-type groupProperties struct {
-	Name groupPropertiesName `json:"name"`
-}
-
-type groupPropertiesName struct {
-	Type string `json:"type"`
+// GroupMembers represent members in a Jira group
+type GroupMembers struct {
+	Size       int           `json:"size,omitempty" structs:"size,omitempty"`
+	Items      []GroupMember `json:"items,omitempty" structs:"items,omitempty"`
+	MaxResults int           `json:"max-results,omitempty" structs:"max-results.omitempty"`
+	StartIndex int           `json:"start-index,omitempty" structs:"start-index,omitempty"`
+	EndIndex   int           `json:"end-index,omitempty" structs:"end-index,omitempty"`
 }
 
 // GroupMember reflects a single member of a group
@@ -125,13 +125,13 @@ func (s *GroupService) GetWithOptions(name string, options *GroupSearchOptions) 
 
 // AddWithContext adds user to group
 //
-// Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-addUserToGroup
-func (s *GroupService) AddWithContext(ctx context.Context, groupname string, username string) (*Group, *Response, error) {
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-groups/#api-rest-api-2-group-user-post
+func (s *GroupService) AddWithContext(ctx context.Context, groupname string, accountID string) (*Group, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s", groupname)
 	var user struct {
-		Name string `json:"name"`
+		AccountID string `json:"accountId"`
 	}
-	user.Name = username
+	user.AccountID = accountID
 	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, &user)
 	if err != nil {
 		return nil, nil, err
@@ -148,15 +148,15 @@ func (s *GroupService) AddWithContext(ctx context.Context, groupname string, use
 }
 
 // Add wraps AddWithContext using the background context.
-func (s *GroupService) Add(groupname string, username string) (*Group, *Response, error) {
-	return s.AddWithContext(context.Background(), groupname, username)
+func (s *GroupService) Add(groupname string, accountID string) (*Group, *Response, error) {
+	return s.AddWithContext(context.Background(), groupname, accountID)
 }
 
 // RemoveWithContext removes user from group
 //
-// Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-removeUserFromGroup
-func (s *GroupService) RemoveWithContext(ctx context.Context, groupname string, username string) (*Response, error) {
-	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s&username=%s", groupname, username)
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-groups/#api-rest-api-2-group-user-delete
+func (s *GroupService) RemoveWithContext(ctx context.Context, groupname string, accountID string) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s&accountId=%s", groupname, accountID)
 	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndpoint, nil)
 	if err != nil {
 		return nil, err
@@ -172,6 +172,6 @@ func (s *GroupService) RemoveWithContext(ctx context.Context, groupname string, 
 }
 
 // Remove wraps RemoveWithContext using the background context.
-func (s *GroupService) Remove(groupname string, username string) (*Response, error) {
-	return s.RemoveWithContext(context.Background(), groupname, username)
+func (s *GroupService) Remove(groupname string, accountID string) (*Response, error) {
+	return s.RemoveWithContext(context.Background(), groupname, accountID)
 }

@@ -87,7 +87,7 @@ func TestGroupService_Add(t *testing.T) {
 		fmt.Fprint(w, `{"name":"default","self":"http://www.example.com/jira/rest/api/2/group?groupname=default","users":{"size":1,"items":[],"max-results":50,"start-index":0,"end-index":0},"expand":"users"}`)
 	})
 
-	if group, _, err := testClient.Group.Add("default", "theodore"); err != nil {
+	if group, _, err := testClient.Group.Add("default", "000000000000000000000000"); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if group == nil {
 		t.Error("Expected group. Group is nil")
@@ -105,7 +105,7 @@ func TestGroupService_Remove(t *testing.T) {
 		fmt.Fprint(w, `{"name":"default","self":"http://www.example.com/jira/rest/api/2/group?groupname=default","users":{"size":1,"items":[],"max-results":50,"start-index":0,"end-index":0},"expand":"users"}`)
 	})
 
-	if _, err := testClient.Group.Remove("default", "theodore"); err != nil {
+	if _, err := testClient.Group.Remove("default", "000000000000000000000000"); err != nil {
 		t.Errorf("Error given: %s", err)
 	}
 }
