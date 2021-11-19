@@ -2,8 +2,7 @@ package jira
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
+	"net/http"
 )
 
 // CustomerService handles ServiceDesk customers for the Jira instance / API.
@@ -43,7 +42,7 @@ type CustomerList struct {
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-customer/#api-rest-servicedeskapi-customer-post
 func (c *CustomerService) CreateWithContext(ctx context.Context, email, displayName string) (*Customer, *Response, error) {
-	apiEndpoint := "rest/servicedeskapi/customer"
+	const apiEndpoint = "rest/servicedeskapi/customer"
 
 	payload := struct {
 		Email       string `json:"email"`
@@ -53,19 +52,15 @@ func (c *CustomerService) CreateWithContext(ctx context.Context, email, displayN
 		DisplayName: displayName,
 	}
 
-	req, err := c.client.NewRequestWithContext(ctx, "POST", apiEndpoint, payload)
+	req, err := c.client.NewRequestWithContext(ctx, http.MethodPost, apiEndpoint, payload)
 	if err != nil {
 		return nil, nil, err
 	}
-	resp, err := c.client.Do(req, nil)
-	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
-	}
-	defer resp.Body.Close()
 
 	responseCustomer := new(Customer)
-	if err := json.NewDecoder(resp.Body).Decode(responseCustomer); err != nil {
-		return nil, resp, fmt.Errorf("could not unmarshall the data into struct")
+	resp, err := c.client.Do(req, responseCustomer)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
 	}
 
 	return responseCustomer, resp, nil

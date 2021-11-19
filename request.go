@@ -2,7 +2,6 @@ package jira
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 )
 
@@ -84,16 +83,10 @@ func (r *RequestService) CreateWithContext(ctx context.Context, requester string
 		return nil, nil, err
 	}
 
-	resp, err := r.client.Do(req, nil)
+	responseRequest := new(Request)
+	resp, err := r.client.Do(req, responseRequest)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
-	}
-
-	defer resp.Body.Close()
-
-	responseRequest := new(Request)
-	if err := json.NewDecoder(resp.Body).Decode(responseRequest); err != nil {
-		return nil, resp, fmt.Errorf("could not unmarshall the data into struct")
 	}
 
 	return responseRequest, resp, nil
@@ -115,16 +108,10 @@ func (r *RequestService) CreateCommentWithContext(ctx context.Context, issueIDOr
 		return nil, nil, err
 	}
 
-	resp, err := r.client.Do(req, nil)
+	responseComment := new(RequestComment)
+	resp, err := r.client.Do(req, responseComment)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
-	}
-
-	defer resp.Body.Close()
-
-	responseComment := new(RequestComment)
-	if err := json.NewDecoder(resp.Body).Decode(responseComment); err != nil {
-		return nil, resp, fmt.Errorf("could not unmarshall the data into struct")
 	}
 
 	return responseComment, resp, nil
