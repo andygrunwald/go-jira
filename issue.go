@@ -324,7 +324,7 @@ type CreateTransitionPayload struct {
 
 // TransitionPayloadUpdate represents the updates of Transition calls like DoTransition
 type TransitionPayloadUpdate struct {
-	Comment []TransitionPayloadComment
+	Comment []TransitionPayloadComment `json:"comment" structs:"comment"`
 }
 
 // TransitionPayloadComment represents comment in Transition payload
