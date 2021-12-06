@@ -21,7 +21,7 @@ type User struct {
 	AccountType     string     `json:"accountType,omitempty" structs:"accountType,omitempty"`
 	Name            string     `json:"name,omitempty" structs:"name,omitempty"`
 	Key             string     `json:"key,omitempty" structs:"key,omitempty"`
-	Password        string     `json:"-"`
+	Password        string     `json:"password"`
 	EmailAddress    string     `json:"emailAddress,omitempty" structs:"emailAddress,omitempty"`
 	AvatarUrls      AvatarUrls `json:"avatarUrls,omitempty" structs:"avatarUrls,omitempty"`
 	DisplayName     string     `json:"displayName,omitempty" structs:"displayName,omitempty"`
