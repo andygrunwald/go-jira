@@ -384,7 +384,9 @@ func (t *BasicAuthTransport) transport() http.RoundTripper {
 
 // PATAuthTransport is an http.RoundTripper that authenticates all requests
 // using the Personal Access Token specified.
+// See here for more info: https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html
 type PATAuthTransport struct {
+	// Token is the key that was provided by Jira when creating the Personal Access Token.
 	Token string
 
 	// Transport is the underlying HTTP transport to use when making requests.
