@@ -133,7 +133,7 @@ func TestAuthenticationService_Authenticated_WithBasicAuthButNoUsername(t *testi
 	}
 }
 
-func TestAithenticationService_GetUserInfo_AccessForbidden_Fail(t *testing.T) {
+func TestAuthenticationService_GetUserInfo_AccessForbidden_Fail(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
