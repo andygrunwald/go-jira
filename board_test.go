@@ -248,4 +248,11 @@ func TestBoardService_GetBoardConfigoration(t *testing.T) {
 		t.Errorf("Expected 6 columns. go %d", len(boardConfiguration.ColumnConfig.Columns))
 	}
 
+	backlogColumn := boardConfiguration.ColumnConfig.Columns[0]
+	if backlogColumn.Min != 5 {
+		t.Errorf("Expected a min of 5 issues in backlog. Got %d", backlogColumn.Min)
+	}
+	if backlogColumn.Max != 30 {
+		t.Errorf("Expected a max of 30 issues in backlog. Got %d", backlogColumn.Max)
+	}
 }
