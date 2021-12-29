@@ -255,4 +255,12 @@ func TestBoardService_GetBoardConfigoration(t *testing.T) {
 	if backlogColumn.Max != 30 {
 		t.Errorf("Expected a max of 30 issues in backlog. Got %d", backlogColumn.Max)
 	}
+
+	inProgressColumn := boardConfiguration.ColumnConfig.Columns[2]
+	if inProgressColumn.Min != 0 {
+		t.Errorf("Expected a min of 0 issues in progress. Got %d", inProgressColumn.Min)
+	}
+	if inProgressColumn.Max != 0 {
+		t.Errorf("Expected a max of 0 issues in progress. Got %d", inProgressColumn.Max)
+	}
 }
