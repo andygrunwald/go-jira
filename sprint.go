@@ -51,18 +51,26 @@ func (s *SprintService) MoveIssuesToSprint(sprintID int, issueIDs []string) (*Re
 	return s.MoveIssuesToSprintWithContext(context.Background(), sprintID, issueIDs)
 }
 
-// GetIssuesForSprintWithContext returns all issues in a sprint, for a given sprint Id.
+// GetIssuesForSprintWithOptionsWithContext returns all issues in a sprint, for a given sprint Id.
 // This only includes issues that the user has permission to view.
 // By default, the returned issues are ordered by rank.
 //
 // Jira API Docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/sprint-getIssuesForSprint
-func (s *SprintService) GetIssuesForSprintWithContext(ctx context.Context, sprintID int) ([]Issue, *Response, error) {
+func (s *SprintService) GetIssuesForSprintWithOptionsWithContext(ctx context.Context, sprintID int, options *GetQueryOptions) ([]Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/sprint/%d/issue", sprintID)
 
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 
 	if err != nil {
 		return nil, nil, err
+	}
+
+	if options != nil {
+		q, err := query.Values(options)
+		if err != nil {
+			return nil, nil, err
+		}
+		req.URL.RawQuery = q.Encode()
 	}
 
 	result := new(IssuesInSprintResult)
@@ -74,7 +82,17 @@ func (s *SprintService) GetIssuesForSprintWithContext(ctx context.Context, sprin
 	return result.Issues, resp, err
 }
 
-// GetIssuesForSprint wraps GetIssuesForSprintWithContext using the background context.
+// GetIssuesForSprintWithContext wraps GetIssuesForSprintWithOptionsWithContext using nil options.
+func (s *SprintService) GetIssuesForSprintWithContext(ctx context.Context, sprintID int) ([]Issue, *Response, error) {
+	return s.GetIssuesForSprintWithOptionsWithContext(ctx, sprintID, nil)
+}
+
+// GetIssuesForSprintWithOptions wraps GetIssuesForSprintWithOptionsWithContext using the background context.
+func (s *SprintService) GetIssuesForSprintWithOptions(sprintID int, options *GetQueryOptions) ([]Issue, *Response, error) {
+	return s.GetIssuesForSprintWithOptionsWithContext(context.Background(), sprintID, options)
+}
+
+// GetIssuesForSprint wraps GetIssuesForSprintWithContext using the background context and nil options.
 func (s *SprintService) GetIssuesForSprint(sprintID int) ([]Issue, *Response, error) {
 	return s.GetIssuesForSprintWithContext(context.Background(), sprintID)
 }

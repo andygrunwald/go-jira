@@ -39,18 +39,50 @@ func TestSprintService_MoveIssuesToSprint(t *testing.T) {
 	}
 }
 
+func TestSprintService_GetIssuesForSprintWithOptions(t *testing.T) {
+	setup()
+	defer teardown()
+	testAPIEndpoint := "/rest/agile/1.0/sprint/123/issue"
+
+	raw, err := ioutil.ReadFile("./mocks/issues_in_sprint_with_changelog.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, testAPIEndpoint)
+		fmt.Fprint(w, string(raw))
+	})
+
+	options := &GetQueryOptions{Expand: "changelog"}
+	issues, _, err := testClient.Sprint.GetIssuesForSprintWithOptions(123, options)
+	if err != nil {
+		t.Errorf("Error given: %v", err)
+	}
+	if issues == nil {
+		t.Error("Expected issues in sprint list. Issues list is nil")
+	}
+	if len(issues) != 1 {
+		t.Errorf("Expect there to be 1 issue in the sprint, found %v", len(issues))
+	}
+	if issues[0].Changelog == nil {
+		t.Errorf("Expect the issue to have not nil Changelog")
+	}
+
+}
+
 func TestSprintService_GetIssuesForSprint(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/rest/agile/1.0/sprint/123/issue"
+	testAPIEndpoint := "/rest/agile/1.0/sprint/123/issue"
 
 	raw, err := ioutil.ReadFile("./mocks/issues_in_sprint.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testRequestURL(t, r, testAPIEdpoint)
+		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
