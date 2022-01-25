@@ -1031,6 +1031,7 @@ func TestIssueFields_MarshalJSON_OmitsEmptyFields(t *testing.T) {
 			Name: "Story",
 		},
 		Labels: []string{"aws-docker"},
+		Parent: &Parent{Key: "FOO-300"},
 	}
 
 	rawdata, err := json.Marshal(i)
@@ -1050,6 +1051,12 @@ func TestIssueFields_MarshalJSON_OmitsEmptyFields(t *testing.T) {
 		t.Error("Expected non nil error, received nil")
 	}
 
+	// verify Parent nil values are being omitted
+	_, err = issuef.String("parent/id")
+	if err == nil {
+		t.Error("Expected non nil err, received nil")
+	}
+
 	// verify that the field that should be there, is.
 	name, err := issuef.String("issuetype/name")
 	if err != nil {
@@ -1059,7 +1066,6 @@ func TestIssueFields_MarshalJSON_OmitsEmptyFields(t *testing.T) {
 	if name != "Story" {
 		t.Errorf("Expected Story, received %s", name)
 	}
-
 }
 
 func TestIssueFields_MarshalJSON_Success(t *testing.T) {
