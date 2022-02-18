@@ -19,8 +19,8 @@ type ServiceDeskOrganizationDTO struct {
 // all organizations associated with a service desk.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-servicedesk-servicedeskid-organization-get
-func (s *ServiceDeskService) GetOrganizationsWithContext(ctx context.Context, serviceDeskID int, start int, limit int, accountID string) (*PagedDTO, *Response, error) {
-	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%d/organization?start=%d&limit=%d", serviceDeskID, start, limit)
+func (s *ServiceDeskService) GetOrganizationsWithContext(ctx context.Context, serviceDeskID interface{}, start int, limit int, accountID string) (*PagedDTO, *Response, error) {
+	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%v/organization?start=%d&limit=%d", serviceDeskID, start, limit)
 	if accountID != "" {
 		apiEndPoint += fmt.Sprintf("&accountId=%s", accountID)
 	}
@@ -43,7 +43,7 @@ func (s *ServiceDeskService) GetOrganizationsWithContext(ctx context.Context, se
 }
 
 // GetOrganizations wraps GetOrganizationsWithContext using the background context.
-func (s *ServiceDeskService) GetOrganizations(serviceDeskID int, start int, limit int, accountID string) (*PagedDTO, *Response, error) {
+func (s *ServiceDeskService) GetOrganizations(serviceDeskID interface{}, start int, limit int, accountID string) (*PagedDTO, *Response, error) {
 	return s.GetOrganizationsWithContext(context.Background(), serviceDeskID, start, limit, accountID)
 }
 

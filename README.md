@@ -71,7 +71,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/andygrunwald/go-jira"
+	jira "github.com/andygrunwald/go-jira"
 )
 
 func main() {

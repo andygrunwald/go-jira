@@ -117,6 +117,8 @@ type BoardConfigurationColumnConfig struct {
 type BoardConfigurationColumn struct {
 	Name   string                           `json:"name"`
 	Status []BoardConfigurationColumnStatus `json:"statuses"`
+	Min    int                              `json:"min,omitempty"`
+	Max    int                              `json:"max,omitempty"`
 }
 
 // BoardConfigurationColumnStatus represents a status in the column configuration
