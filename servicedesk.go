@@ -121,7 +121,7 @@ func (s *ServiceDeskService) RemoveOrganization(serviceDeskID interface{}, organ
 // AddCustomersWithContext adds customers to the given service desk.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-customer-post
-func (s *ServiceDeskService) AddCustomersWithContext(ctx context.Context, serviceDeskID int, acountIDs ...string) (*Response, error) {
+func (s *ServiceDeskService) AddCustomersWithContext(ctx context.Context, serviceDeskID interface{}, acountIDs ...string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%v/customer", serviceDeskID)
 
 	payload := struct {
@@ -146,14 +146,14 @@ func (s *ServiceDeskService) AddCustomersWithContext(ctx context.Context, servic
 }
 
 // AddCustomers wraps AddCustomersWithContext using the background context.
-func (s *ServiceDeskService) AddCustomers(serviceDeskID int, acountIDs ...string) (*Response, error) {
+func (s *ServiceDeskService) AddCustomers(serviceDeskID interface{}, acountIDs ...string) (*Response, error) {
 	return s.AddCustomersWithContext(context.Background(), serviceDeskID, acountIDs...)
 }
 
 // RemoveCustomersWithContext removes customers to the given service desk.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-customer-delete
-func (s *ServiceDeskService) RemoveCustomersWithContext(ctx context.Context, serviceDeskID int, acountIDs ...string) (*Response, error) {
+func (s *ServiceDeskService) RemoveCustomersWithContext(ctx context.Context, serviceDeskID interface{}, acountIDs ...string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%v/customer", serviceDeskID)
 
 	payload := struct {
@@ -178,14 +178,14 @@ func (s *ServiceDeskService) RemoveCustomersWithContext(ctx context.Context, ser
 }
 
 // RemoveCustomers wraps RemoveCustomersWithContext using the background context.
-func (s *ServiceDeskService) RemoveCustomers(serviceDeskID int, acountIDs ...string) (*Response, error) {
+func (s *ServiceDeskService) RemoveCustomers(serviceDeskID interface{}, acountIDs ...string) (*Response, error) {
 	return s.RemoveCustomersWithContext(context.Background(), serviceDeskID, acountIDs...)
 }
 
 // ListCustomersWithContext lists customers for a ServiceDesk.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-customer-get
-func (s *ServiceDeskService) ListCustomersWithContext(ctx context.Context, serviceDeskID int, options *CustomerListOptions) (*CustomerList, *Response, error) {
+func (s *ServiceDeskService) ListCustomersWithContext(ctx context.Context, serviceDeskID interface{}, options *CustomerListOptions) (*CustomerList, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%v/customer", serviceDeskID)
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -218,6 +218,6 @@ func (s *ServiceDeskService) ListCustomersWithContext(ctx context.Context, servi
 }
 
 // ListCustomers wraps ListCustomersWithContext using the background context.
-func (s *ServiceDeskService) ListCustomers(serviceDeskID int, options *CustomerListOptions) (*CustomerList, *Response, error) {
+func (s *ServiceDeskService) ListCustomers(serviceDeskID interface{}, options *CustomerListOptions) (*CustomerList, *Response, error) {
 	return s.ListCustomersWithContext(context.Background(), serviceDeskID, options)
 }
