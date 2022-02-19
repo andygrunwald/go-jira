@@ -229,7 +229,7 @@ func WithInactive(inactive bool) userSearchF {
 }
 
 // WithUsername sets the username to search
-func WithUsername (username string) userSearchF {
+func WithUsername(username string) userSearchF {
 	return func(s userSearch) userSearch {
 		s = append(s, userSearchParam{name: "username", value: fmt.Sprintf("%s", username)})
 		return s
@@ -237,15 +237,15 @@ func WithUsername (username string) userSearchF {
 }
 
 // WithAccountId sets the account id to search
-func WithAccountId (accountId string) userSearchF {
+func WithAccountId(accountId string) userSearchF {
 	return func(s userSearch) userSearch {
 		s = append(s, userSearchParam{name: "accountId", value: fmt.Sprintf("%s", accountId)})
 		return s
 	}
 }
 
-// WithProperty sets the property (Property keys are specified by path) to search 
-func WithProperty (property string) userSearchF {
+// WithProperty sets the property (Property keys are specified by path) to search
+func WithProperty(property string) userSearchF {
 	return func(s userSearch) userSearch {
 		s = append(s, userSearchParam{name: "property", value: fmt.Sprintf("%s", property)})
 		return s
