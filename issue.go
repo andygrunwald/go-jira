@@ -283,8 +283,8 @@ type Progress struct {
 
 // Parent represents the parent of a Jira issue, to be used with subtask issue types.
 type Parent struct {
-	ID  string `json:"id,omitempty" structs:"id"`
-	Key string `json:"key,omitempty" structs:"key"`
+	ID  string `json:"id,omitempty" structs:"id,omitempty"`
+	Key string `json:"key,omitempty" structs:"key,omitempty"`
 }
 
 // Time represents the Time definition of Jira as a time.Time of go
@@ -1546,4 +1546,28 @@ func (s *IssueService) AddRemoteLinkWithContext(ctx context.Context, issueID str
 // AddRemoteLink wraps AddRemoteLinkWithContext using the background context.
 func (s *IssueService) AddRemoteLink(issueID string, remotelink *RemoteLink) (*RemoteLink, *Response, error) {
 	return s.AddRemoteLinkWithContext(context.Background(), issueID, remotelink)
+}
+
+// UpdateRemoteLinkWithContext updates a remote issue link by linkID.
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-remote-links/#api-rest-api-2-issue-issueidorkey-remotelink-linkid-put
+func (s *IssueService) UpdateRemoteLinkWithContext(ctx context.Context, issueID string, linkID int, remotelink *RemoteLink) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/remotelink/%d", issueID, linkID)
+	req, err := s.client.NewRequestWithContext(ctx, "PUT", apiEndpoint, remotelink)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return resp, jerr
+	}
+
+	return resp, nil
+}
+
+// UpdateRemoteLink wraps UpdateRemoteLinkWithContext using the background context.
+func (s *IssueService) UpdateRemoteLink(issueID string, linkID int, remotelink *RemoteLink) (*Response, error) {
+	return s.UpdateRemoteLinkWithContext(context.Background(), issueID, linkID, remotelink)
 }

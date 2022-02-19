@@ -631,3 +631,26 @@ func TestJWTAuthTransport_HeaderContainsJWT(t *testing.T) {
 	jwtClient, _ := NewClient(jwtTransport.Client(), testServer.URL)
 	jwtClient.Issue.Get("TEST-1", nil)
 }
+
+func TestPATAuthTransport_HeaderContainsAuth(t *testing.T) {
+	setup()
+	defer teardown()
+
+	token := "shhh, it's a token"
+
+	patTransport := &PATAuthTransport{
+		Token: token,
+	}
+
+	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		val := r.Header.Get("Authorization")
+		expected := "Bearer " + token
+		if val != expected {
+			t.Errorf("request does not contain bearer token in the Authorization header.")
+		}
+	})
+
+	client, _ := NewClient(patTransport.Client(), testServer.URL)
+	client.User.GetSelf()
+
+}

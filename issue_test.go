@@ -1031,6 +1031,7 @@ func TestIssueFields_MarshalJSON_OmitsEmptyFields(t *testing.T) {
 			Name: "Story",
 		},
 		Labels: []string{"aws-docker"},
+		Parent: &Parent{Key: "FOO-300"},
 	}
 
 	rawdata, err := json.Marshal(i)
@@ -1050,6 +1051,12 @@ func TestIssueFields_MarshalJSON_OmitsEmptyFields(t *testing.T) {
 		t.Error("Expected non nil error, received nil")
 	}
 
+	// verify Parent nil values are being omitted
+	_, err = issuef.String("parent/id")
+	if err == nil {
+		t.Error("Expected non nil err, received nil")
+	}
+
 	// verify that the field that should be there, is.
 	name, err := issuef.String("issuetype/name")
 	if err != nil {
@@ -1059,7 +1066,6 @@ func TestIssueFields_MarshalJSON_OmitsEmptyFields(t *testing.T) {
 	if name != "Story" {
 		t.Errorf("Expected Story, received %s", name)
 	}
-
 }
 
 func TestIssueFields_MarshalJSON_Success(t *testing.T) {
@@ -1850,6 +1856,46 @@ func TestIssueService_AddRemoteLink(t *testing.T) {
 	if record == nil {
 		t.Error("Expected Record. Record is nil")
 	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
+func TestIssueService_UpdateRemoteLink(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/issue/100/remotelink/200", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+		testRequestURL(t, r, "/rest/api/2/issue/100/remotelink/200")
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+	r := &RemoteLink{
+		Application: &RemoteLinkApplication{
+			Name: "My Acme Tracker",
+			Type: "com.acme.tracker",
+		},
+		GlobalID:     "system=http://www.mycompany.com/support&id=1",
+		Relationship: "causes",
+		Object: &RemoteLinkObject{
+			Summary: "Customer support issue",
+			Icon: &RemoteLinkIcon{
+				Url16x16: "http://www.mycompany.com/support/ticket.png",
+				Title:    "Support Ticket",
+			},
+			Title: "TSTSUP-111",
+			URL:   "http://www.mycompany.com/support?id=1",
+			Status: &RemoteLinkStatus{
+				Icon: &RemoteLinkIcon{
+					Url16x16: "http://www.mycompany.com/support/resolved.png",
+					Title:    "Case Closed",
+					Link:     "http://www.mycompany.com/support?id=1&details=closed",
+				},
+				Resolved: true,
+			},
+		},
+	}
+	_, err := testClient.Issue.UpdateRemoteLink("100", 200, r)
 	if err != nil {
 		t.Errorf("Error given: %s", err)
 	}
