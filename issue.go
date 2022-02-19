@@ -317,24 +317,24 @@ type TransitionField struct {
 
 // CreateTransitionPayload is used for creating new issue transitions
 type CreateTransitionPayload struct {
-	Update     TransitionPayloadUpdate `json:"update" structs:"update"`
+	Update     TransitionPayloadUpdate `json:"update,omitempty" structs:"update,omitempty"`
 	Transition TransitionPayload       `json:"transition" structs:"transition"`
 	Fields     TransitionPayloadFields `json:"fields" structs:"fields"`
 }
 
 // TransitionPayloadUpdate represents the updates of Transition calls like DoTransition
 type TransitionPayloadUpdate struct {
-	Comment []TransitionPayloadComment `json:"comment" structs:"comment"`
+	Comment []TransitionPayloadComment `json:"comment,omitempty" structs:"comment,omitempty"`
 }
 
 // TransitionPayloadComment represents comment in Transition payload
 type TransitionPayloadComment struct {
-	Add TransitionPayloadCommentBody `json:"add" structs:"add"`
+	Add TransitionPayloadCommentBody `json:"add,omitempty" structs:"add,omitempty"`
 }
 
 // TransitionPayloadCommentBody represents body of comment in payload
 type TransitionPayloadCommentBody struct {
-	Body string `json:"body"`
+	Body string `json:"body,omitempty"`
 }
 
 // TransitionPayload represents the request payload of Transition calls like DoTransition
