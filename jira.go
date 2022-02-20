@@ -58,6 +58,8 @@ type Client struct {
 	IssueLinkType    *IssueLinkTypeService
 	Organization     *OrganizationService
 	ServiceDesk      *ServiceDeskService
+	Customer         *CustomerService
+	Request          *RequestService
 }
 
 // NewClient returns a new Jira API client.
@@ -106,6 +108,8 @@ func NewClient(httpClient httpClient, baseURL string) (*Client, error) {
 	c.IssueLinkType = &IssueLinkTypeService{client: c}
 	c.Organization = &OrganizationService{client: c}
 	c.ServiceDesk = &ServiceDeskService{client: c}
+	c.Customer = &CustomerService{client: c}
+	c.Request = &RequestService{client: c}
 
 	return c, nil
 }

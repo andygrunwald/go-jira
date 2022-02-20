@@ -2,7 +2,12 @@ package jira
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
+
+	"github.com/google/go-querystring/query"
 )
 
 // ServiceDeskService handles ServiceDesk for the Jira instance / API.
@@ -111,4 +116,108 @@ func (s *ServiceDeskService) RemoveOrganizationWithContext(ctx context.Context, 
 // RemoveOrganization wraps RemoveOrganizationWithContext using the background context.
 func (s *ServiceDeskService) RemoveOrganization(serviceDeskID interface{}, organizationID int) (*Response, error) {
 	return s.RemoveOrganizationWithContext(context.Background(), serviceDeskID, organizationID)
+}
+
+// AddCustomersWithContext adds customers to the given service desk.
+//
+// https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-customer-post
+func (s *ServiceDeskService) AddCustomersWithContext(ctx context.Context, serviceDeskID interface{}, acountIDs ...string) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%v/customer", serviceDeskID)
+
+	payload := struct {
+		AccountIDs []string `json:"accountIds"`
+	}{
+		AccountIDs: acountIDs,
+	}
+	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, payload)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, NewJiraError(resp, err)
+	}
+
+	defer resp.Body.Close()
+	_, _ = io.Copy(ioutil.Discard, resp.Body)
+
+	return resp, nil
+}
+
+// AddCustomers wraps AddCustomersWithContext using the background context.
+func (s *ServiceDeskService) AddCustomers(serviceDeskID interface{}, acountIDs ...string) (*Response, error) {
+	return s.AddCustomersWithContext(context.Background(), serviceDeskID, acountIDs...)
+}
+
+// RemoveCustomersWithContext removes customers to the given service desk.
+//
+// https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-customer-delete
+func (s *ServiceDeskService) RemoveCustomersWithContext(ctx context.Context, serviceDeskID interface{}, acountIDs ...string) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%v/customer", serviceDeskID)
+
+	payload := struct {
+		AccountIDs []string `json:"accountIDs"`
+	}{
+		AccountIDs: acountIDs,
+	}
+	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndpoint, payload)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, NewJiraError(resp, err)
+	}
+
+	defer resp.Body.Close()
+	_, _ = io.Copy(ioutil.Discard, resp.Body)
+
+	return resp, nil
+}
+
+// RemoveCustomers wraps RemoveCustomersWithContext using the background context.
+func (s *ServiceDeskService) RemoveCustomers(serviceDeskID interface{}, acountIDs ...string) (*Response, error) {
+	return s.RemoveCustomersWithContext(context.Background(), serviceDeskID, acountIDs...)
+}
+
+// ListCustomersWithContext lists customers for a ServiceDesk.
+//
+// https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-customer-get
+func (s *ServiceDeskService) ListCustomersWithContext(ctx context.Context, serviceDeskID interface{}, options *CustomerListOptions) (*CustomerList, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%v/customer", serviceDeskID)
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// this is an experiemntal endpoint
+	req.Header.Set("X-ExperimentalApi", "opt-in")
+
+	if options != nil {
+		q, err := query.Values(options)
+		if err != nil {
+			return nil, nil, err
+		}
+		req.URL.RawQuery = q.Encode()
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+	defer resp.Body.Close()
+
+	customerList := new(CustomerList)
+	if err := json.NewDecoder(resp.Body).Decode(customerList); err != nil {
+		return nil, resp, fmt.Errorf("could not unmarshall the data into struct")
+	}
+
+	return customerList, resp, nil
+}
+
+// ListCustomers wraps ListCustomersWithContext using the background context.
+func (s *ServiceDeskService) ListCustomers(serviceDeskID interface{}, options *CustomerListOptions) (*CustomerList, *Response, error) {
+	return s.ListCustomersWithContext(context.Background(), serviceDeskID, options)
 }
