@@ -102,7 +102,7 @@ func (a *AuditService) Search(ctx context.Context, opts *AuditSearchOptionsSchem
 	return
 }
 
-// Store a record in Audit Log
+// Add store a record in Audit Log
 // Docs: https://docs.atlassian.com/software/jira/docs/api/REST/8.5.13/#api/2/auditing-getRecords
 func (a *AuditService) Add(ctx context.Context, record *AuditRecord) (response *Response, err error) {
 
