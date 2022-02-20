@@ -109,6 +109,7 @@ type IssueFields struct {
 	Expand                        string            `json:"expand,omitempty" structs:"expand,omitempty"`
 	Type                          IssueType         `json:"issuetype,omitempty" structs:"issuetype,omitempty"`
 	Project                       Project           `json:"project,omitempty" structs:"project,omitempty"`
+	Environment                   string            `json:"environment,omitempty" structs:"environment,omitempty"`
 	Resolution                    *Resolution       `json:"resolution,omitempty" structs:"resolution,omitempty"`
 	Priority                      *Priority         `json:"priority,omitempty" structs:"priority,omitempty"`
 	Resolutiondate                Time              `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
