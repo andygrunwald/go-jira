@@ -1,3 +1,4 @@
+//go:build !go1.13
 // +build !go1.13
 
 // This file provides glue to use Context in `http.Request` with

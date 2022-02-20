@@ -26,7 +26,9 @@
             "id": "10005",
             "self": "https://test.jira.org/rest/api/2/status/10005"
           }
-        ]
+        ],
+        "min": 5,
+        "max": 30
       },
       {
         "name": "Selected for development",
