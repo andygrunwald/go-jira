@@ -247,7 +247,7 @@ func WithAccountId(accountId string) userSearchF {
 // WithProperty sets the property (Property keys are specified by path) to search
 func WithProperty(property string) userSearchF {
 	return func(s userSearch) userSearch {
-		s = append(s, userSearchParam{name: "property", property})
+		s = append(s, userSearchParam{name: "property", value: property})
 		return s
 	}
 }
