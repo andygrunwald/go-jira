@@ -161,6 +161,7 @@ func (s *OrganizationService) GetOrganization(organizationID int) (*Organization
 // For example, associations with service desks.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-organizationid-delete
+// Caller must close resp.Body
 func (s *OrganizationService) DeleteOrganizationWithContext(ctx context.Context, organizationID int) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d", organizationID)
 
@@ -180,6 +181,7 @@ func (s *OrganizationService) DeleteOrganizationWithContext(ctx context.Context,
 }
 
 // DeleteOrganization wraps DeleteOrganizationWithContext using the background context.
+// Caller must close resp.Body
 func (s *OrganizationService) DeleteOrganization(organizationID int) (*Response, error) {
 	return s.DeleteOrganizationWithContext(context.Background(), organizationID)
 }
@@ -250,6 +252,7 @@ func (s *OrganizationService) GetProperty(organizationID int, propertyKey string
 // resource to store custom data against an organization.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-organizationid-property-propertykey-put
+// Caller must close resp.Body
 func (s *OrganizationService) SetPropertyWithContext(ctx context.Context, organizationID int, propertyKey string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property/%s", organizationID, propertyKey)
 
@@ -270,6 +273,7 @@ func (s *OrganizationService) SetPropertyWithContext(ctx context.Context, organi
 }
 
 // SetProperty wraps SetPropertyWithContext using the background context.
+// Caller must close resp.Body
 func (s *OrganizationService) SetProperty(organizationID int, propertyKey string) (*Response, error) {
 	return s.SetPropertyWithContext(context.Background(), organizationID, propertyKey)
 }
@@ -277,6 +281,7 @@ func (s *OrganizationService) SetProperty(organizationID int, propertyKey string
 // DeletePropertyWithContext removes a property from an organization.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-organizationid-property-propertykey-delete
+// Caller must close resp.Body
 func (s *OrganizationService) DeletePropertyWithContext(ctx context.Context, organizationID int, propertyKey string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property/%s", organizationID, propertyKey)
 
@@ -297,6 +302,7 @@ func (s *OrganizationService) DeletePropertyWithContext(ctx context.Context, org
 }
 
 // DeleteProperty wraps DeletePropertyWithContext using the background context.
+// Caller must close resp.Body
 func (s *OrganizationService) DeleteProperty(organizationID int, propertyKey string) (*Response, error) {
 	return s.DeletePropertyWithContext(context.Background(), organizationID, propertyKey)
 }
@@ -336,6 +342,7 @@ func (s *OrganizationService) GetUsers(organizationID int, start int, limit int)
 // AddUsersWithContext adds users to an organization.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-organizationid-user-post
+// Caller must close resp.Body
 func (s *OrganizationService) AddUsersWithContext(ctx context.Context, organizationID int, users OrganizationUsersDTO) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/user", organizationID)
 
@@ -355,6 +362,7 @@ func (s *OrganizationService) AddUsersWithContext(ctx context.Context, organizat
 }
 
 // AddUsers wraps AddUsersWithContext using the background context.
+// Caller must close resp.Body
 func (s *OrganizationService) AddUsers(organizationID int, users OrganizationUsersDTO) (*Response, error) {
 	return s.AddUsersWithContext(context.Background(), organizationID, users)
 }
@@ -362,6 +370,7 @@ func (s *OrganizationService) AddUsers(organizationID int, users OrganizationUse
 // RemoveUsersWithContext removes users from an organization.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-organizationid-user-delete
+// Caller must close resp.Body
 func (s *OrganizationService) RemoveUsersWithContext(ctx context.Context, organizationID int, users OrganizationUsersDTO) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/user", organizationID)
 
@@ -382,6 +391,7 @@ func (s *OrganizationService) RemoveUsersWithContext(ctx context.Context, organi
 }
 
 // RemoveUsers wraps RemoveUsersWithContext using the background context.
+// Caller must close resp.Body
 func (s *OrganizationService) RemoveUsers(organizationID int, users OrganizationUsersDTO) (*Response, error) {
 	return s.RemoveUsersWithContext(context.Background(), organizationID, users)
 }

@@ -98,6 +98,7 @@ func (s *IssueLinkTypeService) Create(linkType *IssueLinkType) (*IssueLinkType, 
 // UpdateWithContext updates an issue link type.  The issue is found by key.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-put
+// Caller must close resp.Body
 func (s *IssueLinkTypeService) UpdateWithContext(ctx context.Context, linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", linkType.ID)
 	req, err := s.client.NewRequestWithContext(ctx, "PUT", apiEndpoint, linkType)
@@ -113,6 +114,7 @@ func (s *IssueLinkTypeService) UpdateWithContext(ctx context.Context, linkType *
 }
 
 // Update wraps UpdateWithContext using the background context.
+// Caller must close resp.Body
 func (s *IssueLinkTypeService) Update(linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
 	return s.UpdateWithContext(context.Background(), linkType)
 }
@@ -120,6 +122,7 @@ func (s *IssueLinkTypeService) Update(linkType *IssueLinkType) (*IssueLinkType, 
 // DeleteWithContext deletes an issue link type based on provided ID.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-delete
+// Caller must close resp.Body
 func (s *IssueLinkTypeService) DeleteWithContext(ctx context.Context, ID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", ID)
 	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndpoint, nil)
@@ -132,6 +135,7 @@ func (s *IssueLinkTypeService) DeleteWithContext(ctx context.Context, ID string)
 }
 
 // Delete wraps DeleteWithContext using the background context.
+// Caller must close resp.Body
 func (s *IssueLinkTypeService) Delete(ID string) (*Response, error) {
 	return s.DeleteWithContext(context.Background(), ID)
 }

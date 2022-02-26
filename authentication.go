@@ -142,6 +142,7 @@ func (s *AuthenticationService) LogoutWithContext(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("error sending the logout request: %s", err)
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode != 204 {
 		return fmt.Errorf("the logout was unsuccessful with status %d", resp.StatusCode)
 	}
@@ -182,11 +183,10 @@ func (s *AuthenticationService) GetCurrentUserWithContext(ctx context.Context) (
 	if err != nil {
 		return nil, fmt.Errorf("error sending request to get user info : %s", err)
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("getting user info failed with status : %d", resp.StatusCode)
 	}
-
-	defer resp.Body.Close()
 	ret := new(Session)
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

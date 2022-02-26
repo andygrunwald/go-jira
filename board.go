@@ -215,6 +215,7 @@ func (s *BoardService) CreateBoard(board *Board) (*Board, *Response, error) {
 // DeleteBoardWithContext will delete an agile board.
 //
 // Jira API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-deleteBoard
+// Caller must close resp.Body
 func (s *BoardService) DeleteBoardWithContext(ctx context.Context, boardID int) (*Board, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%v", boardID)
 	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndpoint, nil)
@@ -230,6 +231,7 @@ func (s *BoardService) DeleteBoardWithContext(ctx context.Context, boardID int) 
 }
 
 // DeleteBoard wraps DeleteBoardWithContext using the background context.
+// Caller must close resp.Body
 func (s *BoardService) DeleteBoard(boardID int) (*Board, *Response, error) {
 	return s.DeleteBoardWithContext(context.Background(), boardID)
 }

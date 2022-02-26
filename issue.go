@@ -649,7 +649,7 @@ func (s *IssueService) Get(issueID string, options *GetQueryOptions) (*Issue, *R
 // DownloadAttachmentWithContext returns a Response of an attachment for a given attachmentID.
 // The attachment is in the Response.Body of the response.
 // This is an io.ReadCloser.
-// The caller should close the resp.Body.
+// Caller must close resp.Body.
 func (s *IssueService) DownloadAttachmentWithContext(ctx context.Context, attachmentID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("secure/attachment/%s/", attachmentID)
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
@@ -667,6 +667,7 @@ func (s *IssueService) DownloadAttachmentWithContext(ctx context.Context, attach
 }
 
 // DownloadAttachment wraps DownloadAttachmentWithContext using the background context.
+// Caller must close resp.Body
 func (s *IssueService) DownloadAttachment(attachmentID string) (*Response, error) {
 	return s.DownloadAttachmentWithContext(context.Background(), attachmentID)
 }
@@ -715,6 +716,7 @@ func (s *IssueService) PostAttachment(issueID string, r io.Reader, attachmentNam
 }
 
 // DeleteAttachmentWithContext deletes an attachment of a given attachmentID
+// Caller must close resp.Body
 func (s *IssueService) DeleteAttachmentWithContext(ctx context.Context, attachmentID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/attachment/%s", attachmentID)
 
@@ -733,11 +735,13 @@ func (s *IssueService) DeleteAttachmentWithContext(ctx context.Context, attachme
 }
 
 // DeleteAttachment wraps DeleteAttachmentWithContext using the background context.
+// Caller must close resp.Body
 func (s *IssueService) DeleteAttachment(attachmentID string) (*Response, error) {
 	return s.DeleteAttachmentWithContext(context.Background(), attachmentID)
 }
 
 // DeleteLinkWithContext deletes a link of a given linkID
+// Caller must close resp.Body
 func (s *IssueService) DeleteLinkWithContext(ctx context.Context, linkID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLink/%s", linkID)
 
@@ -756,6 +760,7 @@ func (s *IssueService) DeleteLinkWithContext(ctx context.Context, linkID string)
 }
 
 // DeleteLink wraps DeleteLinkWithContext using the background context.
+// Caller must close resp.Body
 func (s *IssueService) DeleteLink(linkID string) (*Response, error) {
 	return s.DeleteLinkWithContext(context.Background(), linkID)
 }
@@ -844,6 +849,7 @@ func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
 // while also specifying query params. The issue is found by key.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
+// Caller must close resp.Body
 func (s *IssueService) UpdateWithOptionsWithContext(ctx context.Context, issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", issue.Key)
 	url, err := addOptions(apiEndpoint, opts)
@@ -867,6 +873,7 @@ func (s *IssueService) UpdateWithOptionsWithContext(ctx context.Context, issue *
 }
 
 // UpdateWithOptions wraps UpdateWithOptionsWithContext using the background context.
+// Caller must close resp.Body
 func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
 	return s.UpdateWithOptionsWithContext(context.Background(), issue, opts)
 }
@@ -886,6 +893,7 @@ func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
 // UpdateIssueWithContext updates an issue from a JSON representation. The issue is found by key.
 //
 // https://docs.atlassian.com/jira/REST/7.4.0/#api/2/issue-editIssue
+// Caller must close resp.Body
 func (s *IssueService) UpdateIssueWithContext(ctx context.Context, jiraID string, data map[string]interface{}) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", jiraID)
 	req, err := s.client.NewRequestWithContext(ctx, "PUT", apiEndpoint, data)
@@ -903,6 +911,7 @@ func (s *IssueService) UpdateIssueWithContext(ctx context.Context, jiraID string
 }
 
 // UpdateIssue wraps UpdateIssueWithContext using the background context.
+// Caller must close resp.Body
 func (s *IssueService) UpdateIssue(jiraID string, data map[string]interface{}) (*Response, error) {
 	return s.UpdateIssueWithContext(context.Background(), jiraID, data)
 }
@@ -976,6 +985,7 @@ func (s *IssueService) DeleteCommentWithContext(ctx context.Context, issueID, co
 		jerr := NewJiraError(resp, err)
 		return jerr
 	}
+	defer resp.Body.Close()
 
 	return nil
 }
@@ -1052,6 +1062,7 @@ func (s *IssueService) UpdateWorklogRecord(issueID, worklogID string, record *Wo
 // AddLinkWithContext adds a link between two issues.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issueLink
+// Caller must close resp.Body
 func (s *IssueService) AddLinkWithContext(ctx context.Context, issueLink *IssueLink) (*Response, error) {
 	apiEndpoint := "rest/api/2/issueLink"
 	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, issueLink)
@@ -1068,6 +1079,7 @@ func (s *IssueService) AddLinkWithContext(ctx context.Context, issueLink *IssueL
 }
 
 // AddLink wraps AddLinkWithContext using the background context.
+// Caller must close resp.Body
 func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
 	return s.AddLinkWithContext(context.Background(), issueLink)
 }
@@ -1259,6 +1271,7 @@ func (s *IssueService) DoTransition(ticketID, transitionID string) (*Response, e
 // When performing the transition you can update or set other issue fields.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
+// Caller must close resp.Body
 func (s *IssueService) DoTransitionWithPayloadWithContext(ctx context.Context, ticketID, payload interface{}) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/transitions", ticketID)
 
@@ -1276,6 +1289,7 @@ func (s *IssueService) DoTransitionWithPayloadWithContext(ctx context.Context, t
 }
 
 // DoTransitionWithPayload wraps DoTransitionWithPayloadWithContext using the background context.
+// Caller must close resp.Body
 func (s *IssueService) DoTransitionWithPayload(ticketID, payload interface{}) (*Response, error) {
 	return s.DoTransitionWithPayloadWithContext(context.Background(), ticketID, payload)
 }
@@ -1360,6 +1374,7 @@ func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIss
 }
 
 // DeleteWithContext will delete a specified issue.
+// Caller must close resp.Body
 func (s *IssueService) DeleteWithContext(ctx context.Context, issueID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 
@@ -1378,6 +1393,7 @@ func (s *IssueService) DeleteWithContext(ctx context.Context, issueID string) (*
 }
 
 // Delete wraps DeleteWithContext using the background context.
+// Caller must close resp.Body
 func (s *IssueService) Delete(issueID string) (*Response, error) {
 	return s.DeleteWithContext(context.Background(), issueID)
 }
@@ -1422,6 +1438,7 @@ func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
 // AddWatcherWithContext adds watcher to the given issue
 //
 // Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-addWatcher
+// Caller must close resp.Body
 func (s *IssueService) AddWatcherWithContext(ctx context.Context, issueID string, userName string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
@@ -1439,6 +1456,7 @@ func (s *IssueService) AddWatcherWithContext(ctx context.Context, issueID string
 }
 
 // AddWatcher wraps AddWatcherWithContext using the background context.
+// Caller must close resp.Body
 func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, error) {
 	return s.AddWatcherWithContext(context.Background(), issueID, userName)
 }
@@ -1446,6 +1464,7 @@ func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, e
 // RemoveWatcherWithContext removes given user from given issue
 //
 // Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-removeWatcher
+// Caller must close resp.Body
 func (s *IssueService) RemoveWatcherWithContext(ctx context.Context, issueID string, userName string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
@@ -1463,6 +1482,7 @@ func (s *IssueService) RemoveWatcherWithContext(ctx context.Context, issueID str
 }
 
 // RemoveWatcher wraps RemoveWatcherWithContext using the background context.
+// Caller must close resp.Body
 func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response, error) {
 	return s.RemoveWatcherWithContext(context.Background(), issueID, userName)
 }
@@ -1470,6 +1490,7 @@ func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response
 // UpdateAssigneeWithContext updates the user assigned to work on the given issue
 //
 // Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/7.10.2/#api/2/issue-assign
+// Caller must close resp.Body
 func (s *IssueService) UpdateAssigneeWithContext(ctx context.Context, issueID string, assignee *User) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/assignee", issueID)
 
@@ -1487,6 +1508,7 @@ func (s *IssueService) UpdateAssigneeWithContext(ctx context.Context, issueID st
 }
 
 // UpdateAssignee wraps UpdateAssigneeWithContext using the background context.
+// Caller must close resp.Body
 func (s *IssueService) UpdateAssignee(issueID string, assignee *User) (*Response, error) {
 	return s.UpdateAssigneeWithContext(context.Background(), issueID, assignee)
 }
@@ -1520,6 +1542,7 @@ func (s *IssueService) GetRemoteLinksWithContext(ctx context.Context, id string)
 }
 
 // GetRemoteLinks wraps GetRemoteLinksWithContext using the background context.
+// Caller must close resp.Body
 func (s *IssueService) GetRemoteLinks(id string) (*[]RemoteLink, *Response, error) {
 	return s.GetRemoteLinksWithContext(context.Background(), id)
 }
