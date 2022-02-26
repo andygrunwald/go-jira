@@ -59,8 +59,8 @@ func (s *ServiceDeskService) GetOrganizations(serviceDeskID interface{}, start i
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-servicedesk-servicedeskid-organization-post
 // Caller must close resp.Body
-func (s *ServiceDeskService) AddOrganizationWithContext(ctx context.Context, serviceDeskID int, organizationID int) (*Response, error) {
-	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%d/organization", serviceDeskID)
+func (s *ServiceDeskService) AddOrganizationWithContext(ctx context.Context, serviceDeskID interface{}, organizationID int) (*Response, error) {
+	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%v/organization", serviceDeskID)
 
 	organization := ServiceDeskOrganizationDTO{
 		OrganizationID: organizationID,
@@ -83,7 +83,7 @@ func (s *ServiceDeskService) AddOrganizationWithContext(ctx context.Context, ser
 
 // AddOrganization wraps AddOrganizationWithContext using the background context.
 // Caller must close resp.Body
-func (s *ServiceDeskService) AddOrganization(serviceDeskID int, organizationID int) (*Response, error) {
+func (s *ServiceDeskService) AddOrganization(serviceDeskID interface{}, organizationID int) (*Response, error) {
 	return s.AddOrganizationWithContext(context.Background(), serviceDeskID, organizationID)
 }
 
@@ -94,8 +94,8 @@ func (s *ServiceDeskService) AddOrganization(serviceDeskID int, organizationID i
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-servicedesk-servicedeskid-organization-delete
 // Caller must close resp.Body
-func (s *ServiceDeskService) RemoveOrganizationWithContext(ctx context.Context, serviceDeskID int, organizationID int) (*Response, error) {
-	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%d/organization", serviceDeskID)
+func (s *ServiceDeskService) RemoveOrganizationWithContext(ctx context.Context, serviceDeskID interface{}, organizationID int) (*Response, error) {
+	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%v/organization", serviceDeskID)
 
 	organization := ServiceDeskOrganizationDTO{
 		OrganizationID: organizationID,
@@ -118,7 +118,7 @@ func (s *ServiceDeskService) RemoveOrganizationWithContext(ctx context.Context, 
 
 // RemoveOrganization wraps RemoveOrganizationWithContext using the background context.
 // Caller must close resp.Body
-func (s *ServiceDeskService) RemoveOrganization(serviceDeskID int, organizationID int) (*Response, error) {
+func (s *ServiceDeskService) RemoveOrganization(serviceDeskID interface{}, organizationID int) (*Response, error) {
 	return s.RemoveOrganizationWithContext(context.Background(), serviceDeskID, organizationID)
 }
 
