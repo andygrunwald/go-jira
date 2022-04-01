@@ -5,14 +5,18 @@ on:
     branches:
       - master
   pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "5 1 * * *"
 
 jobs:
   test:
     name: Test and lint
     strategy:
+      fail-fast: false
       matrix:
-        go-version: [1.15.x, 1.16.x, 1.17.x]
-        platform: [ubuntu-latest, windows-latest]
+        go-version: [ '1.18', '1.17' ]
+        os: ["windows-latest", "ubuntu-latest", "macOS-latest"]
     runs-on: ${{ matrix.platform }}
 
     steps:
