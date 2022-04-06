@@ -2,6 +2,7 @@ package jira
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -11,6 +12,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/go-test/deep"
 )
 
 const (
@@ -72,6 +75,24 @@ func testRequestParams(t *testing.T, r *http.Request, want map[string]string) {
 
 }
 
+func testRequestBody(t *testing.T, r *http.Request, want map[string]interface{}) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		t.Error(t, err, "reading request body")
+	}
+
+	var bodyMap map[string]interface{}
+	err = json.Unmarshal(body, &bodyMap)
+	if err != nil {
+		t.Error(t, err, "parsing request JSON", string(body))
+		return
+	}
+
+	if diff := deep.Equal(want, bodyMap); diff != nil {
+		t.Error(diff)
+	}
+}
+
 func TestNewClient_WrongUrl(t *testing.T) {
 	c, err := NewClient(nil, "://issues.apache.org/jira/")
 
@@ -114,6 +135,9 @@ func TestNewClient_WithServices(t *testing.T) {
 	}
 	if c.Project == nil {
 		t.Error("No ProjectService provided")
+	}
+	if c.Permissions == nil {
+		t.Error("No PermissionsService provided")
 	}
 	if c.Board == nil {
 		t.Error("No BoardService provided")
