@@ -18,7 +18,7 @@ fmt: ## Runs go fmt (to check for go coding guidelines).
 
 .PHONY: staticcheck
 staticcheck: ## Runs static analysis to prevend bugs, foster code simplicity, performance and editor integration.
-	go install honnef.co/go/tools/cmd/staticcheck@2022.1
+	go install honnef.co/go/tools/cmd/staticcheck@master
 	staticcheck ./...
 
 .PHONY: all
