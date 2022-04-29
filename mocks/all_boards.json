@@ -38,7 +38,16 @@
       "id": 1,
       "self": "https://test.jira.org/rest/agile/1.0/board/1",
       "name": "Test Mobile",
-      "type": "scrum"
+      "type": "scrum",
+      "location": {
+        "projectId": 10000,
+        "displayName": "aproject (AP)",
+        "projectName": "aproject",
+        "projectKey": "AP",
+        "projectTypeKey": "software",
+        "avatarURI": "https://test.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10000?size=small",
+        "name": "aproject (AP)"
+      }
     }
   ]
 }
