@@ -29,7 +29,19 @@ type Board struct {
 	Self     string `json:"self,omitempty" structs:"self,omitempty"`
 	Name     string `json:"name,omitempty" structs:"name,omitemtpy"`
 	Type     string `json:"type,omitempty" structs:"type,omitempty"`
+	Location BoardLocation `json:"location"`
 	FilterID int    `json:"filterId,omitempty" structs:"filterId,omitempty"`
+}
+
+// BoardLocation represents the location of a jira board
+type BoardLocation struct {
+	ProjectID      int    `json:"projectId"`
+	DisplayName    string `json:"displayName"`
+	ProjectName    string `json:"projectName"`
+	ProjectKey     string `json:"projectKey"`
+	ProjectTypeKey string `json:"projectTypeKey"`
+	AvatarURI      string `json:"avatarURI"`
+	Name           string `json:"name"`
 }
 
 // BoardListOptions specifies the optional parameters to the BoardService.GetList
