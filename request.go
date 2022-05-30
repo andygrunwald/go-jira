@@ -3,6 +3,7 @@ package jira
 import (
 	"context"
 	"fmt"
+	"net/http"
 )
 
 // RequestService handles ServiceDesk customer requests for the Jira instance / API.
@@ -27,7 +28,7 @@ type Request struct {
 type RequestFieldValue struct {
 	FieldID string `json:"fieldId,omitempty" structs:"fieldId,omitempty"`
 	Label   string `json:"label,omitempty" structs:"label,omitempty"`
-	Value   string `json:"value,omitempty" structs:"value,omitempty"`
+	Value   any    `json:"value,omitempty" structs:"value,omitempty"`
 }
 
 // RequestDate is the date format used in requests.
@@ -56,29 +57,22 @@ type RequestComment struct {
 	Expands []string     `json:"_expands,omitempty" structs:"_expands,omitempty"`
 }
 
+// CreateRequest represents a ServiceDesk customer request.
+type CreateRequest struct {
+	ServiceDeskID string         `json:"serviceDeskId,omitempty" structs:"serviceDeskId,omitempty"`
+	TypeID        string         `json:"requestTypeId,omitempty" structs:"requestTypeId,omitempty"`
+	FieldValues   map[string]any `json:"requestFieldValues,omitempty" structs:"requestFieldValues,omitempty"`
+	Participants  []string       `json:"requestParticipants,omitempty" structs:"requestParticipants,omitempty"`
+	Requester     string         `json:"raiseOnBehalfOf,omitempty" structs:"raiseOnBehalfOf,omitempty"`
+}
+
 // CreateWithContext creates a new request.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-post
-func (r *RequestService) CreateWithContext(ctx context.Context, requester string, participants []string, request *Request) (*Request, *Response, error) {
+func (r *RequestService) CreateWithContext(ctx context.Context, request *CreateRequest) (*Request, *Response, error) {
 	apiEndpoint := "rest/servicedeskapi/request"
 
-	payload := struct {
-		*Request
-		FieldValues  map[string]string `json:"requestFieldValues,omitempty"`
-		Requester    string            `json:"raiseOnBehalfOf,omitempty"`
-		Participants []string          `json:"requestParticipants,omitempty"`
-	}{
-		Request:      request,
-		FieldValues:  make(map[string]string),
-		Requester:    requester,
-		Participants: participants,
-	}
-
-	for _, field := range request.FieldValues {
-		payload.FieldValues[field.FieldID] = field.Value
-	}
-
-	req, err := r.client.NewRequestWithContext(ctx, "POST", apiEndpoint, payload)
+	req, err := r.client.NewRequestWithContext(ctx, http.MethodPost, apiEndpoint, request)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -93,8 +87,8 @@ func (r *RequestService) CreateWithContext(ctx context.Context, requester string
 }
 
 // Create wraps CreateWithContext using the background context.
-func (r *RequestService) Create(requester string, participants []string, request *Request) (*Request, *Response, error) {
-	return r.CreateWithContext(context.Background(), requester, participants, request)
+func (r *RequestService) Create(request *CreateRequest) (*Request, *Response, error) {
+	return r.CreateWithContext(context.Background(), request)
 }
 
 // CreateCommentWithContext creates a comment on a request.
