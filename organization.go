@@ -38,9 +38,9 @@ type OrganizationUsersDTO struct {
 type PagedDTO struct {
 	Size       int           `json:"size,omitempty" structs:"size,omitempty"`
 	Start      int           `json:"start,omitempty" structs:"start,omitempty"`
-	Limit      int           `limit:"size,omitempty" structs:"limit,omitempty"`
+	Limit      int           `limit:"limit,omitempty" structs:"limit,omitempty"`
 	IsLastPage bool          `json:"isLastPage,omitempty" structs:"isLastPage,omitempty"`
-	Values     []interface{} `values:"isLastPage,omitempty" structs:"values,omitempty"`
+	Values     []interface{} `values:"values,omitempty" structs:"values,omitempty"`
 	Expands    []string      `json:"_expands,omitempty" structs:"_expands,omitempty"`
 }
 
