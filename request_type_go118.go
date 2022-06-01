@@ -56,7 +56,7 @@ type RequestTypeIconLink struct {
 // GetWithContext returns all
 // request types of a given service desk id.
 //
-// Jira API docs: https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-requesttype-requesttypeid-get
+// Jira API docs: https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-requesttype-get
 func (s *RequestTypeService) GetWithContext(ctx context.Context, serviceDeskID int) (*PagedDTOT[RequestType], *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%d/requesttype", serviceDeskID)
 
@@ -140,4 +140,37 @@ func (s *RequestTypeService) GetFieldsWithContext(ctx context.Context, serviceDe
 // GetFields wraps GetFieldsWithContext using the background context.
 func (s *RequestTypeService) GetFields(serviceDeskID, requestTypeID int) (*CustomerRequestCreateMeta, *Response, error) {
 	return s.GetFieldsWithContext(context.Background(), serviceDeskID, requestTypeID)
+}
+
+type RequestTypeGroup struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+// GetGroupsWithContext returns groups for
+// a given service desk id.
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-requesttype-requesttypeid-field-get
+func (s *RequestTypeService) GetGroupsWithContext(ctx context.Context, serviceDeskID int) (*PagedDTOT[RequestTypeGroup], *Response, error) {
+	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%d/requesttypegroup", serviceDeskID)
+
+	req, err := s.client.NewRequestWithContext(ctx, http.MethodGet, apiEndPoint, nil)
+	req.Header.Set("Accept", "application/json")
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := new(PagedDTOT[RequestTypeGroup])
+	resp, err := s.client.Do(req, &o)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+
+	return o, resp, nil
+}
+
+// GetGroups wraps GetGroupsWithContext using the background context.
+func (s *RequestTypeService) GetGroups(serviceDeskID int) (*PagedDTOT[RequestTypeGroup], *Response, error) {
+	return s.GetGroupsWithContext(context.Background(), serviceDeskID)
 }
