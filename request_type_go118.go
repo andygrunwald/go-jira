@@ -6,6 +6,7 @@ package jira
 import (
 	"context"
 	"fmt"
+	"github.com/google/go-querystring/query"
 	"net/http"
 )
 
@@ -53,18 +54,33 @@ type RequestTypeIconLink struct {
 	IconURLs map[string]string `json:"iconUrls,omitempty" structs:"iconUrls,omitempty"`
 }
 
+// RequestTypeOptions is the query options for listing request types.
+type RequestTypeOptions struct {
+	SearchQuery string `url:"searchQuery,omitempty" query:"searchQuery"`
+	GroupID     int    `url:"groupId,omitempty" query:"groupId"`
+}
+
 // GetWithContext returns all
 // request types of a given service desk id.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-requesttype-get
-func (s *RequestTypeService) GetWithContext(ctx context.Context, serviceDeskID int) (*PagedDTOT[RequestType], *Response, error) {
+func (s *RequestTypeService) GetWithContext(ctx context.Context, serviceDeskID int, options *RequestTypeOptions) (*PagedDTOT[RequestType], *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%d/requesttype", serviceDeskID)
 
 	req, err := s.client.NewRequestWithContext(ctx, http.MethodGet, apiEndPoint, nil)
-	req.Header.Set("Accept", "application/json")
-
 	if err != nil {
 		return nil, nil, err
+	}
+
+	req.Header.Set("Accept", "application/json")
+
+	if options != nil {
+		q, err := query.Values(options)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		req.URL.RawQuery = q.Encode()
 	}
 
 	o := new(PagedDTOT[RequestType])
@@ -77,8 +93,8 @@ func (s *RequestTypeService) GetWithContext(ctx context.Context, serviceDeskID i
 }
 
 // Get wraps GetWithContext using the background context.
-func (s *RequestTypeService) Get(serviceDeskID int) (*PagedDTOT[RequestType], *Response, error) {
-	return s.GetWithContext(context.Background(), serviceDeskID)
+func (s *RequestTypeService) Get(serviceDeskID int, options *RequestTypeOptions) (*PagedDTOT[RequestType], *Response, error) {
+	return s.GetWithContext(context.Background(), serviceDeskID, options)
 }
 
 type CustomerRequestCreateMeta struct {
