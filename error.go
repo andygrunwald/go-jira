@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
-
-	"github.com/pkg/errors"
 )
 
 // Error message from Jira
@@ -21,27 +19,26 @@ type Error struct {
 // NewJiraError creates a new jira Error
 func NewJiraError(resp *Response, httpError error) error {
 	if resp == nil {
-		return errors.Wrap(httpError, "No response returned")
+		return fmt.Errorf("no response returned: %w", httpError)
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return errors.Wrap(err, httpError.Error())
+		return fmt.Errorf("%s: %w", httpError.Error(), err)
 	}
 	jerr := Error{HTTPError: httpError}
 	contentType := resp.Header.Get("Content-Type")
 	if strings.HasPrefix(contentType, "application/json") {
 		err = json.Unmarshal(body, &jerr)
 		if err != nil {
-			httpError = errors.Wrap(errors.New("could not parse JSON"), httpError.Error())
-			return errors.Wrap(err, httpError.Error())
+			return fmt.Errorf("%s: could not parse JSON: %w", httpError.Error(), err)
 		}
 	} else {
 		if httpError == nil {
 			return fmt.Errorf("got response status %s:%s", resp.Status, string(body))
 		}
-		return errors.Wrap(httpError, fmt.Sprintf("%s: %s", resp.Status, string(body)))
+		return fmt.Errorf("%s: %s: %w", resp.Status, string(body), httpError)
 	}
 
 	return &jerr

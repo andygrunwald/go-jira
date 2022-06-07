@@ -17,7 +17,6 @@ import (
 
 	jwt "github.com/golang-jwt/jwt/v4"
 	"github.com/google/go-querystring/query"
-	"github.com/pkg/errors"
 )
 
 // httpClient defines an interface for an http.Client implementation so that alternative
@@ -483,7 +482,7 @@ func (t *CookieAuthTransport) RoundTrip(req *http.Request) (*http.Response, erro
 	if t.SessionObject == nil {
 		err := t.setSessionObject()
 		if err != nil {
-			return nil, errors.Wrap(err, "cookieauth: no session object has been set")
+			return nil, fmt.Errorf("cookieauth: no session object has been set: %w", err)
 		}
 	}
 
@@ -597,7 +596,7 @@ func (t *JWTAuthTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 
 	jwtStr, err := token.SignedString(t.Secret)
 	if err != nil {
-		return nil, errors.Wrap(err, "jwtAuth: error signing JWT")
+		return nil, fmt.Errorf("jwtAuth: error signing JWT: %w", err)
 	}
 
 	req2.Header.Set("Authorization", fmt.Sprintf("JWT %s", jwtStr))
