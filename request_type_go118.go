@@ -23,7 +23,7 @@ type PagedDTOT[T any] struct {
 	Start      int       `json:"start" structs:"start"`
 	Limit      int       `limit:"limit,omitempty" structs:"limit,omitempty"`
 	IsLastPage bool      `json:"isLastPage,omitempty" structs:"isLastPage,omitempty"`
-	Values     []T       `values:"values,omitempty" structs:"values,omitempty"`
+	Values     []T       `json:"values,omitempty" structs:"values,omitempty"`
 	Expands    []string  `json:"_expands,omitempty" structs:"_expands,omitempty"`
 	Links      *SelfLink `json:"_links,omitempty" structs:"_links,omitempty"`
 }
