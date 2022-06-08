@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/google/go-querystring/query"
 )
@@ -66,7 +67,7 @@ type DateDTO struct {
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-issueidorkey-comment-get
 func (s *ServiceDeskService) ListRequestCommentsWithContext(ctx context.Context, idOrKey string, options *RequestCommentListOptions) (*PagedDTOT[CommentDTO], *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%s/comment", idOrKey)
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequestWithContext(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -91,4 +92,35 @@ func (s *ServiceDeskService) ListRequestCommentsWithContext(ctx context.Context,
 	}
 
 	return commentList, resp, nil
+}
+
+type CreateRequestComment struct {
+	Body   string `json:"body" structs:"body"`
+	Public bool   `json:"public" structs:"public"`
+}
+
+// CreateRequestCommentsWithContext create a comment for a ServiceDesk request.
+//
+// https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-issueidorkey-comment-post
+func (s *ServiceDeskService) CreateRequestCommentsWithContext(ctx context.Context, idOrKey string, request CreateRequestComment) (*CommentDTO, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%s/comment", idOrKey)
+	req, err := s.client.NewRequestWithContext(ctx, http.MethodPost, apiEndpoint, request)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+	defer resp.Body.Close()
+
+	comment := new(CommentDTO)
+	if err = json.NewDecoder(resp.Body).Decode(comment); err != nil {
+		return nil, resp, err
+	}
+
+	return comment, resp, nil
 }
