@@ -14,11 +14,11 @@ import (
 
 // RequestCommentListOptions is the query options for listing comments for a ServiceDesk request.
 type RequestCommentListOptions struct {
-	Public   *bool    `url:"public,omitempty"`
-	Internal *bool    `url:"internal,omitempty"`
-	Expand   []string `url:"expand,omitempty"`
-	Start    int      `url:"start,omitempty"`
-	Limit    int      `url:"limit,omitempty"`
+	Public   *bool    `url:"public,omitempty" query:"public"`
+	Internal *bool    `url:"internal,omitempty" query:"internal"`
+	Expand   []string `url:"expand,omitempty" query:"expand"`
+	Start    int      `url:"start,omitempty" query:"start"`
+	Limit    int      `url:"limit,omitempty" query:"limit"`
 }
 
 // CommentDTO represents a comment to an request in ServiceDesk.
