@@ -22,19 +22,43 @@ type RequestCommentListOptions struct {
 
 // CommentDTO represents a comment to an request in ServiceDesk.
 type CommentDTO struct {
-	ID           string           `json:"id,omitempty" structs:"id,omitempty"`
-	Body         string           `json:"body,omitempty" structs:"body,omitempty"`
-	RenderedBody RenderedValueDTO `json:"renderedBody,omitempty" structs:"renderedBody,omitempty"`
-	Author       User             `json:"author,omitempty" structs:"author,omitempty"`
-	Created      string           `json:"created,omitempty" structs:"created,omitempty"`
-	Attachments  Attachment       `json:"attachments,omitempty" structs:"attachments,omitempty"`
-	Public       string           `json:"public,omitempty" structs:"public,omitempty"`
-	Expands      []string         `json:"_expands,omitempty" structs:"_expands,omitempty"`
-	Links        *SelfLink        `json:"_links,omitempty" structs:"_links,omitempty"`
+	ID           string
+	Body         string            `json:"body,omitempty" structs:"body,omitempty"`
+	RenderedBody *RenderedValueDTO `json:"renderedBody,omitempty" structs:"renderedBody,omitempty"`
+	Author       UserDTO           `json:"author,omitempty" structs:"author,omitempty"`
+	Created      DateDTO           `json:"created,omitempty" structs:"created,omitempty"`
+	Attachments  *Attachment       `json:"attachments,omitempty" structs:"attachments,omitempty"`
+	Public       bool              `json:"public,omitempty" structs:"public,omitempty"`
+	Expands      []string          `json:"_expands,omitempty" structs:"_expands,omitempty"`
+	Links        *SelfLink         `json:"_links,omitempty" structs:"_links,omitempty"`
+}
+
+type UserDTO struct {
+	AccountID    string       `json:"accountId,omitempty" structs:"accountId,omitempty"`
+	Name         string       `json:"name,omitempty" structs:"name,omitempty"`
+	Key          string       `json:"key,omitempty" structs:"key,omitempty"`
+	EmailAddress string       `json:"emailAddress,omitempty" structs:"emailAddress,omitempty"`
+	DisplayName  string       `json:"displayName,omitempty" structs:"displayName,omitempty"`
+	Active       bool         `json:"active" structs:"active"`
+	TimeZone     string       `json:"timeZone,omitempty" structs:"timeZone,omitempty"`
+	Links        *UserLinkDTO `json:"_links,omitempty" structs:"_links,omitempty"`
+}
+
+type UserLinkDTO struct {
+	Self       string            `json:"self,omitempty" structs:"self,omitempty"`
+	JIRARest   string            `json:"jiraRest,omitempty" structs:"jiraRest,omitempty"`
+	AvatarUrls map[string]string `json:"avatarUrls,omitempty" structs:"avatarUrls,omitempty"`
 }
 
 type RenderedValueDTO struct {
 	HTML string `json:"html,omitempty" structs:"html,omitempty"`
+}
+
+type DateDTO struct {
+	ISO8601     string `json:"iso8601,omitempty" structs:"iso8601,omitempty"`
+	JIRA        string `json:"jira,omitempty" structs:"jira,omitempty"`
+	Friendly    string `json:"friendly,omitempty" structs:"friendly,omitempty"`
+	EpochMillis int64  `json:"epochMillis,omitempty" structs:"epochMillis,omitempty"`
 }
 
 // ListRequestCommentsWithContext lists comments for a ServiceDesk request.
@@ -63,7 +87,7 @@ func (s *ServiceDeskService) ListRequestCommentsWithContext(ctx context.Context,
 
 	commentList := new(PagedDTOT[CommentDTO])
 	if err := json.NewDecoder(resp.Body).Decode(commentList); err != nil {
-		return nil, resp, fmt.Errorf("could not unmarshall the data into struct")
+		return nil, resp, err
 	}
 
 	return commentList, resp, nil
