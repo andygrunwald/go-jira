@@ -99,10 +99,10 @@ func (s *ServiceDeskService) AttachTemporaryFile(ctx context.Context, serviceDes
 	}
 	defer resp.Body.Close()
 
-	commentList := new(AttachedTemporaryFile)
-	if err := json.NewDecoder(resp.Body).Decode(commentList); err != nil {
+	attachment := new(AttachedTemporaryFile)
+	if err := json.NewDecoder(resp.Body).Decode(attachment); err != nil {
 		return nil, resp, err
 	}
 
-	return commentList, resp, nil
+	return attachment, resp, nil
 }
