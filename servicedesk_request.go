@@ -55,13 +55,6 @@ type RenderedValueDTO struct {
 	HTML string `json:"html,omitempty" structs:"html,omitempty"`
 }
 
-type DateDTO struct {
-	ISO8601     string `json:"iso8601,omitempty" structs:"iso8601,omitempty"`
-	JIRA        string `json:"jira,omitempty" structs:"jira,omitempty"`
-	Friendly    string `json:"friendly,omitempty" structs:"friendly,omitempty"`
-	EpochMillis int64  `json:"epochMillis,omitempty" structs:"epochMillis,omitempty"`
-}
-
 // ListRequestCommentsWithContext lists comments for a ServiceDesk request.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-issueidorkey-comment-get
@@ -123,4 +116,58 @@ func (s *ServiceDeskService) CreateRequestCommentsWithContext(ctx context.Contex
 	}
 
 	return comment, resp, nil
+}
+
+type AttachmentDTO struct {
+	Filename string            `json:"filename,omitempty" structs:"filename,omitempty"`
+	Author   UserDTO           `json:"author,omitempty" structs:"author,omitempty"`
+	Created  DateDTO           `json:"created,omitempty" structs:"created,omitempty"`
+	Size     int64             `json:"size,omitempty" structs:"size,omitempty"`
+	MIMEType string            `json:"mimeType,omitempty" structs:"mimeType,omitempty"`
+	Links    AttachmentLinkDTO `json:"_links,omitempty" structs:"_links,omitempty"`
+}
+
+type AttachmentLinkDTO struct {
+	Self      string `json:"self,omitempty" structs:"self,omitempty"`
+	JIRARest  string `json:"jiraRest,omitempty" structs:"jiraRest,omitempty"`
+	Content   string `json:"content,omitempty" structs:"content,omitempty"`
+	Thumbnail string `json:"thumbnail,omitempty" structs:"thumbnail,omitempty"`
+}
+
+type AttachmentCreateResultDTO struct {
+	Comment     CommentDTO               `json:"comment,omitempty" structs:"comment,omitempty"`
+	Attachments PagedDTOT[AttachmentDTO] `json:"attachments,omitempty" structs:"attachments,omitempty"`
+}
+
+type CreateRequestAttachment struct {
+	TemporaryAttachmentIDs []string              `json:"temporaryAttachmentIds,omitempty" structs:"temporaryAttachmentIds,omitempty"`
+	AdditionalComment      *AdditionalCommentDTO `json:"additionalComment,omitempty" structs:"additionalComment,omitempty"`
+	Public                 bool                  `json:"public" structs:"public"`
+}
+
+type AdditionalCommentDTO struct {
+	Body string `json:"body,omitempty" structs:"body,omitempty"`
+}
+
+func (s *ServiceDeskService) CreateAttachment(ctx context.Context, idOrKey string, request CreateRequestAttachment) (*AttachmentCreateResultDTO, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%s/attachment", idOrKey)
+	req, err := s.client.NewRequestWithContext(ctx, http.MethodPost, apiEndpoint, request)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+	defer resp.Body.Close()
+
+	attachment := new(AttachmentCreateResultDTO)
+	if err = json.NewDecoder(resp.Body).Decode(attachment); err != nil {
+		return nil, resp, err
+	}
+
+	return attachment, resp, nil
 }
