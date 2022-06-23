@@ -73,6 +73,7 @@ type Sprint struct {
 	OriginBoardID int        `json:"originBoardId" structs:"originBoardId"`
 	Self          string     `json:"self" structs:"self"`
 	State         string     `json:"state" structs:"state"`
+	Goal          string     `json:"goal,omitempty" structs:"goal"`
 }
 
 // BoardConfiguration represents a boardConfiguration of a jira board

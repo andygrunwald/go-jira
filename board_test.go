@@ -181,8 +181,8 @@ func TestBoardService_GetAllSprints(t *testing.T) {
 		t.Error("Expected sprint list. Got nil.")
 	}
 
-	if len(sprints) != 4 {
-		t.Errorf("Expected 4 transitions. Got %d", len(sprints))
+	if len(sprints) != 6 {
+		t.Errorf("Expected 6 transitions. Got %d", len(sprints))
 	}
 }
 
