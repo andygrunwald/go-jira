@@ -24,14 +24,14 @@ type RequestCommentListOptions struct {
 // CommentDTO represents a comment to an request in ServiceDesk.
 type CommentDTO struct {
 	ID           string
-	Body         string            `json:"body,omitempty" structs:"body,omitempty"`
-	RenderedBody *RenderedValueDTO `json:"renderedBody,omitempty" structs:"renderedBody,omitempty"`
-	Author       UserDTO           `json:"author,omitempty" structs:"author,omitempty"`
-	Created      DateDTO           `json:"created,omitempty" structs:"created,omitempty"`
-	Attachments  *Attachment       `json:"attachments,omitempty" structs:"attachments,omitempty"`
-	Public       bool              `json:"public,omitempty" structs:"public,omitempty"`
-	Expands      []string          `json:"_expands,omitempty" structs:"_expands,omitempty"`
-	Links        *SelfLink         `json:"_links,omitempty" structs:"_links,omitempty"`
+	Body         string                   `json:"body,omitempty" structs:"body,omitempty"`
+	RenderedBody *RenderedValueDTO        `json:"renderedBody,omitempty" structs:"renderedBody,omitempty"`
+	Author       UserDTO                  `json:"author,omitempty" structs:"author,omitempty"`
+	Created      DateDTO                  `json:"created,omitempty" structs:"created,omitempty"`
+	Attachments  PagedDTOT[AttachmentDTO] `json:"attachments,omitempty" structs:"attachments,omitempty"`
+	Public       bool                     `json:"public,omitempty" structs:"public,omitempty"`
+	Expands      []string                 `json:"_expands,omitempty" structs:"_expands,omitempty"`
+	Links        *SelfLink                `json:"_links,omitempty" structs:"_links,omitempty"`
 }
 
 type UserDTO struct {
