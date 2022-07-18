@@ -327,6 +327,7 @@ type Response struct {
 	StartAt    int
 	MaxResults int
 	Total      int
+	Names      map[string]string
 }
 
 func newResponse(r *http.Response, v interface{}) *Response {
@@ -343,6 +344,7 @@ func (r *Response) populatePageValues(v interface{}) {
 		r.StartAt = value.StartAt
 		r.MaxResults = value.MaxResults
 		r.Total = value.Total
+		r.Names = value.Names
 	case *groupMembersResult:
 		r.StartAt = value.StartAt
 		r.MaxResults = value.MaxResults
