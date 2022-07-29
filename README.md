@@ -10,17 +10,17 @@
 
 ## Features
 
-* Authentication (HTTP Basic, OAuth, Session Cookie)
-* Create and retrieve issues
-* Create and retrieve issue transitions (status updates)
-* Call every API endpoint of the Jira, even if it is not directly implemented in this library
+- Authentication (HTTP Basic, OAuth, Session Cookie, Bearer (for PATs))
+- Create and retrieve issues
+- Create and retrieve issue transitions (status updates)
+- Call every API endpoint of the Jira, even if it is not directly implemented in this library
 
 This package is not Jira API complete (yet), but you can call every API endpoint you want. See [Call a not implemented API endpoint](#call-a-not-implemented-api-endpoint) how to do this. For all possible API endpoints of Jira have a look at [latest Jira REST API documentation](https://docs.atlassian.com/jira/REST/latest/).
 
 ## Requirements
 
-* Go >= 1.14
-* Jira v6.3.4 & v7.1.2.
+- Go >= 1.14
+- Jira v6.3.4 & v7.1.2.
 
 Note that we also run our tests against 1.13, though only the last two versions
 of Go are officially supported.
@@ -90,8 +90,8 @@ func main() {
 
 ### Authentication
 
-The `go-jira` library does not handle most authentication directly.  Instead, authentication should be handled within
-an `http.Client`.  That client can then be passed into the `NewClient` function when creating a jira client.
+The `go-jira` library does not handle most authentication directly. Instead, authentication should be handled within
+an `http.Client`. That client can then be passed into the `NewClient` function when creating a jira client.
 
 For convenience, capability for basic and cookie-based authentication is included in the main library.
 
@@ -116,11 +116,17 @@ func main() {
 }
 ```
 
+#### Bearer - Personal Access Tokens (self-hosted Jira)
+
+For **self-hosted Jira** (v8.14 and later), Personal Access Tokens (PATs) were introduced. Similar to the API tokens, PATs are a safe alternative to using username and password for authentication with scripts and integrations. PATs use the Bearer authentication scheme. Read more about jira PATs [here](https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html).
+
+See [examples/bearerauth](examples/bearerauth/main.go) for how to use the Bearer authentication scheme with Jira in Go.
+
 #### Basic (self-hosted Jira)
 
 Password-based API authentication works for self-hosted Jira **only**, and has been [deprecated for users of Atlassian Cloud](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-basic-auth-and-cookie-based-auth/).
 
-The above token authentication example may be used, substituting a user's password for a generated token.
+Depending on your version of Jira, either of the above token authentication examples may be used, substituting a user's password for a generated token.
 
 #### Authenticate with OAuth
 
@@ -221,18 +227,17 @@ func main() {
 	fmt.Printf("Status after transition: %+v\n", issue.Fields.Status.Name)
 }
 ```
+
 ### Get all the issues for JQL with Pagination
+
 Jira API has limit on maxResults it can return. You may have a usecase where you need to get all issues for given JQL.
 This example shows reference implementation of GetAllIssues function which does pagination on Jira API to get all the issues for given JQL
 
 please look at [Pagination Example](https://github.com/andygrunwald/go-jira/blob/master/examples/pagination/main.go)
 
-
-
-
 ### Call a not implemented API endpoint
 
-Not all API endpoints of the Jira API are implemented into *go-jira*.
+Not all API endpoints of the Jira API are implemented into _go-jira_.
 But you can call them anyway:
 Lets get all public projects of [Atlassian`s Jira instance](https://jira.atlassian.com/).
 
@@ -275,7 +280,7 @@ func main() {
 
 ## Implementations
 
-* [andygrunwald/jitic](https://github.com/andygrunwald/jitic) - The Jira Ticket Checker
+- [andygrunwald/jitic](https://github.com/andygrunwald/jitic) - The Jira Ticket Checker
 
 ## Code structure
 
@@ -294,16 +299,16 @@ It doesn't matter if you are not able to write code.
 Creating issues or holding talks and help other people to use [go-jira](https://github.com/andygrunwald/go-jira) is contribution, too!
 A few examples:
 
-* Correct typos in the README / documentation
-* Reporting bugs
-* Implement a new feature or endpoint
-* Sharing the love of [go-jira](https://github.com/andygrunwald/go-jira) and help people to get use to it
+- Correct typos in the README / documentation
+- Reporting bugs
+- Implement a new feature or endpoint
+- Sharing the love of [go-jira](https://github.com/andygrunwald/go-jira) and help people to get use to it
 
 If you are new to pull requests, checkout [Collaborating on projects using issues and pull requests / Creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
 
 ### Dependency management
 
-`go-jira` uses `go modules` for dependency management.  After cloning the repo, it's easy to make sure you have the correct dependencies by running `go mod tidy`.
+`go-jira` uses `go modules` for dependency management. After cloning the repo, it's easy to make sure you have the correct dependencies by running `go mod tidy`.
 
 For adding new dependencies, updating dependencies, and other operations, the [Daily workflow](https://github.com/golang/go/wiki/Modules#daily-workflow) is a good place to start.
 
@@ -316,6 +321,7 @@ You can read more about them at https://developer.atlassian.com/blog/2016/04/clo
 ## Releasing
 
 Install [standard-version](https://github.com/conventional-changelog/standard-version)
+
 ```bash
 npm i -g standard-version
 ```
