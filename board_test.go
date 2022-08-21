@@ -2,8 +2,8 @@ package jira
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -12,7 +12,7 @@ func TestBoardService_GetAllBoards(t *testing.T) {
 	defer teardown()
 	testAPIEdpoint := "/rest/agile/1.0/board"
 
-	raw, err := ioutil.ReadFile("./mocks/all_boards.json")
+	raw, err := os.ReadFile("./mocks/all_boards.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -37,7 +37,7 @@ func TestBoardService_GetAllBoards_WithFilter(t *testing.T) {
 	defer teardown()
 	testAPIEdpoint := "/rest/agile/1.0/board"
 
-	raw, err := ioutil.ReadFile("./mocks/all_boards_filtered.json")
+	raw, err := os.ReadFile("./mocks/all_boards_filtered.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -160,7 +160,7 @@ func TestBoardService_GetAllSprints(t *testing.T) {
 
 	testAPIEndpoint := "/rest/agile/1.0/board/123/sprint"
 
-	raw, err := ioutil.ReadFile("./mocks/sprints.json")
+	raw, err := os.ReadFile("./mocks/sprints.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -192,7 +192,7 @@ func TestBoardService_GetAllSprintsWithOptions(t *testing.T) {
 
 	testAPIEndpoint := "/rest/agile/1.0/board/123/sprint"
 
-	raw, err := ioutil.ReadFile("./mocks/sprints_filtered.json")
+	raw, err := os.ReadFile("./mocks/sprints_filtered.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -223,7 +223,7 @@ func TestBoardService_GetBoardConfigoration(t *testing.T) {
 	defer teardown()
 	testAPIEndpoint := "/rest/agile/1.0/board/35/configuration"
 
-	raw, err := ioutil.ReadFile("./mocks/board_configuration.json")
+	raw, err := os.ReadFile("./mocks/board_configuration.json")
 	if err != nil {
 		t.Error(err.Error())
 	}

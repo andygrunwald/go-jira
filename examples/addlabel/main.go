@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"strings"
 	"syscall"
@@ -67,7 +67,7 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, _ := io.ReadAll(resp.Body)
 	fmt.Println(string(body))
 
 	issue, _, _ := client.Issue.Get(issueId, nil)

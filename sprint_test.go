@@ -3,8 +3,8 @@ package jira
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"reflect"
 	"testing"
 )
@@ -44,7 +44,7 @@ func TestSprintService_GetIssuesForSprint(t *testing.T) {
 	defer teardown()
 	testAPIEdpoint := "/rest/agile/1.0/sprint/123/issue"
 
-	raw, err := ioutil.ReadFile("./mocks/issues_in_sprint.json")
+	raw, err := os.ReadFile("./mocks/issues_in_sprint.json")
 	if err != nil {
 		t.Error(err.Error())
 	}

@@ -2,8 +2,8 @@ package jira
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -12,7 +12,7 @@ func TestProjectService_GetList(t *testing.T) {
 	defer teardown()
 	testAPIEdpoint := "/rest/api/2/project"
 
-	raw, err := ioutil.ReadFile("./mocks/all_projects.json")
+	raw, err := os.ReadFile("./mocks/all_projects.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -36,7 +36,7 @@ func TestProjectService_ListWithOptions(t *testing.T) {
 	defer teardown()
 	testAPIEdpoint := "/rest/api/2/project"
 
-	raw, err := ioutil.ReadFile("./mocks/all_projects.json")
+	raw, err := os.ReadFile("./mocks/all_projects.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -60,7 +60,7 @@ func TestProjectService_Get(t *testing.T) {
 	defer teardown()
 	testAPIEdpoint := "/rest/api/2/project/12310505"
 
-	raw, err := ioutil.ReadFile("./mocks/project.json")
+	raw, err := os.ReadFile("./mocks/project.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
