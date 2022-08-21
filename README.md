@@ -8,6 +8,22 @@
 
 ![Go client library for Atlassian Jira](./img/logo_small.png "Go client library for Atlassian Jira.")
 
+## State of this library
+
+v2 of this library is in development.
+The goals of v2 are:
+
+* idiomatic go usage
+* proper documentation
+* being compliant with different kinds of Atlassian Jira products (on-premise vs. cloud)
+* remove flaws introduced during the early times of this library
+
+See our milestone [Road to v2](https://github.com/andygrunwald/go-jira/milestone/1) and provide feedback in [Development is kicking: Road to v2 🚀 #489](https://github.com/andygrunwald/go-jira/issues/489).
+Attention: The current `main` branch represents the v2 development version - we treat this version as unstable and breaking changes are expected.
+
+If you want to stay more stable, please use v1.* - See our [releases](https://github.com/andygrunwald/go-jira/releases).
+Latest stable release: [v1.16.0](https://github.com/andygrunwald/go-jira/releases/tag/v1.16.0)
+
 ## Features
 
 * Authentication (HTTP Basic, OAuth, Session Cookie)
