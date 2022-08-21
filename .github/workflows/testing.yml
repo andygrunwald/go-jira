@@ -10,8 +10,8 @@ on:
     - cron: "5 1 * * *"
 
 jobs:
-  test:
-    name: Test and lint
+  unit-test:
+    name: Unit tests
     strategy:
       fail-fast: false
       matrix:
