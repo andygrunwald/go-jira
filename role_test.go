@@ -2,8 +2,8 @@ package jira
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -12,7 +12,7 @@ func TestRoleService_GetList_NoList(t *testing.T) {
 	defer teardown()
 	testAPIEndpoint := "/rest/api/3/role"
 
-	raw, err := ioutil.ReadFile("./mocks/no_roles.json")
+	raw, err := os.ReadFile("./mocks/no_roles.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -37,7 +37,7 @@ func TestRoleService_GetList(t *testing.T) {
 	defer teardown()
 	testAPIEndpoint := "/rest/api/3/role"
 
-	raw, err := ioutil.ReadFile("./mocks/all_roles.json")
+	raw, err := os.ReadFile("./mocks/all_roles.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -64,7 +64,7 @@ func TestRoleService_Get_NoRole(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEdpoint := "/rest/api/3/role/99999"
-	raw, err := ioutil.ReadFile("./mocks/no_role.json")
+	raw, err := os.ReadFile("./mocks/no_role.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -87,7 +87,7 @@ func TestRoleService_Get(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEdpoint := "/rest/api/3/role/10002"
-	raw, err := ioutil.ReadFile("./mocks/role.json")
+	raw, err := os.ReadFile("./mocks/role.json")
 	if err != nil {
 		t.Error(err.Error())
 	}

@@ -2,8 +2,8 @@ package jira
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -12,7 +12,7 @@ func TestPriorityService_GetList(t *testing.T) {
 	defer teardown()
 	testAPIEdpoint := "/rest/api/2/priority"
 
-	raw, err := ioutil.ReadFile("./mocks/all_priorities.json")
+	raw, err := os.ReadFile("./mocks/all_priorities.json")
 	if err != nil {
 		t.Error(err.Error())
 	}

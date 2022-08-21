@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -188,7 +188,7 @@ func (s *AuthenticationService) GetCurrentUserWithContext(ctx context.Context) (
 		return nil, fmt.Errorf("getting user info failed with status : %d", resp.StatusCode)
 	}
 	ret := new(Session)
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't read body from the response : %s", err)
 	}

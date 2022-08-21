@@ -3,7 +3,7 @@ package jira
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"reflect"
 	"testing"
@@ -15,7 +15,7 @@ func TestAuthenticationService_AcquireSessionCookie_Failure(t *testing.T) {
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
 		testRequestURL(t, r, "/rest/auth/1/session")
-		b, err := ioutil.ReadAll(r.Body)
+		b, err := io.ReadAll(r.Body)
 		if err != nil {
 			t.Errorf("Error in read body: %s", err)
 		}
@@ -49,7 +49,7 @@ func TestAuthenticationService_AcquireSessionCookie_Success(t *testing.T) {
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
 		testRequestURL(t, r, "/rest/auth/1/session")
-		b, err := ioutil.ReadAll(r.Body)
+		b, err := io.ReadAll(r.Body)
 		if err != nil {
 			t.Errorf("Error in read body: %s", err)
 		}
@@ -140,7 +140,7 @@ func TestAuthenticationService_GetUserInfo_AccessForbidden_Fail(t *testing.T) {
 		if r.Method == "POST" {
 			testMethod(t, r, "POST")
 			testRequestURL(t, r, "/rest/auth/1/session")
-			b, err := ioutil.ReadAll(r.Body)
+			b, err := io.ReadAll(r.Body)
 			if err != nil {
 				t.Errorf("Error in read body: %s", err)
 			}
@@ -178,7 +178,7 @@ func TestAuthenticationService_GetUserInfo_NonOkStatusCode_Fail(t *testing.T) {
 		if r.Method == "POST" {
 			testMethod(t, r, "POST")
 			testRequestURL(t, r, "/rest/auth/1/session")
-			b, err := ioutil.ReadAll(r.Body)
+			b, err := io.ReadAll(r.Body)
 			if err != nil {
 				t.Errorf("Error in read body: %s", err)
 			}
@@ -234,7 +234,7 @@ func TestAuthenticationService_GetUserInfo_Success(t *testing.T) {
 		if r.Method == "POST" {
 			testMethod(t, r, "POST")
 			testRequestURL(t, r, "/rest/auth/1/session")
-			b, err := ioutil.ReadAll(r.Body)
+			b, err := io.ReadAll(r.Body)
 			if err != nil {
 				t.Errorf("Error in read body: %s", err)
 			}
@@ -276,7 +276,7 @@ func TestAuthenticationService_Logout_Success(t *testing.T) {
 		if r.Method == "POST" {
 			testMethod(t, r, "POST")
 			testRequestURL(t, r, "/rest/auth/1/session")
-			b, err := ioutil.ReadAll(r.Body)
+			b, err := io.ReadAll(r.Body)
 			if err != nil {
 				t.Errorf("Error in read body: %s", err)
 			}
