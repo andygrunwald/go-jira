@@ -3,7 +3,7 @@ name: Tests
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
   workflow_dispatch:
   schedule:
@@ -25,19 +25,49 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
 
+      - name: Run Unit tests (Go ${{ matrix.go }})
+        run: make test
+
+  fmt:
+    name: go fmt
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
       - name: Run go fmt (Go ${{ matrix.go }})
         if: runner.os != 'Windows'
         run: diff -u <(echo -n) <(gofmt -d -s .)
 
+  vet:
+    name: go vet
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
       - name: Run go vet
         run: make vet
+
+  staticcheck:
+    name: staticcheck
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
 
       - name: Run staticcheck (Go ${{ matrix.go }})
         uses: dominikh/staticcheck-action@v1.2.0
         with:
           version: "2022.1"
           install-go: false
-          cache-key: ${{ matrix.go }}
-
-      - name: Run Unit tests (Go ${{ matrix.go }})
-        run: make test
+          cache-key: staticcheck-cache
