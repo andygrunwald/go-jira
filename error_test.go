@@ -38,8 +38,8 @@ func TestError_NoResponse(t *testing.T) {
 		t.Errorf("Expected the original error message: Got\n%s\n", msg)
 	}
 
-	if !strings.Contains(msg, "No response") {
-		t.Errorf("Expected the 'No response' error message: Got\n%s\n", msg)
+	if !strings.Contains(msg, "no response returned") {
+		t.Errorf("Expected the 'no response returned' error message: Got\n%s\n", msg)
 	}
 }
 
