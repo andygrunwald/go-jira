@@ -2,8 +2,8 @@ package jira
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -12,7 +12,7 @@ func TestStatusService_GetAllStatuses(t *testing.T) {
 	defer teardown()
 	testAPIEdpoint := "/rest/api/2/status"
 
-	raw, err := ioutil.ReadFile("./mocks/all_statuses.json")
+	raw, err := os.ReadFile("./mocks/all_statuses.json")
 	if err != nil {
 		t.Error(err.Error())
 	}

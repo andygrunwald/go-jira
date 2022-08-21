@@ -2,8 +2,8 @@ package jira
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -11,7 +11,7 @@ func TestFilterService_GetList(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEndpoint := "/rest/api/2/filter"
-	raw, err := ioutil.ReadFile("./mocks/all_filters.json")
+	raw, err := os.ReadFile("./mocks/all_filters.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -34,7 +34,7 @@ func TestFilterService_Get(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEndpoint := "/rest/api/2/filter/10000"
-	raw, err := ioutil.ReadFile("./mocks/filter.json")
+	raw, err := os.ReadFile("./mocks/filter.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -58,7 +58,7 @@ func TestFilterService_GetFavouriteList(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEndpoint := "/rest/api/2/filter/favourite"
-	raw, err := ioutil.ReadFile("./mocks/favourite_filters.json")
+	raw, err := os.ReadFile("./mocks/favourite_filters.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -81,7 +81,7 @@ func TestFilterService_GetMyFilters(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEndpoint := "/rest/api/3/filter/my"
-	raw, err := ioutil.ReadFile("./mocks/my_filters.json")
+	raw, err := os.ReadFile("./mocks/my_filters.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -105,7 +105,7 @@ func TestFilterService_Search(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEndpoint := "/rest/api/3/filter/search"
-	raw, err := ioutil.ReadFile("./mocks/search_filters.json")
+	raw, err := os.ReadFile("./mocks/search_filters.json")
 	if err != nil {
 		t.Error(err.Error())
 	}

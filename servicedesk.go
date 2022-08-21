@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 
 	"github.com/google/go-querystring/query"
 )
@@ -144,7 +143,7 @@ func (s *ServiceDeskService) AddCustomersWithContext(ctx context.Context, servic
 	}
 
 	defer resp.Body.Close()
-	_, _ = io.Copy(ioutil.Discard, resp.Body)
+	_, _ = io.Copy(io.Discard, resp.Body)
 
 	return resp, nil
 }
@@ -176,7 +175,7 @@ func (s *ServiceDeskService) RemoveCustomersWithContext(ctx context.Context, ser
 	}
 
 	defer resp.Body.Close()
-	_, _ = io.Copy(ioutil.Discard, resp.Body)
+	_, _ = io.Copy(io.Discard, resp.Body)
 
 	return resp, nil
 }

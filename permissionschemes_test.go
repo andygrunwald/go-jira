@@ -2,8 +2,8 @@ package jira
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -12,7 +12,7 @@ func TestPermissionSchemeService_GetList(t *testing.T) {
 	defer teardown()
 	testAPIEndpoint := "/rest/api/3/permissionscheme"
 
-	raw, err := ioutil.ReadFile("./mocks/all_permissionschemes.json")
+	raw, err := os.ReadFile("./mocks/all_permissionschemes.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -40,7 +40,7 @@ func TestPermissionSchemeService_GetList_NoList(t *testing.T) {
 	defer teardown()
 	testAPIEndpoint := "/rest/api/3/permissionscheme"
 
-	raw, err := ioutil.ReadFile("./mocks/no_permissionschemes.json")
+	raw, err := os.ReadFile("./mocks/no_permissionschemes.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -63,7 +63,7 @@ func TestPermissionSchemeService_Get(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEdpoint := "/rest/api/3/permissionscheme/10100"
-	raw, err := ioutil.ReadFile("./mocks/permissionscheme.json")
+	raw, err := os.ReadFile("./mocks/permissionscheme.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -86,7 +86,7 @@ func TestPermissionSchemeService_Get_NoScheme(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEdpoint := "/rest/api/3/permissionscheme/99999"
-	raw, err := ioutil.ReadFile("./mocks/no_permissionscheme.json")
+	raw, err := os.ReadFile("./mocks/no_permissionscheme.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
