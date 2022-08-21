@@ -561,8 +561,9 @@ func (t *CookieAuthTransport) transport() http.RoundTripper {
 //
 // Jira docs: https://developer.atlassian.com/cloud/jira/platform/understanding-jwt
 // Examples in other languages:
-//    https://bitbucket.org/atlassian/atlassian-jwt-ruby/src/d44a8e7a4649e4f23edaa784402655fda7c816ea/lib/atlassian/jwt.rb
-//    https://bitbucket.org/atlassian/atlassian-jwt-py/src/master/atlassian_jwt/url_utils.py
+//
+//	https://bitbucket.org/atlassian/atlassian-jwt-ruby/src/d44a8e7a4649e4f23edaa784402655fda7c816ea/lib/atlassian/jwt.rb
+//	https://bitbucket.org/atlassian/atlassian-jwt-py/src/master/atlassian_jwt/url_utils.py
 type JWTAuthTransport struct {
 	Secret []byte
 	Issuer string
