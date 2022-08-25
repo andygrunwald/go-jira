@@ -1,7 +1,8 @@
 name: Label pull requests
 
 on:
-- pull_request
+  pull_request:
+  workflow_dispatch:
 
 # limit permissions
 permissions:
