@@ -1,0 +1,3 @@
+jira-onpremise: onpremise/**/*
+jira-cloud: cloud/**/*
+documentation: docs/**/*
