@@ -95,10 +95,11 @@ func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
 func (s *GroupService) GetWithOptionsWithContext(ctx context.Context, name string, options *GroupSearchOptions) ([]GroupMember, *Response, error) {
 	var apiEndpoint string
 	if options == nil {
-		apiEndpoint = fmt.Sprintf("/rest/api/2/group/member?groupname=%s", url.QueryEscape(name))
+		apiEndpoint = fmt.Sprintf("/rest/api/%s/group/member?groupname=%s", s.client.APIVersion, url.QueryEscape(name))
 	} else {
 		apiEndpoint = fmt.Sprintf(
-			"/rest/api/2/group/member?groupname=%s&startAt=%d&maxResults=%d&includeInactiveUsers=%t",
+			"/rest/api/%s/group/member?groupname=%s&startAt=%d&maxResults=%d&includeInactiveUsers=%t",
+			s.client.APIVersion,
 			url.QueryEscape(name),
 			options.StartAt,
 			options.MaxResults,
@@ -127,7 +128,7 @@ func (s *GroupService) GetWithOptions(name string, options *GroupSearchOptions) 
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-addUserToGroup
 func (s *GroupService) AddWithContext(ctx context.Context, groupname string, username string) (*Group, *Response, error) {
-	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s", groupname)
+	apiEndpoint := fmt.Sprintf("/rest/api/%s/group/user?groupname=%s", s.client.APIVersion, groupname)
 	var user struct {
 		Name string `json:"name"`
 	}
@@ -157,7 +158,7 @@ func (s *GroupService) Add(groupname string, username string) (*Group, *Response
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-removeUserFromGroup
 // Caller must close resp.Body
 func (s *GroupService) RemoveWithContext(ctx context.Context, groupname string, username string) (*Response, error) {
-	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s&username=%s", groupname, username)
+	apiEndpoint := fmt.Sprintf("/rest/api/%s/group/user?groupname=%s&username=%s", s.client.APIVersion, groupname, username)
 	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndpoint, nil)
 	if err != nil {
 		return nil, err

@@ -32,7 +32,7 @@ type Version struct {
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-version-id-get
 func (s *VersionService) GetWithContext(ctx context.Context, versionID int) (*Version, *Response, error) {
-	apiEndpoint := fmt.Sprintf("/rest/api/2/version/%v", versionID)
+	apiEndpoint := fmt.Sprintf("/rest/api/%s/version/%v", s.client.APIVersion, versionID)
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
@@ -55,7 +55,7 @@ func (s *VersionService) Get(versionID int) (*Version, *Response, error) {
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-version-post
 func (s *VersionService) CreateWithContext(ctx context.Context, version *Version) (*Version, *Response, error) {
-	apiEndpoint := "/rest/api/2/version"
+	apiEndpoint := fmt.Sprintf("/rest/api/%s/version", s.client.APIVersion)
 	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, version)
 	if err != nil {
 		return nil, nil, err
@@ -91,7 +91,7 @@ func (s *VersionService) Create(version *Version) (*Version, *Response, error) {
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-version-id-put
 // Caller must close resp.Body
 func (s *VersionService) UpdateWithContext(ctx context.Context, version *Version) (*Version, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/version/%v", version.ID)
+	apiEndpoint := fmt.Sprintf("rest/api/%s/version/%v", s.client.APIVersion, version.ID)
 	req, err := s.client.NewRequestWithContext(ctx, "PUT", apiEndpoint, version)
 	if err != nil {
 		return nil, nil, err

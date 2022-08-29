@@ -124,7 +124,7 @@ type FilterSearchOptions struct {
 func (fs *FilterService) GetListWithContext(ctx context.Context) ([]*Filter, *Response, error) {
 
 	options := &GetQueryOptions{}
-	apiEndpoint := "rest/api/2/filter"
+	apiEndpoint := fmt.Sprintf("rest/api/%s/filter", fs.client.APIVersion)
 	req, err := fs.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
@@ -152,7 +152,7 @@ func (fs *FilterService) GetList() ([]*Filter, *Response, error) {
 
 // GetFavouriteListWithContext retrieves the user's favourited filters from Jira
 func (fs *FilterService) GetFavouriteListWithContext(ctx context.Context) ([]*Filter, *Response, error) {
-	apiEndpoint := "rest/api/2/filter/favourite"
+	apiEndpoint := fmt.Sprintf("rest/api/%s/filter/favourite", fs.client.APIVersion)
 	req, err := fs.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
@@ -173,7 +173,7 @@ func (fs *FilterService) GetFavouriteList() ([]*Filter, *Response, error) {
 
 // GetWithContext retrieves a single Filter from Jira
 func (fs *FilterService) GetWithContext(ctx context.Context, filterID int) (*Filter, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/filter/%d", filterID)
+	apiEndpoint := fmt.Sprintf("rest/api/%s/filter/%d", fs.client.APIVersion, filterID)
 	req, err := fs.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err

@@ -19,6 +19,8 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
+const DefaultClientVersion = "2"
+
 // httpClient defines an interface for an http.Client implementation so that alternative
 // http Clients can be passed in for making requests
 type httpClient interface {
@@ -31,7 +33,8 @@ type Client struct {
 	client httpClient
 
 	// Base URL for API requests.
-	baseURL *url.URL
+	baseURL    *url.URL
+	APIVersion string
 
 	// Session storage if the user authenticates with a Session cookie
 	session *Session
@@ -84,8 +87,9 @@ func NewClient(httpClient httpClient, baseURL string) (*Client, error) {
 	}
 
 	c := &Client{
-		client:  httpClient,
-		baseURL: parsedBaseURL,
+		client:     httpClient,
+		baseURL:    parsedBaseURL,
+		APIVersion: DefaultClientVersion,
 	}
 	c.Authentication = &AuthenticationService{client: c}
 	c.Issue = &IssueService{client: c}

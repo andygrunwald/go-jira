@@ -1,6 +1,9 @@
 package jira
 
-import "context"
+import (
+	"context"
+	"fmt"
+)
 
 // StatusService handles staties for the Jira instance / API.
 //
@@ -25,7 +28,7 @@ type Status struct {
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-status-get
 func (s *StatusService) GetAllStatusesWithContext(ctx context.Context) ([]Status, *Response, error) {
-	apiEndpoint := "rest/api/2/status"
+	apiEndpoint := fmt.Sprintf("rest/api/%s/status", s.client.APIVersion)
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 
 	if err != nil {
