@@ -1,0 +1,26 @@
+api-version: reviewpad.com/v3.x
+
+workflows:
+  - name: label-pull-request-with-size
+    if:
+      - rule: $size() <= 25
+        extra-actions:
+          - $addLabel("small")
+      - rule: $size() > 25 && $size() <= 100
+        extra-actions:
+          - $addLabel("medium")
+      - rule: $size() > 100
+        extra-actions:
+          - $addLabel("large")
+
+  - name: label-pull-requests-based-on-path
+    if:
+      - rule: $hasFilePattern("onpremise/**")
+        extra-actions:
+          - $addLabel("jira-onpremise")
+      - rule: $hasFilePattern("cloud/**")
+        extra-actions:
+          - $addLabel("jira-cloud")
+      - rule: $hasFilePattern("docs/**")
+        extra-actions:
+          - $addLabel("documentation")
