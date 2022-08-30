@@ -2,6 +2,7 @@ api-version: reviewpad.com/v3.x
 
 workflows:
   - name: label-pull-request-with-size
+    always-run: true
     if:
       - rule: $size() <= 25
         extra-actions:
@@ -14,6 +15,7 @@ workflows:
           - $addLabel("large")
 
   - name: label-pull-requests-based-on-path
+    always-run: true
     if:
       - rule: $hasFilePattern("onpremise/**")
         extra-actions:
@@ -24,3 +26,10 @@ workflows:
       - rule: $hasFilePattern("docs/**")
         extra-actions:
           - $addLabel("documentation")
+
+  - name: welcome-first-contributors
+    always-run: true
+    if:
+      - rule: $totalCreatedPullRequests($author()) == 1
+        extra-actions:
+          - '$commentOnce("Thank you so much for your first contribution!")'
