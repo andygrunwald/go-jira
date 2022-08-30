@@ -33,3 +33,10 @@ workflows:
       - rule: $totalCreatedPullRequests($author()) == 1
         extra-actions:
           - '$commentOnce("Thank you so much for your first contribution!")'
+  
+  - name: lint-commits
+    always-run: true
+    if:
+      - rule: '!$hasLinearHistory()'
+        extra-actions:
+          - '$warn("This pull request does not have linear history - please fix it!")'
