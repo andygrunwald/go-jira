@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"reflect"
 	"strings"
+	"sync"
 
 	"github.com/google/go-querystring/query"
 )
@@ -22,7 +23,8 @@ const (
 
 // A Client manages communication with the Jira API.
 type Client struct {
-	client *http.Client // HTTP client used to communicate with the API.
+	clientMu sync.Mutex   // clientMu protects the client during calls that modify it.
+	client   *http.Client // HTTP client used to communicate with the API.
 
 	// Base URL for API requests.
 	// Should be set to a domain endpoint of the Jira instance.
@@ -68,6 +70,14 @@ type Client struct {
 // under a sub-struct.
 type service struct {
 	client *Client
+}
+
+// Client returns the http.Client used by this Jira client.
+func (c *Client) Client() *http.Client {
+	c.clientMu.Lock()
+	defer c.clientMu.Unlock()
+	clientCopy := *c.client
+	return &clientCopy
 }
 
 // NewClient returns a new Jira API client with provided base URL (often is your Jira hostname)
