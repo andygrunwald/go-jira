@@ -7,6 +7,7 @@ import (
 	"os"
 	"reflect"
 	"testing"
+	"time"
 )
 
 func TestSprintService_MoveIssuesToSprint(t *testing.T) {
@@ -67,6 +68,35 @@ func TestSprintService_GetIssuesForSprint(t *testing.T) {
 
 }
 
+func TestSprintService_GetIssuesForSprintWithOptions(t *testing.T) {
+	setup()
+	defer teardown()
+	testAPIEdpoint := "/rest/agile/1.0/sprint/123/issue"
+
+	raw, err := ioutil.ReadFile("./mocks/issues_in_sprint.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, testAPIEdpoint)
+		fmt.Fprint(w, string(raw))
+	})
+
+	issues, _, err := testClient.Sprint.GetIssuesForSprintWithOptions(123, &GetIssuesForSprintOptions{
+		Jql: "type NOT IN ('Sub-task')",
+	})
+	if err != nil {
+		t.Errorf("Error given: %v", err)
+	}
+	if issues == nil {
+		t.Error("Expected issues in sprint list. Issues list is nil")
+	}
+	if len(issues) != 1 {
+		t.Errorf("Expect there to be 1 issue in the sprint, found %v", len(issues))
+	}
+}
+
 func TestSprintService_GetIssue(t *testing.T) {
 	setup()
 	defer teardown()
@@ -109,6 +139,58 @@ func TestSprintService_GetIssue(t *testing.T) {
 		"timetracking": "timetracking",
 	}) {
 		t.Error("Expected names for the returned issue")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
+func TestSprintService_Create(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testAPIEndpoint := "/rest/agile/1.0/sprint"
+
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, testAPIEndpoint)
+		fmt.Fprint(w, `{"id":11,"self":"http://www.example.com/jira/rest/agile/1.0/sprint/11","state":"future","name":"Test Sprint","startDate":"2022-08-09T12:34:56.000Z","endDate":"2022-08-16T12:34:56.000Z","originBoardId":17}`)
+	})
+
+	start := time.Date(2022, 8, 9, 12, 34, 56, 0, time.UTC)
+	end := time.Date(2022, 8, 16, 12, 34, 56, 0, time.UTC)
+	s := Sprint{
+		Name:          "Test Sprint",
+		StartDate:     &start,
+		EndDate:       &end,
+		OriginBoardID: 17,
+	}
+	sprint, _, err := testClient.Sprint.Create(&s)
+	if sprint == nil {
+		t.Error("Expected sprint. Sprint is nil")
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
+func TestSprintService_UpdateSprint(t *testing.T) {
+	setup()
+	defer teardown()
+
+	testAPIEndpoint := "/rest/agile/1.0/sprint/11"
+
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, testAPIEndpoint)
+		fmt.Fprint(w, `{"id":11,"self":"http://www.example.com/jira/rest/agile/1.0/sprint/11","state":"future","name":"Updated Name","startDate":"2022-08-09T12:34:56.000Z","endDate":"2022-08-16T12:34:56.000Z","originBoardId":17}`)
+	})
+
+	data := make(map[string]interface{})
+	data["name"] = "Updated Name"
+	resp, err := testClient.Sprint.UpdateSprint(11, data)
+	if resp == nil {
+		t.Error("Expected resp. resp is nil")
 	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)
