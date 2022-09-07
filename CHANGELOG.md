@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0]() (UNRELEASED)
+
+Version 2.0 is a bigger change with the main goal to make this library more reliable and future safe.
+See https://github.com/andygrunwald/go-jira/issues/489 for details.
+
+### Migration
+
+#### Split of clients
+
+We moved from 1 client that handles On-Premise and Cloud to 2 clients that handle either On-Premise or Cloud.
+Previously you used this library like:
+
+```go
+import (
+    "github.com/andygrunwald/go-jira"
+)
+```
+
+In the new version, you need to decide if you interact with the Jira On-Premise or Jira Cloud version.
+For the cloud version, you will import this library like
+
+```go
+import (
+	jira "github.com/andygrunwald/go-jira/cloud"
+)
+```
+
+For On-Premise it looks like
+
+```go
+import (
+	jira "github.com/andygrunwald/go-jira/onpremise"
+)
+```
+
+### Changes
+
 ## [1.13.0](https://github.com/andygrunwald/go-jira/compare/v1.11.1...v1.13.0) (2020-10-25)
 
 
