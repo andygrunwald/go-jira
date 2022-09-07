@@ -647,7 +647,74 @@ func TestIssueService_Search(t *testing.T) {
 	}
 }
 
-func TestIssueService_SearchEmptyJQL(t *testing.T) {
+func TestIssueService_Search_LongQuery(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/search", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, "/rest/api/2/search")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, `{"expand": "schema,names","startAt": 1,"maxResults": 40,"total": 0,"issues": []}`)
+	})
+
+	opt := &SearchOptions{StartAt: 1, MaxResults: 40, Expand: "foo"}
+
+	// LONGKEY- is 8 characters; 250 x 8 is 2000, which is the limit for URL length.
+	keys := make([]string, 250)
+	for n := range keys {
+		keys[n] = fmt.Sprintf("LONGKEY-%d", n+1)
+	}
+
+	query := fmt.Sprintf("type = Bug and Key IN (%s)", strings.Join(keys, ","))
+	_, resp, err := testClient.Issue.Search(query, opt)
+
+	if resp == nil {
+		t.Errorf("Response given: %+v", resp)
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+
+	if resp.StartAt != 1 {
+		t.Errorf("StartAt should populate with 1, %v given", resp.StartAt)
+	}
+	if resp.MaxResults != 40 {
+		t.Errorf("MaxResults should populate with 40, %v given", resp.MaxResults)
+	}
+	if resp.Total != 0 {
+		t.Errorf("Total should populate with 0, %v given", resp.Total)
+	}
+}
+
+func TestIssueService_Search_LongQueryError(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/2/search", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testRequestURL(t, r, "/rest/api/2/search")
+		w.WriteHeader(http.StatusBadRequest)
+	})
+
+	opt := &SearchOptions{StartAt: 1, MaxResults: 40, Expand: "foo"}
+
+	// LONGKEY- is 8 characters; 250 x 8 is 2000, which is the limit for URL length.
+	keys := make([]string, 250)
+	for n := range keys {
+		keys[n] = fmt.Sprintf("LONGKEY-%d", n+1)
+	}
+
+	query := fmt.Sprintf("query = Broken; and Nonsense IN (%s)", strings.Join(keys, ","))
+	_, resp, err := testClient.Issue.Search(query, opt)
+
+	if resp == nil {
+		t.Errorf("Response given: %+v", resp)
+	}
+	if err == nil {
+		t.Errorf("Error given: %s", err)
+	}
+}
+
+func TestIssueService_Search_EmptyJQL(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/search", func(w http.ResponseWriter, r *http.Request) {

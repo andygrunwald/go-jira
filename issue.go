@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
-	"strconv"
 	"strings"
 	"time"
 
@@ -516,14 +515,23 @@ type CommentVisibility struct {
 // Default Pagination options
 type SearchOptions struct {
 	// StartAt: The starting index of the returned projects. Base index: 0.
-	StartAt int `url:"startAt,omitempty"`
+	StartAt int `url:"startAt,omitempty" json:"startAt,omitempty"`
 	// MaxResults: The maximum number of projects to return per page. Default: 50.
-	MaxResults int `url:"maxResults,omitempty"`
+	MaxResults int `url:"maxResults,omitempty" json:"maxResults,omitempty"`
 	// Expand: Expand specific sections in the returned issues
-	Expand string `url:"expand,omitempty"`
-	Fields []string
+	Expand string   `url:"expand,omitempty" json:"-"`
+	Fields []string `url:"fields,comma,omitempty" json:"fields,omitempty"`
 	// ValidateQuery: The validateQuery param offers control over whether to validate and how strictly to treat the validation. Default: strict.
-	ValidateQuery string `url:"validateQuery,omitempty"`
+	ValidateQuery string `url:"validateQuery,omitempty" json:"validateQuery,omitempty"`
+}
+
+// searchRequest is for the Search (with JQL) method to encode its inputs into a request whether it's POST or GET.
+type searchRequest struct {
+	// JQL is the query that the user passed.
+	JQL string `url:"jql,omitempty" json:"jql,omitempty"`
+	// ExpandArray is the array form of SearchOptions.Expand used for the POST/JSON version of the search request.
+	ExpandArray    []string `url:"-" json:"expand,omitempty"`
+	*SearchOptions `url:",omitempty" json:",omitempty"`
 }
 
 // searchResult is only a small wrapper around the Search (with JQL) method
@@ -1090,32 +1098,29 @@ func (s *IssueService) SearchWithContext(ctx context.Context, jql string, option
 	u := url.URL{
 		Path: "rest/api/2/search",
 	}
-	uv := url.Values{}
-	if jql != "" {
-		uv.Add("jql", jql)
+	r := searchRequest{
+		JQL:           jql,
+		SearchOptions: options,
+	}
+	if options != nil && options.Expand != "" {
+		r.ExpandArray = strings.Split(options.Expand, ",")
 	}
 
-	if options != nil {
-		if options.StartAt != 0 {
-			uv.Add("startAt", strconv.Itoa(options.StartAt))
-		}
-		if options.MaxResults != 0 {
-			uv.Add("maxResults", strconv.Itoa(options.MaxResults))
-		}
-		if options.Expand != "" {
-			uv.Add("expand", options.Expand)
-		}
-		if strings.Join(options.Fields, ",") != "" {
-			uv.Add("fields", strings.Join(options.Fields, ","))
-		}
-		if options.ValidateQuery != "" {
-			uv.Add("validateQuery", options.ValidateQuery)
-		}
+	uv, err := query.Values(r)
+	if err != nil {
+		return []Issue{}, nil, err
 	}
-
 	u.RawQuery = uv.Encode()
 
-	req, err := s.client.NewRequestWithContext(ctx, "GET", u.String(), nil)
+	var req *http.Request
+	if len(u.String()) > 2000 {
+		// If the JQL is too long, switch to the post method instead.
+		u.RawQuery = ""
+		req, err = s.client.NewRequestWithContext(ctx, "POST", u.String(), r)
+	} else {
+		req, err = s.client.NewRequestWithContext(ctx, "GET", u.String(), nil)
+	}
+
 	if err != nil {
 		return []Issue{}, nil, err
 	}
