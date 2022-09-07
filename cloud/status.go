@@ -24,7 +24,7 @@ type Status struct {
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-status-get
 func (s *StatusService) GetAllStatusesWithContext(ctx context.Context) ([]Status, *Response, error) {
 	apiEndpoint := "rest/api/2/status"
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 
 	if err != nil {
 		return nil, nil, err

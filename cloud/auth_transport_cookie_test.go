@@ -1,6 +1,7 @@
 package cloud
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -37,7 +38,7 @@ func TestCookieAuthTransport_SessionObject_Exists(t *testing.T) {
 	}
 
 	basicAuthClient, _ := NewClient(testServer.URL, tp.Client())
-	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
+	req, _ := basicAuthClient.NewRequest(context.Background(), "GET", ".", nil)
 	basicAuthClient.Do(req, nil)
 }
 
@@ -73,7 +74,7 @@ func TestCookieAuthTransport_SessionObject_ExistsWithEmptyCookie(t *testing.T) {
 	}
 
 	basicAuthClient, _ := NewClient(testServer.URL, tp.Client())
-	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
+	req, _ := basicAuthClient.NewRequest(context.Background(), "GET", ".", nil)
 	basicAuthClient.Do(req, nil)
 }
 
@@ -114,6 +115,6 @@ func TestCookieAuthTransport_SessionObject_DoesNotExist(t *testing.T) {
 	}
 
 	basicAuthClient, _ := NewClient(testServer.URL, tp.Client())
-	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
+	req, _ := basicAuthClient.NewRequest(context.Background(), "GET", ".", nil)
 	basicAuthClient.Do(req, nil)
 }

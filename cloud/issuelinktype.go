@@ -17,7 +17,7 @@ type IssueLinkTypeService service
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-get
 func (s *IssueLinkTypeService) GetListWithContext(ctx context.Context) ([]IssueLinkType, *Response, error) {
 	apiEndpoint := "rest/api/2/issueLinkType"
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -40,7 +40,7 @@ func (s *IssueLinkTypeService) GetList() ([]IssueLinkType, *Response, error) {
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-get
 func (s *IssueLinkTypeService) GetWithContext(ctx context.Context, ID string) (*IssueLinkType, *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", ID)
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndPoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndPoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -63,7 +63,7 @@ func (s *IssueLinkTypeService) Get(ID string) (*IssueLinkType, *Response, error)
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-post
 func (s *IssueLinkTypeService) CreateWithContext(ctx context.Context, linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
 	apiEndpoint := "/rest/api/2/issueLinkType"
-	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, linkType)
+	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, linkType)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -99,7 +99,7 @@ func (s *IssueLinkTypeService) Create(linkType *IssueLinkType) (*IssueLinkType, 
 // Caller must close resp.Body
 func (s *IssueLinkTypeService) UpdateWithContext(ctx context.Context, linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", linkType.ID)
-	req, err := s.client.NewRequestWithContext(ctx, "PUT", apiEndpoint, linkType)
+	req, err := s.client.NewRequest(ctx, "PUT", apiEndpoint, linkType)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -123,7 +123,7 @@ func (s *IssueLinkTypeService) Update(linkType *IssueLinkType) (*IssueLinkType, 
 // Caller must close resp.Body
 func (s *IssueLinkTypeService) DeleteWithContext(ctx context.Context, ID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", ID)
-	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
 	if err != nil {
 		return nil, err
 	}

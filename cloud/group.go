@@ -66,7 +66,7 @@ type GroupSearchOptions struct {
 // WARNING: This API only returns the first page of group members
 func (s *GroupService) GetWithContext(ctx context.Context, name string) ([]GroupMember, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/member?groupname=%s", url.QueryEscape(name))
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -103,7 +103,7 @@ func (s *GroupService) GetWithOptionsWithContext(ctx context.Context, name strin
 			options.IncludeInactiveUsers,
 		)
 	}
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -130,7 +130,7 @@ func (s *GroupService) AddWithContext(ctx context.Context, groupname string, use
 		Name string `json:"name"`
 	}
 	user.Name = username
-	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, &user)
+	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, &user)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -156,7 +156,7 @@ func (s *GroupService) Add(groupname string, username string) (*Group, *Response
 // Caller must close resp.Body
 func (s *GroupService) RemoveWithContext(ctx context.Context, groupname string, username string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s&username=%s", groupname, username)
-	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
 	if err != nil {
 		return nil, err
 	}

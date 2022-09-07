@@ -171,15 +171,15 @@ func (c *Client) NewRawRequest(ctx context.Context, method, urlStr string, body 
 	return req, nil
 }
 
-// NewRequestWithContext creates an API request.
-// A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
+// NewRequest creates an API request.
+// A relative URL can be provided in urlStr, in which case it is resolved relative to the BaseURL of the Client.
 // If specified, the value pointed to by body is JSON encoded and included as the request body.
-func (c *Client) NewRequestWithContext(ctx context.Context, method, urlStr string, body interface{}) (*http.Request, error) {
+func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body interface{}) (*http.Request, error) {
 	rel, err := url.Parse(urlStr)
 	if err != nil {
 		return nil, err
 	}
-	// Relative URLs should be specified without a preceding slash since baseURL will have the trailing slash
+	// Relative URLs should be specified without a preceding slash since BaseURL will have the trailing slash
 	rel.Path = strings.TrimLeft(rel.Path, "/")
 
 	u := c.BaseURL.ResolveReference(rel)
@@ -218,11 +218,6 @@ func (c *Client) NewRequestWithContext(ctx context.Context, method, urlStr strin
 	}
 
 	return req, nil
-}
-
-// NewRequest wraps NewRequestWithContext using the background context.
-func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Request, error) {
-	return c.NewRequestWithContext(context.Background(), method, urlStr, body)
 }
 
 // addOptions adds the parameters in opts as URL query parameters to s. opts
