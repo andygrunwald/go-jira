@@ -14,21 +14,20 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-// httpClient defines an interface for an http.Client implementation so that alternative
-// http Clients can be passed in for making requests
-type httpClient interface {
-	Do(request *http.Request) (response *http.Response, err error)
-}
-
 // A Client manages communication with the Jira API.
 type Client struct {
-	// HTTP client used to communicate with the API.
-	client httpClient
+	client *http.Client // HTTP client used to communicate with the API.
 
 	// Base URL for API requests.
-	baseURL *url.URL
+	// Should be set to a domain endpoint of the Jira instance.
+	// BaseURL should always be specified with a trailing slash.
+	BaseURL *url.URL
+
+	// User agent used when communicating with the Jira API.
+	UserAgent string
 
 	// Session storage if the user authenticates with a Session cookie
+	// TODO Needed in Cloud and/or onpremise?
 	session *Session
 
 	// Reuse a single struct instead of allocating one for each service on the heap.
@@ -65,31 +64,27 @@ type service struct {
 	client *Client
 }
 
-// NewClient returns a new Jira API client.
-// If a nil httpClient is provided, http.DefaultClient will be used.
-// To use API methods which require authentication you can follow the preferred solution and
-// provide an http.Client that will perform the authentication for you with OAuth and HTTP Basic (such as that provided by the golang.org/x/oauth2 library).
-// As an alternative you can use Session Cookie based authentication provided by this package as well.
-// See https://docs.atlassian.com/jira/REST/latest/#authentication
+// NewClient returns a new Jira API client with provided base URL (often is your Jira hostname)
+// If a nil httpClient is provided, a new http.Client will be used.
+// To use API methods which require authentication, provide an http.Client that will perform the authentication for you (such as that provided by the golang.org/x/oauth2 library).
 // baseURL is the HTTP endpoint of your Jira instance and should always be specified with a trailing slash.
-func NewClient(httpClient httpClient, baseURL string) (*Client, error) {
+func NewClient(baseURL string, httpClient *http.Client) (*Client, error) {
 	if httpClient == nil {
-		httpClient = http.DefaultClient
+		httpClient = &http.Client{}
 	}
 
-	// ensure the baseURL contains a trailing slash so that all paths are preserved in later calls
-	if !strings.HasSuffix(baseURL, "/") {
-		baseURL += "/"
-	}
-
-	parsedBaseURL, err := url.Parse(baseURL)
+	baseEndpoint, err := url.Parse(baseURL)
 	if err != nil {
 		return nil, err
+	}
+	// ensure the baseURL contains a trailing slash so that all paths are preserved in later calls
+	if !strings.HasSuffix(baseEndpoint.Path, "/") {
+		baseEndpoint.Path += "/"
 	}
 
 	c := &Client{
 		client:  httpClient,
-		baseURL: parsedBaseURL,
+		BaseURL: baseEndpoint,
 	}
 	c.common.client = c
 
@@ -131,7 +126,7 @@ func (c *Client) NewRawRequestWithContext(ctx context.Context, method, urlStr st
 	// Relative URLs should be specified without a preceding slash since baseURL will have the trailing slash
 	rel.Path = strings.TrimLeft(rel.Path, "/")
 
-	u := c.baseURL.ResolveReference(rel)
+	u := c.BaseURL.ResolveReference(rel)
 
 	req, err := http.NewRequestWithContext(ctx, method, u.String(), body)
 	if err != nil {
@@ -174,8 +169,10 @@ func (c *Client) NewRequestWithContext(ctx context.Context, method, urlStr strin
 	// Relative URLs should be specified without a preceding slash since baseURL will have the trailing slash
 	rel.Path = strings.TrimLeft(rel.Path, "/")
 
-	u := c.baseURL.ResolveReference(rel)
+	u := c.BaseURL.ResolveReference(rel)
 
+	// TODO This part is the difference between NewRawRequestWithContext
+	// Check if we can get this working in one function
 	var buf io.ReadWriter
 	if body != nil {
 		buf = new(bytes.Buffer)
@@ -248,7 +245,7 @@ func (c *Client) NewMultiPartRequestWithContext(ctx context.Context, method, url
 	// Relative URLs should be specified without a preceding slash since baseURL will have the trailing slash
 	rel.Path = strings.TrimLeft(rel.Path, "/")
 
-	u := c.baseURL.ResolveReference(rel)
+	u := c.BaseURL.ResolveReference(rel)
 
 	req, err := http.NewRequestWithContext(ctx, method, u.String(), buf)
 	if err != nil {
@@ -317,12 +314,6 @@ func CheckResponse(r *http.Response) error {
 
 	err := fmt.Errorf("request failed. Please analyze the request body for more details. Status code: %d", r.StatusCode)
 	return err
-}
-
-// GetBaseURL will return you the Base URL.
-// This is the same URL as in the NewClient constructor
-func (c *Client) GetBaseURL() url.URL {
-	return *c.baseURL
 }
 
 // Response represents Jira API response. It wraps http.Response returned from

@@ -43,7 +43,7 @@ func main() {
 		tp = ba.Client()
 	}
 
-	client, err := jira.NewClient(tp, strings.TrimSpace(jiraURL))
+	client, err := jira.NewClient(strings.TrimSpace(jiraURL), tp)
 	if err != nil {
 		fmt.Printf("\nerror: %v\n", err)
 		return

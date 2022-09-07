@@ -29,7 +29,7 @@ func TestBasicAuthTransport(t *testing.T) {
 		Password: password,
 	}
 
-	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL)
+	basicAuthClient, _ := NewClient(testServer.URL, tp.Client())
 	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
 	basicAuthClient.Do(req, nil)
 }
