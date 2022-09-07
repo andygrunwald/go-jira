@@ -5,9 +5,7 @@ import "context"
 // PriorityService handles priorities for the Jira instance / API.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-Priority
-type PriorityService struct {
-	client *Client
-}
+type PriorityService service
 
 // Priority represents a priority of a Jira issue.
 // Typical types are "Normal", "Moderate", "Urgent", ...

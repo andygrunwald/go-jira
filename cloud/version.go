@@ -10,9 +10,7 @@ import (
 // VersionService handles Versions for the Jira instance / API.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/version
-type VersionService struct {
-	client *Client
-}
+type VersionService service
 
 // Version represents a single release version of a project
 type Version struct {

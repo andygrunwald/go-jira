@@ -9,9 +9,7 @@ import (
 
 // SprintService handles sprints in Jira Agile API.
 // See https://docs.atlassian.com/jira-software/REST/cloud/
-type SprintService struct {
-	client *Client
-}
+type SprintService service
 
 // IssuesWrapper represents a wrapper struct for moving issues to sprint
 type IssuesWrapper struct {

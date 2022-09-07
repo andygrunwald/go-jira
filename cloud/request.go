@@ -6,9 +6,7 @@ import (
 )
 
 // RequestService handles ServiceDesk customer requests for the Jira instance / API.
-type RequestService struct {
-	client *Client
-}
+type RequestService service
 
 // Request represents a ServiceDesk customer request.
 type Request struct {

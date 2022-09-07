@@ -10,9 +10,7 @@ import (
 // UserService handles users for the Jira instance / API.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-group-Users
-type UserService struct {
-	client *Client
-}
+type UserService service
 
 // User represents a Jira user.
 type User struct {

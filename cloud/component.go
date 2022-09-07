@@ -4,9 +4,7 @@ import "context"
 
 // ComponentService handles components for the Jira instance / API.//
 // Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/7.10.1/#api/2/component
-type ComponentService struct {
-	client *Client
-}
+type ComponentService service
 
 // CreateComponentOptions are passed to the ComponentService.Create function to create a new Jira component
 type CreateComponentOptions struct {

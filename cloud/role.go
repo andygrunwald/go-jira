@@ -8,9 +8,7 @@ import (
 // RoleService handles roles for the Jira instance / API.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-group-Role
-type RoleService struct {
-	client *Client
-}
+type RoleService service
 
 // Role represents a Jira product role
 type Role struct {

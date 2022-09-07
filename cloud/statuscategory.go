@@ -5,9 +5,7 @@ import "context"
 // StatusCategoryService handles status categories for the Jira instance / API.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-Statuscategory
-type StatusCategoryService struct {
-	client *Client
-}
+type StatusCategoryService service
 
 // StatusCategory represents the category a status belongs to.
 // Those categories can be user defined in every Jira instance.

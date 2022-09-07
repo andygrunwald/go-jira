@@ -31,6 +31,9 @@ type Client struct {
 	// Session storage if the user authenticates with a Session cookie
 	session *Session
 
+	// Reuse a single struct instead of allocating one for each service on the heap.
+	common service
+
 	// Services used for talking to different parts of the Jira API.
 	Authentication   *AuthenticationService
 	Issue            *IssueService
@@ -54,6 +57,12 @@ type Client struct {
 	ServiceDesk      *ServiceDeskService
 	Customer         *CustomerService
 	Request          *RequestService
+}
+
+// service is the base structure to bundle API services
+// under a sub-struct.
+type service struct {
+	client *Client
 }
 
 // NewClient returns a new Jira API client.
@@ -82,28 +91,31 @@ func NewClient(httpClient httpClient, baseURL string) (*Client, error) {
 		client:  httpClient,
 		baseURL: parsedBaseURL,
 	}
+	c.common.client = c
+
+	// TODO Check if the authentication service is still needed (because of the transports)
 	c.Authentication = &AuthenticationService{client: c}
-	c.Issue = &IssueService{client: c}
-	c.Project = &ProjectService{client: c}
-	c.Board = &BoardService{client: c}
-	c.Sprint = &SprintService{client: c}
-	c.User = &UserService{client: c}
-	c.Group = &GroupService{client: c}
-	c.Version = &VersionService{client: c}
-	c.Priority = &PriorityService{client: c}
-	c.Field = &FieldService{client: c}
-	c.Component = &ComponentService{client: c}
-	c.Resolution = &ResolutionService{client: c}
-	c.StatusCategory = &StatusCategoryService{client: c}
-	c.Filter = &FilterService{client: c}
-	c.Role = &RoleService{client: c}
-	c.PermissionScheme = &PermissionSchemeService{client: c}
-	c.Status = &StatusService{client: c}
-	c.IssueLinkType = &IssueLinkTypeService{client: c}
-	c.Organization = &OrganizationService{client: c}
-	c.ServiceDesk = &ServiceDeskService{client: c}
-	c.Customer = &CustomerService{client: c}
-	c.Request = &RequestService{client: c}
+	c.Issue = (*IssueService)(&c.common)
+	c.Project = (*ProjectService)(&c.common)
+	c.Board = (*BoardService)(&c.common)
+	c.Sprint = (*SprintService)(&c.common)
+	c.User = (*UserService)(&c.common)
+	c.Group = (*GroupService)(&c.common)
+	c.Version = (*VersionService)(&c.common)
+	c.Priority = (*PriorityService)(&c.common)
+	c.Field = (*FieldService)(&c.common)
+	c.Component = (*ComponentService)(&c.common)
+	c.Resolution = (*ResolutionService)(&c.common)
+	c.StatusCategory = (*StatusCategoryService)(&c.common)
+	c.Filter = (*FilterService)(&c.common)
+	c.Role = (*RoleService)(&c.common)
+	c.PermissionScheme = (*PermissionSchemeService)(&c.common)
+	c.Status = (*StatusService)(&c.common)
+	c.IssueLinkType = (*IssueLinkTypeService)(&c.common)
+	c.Organization = (*OrganizationService)(&c.common)
+	c.ServiceDesk = (*ServiceDeskService)(&c.common)
+	c.Customer = (*CustomerService)(&c.common)
+	c.Request = (*RequestService)(&c.common)
 
 	return c, nil
 }

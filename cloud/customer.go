@@ -6,9 +6,7 @@ import (
 )
 
 // CustomerService handles ServiceDesk customers for the Jira instance / API.
-type CustomerService struct {
-	client *Client
-}
+type CustomerService service
 
 // Customer represents a ServiceDesk customer.
 type Customer struct {

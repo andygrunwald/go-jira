@@ -8,9 +8,7 @@ import (
 // OrganizationService handles Organizations for the Jira instance / API.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/
-type OrganizationService struct {
-	client *Client
-}
+type OrganizationService service
 
 // OrganizationCreationDTO is DTO for creat organization API
 type OrganizationCreationDTO struct {

@@ -10,9 +10,7 @@ import (
 // IssueLinkTypeService handles issue link types for the Jira instance / API.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-group-Issue-link-types
-type IssueLinkTypeService struct {
-	client *Client
-}
+type IssueLinkTypeService service
 
 // GetListWithContext gets all of the issue link types from Jira.
 //
