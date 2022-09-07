@@ -36,7 +36,7 @@ func setup() {
 	testServer = httptest.NewServer(testMux)
 
 	// jira client configured to use test server
-	testClient, _ = NewClient(nil, testServer.URL)
+	testClient, _ = NewClient(testServer.URL, nil)
 }
 
 // teardown closes the test HTTP server.
@@ -73,7 +73,7 @@ func testRequestParams(t *testing.T, r *http.Request, want map[string]string) {
 }
 
 func TestNewClient_WrongUrl(t *testing.T) {
-	c, err := NewClient(nil, "://issues.apache.org/jira/")
+	c, err := NewClient("://issues.apache.org/jira/", nil)
 
 	if err == nil {
 		t.Error("Expected an error. Got none")
@@ -87,7 +87,7 @@ func TestNewClient_WithHttpClient(t *testing.T) {
 	httpClient := http.DefaultClient
 	httpClient.Timeout = 10 * time.Minute
 
-	c, err := NewClient(httpClient, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, httpClient)
 	if err != nil {
 		t.Errorf("Got an error: %s", err)
 	}
@@ -101,7 +101,7 @@ func TestNewClient_WithHttpClient(t *testing.T) {
 }
 
 func TestNewClient_WithServices(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 
 	if err != nil {
 		t.Errorf("Got an error: %s", err)
@@ -157,7 +157,7 @@ func TestCheckResponse(t *testing.T) {
 }
 
 func TestClient_NewRequest(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -179,7 +179,7 @@ func TestClient_NewRequest(t *testing.T) {
 }
 
 func TestClient_NewRawRequest(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -212,7 +212,7 @@ func testURLParseError(t *testing.T, err error) {
 }
 
 func TestClient_NewRequest_BadURL(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -221,7 +221,7 @@ func TestClient_NewRequest_BadURL(t *testing.T) {
 }
 
 func TestClient_NewRequest_SessionCookies(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -250,7 +250,7 @@ func TestClient_NewRequest_SessionCookies(t *testing.T) {
 }
 
 func TestClient_NewRequest_BasicAuth(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -276,7 +276,7 @@ func TestClient_NewRequest_BasicAuth(t *testing.T) {
 // since there is no difference between an HTTP request body that is an empty string versus one that is not set at all.
 // However in certain cases, intermediate systems may treat these differently resulting in subtle errors.
 func TestClient_NewRequest_EmptyBody(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -290,7 +290,7 @@ func TestClient_NewRequest_EmptyBody(t *testing.T) {
 }
 
 func TestClient_NewMultiPartRequest(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -323,7 +323,7 @@ func TestClient_NewMultiPartRequest(t *testing.T) {
 }
 
 func TestClient_NewMultiPartRequest_BasicAuth(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -429,24 +429,5 @@ func TestClient_Do_RedirectLoop(t *testing.T) {
 	}
 	if err, ok := err.(*url.Error); !ok {
 		t.Errorf("Expected a URL error; got %+v.", err)
-	}
-}
-
-func TestClient_GetBaseURL_WithURL(t *testing.T) {
-	u, err := url.Parse(testJiraInstanceURL)
-	if err != nil {
-		t.Errorf("URL parsing -> Got an error: %s", err)
-	}
-
-	c, err := NewClient(nil, testJiraInstanceURL)
-	if err != nil {
-		t.Errorf("Client creation -> Got an error: %s", err)
-	}
-	if c == nil {
-		t.Error("Expected a client. Got none")
-	}
-
-	if b := c.GetBaseURL(); !reflect.DeepEqual(b, *u) {
-		t.Errorf("Base URLs are not equal. Expected %+v, got %+v", *u, b)
 	}
 }

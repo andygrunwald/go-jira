@@ -38,7 +38,7 @@ func GetAllIssues(client *jira.Client, searchString string) ([]jira.Issue, error
 }
 
 func main() {
-	jiraClient, err := jira.NewClient(nil, "https://issues.apache.org/jira/")
+	jiraClient, err := jira.NewClient("https://issues.apache.org/jira/", nil)
 	if err != nil {
 		panic(err)
 	}
