@@ -2,6 +2,7 @@ package cloud
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -188,7 +189,7 @@ func TestClient_NewRawRequest(t *testing.T) {
 
 	outBody := `{"key":"MESOS"}` + "\n"
 	inBody := outBody
-	req, _ := c.NewRawRequest("GET", inURL, strings.NewReader(outBody))
+	req, _ := c.NewRawRequest(context.Background(), "GET", inURL, strings.NewReader(outBody))
 
 	// Test that relative URL was expanded
 	if got, want := req.URL.String(), outURL; got != want {
