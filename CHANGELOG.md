@@ -37,6 +37,65 @@ import (
 )
 ```
 
+#### Init a new client
+
+The order of arguments in the `jira.NewClient` has changed:
+
+1. The base URL of your JIRA instance
+2. A HTTP client (optional)
+
+Before:
+
+```go
+jira.NewClient(nil, "https://issues.apache.org/jira/")
+```
+
+After:
+
+```go
+jira.NewClient("https://issues.apache.org/jira/", nil)
+```
+
+#### User Agent
+
+The client will identify itself via a UserAgent `go-jira/2.0.0`.
+
+#### `NewRawRequestWithContext` removed, `NewRawRequest` accepts `context`
+
+The function `client.NewRawRequestWithContext()` has been removed.
+`client.NewRawRequest()` accepts now a context as the first argument.
+This is a drop in replacement.
+
+Before:
+
+```go
+client.NewRawRequestWithContext(context.Background(), "GET", .....)
+```
+
+After:
+
+```go
+client.NewRawRequest(context.Background(), "GET", .....)
+```
+
+For people who used `jira.NewRawRequest()`: You need to pass a context as the first argument.
+Like
+
+```go
+client.NewRawRequest(context.Background(), "GET", .....)
+```
+
+### Breaking changes
+
+* Jira On-Premise and Jira Cloud have now different clients, because the API differs
+* `client.NewRawRequestWithContext()` has been removed in favor of `client.NewRawRequest`, which requires now a context as first argument
+
+### Features
+
+* UserAgent: Client HTTP calls are now identifable via a User Agent. This user agent can be configured (default: `go-jira/2.0.0`)
+* The underlying used HTTP client for API calls can be retrieved via `client.Client()`
+
+
 ### Changes
 
 ## [1.13.0](https://github.com/andygrunwald/go-jira/compare/v1.11.1...v1.13.0) (2020-10-25)
