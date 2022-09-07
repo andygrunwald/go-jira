@@ -529,10 +529,11 @@ type SearchOptions struct {
 // searchResult is only a small wrapper around the Search (with JQL) method
 // to be able to parse the results
 type searchResult struct {
-	Issues     []Issue `json:"issues" structs:"issues"`
-	StartAt    int     `json:"startAt" structs:"startAt"`
-	MaxResults int     `json:"maxResults" structs:"maxResults"`
-	Total      int     `json:"total" structs:"total"`
+	Issues     []Issue           `json:"issues" structs:"issues"`
+	StartAt    int               `json:"startAt" structs:"startAt"`
+	MaxResults int               `json:"maxResults" structs:"maxResults"`
+	Total      int               `json:"total" structs:"total"`
+	Names      map[string]string `json:"names" structs:"names"`
 }
 
 // GetQueryOptions specifies the optional parameters for the Get Issue methods
