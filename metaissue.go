@@ -60,7 +60,7 @@ func (s *IssueService) GetCreateMeta(projectkeys string) (*CreateMetaInfo, *Resp
 
 // GetCreateMetaWithOptionsWithContext makes the api call to get the meta information without requiring to have a projectKey
 func (s *IssueService) GetCreateMetaWithOptionsWithContext(ctx context.Context, options *GetQueryOptions) (*CreateMetaInfo, *Response, error) {
-	apiEndpoint := "rest/api/2/issue/createmeta"
+	apiEndpoint := fmt.Sprintf("rest/api/%s/issue/createmeta", s.client.APIVersion)
 
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -91,7 +91,7 @@ func (s *IssueService) GetCreateMetaWithOptions(options *GetQueryOptions) (*Crea
 
 // GetEditMetaWithContext makes the api call to get the edit meta information for an issue
 func (s *IssueService) GetEditMetaWithContext(ctx context.Context, issue *Issue) (*EditMetaInfo, *Response, error) {
-	apiEndpoint := fmt.Sprintf("/rest/api/2/issue/%s/editmeta", issue.Key)
+	apiEndpoint := fmt.Sprintf("/rest/api/%s/issue/%s/editmeta", s.client.APIVersion, issue.Key)
 
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
