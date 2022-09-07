@@ -14,6 +14,12 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
+const (
+	ClientVersion = "2.0.0"
+
+	defaultUserAgent = "go-jira" + "/" + ClientVersion
+)
+
 // A Client manages communication with the Jira API.
 type Client struct {
 	client *http.Client // HTTP client used to communicate with the API.
@@ -83,8 +89,9 @@ func NewClient(baseURL string, httpClient *http.Client) (*Client, error) {
 	}
 
 	c := &Client{
-		client:  httpClient,
-		BaseURL: baseEndpoint,
+		client:    httpClient,
+		BaseURL:   baseEndpoint,
+		UserAgent: defaultUserAgent,
 	}
 	c.common.client = c
 
