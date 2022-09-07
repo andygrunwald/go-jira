@@ -9,9 +9,7 @@ import (
 // GroupService handles Groups for the Jira instance / API.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/server/#api/2/group
-type GroupService struct {
-	client *Client
-}
+type GroupService service
 
 // groupMembersResult is only a small wrapper around the Group* methods
 // to be able to parse the results

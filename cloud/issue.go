@@ -27,9 +27,7 @@ const (
 // IssueService handles Issues for the Jira instance / API.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue
-type IssueService struct {
-	client *Client
-}
+type IssueService service
 
 // UpdateQueryOptions specifies the optional parameters to the Edit issue
 type UpdateQueryOptions struct {

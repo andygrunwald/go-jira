@@ -10,9 +10,7 @@ import (
 // FilterService handles fields for the Jira instance / API.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-group-Filter
-type FilterService struct {
-	client *Client
-}
+type FilterService service
 
 // Filter represents a Filter in Jira
 type Filter struct {

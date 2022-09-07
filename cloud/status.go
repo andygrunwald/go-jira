@@ -5,9 +5,7 @@ import "context"
 // StatusService handles staties for the Jira instance / API.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-group-Workflow-statuses
-type StatusService struct {
-	client *Client
-}
+type StatusService service
 
 // Status represents the current status of a Jira issue.
 // Typical status are "Open", "In Progress", "Closed", ...

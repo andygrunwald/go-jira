@@ -5,9 +5,7 @@ import "context"
 // ResolutionService handles resolutions for the Jira instance / API.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-Resolution
-type ResolutionService struct {
-	client *Client
-}
+type ResolutionService service
 
 // Resolution represents a resolution of a Jira issue.
 // Typical types are "Fixed", "Suspended", "Won't Fix", ...

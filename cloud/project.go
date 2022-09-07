@@ -10,9 +10,7 @@ import (
 // ProjectService handles projects for the Jira instance / API.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project
-type ProjectService struct {
-	client *Client
-}
+type ProjectService service
 
 // ProjectList represent a list of Projects
 type ProjectList []struct {

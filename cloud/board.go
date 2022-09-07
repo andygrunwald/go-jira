@@ -10,9 +10,7 @@ import (
 // BoardService handles Agile Boards for the Jira instance / API.
 //
 // Jira API docs: https://docs.atlassian.com/jira-software/REST/server/
-type BoardService struct {
-	client *Client
-}
+type BoardService service
 
 // BoardsList reflects a list of agile boards
 type BoardsList struct {

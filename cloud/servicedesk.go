@@ -10,9 +10,7 @@ import (
 )
 
 // ServiceDeskService handles ServiceDesk for the Jira instance / API.
-type ServiceDeskService struct {
-	client *Client
-}
+type ServiceDeskService service
 
 // ServiceDeskOrganizationDTO is a DTO for ServiceDesk organizations
 type ServiceDeskOrganizationDTO struct {
