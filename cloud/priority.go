@@ -23,7 +23,7 @@ type Priority struct {
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-priority-get
 func (s *PriorityService) GetListWithContext(ctx context.Context) ([]Priority, *Response, error) {
 	apiEndpoint := "rest/api/2/priority"
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}

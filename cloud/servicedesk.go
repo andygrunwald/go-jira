@@ -27,7 +27,7 @@ func (s *ServiceDeskService) GetOrganizationsWithContext(ctx context.Context, se
 		apiEndPoint += fmt.Sprintf("&accountId=%s", accountID)
 	}
 
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndPoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndPoint, nil)
 	req.Header.Set("Accept", "application/json")
 
 	if err != nil {
@@ -63,7 +63,7 @@ func (s *ServiceDeskService) AddOrganizationWithContext(ctx context.Context, ser
 		OrganizationID: organizationID,
 	}
 
-	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndPoint, organization)
+	req, err := s.client.NewRequest(ctx, "POST", apiEndPoint, organization)
 
 	if err != nil {
 		return nil, err
@@ -98,7 +98,7 @@ func (s *ServiceDeskService) RemoveOrganizationWithContext(ctx context.Context, 
 		OrganizationID: organizationID,
 	}
 
-	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndPoint, organization)
+	req, err := s.client.NewRequest(ctx, "DELETE", apiEndPoint, organization)
 
 	if err != nil {
 		return nil, err
@@ -130,7 +130,7 @@ func (s *ServiceDeskService) AddCustomersWithContext(ctx context.Context, servic
 	}{
 		AccountIDs: acountIDs,
 	}
-	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, payload)
+	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, payload)
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +162,7 @@ func (s *ServiceDeskService) RemoveCustomersWithContext(ctx context.Context, ser
 	}{
 		AccountIDs: acountIDs,
 	}
-	req, err := s.client.NewRequestWithContext(ctx, "DELETE", apiEndpoint, payload)
+	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, payload)
 	if err != nil {
 		return nil, err
 	}
@@ -188,7 +188,7 @@ func (s *ServiceDeskService) RemoveCustomers(serviceDeskID interface{}, acountID
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-customer-get
 func (s *ServiceDeskService) ListCustomersWithContext(ctx context.Context, serviceDeskID interface{}, options *CustomerListOptions) (*CustomerList, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%v/customer", serviceDeskID)
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}

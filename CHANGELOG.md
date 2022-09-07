@@ -60,7 +60,7 @@ jira.NewClient("https://issues.apache.org/jira/", nil)
 
 The client will identify itself via a UserAgent `go-jira/2.0.0`.
 
-#### `NewRawRequestWithContext` removed, `NewRawRequest` accepts `context`
+#### `NewRawRequestWithContext` removed, `NewRawRequest` requires `context`
 
 The function `client.NewRawRequestWithContext()` has been removed.
 `client.NewRawRequest()` accepts now a context as the first argument.
@@ -85,10 +85,36 @@ Like
 client.NewRawRequest(context.Background(), "GET", .....)
 ```
 
+#### `NewRequestWithContext` removed, `NewRequest` requires `context`
+
+The function `client.NewRequestWithContext()` has been removed.
+`client.NewRequest()` accepts now a context as the first argument.
+This is a drop in replacement.
+
+Before:
+
+```go
+client.NewRequestWithContext(context.Background(), "GET", .....)
+```
+
+After:
+
+```go
+client.NewRequest(context.Background(), "GET", .....)
+```
+
+For people who used `jira.NewRequest()`: You need to pass a context as the first argument.
+Like
+
+```go
+client.NewRequest(context.Background(), "GET", .....)
+```
+
 ### Breaking changes
 
 * Jira On-Premise and Jira Cloud have now different clients, because the API differs
-* `client.NewRawRequestWithContext()` has been removed in favor of `client.NewRawRequest`, which requires now a context as first argument
+* `client.NewRawRequestWithContext()` has been removed in favor of `client.NewRawRequest()`, which requires now a context as first argument
+* `client.NewRequestWithContext()` has been removed in favor of `client.NewRequest()`, which requires now a context as first argument
 
 ### Features
 

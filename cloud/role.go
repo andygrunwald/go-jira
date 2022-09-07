@@ -39,7 +39,7 @@ type ActorUser struct {
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-role-get
 func (s *RoleService) GetListWithContext(ctx context.Context) (*[]Role, *Response, error) {
 	apiEndpoint := "rest/api/3/role"
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -62,7 +62,7 @@ func (s *RoleService) GetList() (*[]Role, *Response, error) {
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-role-id-get
 func (s *RoleService) GetWithContext(ctx context.Context, roleID int) (*Role, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/3/role/%d", roleID)
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}

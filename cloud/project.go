@@ -97,7 +97,7 @@ func (s *ProjectService) GetList() (*ProjectList, *Response, error) {
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
 func (s *ProjectService) ListWithOptionsWithContext(ctx context.Context, options *GetQueryOptions) (*ProjectList, *Response, error) {
 	apiEndpoint := "rest/api/2/project"
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -132,7 +132,7 @@ func (s *ProjectService) ListWithOptions(options *GetQueryOptions) (*ProjectList
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
 func (s *ProjectService) GetWithContext(ctx context.Context, projectID string) (*Project, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/project/%s", projectID)
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -159,7 +159,7 @@ func (s *ProjectService) Get(projectID string) (*Project, *Response, error) {
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
 func (s *ProjectService) GetPermissionSchemeWithContext(ctx context.Context, projectID string) (*PermissionScheme, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/project/%s/permissionscheme", projectID)
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}

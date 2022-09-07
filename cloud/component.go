@@ -21,7 +21,7 @@ type CreateComponentOptions struct {
 // CreateWithContext creates a new Jira component based on the given options.
 func (s *ComponentService) CreateWithContext(ctx context.Context, options *CreateComponentOptions) (*ProjectComponent, *Response, error) {
 	apiEndpoint := "rest/api/2/component"
-	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, options)
+	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, options)
 	if err != nil {
 		return nil, nil, err
 	}
