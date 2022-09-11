@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	jira "github.com/andygrunwald/go-jira/onpremise"
+	jira "github.com/andygrunwald/go-jira/onpremise/v2"
 )
 
 func main() {

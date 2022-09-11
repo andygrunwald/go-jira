@@ -10,7 +10,7 @@ import (
 
 	"golang.org/x/term"
 
-	jira "github.com/andygrunwald/go-jira/onpremise"
+	jira "github.com/andygrunwald/go-jira/onpremise/v2"
 )
 
 func main() {

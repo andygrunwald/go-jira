@@ -11,7 +11,7 @@ import (
 
 	"golang.org/x/term"
 
-	jira "github.com/andygrunwald/go-jira/cloud"
+	jira "github.com/andygrunwald/go-jira/cloud/v2"
 )
 
 func main() {
