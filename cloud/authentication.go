@@ -67,7 +67,7 @@ func (s *AuthenticationService) AcquireSessionCookie(ctx context.Context, userna
 		password,
 	}
 
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, body)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, body)
 	if err != nil {
 		return false, err
 	}
@@ -126,7 +126,7 @@ func (s *AuthenticationService) Logout(ctx context.Context) error {
 	}
 
 	apiEndpoint := "rest/auth/1/session"
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
 	if err != nil {
 		return fmt.Errorf("creating the request to log the user out failed : %s", err)
 	}
@@ -159,7 +159,7 @@ func (s *AuthenticationService) GetCurrentUser(ctx context.Context) (*Session, e
 	}
 
 	apiEndpoint := "rest/auth/1/session"
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, fmt.Errorf("could not create request for getting user info : %s", err)
 	}

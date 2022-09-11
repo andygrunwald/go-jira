@@ -3,6 +3,7 @@ package cloud
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"net/url"
 )
 
@@ -66,7 +67,7 @@ type GroupSearchOptions struct {
 // WARNING: This API only returns the first page of group members
 func (s *GroupService) Get(ctx context.Context, name string) ([]GroupMember, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/member?groupname=%s", url.QueryEscape(name))
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -98,7 +99,7 @@ func (s *GroupService) GetWithOptions(ctx context.Context, name string, options 
 			options.IncludeInactiveUsers,
 		)
 	}
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -120,7 +121,7 @@ func (s *GroupService) Add(ctx context.Context, groupname string, username strin
 		Name string `json:"name"`
 	}
 	user.Name = username
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, &user)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, &user)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -141,7 +142,7 @@ func (s *GroupService) Add(ctx context.Context, groupname string, username strin
 // Caller must close resp.Body
 func (s *GroupService) Remove(ctx context.Context, groupname string, username string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s&username=%s", groupname, username)
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
 	if err != nil {
 		return nil, err
 	}

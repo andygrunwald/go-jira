@@ -15,7 +15,7 @@ func TestIssueService_GetCreateMeta_Success(t *testing.T) {
 	testAPIEndpoint := "/rest/api/2/issue/createmeta"
 
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEndpoint)
 
 		fmt.Fprint(w, `{
@@ -387,7 +387,7 @@ func TestIssueService_GetEditMeta_Success(t *testing.T) {
 	testAPIEndpoint := "/rest/api/2/issue/PROJ-9001/editmeta"
 
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEndpoint)
 
 		fmt.Fprint(w, `{
@@ -464,7 +464,7 @@ func TestMetaIssueType_GetCreateMetaWithOptions(t *testing.T) {
 	testAPIEndpoint := "/rest/api/2/issue/createmeta"
 
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEndpoint)
 
 		fmt.Fprint(w, `{

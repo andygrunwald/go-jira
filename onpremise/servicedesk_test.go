@@ -15,7 +15,7 @@ func TestServiceDeskService_GetOrganizations(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/servicedesk/10001/organization", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/servicedeskapi/servicedesk/10001/organization")
 
 		w.WriteHeader(http.StatusOK)
@@ -74,7 +74,7 @@ func TestServiceDeskService_AddOrganizations(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/servicedesk/10001/organization", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/servicedeskapi/servicedesk/10001/organization")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -91,7 +91,7 @@ func TestServiceDeskService_RemoveOrganizations(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/servicedesk/10001/organization", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "DELETE")
+		testMethod(t, r, http.MethodDelete)
 		testRequestURL(t, r, "/rest/servicedeskapi/servicedesk/10001/organization")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -108,7 +108,7 @@ func TestServiceDeskServiceStringServiceDeskID_GetOrganizations(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/servicedesk/TEST/organization", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/servicedeskapi/servicedesk/TEST/organization")
 
 		w.WriteHeader(http.StatusOK)
@@ -167,7 +167,7 @@ func TestServiceDeskServiceStringServiceDeskID_AddOrganizations(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/servicedesk/TEST/organization", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/servicedeskapi/servicedesk/TEST/organization")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -184,7 +184,7 @@ func TestServiceDeskServiceStringServiceDeskID_RemoveOrganizations(t *testing.T)
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/servicedesk/TEST/organization", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "DELETE")
+		testMethod(t, r, http.MethodDelete)
 		testRequestURL(t, r, "/rest/servicedeskapi/servicedesk/TEST/organization")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -227,7 +227,7 @@ func TestServiceDeskService_AddCustomers(t *testing.T) {
 			)
 
 			testMux.HandleFunc(fmt.Sprintf("/rest/servicedeskapi/servicedesk/%v/customer", test.serviceDeskID), func(w http.ResponseWriter, r *http.Request) {
-				testMethod(t, r, "POST")
+				testMethod(t, r, http.MethodPost)
 				testRequestURL(t, r, fmt.Sprintf("/rest/servicedeskapi/servicedesk/%v/customer", test.serviceDeskID))
 
 				var payload struct {
@@ -293,7 +293,7 @@ func TestServiceDeskService_RemoveCustomers(t *testing.T) {
 			)
 
 			testMux.HandleFunc(fmt.Sprintf("/rest/servicedeskapi/servicedesk/%v/customer", test.serviceDeskID), func(w http.ResponseWriter, r *http.Request) {
-				testMethod(t, r, "DELETE")
+				testMethod(t, r, http.MethodDelete)
 				testRequestURL(t, r, fmt.Sprintf("/rest/servicedeskapi/servicedesk/%v/customer", test.serviceDeskID))
 
 				var payload struct {
@@ -362,7 +362,7 @@ func TestServiceDeskService_ListCustomers(t *testing.T) {
 			)
 
 			testMux.HandleFunc(fmt.Sprintf("/rest/servicedeskapi/servicedesk/%v/customer", test.serviceDeskID), func(w http.ResponseWriter, r *http.Request) {
-				testMethod(t, r, "GET")
+				testMethod(t, r, http.MethodGet)
 				testRequestURL(t, r, fmt.Sprintf("/rest/servicedeskapi/servicedesk/%v/customer", test.serviceDeskID))
 
 				qs := r.URL.Query()

@@ -18,7 +18,7 @@ func TestBoardService_GetAllBoards(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEdpoint)
 		fmt.Fprint(w, string(raw))
 	})
@@ -43,7 +43,7 @@ func TestBoardService_GetAllBoards_WithFilter(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEdpoint)
 		testRequestParams(t, r, map[string]string{"type": "scrum", "name": "Test", "startAt": "1", "maxResults": "10", "projectKeyOrId": "TE"})
 		fmt.Fprint(w, string(raw))
@@ -72,7 +72,7 @@ func TestBoardService_GetBoard(t *testing.T) {
 	testAPIEdpoint := "/rest/agile/1.0/board/1"
 
 	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEdpoint)
 		fmt.Fprint(w, `{"id":4,"self":"https://test.jira.org/rest/agile/1.0/board/1","name":"Test Weekly","type":"scrum"}`)
 	})
@@ -92,7 +92,7 @@ func TestBoardService_GetBoard_WrongID(t *testing.T) {
 	testAPIEndpoint := "/rest/api/2/board/99999999"
 
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, nil)
 	})
@@ -114,7 +114,7 @@ func TestBoardService_CreateBoard(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/agile/1.0/board", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/agile/1.0/board")
 
 		w.WriteHeader(http.StatusCreated)
@@ -139,7 +139,7 @@ func TestBoardService_DeleteBoard(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/agile/1.0/board/1", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "DELETE")
+		testMethod(t, r, http.MethodDelete)
 		testRequestURL(t, r, "/rest/agile/1.0/board/1")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -167,7 +167,7 @@ func TestBoardService_GetAllSprints(t *testing.T) {
 	}
 
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
@@ -199,7 +199,7 @@ func TestBoardService_GetAllSprintsWithOptions(t *testing.T) {
 	}
 
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
@@ -230,7 +230,7 @@ func TestBoardService_GetBoardConfigoration(t *testing.T) {
 	}
 
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})

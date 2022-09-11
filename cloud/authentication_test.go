@@ -14,7 +14,7 @@ func TestAuthenticationService_AcquireSessionCookie_Failure(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/auth/1/session")
 		b, err := io.ReadAll(r.Body)
 		if err != nil {
@@ -48,7 +48,7 @@ func TestAuthenticationService_AcquireSessionCookie_Success(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/auth/1/session")
 		b, err := io.ReadAll(r.Body)
 		if err != nil {
@@ -138,8 +138,8 @@ func TestAuthenticationService_GetUserInfo_AccessForbidden_Fail(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "POST" {
-			testMethod(t, r, "POST")
+		if r.Method == http.MethodPost {
+			testMethod(t, r, http.MethodPost)
 			testRequestURL(t, r, "/rest/auth/1/session")
 			b, err := io.ReadAll(r.Body)
 			if err != nil {
@@ -155,8 +155,8 @@ func TestAuthenticationService_GetUserInfo_AccessForbidden_Fail(t *testing.T) {
 			fmt.Fprint(w, `{"session":{"name":"JSESSIONID","value":"12345678901234567890"},"loginInfo":{"failedLoginCount":10,"loginCount":127,"lastFailedLoginTime":"2016-03-16T04:22:35.386+0000","previousLoginTime":"2016-03-16T04:22:35.386+0000"}}`)
 		}
 
-		if r.Method == "GET" {
-			testMethod(t, r, "GET")
+		if r.Method == http.MethodGet {
+			testMethod(t, r, http.MethodGet)
 			testRequestURL(t, r, "/rest/auth/1/session")
 
 			w.WriteHeader(http.StatusForbidden)
@@ -176,8 +176,8 @@ func TestAuthenticationService_GetUserInfo_NonOkStatusCode_Fail(t *testing.T) {
 	defer teardown()
 
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "POST" {
-			testMethod(t, r, "POST")
+		if r.Method == http.MethodPost {
+			testMethod(t, r, http.MethodPost)
 			testRequestURL(t, r, "/rest/auth/1/session")
 			b, err := io.ReadAll(r.Body)
 			if err != nil {
@@ -193,8 +193,8 @@ func TestAuthenticationService_GetUserInfo_NonOkStatusCode_Fail(t *testing.T) {
 			fmt.Fprint(w, `{"session":{"name":"JSESSIONID","value":"12345678901234567890"},"loginInfo":{"failedLoginCount":10,"loginCount":127,"lastFailedLoginTime":"2016-03-16T04:22:35.386+0000","previousLoginTime":"2016-03-16T04:22:35.386+0000"}}`)
 		}
 
-		if r.Method == "GET" {
-			testMethod(t, r, "GET")
+		if r.Method == http.MethodGet {
+			testMethod(t, r, http.MethodGet)
 			testRequestURL(t, r, "/rest/auth/1/session")
 			//any status but 200
 			w.WriteHeader(240)
@@ -232,8 +232,8 @@ func TestAuthenticationService_GetUserInfo_Success(t *testing.T) {
 	testUserInfo.LoginInfo.PreviousLoginTime = "2016-09-07T11:36:23.476+0200"
 
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "POST" {
-			testMethod(t, r, "POST")
+		if r.Method == http.MethodPost {
+			testMethod(t, r, http.MethodPost)
 			testRequestURL(t, r, "/rest/auth/1/session")
 			b, err := io.ReadAll(r.Body)
 			if err != nil {
@@ -249,8 +249,8 @@ func TestAuthenticationService_GetUserInfo_Success(t *testing.T) {
 			fmt.Fprint(w, `{"session":{"name":"JSESSIONID","value":"12345678901234567890"},"loginInfo":{"failedLoginCount":10,"loginCount":127,"lastFailedLoginTime":"2016-03-16T04:22:35.386+0000","previousLoginTime":"2016-03-16T04:22:35.386+0000"}}`)
 		}
 
-		if r.Method == "GET" {
-			testMethod(t, r, "GET")
+		if r.Method == http.MethodGet {
+			testMethod(t, r, http.MethodGet)
 			testRequestURL(t, r, "/rest/auth/1/session")
 			fmt.Fprint(w, `{"self":"https://my.jira.com/rest/api/latest/user?username=foo","name":"foo","loginInfo":{"failedLoginCount":12,"loginCount":357,"lastFailedLoginTime":"2016-09-06T16:41:23.949+0200","previousLoginTime":"2016-09-07T11:36:23.476+0200"}}`)
 		}
@@ -274,8 +274,8 @@ func TestAuthenticationService_Logout_Success(t *testing.T) {
 	defer teardown()
 
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "POST" {
-			testMethod(t, r, "POST")
+		if r.Method == http.MethodPost {
+			testMethod(t, r, http.MethodPost)
 			testRequestURL(t, r, "/rest/auth/1/session")
 			b, err := io.ReadAll(r.Body)
 			if err != nil {
@@ -291,7 +291,7 @@ func TestAuthenticationService_Logout_Success(t *testing.T) {
 			fmt.Fprint(w, `{"session":{"name":"JSESSIONID","value":"12345678901234567890"},"loginInfo":{"failedLoginCount":10,"loginCount":127,"lastFailedLoginTime":"2016-03-16T04:22:35.386+0000","previousLoginTime":"2016-03-16T04:22:35.386+0000"}}`)
 		}
 
-		if r.Method == "DELETE" {
+		if r.Method == http.MethodDelete {
 			// return 204
 			w.WriteHeader(http.StatusNoContent)
 		}
@@ -310,7 +310,7 @@ func TestAuthenticationService_Logout_FailWithoutLogin(t *testing.T) {
 	defer teardown()
 
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "DELETE" {
+		if r.Method == http.MethodDelete {
 			// 401
 			w.WriteHeader(http.StatusUnauthorized)
 		}

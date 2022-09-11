@@ -1,6 +1,9 @@
 package onpremise
 
-import "context"
+import (
+	"context"
+	"net/http"
+)
 
 // ResolutionService handles resolutions for the Jira instance / API.
 //
@@ -21,7 +24,7 @@ type Resolution struct {
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-resolution-get
 func (s *ResolutionService) GetList(ctx context.Context) ([]Resolution, *Response, error) {
 	apiEndpoint := "rest/api/2/resolution"
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}

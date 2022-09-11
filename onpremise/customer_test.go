@@ -17,7 +17,7 @@ func TestCustomerService_Create(t *testing.T) {
 	)
 
 	testMux.HandleFunc("/rest/servicedeskapi/customer", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/servicedeskapi/customer")
 
 		w.WriteHeader(http.StatusOK)

@@ -1,6 +1,9 @@
 package cloud
 
-import "context"
+import (
+	"context"
+	"net/http"
+)
 
 // ComponentService handles components for the Jira instance / API.//
 // Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/7.10.1/#api/2/component
@@ -21,7 +24,7 @@ type CreateComponentOptions struct {
 // Create creates a new Jira component based on the given options.
 func (s *ComponentService) Create(ctx context.Context, options *CreateComponentOptions) (*ProjectComponent, *Response, error) {
 	apiEndpoint := "rest/api/2/component"
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, options)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, options)
 	if err != nil {
 		return nil, nil, err
 	}

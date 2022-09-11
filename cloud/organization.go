@@ -3,6 +3,7 @@ package cloud
 import (
 	"context"
 	"fmt"
+	"net/http"
 )
 
 // OrganizationService handles Organizations for the Jira instance / API.
@@ -66,7 +67,7 @@ func (s *OrganizationService) GetAllOrganizations(ctx context.Context, start int
 		apiEndPoint += fmt.Sprintf("&accountId=%s", accountID)
 	}
 
-	req, err := s.client.NewRequest(ctx, "GET", apiEndPoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
 	req.Header.Set("Accept", "application/json")
 
 	if err != nil {
@@ -94,7 +95,7 @@ func (s *OrganizationService) CreateOrganization(ctx context.Context, name strin
 		Name: name,
 	}
 
-	req, err := s.client.NewRequest(ctx, "POST", apiEndPoint, organization)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndPoint, organization)
 	req.Header.Set("Accept", "application/json")
 
 	if err != nil {
@@ -121,7 +122,7 @@ func (s *OrganizationService) CreateOrganization(ctx context.Context, name strin
 func (s *OrganizationService) GetOrganization(ctx context.Context, organizationID int) (*Organization, *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d", organizationID)
 
-	req, err := s.client.NewRequest(ctx, "GET", apiEndPoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
 	req.Header.Set("Accept", "application/json")
 
 	if err != nil {
@@ -148,7 +149,7 @@ func (s *OrganizationService) GetOrganization(ctx context.Context, organizationI
 func (s *OrganizationService) DeleteOrganization(ctx context.Context, organizationID int) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d", organizationID)
 
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndPoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndPoint, nil)
 
 	if err != nil {
 		return nil, err
@@ -172,7 +173,7 @@ func (s *OrganizationService) DeleteOrganization(ctx context.Context, organizati
 func (s *OrganizationService) GetPropertiesKeys(ctx context.Context, organizationID int) (*PropertyKeys, *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property", organizationID)
 
-	req, err := s.client.NewRequest(ctx, "GET", apiEndPoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
 	req.Header.Set("Accept", "application/json")
 
 	if err != nil {
@@ -197,7 +198,7 @@ func (s *OrganizationService) GetPropertiesKeys(ctx context.Context, organizatio
 func (s *OrganizationService) GetProperty(ctx context.Context, organizationID int, propertyKey string) (*EntityProperty, *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property/%s", organizationID, propertyKey)
 
-	req, err := s.client.NewRequest(ctx, "GET", apiEndPoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
 	req.Header.Set("Accept", "application/json")
 
 	if err != nil {
@@ -223,7 +224,7 @@ func (s *OrganizationService) GetProperty(ctx context.Context, organizationID in
 func (s *OrganizationService) SetProperty(ctx context.Context, organizationID int, propertyKey string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property/%s", organizationID, propertyKey)
 
-	req, err := s.client.NewRequest(ctx, "PUT", apiEndPoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndPoint, nil)
 	req.Header.Set("Accept", "application/json")
 
 	if err != nil {
@@ -246,7 +247,7 @@ func (s *OrganizationService) SetProperty(ctx context.Context, organizationID in
 func (s *OrganizationService) DeleteProperty(ctx context.Context, organizationID int, propertyKey string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property/%s", organizationID, propertyKey)
 
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndPoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndPoint, nil)
 	req.Header.Set("Accept", "application/json")
 
 	if err != nil {
@@ -272,7 +273,7 @@ func (s *OrganizationService) DeleteProperty(ctx context.Context, organizationID
 func (s *OrganizationService) GetUsers(ctx context.Context, organizationID int, start int, limit int) (*PagedDTO, *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/user?start=%d&limit=%d", organizationID, start, limit)
 
-	req, err := s.client.NewRequest(ctx, "GET", apiEndPoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
 	req.Header.Set("Accept", "application/json")
 
 	if err != nil {
@@ -296,7 +297,7 @@ func (s *OrganizationService) GetUsers(ctx context.Context, organizationID int, 
 func (s *OrganizationService) AddUsers(ctx context.Context, organizationID int, users OrganizationUsersDTO) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/user", organizationID)
 
-	req, err := s.client.NewRequest(ctx, "POST", apiEndPoint, users)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndPoint, users)
 
 	if err != nil {
 		return nil, err
@@ -318,7 +319,7 @@ func (s *OrganizationService) AddUsers(ctx context.Context, organizationID int, 
 func (s *OrganizationService) RemoveUsers(ctx context.Context, organizationID int, users OrganizationUsersDTO) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/user", organizationID)
 
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndPoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndPoint, nil)
 	req.Header.Set("Accept", "application/json")
 
 	if err != nil {

@@ -18,7 +18,7 @@ func TestStatusCategoryService_GetList(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEdpoint)
 		fmt.Fprint(w, string(raw))
 	})

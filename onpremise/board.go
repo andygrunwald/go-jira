@@ -3,6 +3,7 @@ package onpremise
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -134,7 +135,7 @@ func (s *BoardService) GetAllBoards(ctx context.Context, opt *BoardListOptions) 
 	if err != nil {
 		return nil, nil, err
 	}
-	req, err := s.client.NewRequest(ctx, "GET", url, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -155,7 +156,7 @@ func (s *BoardService) GetAllBoards(ctx context.Context, opt *BoardListOptions) 
 // Jira API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-getBoard
 func (s *BoardService) GetBoard(ctx context.Context, boardID int) (*Board, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%v", boardID)
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -180,7 +181,7 @@ func (s *BoardService) GetBoard(ctx context.Context, boardID int) (*Board, *Resp
 // Jira API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-createBoard
 func (s *BoardService) CreateBoard(ctx context.Context, board *Board) (*Board, *Response, error) {
 	apiEndpoint := "rest/agile/1.0/board"
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, board)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, board)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -201,7 +202,7 @@ func (s *BoardService) CreateBoard(ctx context.Context, board *Board) (*Board, *
 // Caller must close resp.Body
 func (s *BoardService) DeleteBoard(ctx context.Context, boardID int) (*Board, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%v", boardID)
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -241,7 +242,7 @@ func (s *BoardService) GetAllSprintsWithOptions(ctx context.Context, boardID int
 	if err != nil {
 		return nil, nil, err
 	}
-	req, err := s.client.NewRequest(ctx, "GET", url, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -260,7 +261,7 @@ func (s *BoardService) GetAllSprintsWithOptions(ctx context.Context, boardID int
 func (s *BoardService) GetBoardConfiguration(ctx context.Context, boardID int) (*BoardConfiguration, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%d/configuration", boardID)
 
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 
 	if err != nil {
 		return nil, nil, err

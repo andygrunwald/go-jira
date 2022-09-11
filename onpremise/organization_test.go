@@ -12,7 +12,7 @@ func TestOrganizationService_GetAllOrganizations(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/servicedeskapi/organization")
 
 		w.WriteHeader(http.StatusOK)
@@ -36,7 +36,7 @@ func TestOrganizationService_CreateOrganization(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/servicedeskapi/organization")
 
 		o := new(OrganizationCreationDTO)
@@ -63,7 +63,7 @@ func TestOrganizationService_GetOrganization(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization/1", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/servicedeskapi/organization/1")
 
 		w.WriteHeader(http.StatusOK)
@@ -88,7 +88,7 @@ func TestOrganizationService_DeleteOrganization(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization/1", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "DELETE")
+		testMethod(t, r, http.MethodDelete)
 		testRequestURL(t, r, "/rest/servicedeskapi/organization/1")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -105,7 +105,7 @@ func TestOrganizationService_GetPropertiesKeys(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization/1/property", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/servicedeskapi/organization/1/property")
 
 		w.WriteHeader(http.StatusOK)
@@ -136,7 +136,7 @@ func TestOrganizationService_GetProperty(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization/1/property/organization.attributes", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/servicedeskapi/organization/1/property/organization.attributes")
 
 		w.WriteHeader(http.StatusOK)
@@ -167,7 +167,7 @@ func TestOrganizationService_SetProperty(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization/1/property/organization.attributes", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "PUT")
+		testMethod(t, r, http.MethodPut)
 		testRequestURL(t, r, "/rest/servicedeskapi/organization/1/property/organization.attributes")
 
 		w.WriteHeader(http.StatusOK)
@@ -185,7 +185,7 @@ func TestOrganizationService_DeleteProperty(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization/1/property/organization.attributes", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "DELETE")
+		testMethod(t, r, http.MethodDelete)
 		testRequestURL(t, r, "/rest/servicedeskapi/organization/1/property/organization.attributes")
 
 		w.WriteHeader(http.StatusOK)
@@ -203,7 +203,7 @@ func TestOrganizationService_GetUsers(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization/1/user", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/servicedeskapi/organization/1/user")
 
 		w.WriteHeader(http.StatusOK)
@@ -283,7 +283,7 @@ func TestOrganizationService_AddUsers(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization/1/user", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/servicedeskapi/organization/1/user")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -306,7 +306,7 @@ func TestOrganizationService_RemoveUsers(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization/1/user", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "DELETE")
+		testMethod(t, r, http.MethodDelete)
 		testRequestURL(t, r, "/rest/servicedeskapi/organization/1/user")
 
 		w.WriteHeader(http.StatusNoContent)

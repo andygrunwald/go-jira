@@ -165,7 +165,7 @@ func TestClient_NewRequest(t *testing.T) {
 
 	inURL, outURL := "rest/api/2/issue/", testJiraInstanceURL+"rest/api/2/issue/"
 	inBody, outBody := &Issue{Key: "MESOS"}, `{"key":"MESOS"}`+"\n"
-	req, _ := c.NewRequest(context.Background(), "GET", inURL, inBody)
+	req, _ := c.NewRequest(context.Background(), http.MethodGet, inURL, inBody)
 
 	// Test that relative URL was expanded
 	if got, want := req.URL.String(), outURL; got != want {
@@ -189,7 +189,7 @@ func TestClient_NewRawRequest(t *testing.T) {
 
 	outBody := `{"key":"MESOS"}` + "\n"
 	inBody := outBody
-	req, _ := c.NewRawRequest(context.Background(), "GET", inURL, strings.NewReader(outBody))
+	req, _ := c.NewRawRequest(context.Background(), http.MethodGet, inURL, strings.NewReader(outBody))
 
 	// Test that relative URL was expanded
 	if got, want := req.URL.String(), outURL; got != want {
@@ -217,7 +217,7 @@ func TestClient_NewRequest_BadURL(t *testing.T) {
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
-	_, err = c.NewRequest(context.Background(), "GET", ":", nil)
+	_, err = c.NewRequest(context.Background(), http.MethodGet, ":", nil)
 	testURLParseError(t, err)
 }
 
@@ -233,7 +233,7 @@ func TestClient_NewRequest_SessionCookies(t *testing.T) {
 
 	inURL := "rest/api/2/issue/"
 	inBody := &Issue{Key: "MESOS"}
-	req, err := c.NewRequest(context.Background(), "GET", inURL, inBody)
+	req, err := c.NewRequest(context.Background(), http.MethodGet, inURL, inBody)
 
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
@@ -260,7 +260,7 @@ func TestClient_NewRequest_BasicAuth(t *testing.T) {
 
 	inURL := "rest/api/2/issue/"
 	inBody := &Issue{Key: "MESOS"}
-	req, err := c.NewRequest(context.Background(), "GET", inURL, inBody)
+	req, err := c.NewRequest(context.Background(), http.MethodGet, inURL, inBody)
 
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
@@ -281,7 +281,7 @@ func TestClient_NewRequest_EmptyBody(t *testing.T) {
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
-	req, err := c.NewRequest(context.Background(), "GET", "/", nil)
+	req, err := c.NewRequest(context.Background(), http.MethodGet, "/", nil)
 	if err != nil {
 		t.Fatalf("NewRequest returned unexpected error: %v", err)
 	}
@@ -302,7 +302,7 @@ func TestClient_NewMultiPartRequest(t *testing.T) {
 
 	inURL := "rest/api/2/issue/"
 	inBuf := bytes.NewBufferString("teststring")
-	req, err := c.NewMultiPartRequest(context.Background(), "GET", inURL, inBuf)
+	req, err := c.NewMultiPartRequest(context.Background(), http.MethodGet, inURL, inBuf)
 
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
@@ -333,7 +333,7 @@ func TestClient_NewMultiPartRequest_BasicAuth(t *testing.T) {
 
 	inURL := "rest/api/2/issue/"
 	inBuf := bytes.NewBufferString("teststring")
-	req, err := c.NewMultiPartRequest(context.Background(), "GET", inURL, inBuf)
+	req, err := c.NewMultiPartRequest(context.Background(), http.MethodGet, inURL, inBuf)
 
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
@@ -358,13 +358,13 @@ func TestClient_Do(t *testing.T) {
 	}
 
 	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if m := "GET"; m != r.Method {
+		if m := http.MethodGet; m != r.Method {
 			t.Errorf("Request method = %v, want %v", r.Method, m)
 		}
 		fmt.Fprint(w, `{"A":"a"}`)
 	})
 
-	req, _ := testClient.NewRequest(context.Background(), "GET", "/", nil)
+	req, _ := testClient.NewRequest(context.Background(), http.MethodGet, "/", nil)
 	body := new(foo)
 	testClient.Do(req, body)
 
@@ -379,13 +379,13 @@ func TestClient_Do_HTTPResponse(t *testing.T) {
 	defer teardown()
 
 	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if m := "GET"; m != r.Method {
+		if m := http.MethodGet; m != r.Method {
 			t.Errorf("Request method = %v, want %v", r.Method, m)
 		}
 		fmt.Fprint(w, `{"A":"a"}`)
 	})
 
-	req, _ := testClient.NewRequest(context.Background(), "GET", "/", nil)
+	req, _ := testClient.NewRequest(context.Background(), http.MethodGet, "/", nil)
 	res, _ := testClient.Do(req, nil)
 	_, err := io.ReadAll(res.Body)
 
@@ -404,7 +404,7 @@ func TestClient_Do_HTTPError(t *testing.T) {
 		http.Error(w, "Bad Request", 400)
 	})
 
-	req, _ := testClient.NewRequest(context.Background(), "GET", "/", nil)
+	req, _ := testClient.NewRequest(context.Background(), http.MethodGet, "/", nil)
 	_, err := testClient.Do(req, nil)
 
 	if err == nil {
@@ -422,7 +422,7 @@ func TestClient_Do_RedirectLoop(t *testing.T) {
 		http.Redirect(w, r, "/", http.StatusFound)
 	})
 
-	req, _ := testClient.NewRequest(context.Background(), "GET", "/", nil)
+	req, _ := testClient.NewRequest(context.Background(), http.MethodGet, "/", nil)
 	_, err := testClient.Do(req, nil)
 
 	if err == nil {

@@ -11,7 +11,7 @@ func TestVersionService_Get_Success(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/version/10002", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/api/2/version/10002")
 
 		fmt.Fprint(w, `{
@@ -42,7 +42,7 @@ func TestVersionService_Create(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/version", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/api/2/version")
 
 		w.WriteHeader(http.StatusCreated)
@@ -82,7 +82,7 @@ func TestServiceService_Update(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/version/10002", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "PUT")
+		testMethod(t, r, http.MethodPut)
 		testRequestURL(t, r, "/rest/api/2/version/10002")
 		fmt.Fprint(w, `{
 			"description": "An excellent updated version",

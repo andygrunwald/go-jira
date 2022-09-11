@@ -3,6 +3,7 @@ package cloud
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/google/go-querystring/query"
 )
@@ -32,7 +33,7 @@ func (s *SprintService) MoveIssuesToSprint(ctx context.Context, sprintID int, is
 
 	payload := IssuesWrapper{Issues: issueIDs}
 
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, payload)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, payload)
 
 	if err != nil {
 		return nil, err
@@ -53,7 +54,7 @@ func (s *SprintService) MoveIssuesToSprint(ctx context.Context, sprintID int, is
 func (s *SprintService) GetIssuesForSprint(ctx context.Context, sprintID int) ([]Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/sprint/%d/issue", sprintID)
 
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -81,7 +82,7 @@ func (s *SprintService) GetIssuesForSprint(ctx context.Context, sprintID int) ([
 func (s *SprintService) GetIssue(ctx context.Context, issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/issue/%s", issueID)
 
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 
 	if err != nil {
 		return nil, nil, err

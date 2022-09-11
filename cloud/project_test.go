@@ -18,7 +18,7 @@ func TestProjectService_GetList(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEdpoint)
 		fmt.Fprint(w, string(raw))
 	})
@@ -42,7 +42,7 @@ func TestProjectService_ListWithOptions(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/api/2/project?expand=issueTypes")
 		fmt.Fprint(w, string(raw))
 	})
@@ -66,7 +66,7 @@ func TestProjectService_Get(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEdpoint)
 		fmt.Fprint(w, string(raw))
 	})
@@ -90,7 +90,7 @@ func TestProjectService_Get_NoProject(t *testing.T) {
 	testAPIEdpoint := "/rest/api/2/project/99999999"
 
 	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEdpoint)
 		fmt.Fprint(w, nil)
 	})
@@ -114,7 +114,7 @@ func TestProjectService_GetPermissionScheme_Failure(t *testing.T) {
 	testAPIEdpoint := "/rest/api/2/project/99999999/permissionscheme"
 
 	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEdpoint)
 		fmt.Fprint(w, nil)
 	})
@@ -138,7 +138,7 @@ func TestProjectService_GetPermissionScheme_Success(t *testing.T) {
 	testAPIEdpoint := "/rest/api/2/project/99999999/permissionscheme"
 
 	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEdpoint)
 		fmt.Fprint(w, `{
 			"expand": "permissions,user,group,projectRole,field,all",

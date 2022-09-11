@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/http"
 
 	"github.com/google/go-querystring/query"
 )
@@ -27,7 +28,7 @@ func (s *ServiceDeskService) GetOrganizations(ctx context.Context, serviceDeskID
 		apiEndPoint += fmt.Sprintf("&accountId=%s", accountID)
 	}
 
-	req, err := s.client.NewRequest(ctx, "GET", apiEndPoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
 	req.Header.Set("Accept", "application/json")
 
 	if err != nil {
@@ -58,7 +59,7 @@ func (s *ServiceDeskService) AddOrganization(ctx context.Context, serviceDeskID 
 		OrganizationID: organizationID,
 	}
 
-	req, err := s.client.NewRequest(ctx, "POST", apiEndPoint, organization)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndPoint, organization)
 
 	if err != nil {
 		return nil, err
@@ -87,7 +88,7 @@ func (s *ServiceDeskService) RemoveOrganization(ctx context.Context, serviceDesk
 		OrganizationID: organizationID,
 	}
 
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndPoint, organization)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndPoint, organization)
 
 	if err != nil {
 		return nil, err
@@ -113,7 +114,7 @@ func (s *ServiceDeskService) AddCustomers(ctx context.Context, serviceDeskID int
 	}{
 		AccountIDs: acountIDs,
 	}
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, payload)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, payload)
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +141,7 @@ func (s *ServiceDeskService) RemoveCustomers(ctx context.Context, serviceDeskID 
 	}{
 		AccountIDs: acountIDs,
 	}
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, payload)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, payload)
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (s *ServiceDeskService) RemoveCustomers(ctx context.Context, serviceDeskID 
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-customer-get
 func (s *ServiceDeskService) ListCustomers(ctx context.Context, serviceDeskID interface{}, options *CustomerListOptions) (*CustomerList, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%v/customer", serviceDeskID)
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}

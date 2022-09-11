@@ -1,6 +1,9 @@
 package cloud
 
-import "context"
+import (
+	"context"
+	"net/http"
+)
 
 // PriorityService handles priorities for the Jira instance / API.
 //
@@ -23,7 +26,7 @@ type Priority struct {
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-priority-get
 func (s *PriorityService) GetList(ctx context.Context) ([]Priority, *Response, error) {
 	apiEndpoint := "rest/api/2/priority"
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}

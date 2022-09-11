@@ -3,6 +3,7 @@ package cloud
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/google/go-querystring/query"
 )
@@ -123,7 +124,7 @@ func (fs *FilterService) GetList(ctx context.Context) ([]*Filter, *Response, err
 
 	options := &GetQueryOptions{}
 	apiEndpoint := "rest/api/2/filter"
-	req, err := fs.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := fs.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -146,7 +147,7 @@ func (fs *FilterService) GetList(ctx context.Context) ([]*Filter, *Response, err
 // GetFavouriteList retrieves the user's favourited filters from Jira
 func (fs *FilterService) GetFavouriteList(ctx context.Context) ([]*Filter, *Response, error) {
 	apiEndpoint := "rest/api/2/filter/favourite"
-	req, err := fs.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := fs.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -162,7 +163,7 @@ func (fs *FilterService) GetFavouriteList(ctx context.Context) ([]*Filter, *Resp
 // Get retrieves a single Filter from Jira
 func (fs *FilterService) Get(ctx context.Context, filterID int) (*Filter, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/filter/%d", filterID)
-	req, err := fs.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := fs.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -185,7 +186,7 @@ func (fs *FilterService) GetMyFilters(ctx context.Context, opts *GetMyFiltersQue
 	if err != nil {
 		return nil, nil, err
 	}
-	req, err := fs.client.NewRequest(ctx, "GET", url, nil)
+	req, err := fs.client.NewRequest(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -208,7 +209,7 @@ func (fs *FilterService) Search(ctx context.Context, opt *FilterSearchOptions) (
 	if err != nil {
 		return nil, nil, err
 	}
-	req, err := fs.client.NewRequest(ctx, "GET", url, nil)
+	req, err := fs.client.NewRequest(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, nil, err
 	}

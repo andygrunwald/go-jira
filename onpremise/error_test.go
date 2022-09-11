@@ -18,7 +18,7 @@ func TestError_NewJiraError(t *testing.T) {
 		fmt.Fprint(w, `{"errorMessages":["Issue does not exist or you do not have permission to see it."],"errors":{}}`)
 	})
 
-	req, _ := testClient.NewRequest(context.Background(), "GET", "/", nil)
+	req, _ := testClient.NewRequest(context.Background(), http.MethodGet, "/", nil)
 	resp, _ := testClient.Do(req, nil)
 
 	err := NewJiraError(resp, errors.New("Original http error"))
@@ -52,7 +52,7 @@ func TestError_NoJSON(t *testing.T) {
 		fmt.Fprint(w, `Original message body`)
 	})
 
-	req, _ := testClient.NewRequest(context.Background(), "GET", "/", nil)
+	req, _ := testClient.NewRequest(context.Background(), http.MethodGet, "/", nil)
 	resp, _ := testClient.Do(req, nil)
 
 	err := NewJiraError(resp, errors.New("Original http error"))
@@ -72,7 +72,7 @@ func TestError_Unauthorized_NilError(t *testing.T) {
 		fmt.Fprint(w, `User is not authorized`)
 	})
 
-	req, _ := testClient.NewRequest(context.Background(), "GET", "/", nil)
+	req, _ := testClient.NewRequest(context.Background(), http.MethodGet, "/", nil)
 	resp, _ := testClient.Do(req, nil)
 
 	err := NewJiraError(resp, nil)
@@ -91,7 +91,7 @@ func TestError_BadJSON(t *testing.T) {
 		fmt.Fprint(w, `<html>Not JSON</html>`)
 	})
 
-	req, _ := testClient.NewRequest(context.Background(), "GET", "/", nil)
+	req, _ := testClient.NewRequest(context.Background(), http.MethodGet, "/", nil)
 	resp, _ := testClient.Do(req, nil)
 
 	err := NewJiraError(resp, errors.New("Original http error"))
