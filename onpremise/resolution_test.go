@@ -1,6 +1,7 @@
 package onpremise
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -22,7 +23,7 @@ func TestResolutionService_GetList(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	resolution, _, err := testClient.Resolution.GetList()
+	resolution, _, err := testClient.Resolution.GetList(context.Background())
 	if resolution == nil {
 		t.Error("Expected resolution list. Resolution list is nil")
 	}
