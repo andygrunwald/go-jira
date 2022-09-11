@@ -1,6 +1,7 @@
 package cloud
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"testing"
@@ -14,7 +15,7 @@ func TestGroupService_Get(t *testing.T) {
 		testRequestURL(t, r, "/rest/api/2/group/member?groupname=default")
 		fmt.Fprint(w, `{"self":"http://www.example.com/jira/rest/api/2/group/member?includeInactiveUsers=false&maxResults=50&groupname=default&startAt=0","maxResults":50,"startAt":0,"total":2,"isLast":true,"values":[{"self":"http://www.example.com/jira/rest/api/2/user?username=michael","name":"michael","key":"michael","emailAddress":"michael@example.com","displayName":"MichaelScofield","active":true,"timeZone":"Australia/Sydney"},{"self":"http://www.example.com/jira/rest/api/2/user?username=alex","name":"alex","key":"alex","emailAddress":"alex@example.com","displayName":"AlexanderMahone","active":true,"timeZone":"Australia/Sydney"}]}`)
 	})
-	if members, _, err := testClient.Group.Get("default"); err != nil {
+	if members, _, err := testClient.Group.Get(context.Background(), "default"); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if members == nil {
 		t.Error("Expected members. Group.Members is nil")
@@ -36,7 +37,7 @@ func TestGroupService_GetPage(t *testing.T) {
 			t.Errorf("startAt %s", startAt)
 		}
 	})
-	if page, resp, err := testClient.Group.GetWithOptions("default", &GroupSearchOptions{
+	if page, resp, err := testClient.Group.GetWithOptions(context.Background(), "default", &GroupSearchOptions{
 		StartAt:              0,
 		MaxResults:           2,
 		IncludeInactiveUsers: false,
@@ -54,7 +55,7 @@ func TestGroupService_GetPage(t *testing.T) {
 		if resp.Total != 4 {
 			t.Errorf("Expect Result Total to be 4, but is %d", resp.Total)
 		}
-		if page, resp, err := testClient.Group.GetWithOptions("default", &GroupSearchOptions{
+		if page, resp, err := testClient.Group.GetWithOptions(context.Background(), "default", &GroupSearchOptions{
 			StartAt:              2,
 			MaxResults:           2,
 			IncludeInactiveUsers: false,
@@ -87,7 +88,7 @@ func TestGroupService_Add(t *testing.T) {
 		fmt.Fprint(w, `{"name":"default","self":"http://www.example.com/jira/rest/api/2/group?groupname=default","users":{"size":1,"items":[],"max-results":50,"start-index":0,"end-index":0},"expand":"users"}`)
 	})
 
-	if group, _, err := testClient.Group.Add("default", "theodore"); err != nil {
+	if group, _, err := testClient.Group.Add(context.Background(), "default", "theodore"); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if group == nil {
 		t.Error("Expected group. Group is nil")
@@ -105,7 +106,7 @@ func TestGroupService_Remove(t *testing.T) {
 		fmt.Fprint(w, `{"name":"default","self":"http://www.example.com/jira/rest/api/2/group?groupname=default","users":{"size":1,"items":[],"max-results":50,"start-index":0,"end-index":0},"expand":"users"}`)
 	})
 
-	if _, err := testClient.Group.Remove("default", "theodore"); err != nil {
+	if _, err := testClient.Group.Remove(context.Background(), "default", "theodore"); err != nil {
 		t.Errorf("Error given: %s", err)
 	}
 }
