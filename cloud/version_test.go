@@ -1,6 +1,7 @@
 package cloud
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"testing"
@@ -28,7 +29,7 @@ func TestVersionService_Get_Success(t *testing.T) {
 		}`)
 	})
 
-	version, _, err := testClient.Version.Get(10002)
+	version, _, err := testClient.Version.Get(context.Background(), 10002)
 	if version == nil {
 		t.Error("Expected version. Issue is nil")
 	}
@@ -68,7 +69,7 @@ func TestVersionService_Create(t *testing.T) {
 		StartDate:       "2018-07-01",
 	}
 
-	version, _, err := testClient.Version.Create(v)
+	version, _, err := testClient.Version.Create(context.Background(), v)
 	if version == nil {
 		t.Error("Expected version. Version is nil")
 	}
@@ -102,7 +103,7 @@ func TestServiceService_Update(t *testing.T) {
 		Description: "An excellent updated version",
 	}
 
-	version, _, err := testClient.Version.Update(v)
+	version, _, err := testClient.Version.Update(context.Background(), v)
 	if version == nil {
 		t.Error("Expected version. Version is nil")
 	}

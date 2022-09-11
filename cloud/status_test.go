@@ -1,6 +1,7 @@
 package cloud
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -23,7 +24,7 @@ func TestStatusService_GetAllStatuses(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	statusList, _, err := testClient.Status.GetAllStatuses()
+	statusList, _, err := testClient.Status.GetAllStatuses(context.Background())
 
 	if statusList == nil {
 		t.Error("Expected statusList. statusList is nill")

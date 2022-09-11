@@ -1,6 +1,7 @@
 package cloud
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"testing"
@@ -22,7 +23,7 @@ func TestUserService_Get_Success(t *testing.T) {
         }]},"applicationRoles":{"size":1,"items":[]},"expand":"groups,applicationRoles"}`)
 	})
 
-	if user, _, err := testClient.User.Get("000000000000000000000000"); err != nil {
+	if user, _, err := testClient.User.Get(context.Background(), "000000000000000000000000"); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if user == nil {
 		t.Error("Expected user. User is nil")
@@ -45,7 +46,7 @@ func TestUserService_GetByAccountID_Success(t *testing.T) {
         }]},"applicationRoles":{"size":1,"items":[]},"expand":"groups,applicationRoles"}`)
 	})
 
-	if user, _, err := testClient.User.GetByAccountID("000000000000000000000000"); err != nil {
+	if user, _, err := testClient.User.GetByAccountID(context.Background(), "000000000000000000000000"); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if user == nil {
 		t.Error("Expected user. User is nil")
@@ -72,7 +73,7 @@ func TestUserService_Create(t *testing.T) {
 		ApplicationKeys: []string{"jira-core"},
 	}
 
-	if user, _, err := testClient.User.Create(u); err != nil {
+	if user, _, err := testClient.User.Create(context.Background(), u); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if user == nil {
 		t.Error("Expected user. User is nil")
@@ -89,7 +90,7 @@ func TestUserService_Delete(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	resp, err := testClient.User.Delete("000000000000000000000000")
+	resp, err := testClient.User.Delete(context.Background(), "000000000000000000000000")
 	if err != nil {
 		t.Errorf("Error given: %s", err)
 	}
@@ -110,7 +111,7 @@ func TestUserService_GetGroups(t *testing.T) {
 		fmt.Fprint(w, `[{"name":"jira-software-users","self":"http://www.example.com/jira/rest/api/2/user?accountId=000000000000000000000000"}]`)
 	})
 
-	if groups, _, err := testClient.User.GetGroups("000000000000000000000000"); err != nil {
+	if groups, _, err := testClient.User.GetGroups(context.Background(), "000000000000000000000000"); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if groups == nil {
 		t.Error("Expected user groups. []UserGroup is nil")
@@ -134,7 +135,7 @@ func TestUserService_GetSelf(t *testing.T) {
         }]},"applicationRoles":{"size":1,"items":[]},"expand":"groups,applicationRoles"}`)
 	})
 
-	if user, _, err := testClient.User.GetSelf(); err != nil {
+	if user, _, err := testClient.User.GetSelf(context.Background()); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if user == nil {
 		t.Error("Expected user groups. []UserGroup is nil")
@@ -161,7 +162,7 @@ func TestUserService_Find_Success(t *testing.T) {
         }]},"applicationRoles":{"size":1,"items":[]},"expand":"groups,applicationRoles"}]`)
 	})
 
-	if user, _, err := testClient.User.Find("fred@example.com"); err != nil {
+	if user, _, err := testClient.User.Find(context.Background(), "fred@example.com"); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if user == nil {
 		t.Error("Expected user. User is nil")
@@ -184,7 +185,7 @@ func TestUserService_Find_SuccessParams(t *testing.T) {
         }]},"applicationRoles":{"size":1,"items":[]},"expand":"groups,applicationRoles"}]`)
 	})
 
-	if user, _, err := testClient.User.Find("fred@example.com", WithStartAt(100), WithMaxResults(1000)); err != nil {
+	if user, _, err := testClient.User.Find(context.Background(), "fred@example.com", WithStartAt(100), WithMaxResults(1000)); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if user == nil {
 		t.Error("Expected user. User is nil")

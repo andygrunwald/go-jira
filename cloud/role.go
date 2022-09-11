@@ -34,10 +34,10 @@ type ActorUser struct {
 	AccountID string `json:"accountId" structs:"accountId"`
 }
 
-// GetListWithContext returns a list of all available project roles
+// GetList returns a list of all available project roles
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-role-get
-func (s *RoleService) GetListWithContext(ctx context.Context) (*[]Role, *Response, error) {
+func (s *RoleService) GetList(ctx context.Context) (*[]Role, *Response, error) {
 	apiEndpoint := "rest/api/3/role"
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -52,15 +52,10 @@ func (s *RoleService) GetListWithContext(ctx context.Context) (*[]Role, *Respons
 	return roles, resp, err
 }
 
-// GetList wraps GetListWithContext using the background context.
-func (s *RoleService) GetList() (*[]Role, *Response, error) {
-	return s.GetListWithContext(context.Background())
-}
-
-// GetWithContext retreives a single Role from Jira
+// Get retreives a single Role from Jira
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-role-id-get
-func (s *RoleService) GetWithContext(ctx context.Context, roleID int) (*Role, *Response, error) {
+func (s *RoleService) Get(ctx context.Context, roleID int) (*Role, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/3/role/%d", roleID)
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -77,9 +72,4 @@ func (s *RoleService) GetWithContext(ctx context.Context, roleID int) (*Role, *R
 	}
 
 	return role, resp, err
-}
-
-// Get wraps GetWithContext using the background context.
-func (s *RoleService) Get(roleID int) (*Role, *Response, error) {
-	return s.GetWithContext(context.Background(), roleID)
 }

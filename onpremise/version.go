@@ -26,10 +26,10 @@ type Version struct {
 	StartDate       string `json:"startDate,omitempty" structs:"startDate,omitempty"`
 }
 
-// GetWithContext gets version info from Jira
+// Get gets version info from Jira
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-version-id-get
-func (s *VersionService) GetWithContext(ctx context.Context, versionID int) (*Version, *Response, error) {
+func (s *VersionService) Get(ctx context.Context, versionID int) (*Version, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/version/%v", versionID)
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -44,15 +44,10 @@ func (s *VersionService) GetWithContext(ctx context.Context, versionID int) (*Ve
 	return version, resp, nil
 }
 
-// Get wraps GetWithContext using the background context.
-func (s *VersionService) Get(versionID int) (*Version, *Response, error) {
-	return s.GetWithContext(context.Background(), versionID)
-}
-
-// CreateWithContext creates a version in Jira.
+// Create creates a version in Jira.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-version-post
-func (s *VersionService) CreateWithContext(ctx context.Context, version *Version) (*Version, *Response, error) {
+func (s *VersionService) Create(ctx context.Context, version *Version) (*Version, *Response, error) {
 	apiEndpoint := "/rest/api/2/version"
 	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, version)
 	if err != nil {
@@ -79,16 +74,11 @@ func (s *VersionService) CreateWithContext(ctx context.Context, version *Version
 	return responseVersion, resp, nil
 }
 
-// Create wraps CreateWithContext using the background context.
-func (s *VersionService) Create(version *Version) (*Version, *Response, error) {
-	return s.CreateWithContext(context.Background(), version)
-}
-
-// UpdateWithContext updates a version from a JSON representation.
+// Update updates a version from a JSON representation.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-version-id-put
 // Caller must close resp.Body
-func (s *VersionService) UpdateWithContext(ctx context.Context, version *Version) (*Version, *Response, error) {
+func (s *VersionService) Update(ctx context.Context, version *Version) (*Version, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/version/%v", version.ID)
 	req, err := s.client.NewRequest(ctx, "PUT", apiEndpoint, version)
 	if err != nil {
@@ -104,10 +94,4 @@ func (s *VersionService) UpdateWithContext(ctx context.Context, version *Version
 	// Returning the same pointer here is pointless, so we return a copy instead.
 	ret := *version
 	return &ret, resp, nil
-}
-
-// Update wraps UpdateWithContext using the background context.
-// Caller must close resp.Body
-func (s *VersionService) Update(version *Version) (*Version, *Response, error) {
-	return s.UpdateWithContext(context.Background(), version)
 }
