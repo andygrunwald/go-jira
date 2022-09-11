@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -54,7 +55,7 @@ func main() {
 		},
 	}
 
-	issue, _, err := client.Issue.Create(&i)
+	issue, _, err := client.Issue.Create(context.Background(), &i)
 	if err != nil {
 		panic(err)
 	}

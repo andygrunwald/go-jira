@@ -1,6 +1,7 @@
 package onpremise
 
 import (
+	"context"
 	"net/http"
 	"strings"
 	"testing"
@@ -27,5 +28,5 @@ func TestJWTAuthTransport_HeaderContainsJWT(t *testing.T) {
 	})
 
 	jwtClient, _ := NewClient(testServer.URL, jwtTransport.Client())
-	jwtClient.Issue.Get("TEST-1", nil)
+	jwtClient.Issue.Get(context.Background(), "TEST-1", nil)
 }

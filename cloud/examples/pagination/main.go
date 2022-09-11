@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	jira "github.com/andygrunwald/go-jira/cloud"
@@ -19,7 +20,7 @@ func GetAllIssues(client *jira.Client, searchString string) ([]jira.Issue, error
 			StartAt:    last,
 		}
 
-		chunk, resp, err := client.Issue.Search(searchString, opt)
+		chunk, resp, err := client.Issue.Search(context.Background(), searchString, opt)
 		if err != nil {
 			return nil, err
 		}

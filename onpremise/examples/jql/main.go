@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	jira "github.com/andygrunwald/go-jira/onpremise"
@@ -13,7 +14,7 @@ func main() {
 
 	jql := "project = Mesos and type = Bug and Status NOT IN (Resolved)"
 	fmt.Printf("Usecase: Running a JQL query '%s'\n", jql)
-	issues, resp, err := jiraClient.Issue.Search(jql, nil)
+	issues, resp, err := jiraClient.Issue.Search(context.Background(), jql, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -25,7 +26,7 @@ func main() {
 	// Running an empty JQL query to get all tickets
 	jql = ""
 	fmt.Printf("Usecase: Running an empty JQL query to get all tickets\n")
-	issues, resp, err = jiraClient.Issue.Search(jql, nil)
+	issues, resp, err = jiraClient.Issue.Search(context.Background(), jql, nil)
 	if err != nil {
 		panic(err)
 	}

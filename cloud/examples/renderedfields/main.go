@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -52,7 +53,7 @@ func main() {
 	fmt.Printf("Targeting %s for issue %s\n", strings.TrimSpace(jiraURL), key)
 
 	options := &jira.GetQueryOptions{Expand: "renderedFields"}
-	u, _, err := client.Issue.Get(key, options)
+	u, _, err := client.Issue.Get(context.Background(), key, options)
 
 	if err != nil {
 		fmt.Printf("\n==> error: %v\n", err)
