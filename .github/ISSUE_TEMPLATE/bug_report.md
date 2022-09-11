@@ -7,28 +7,20 @@ assignees: ''
 
 ---
 
-## Describe the bug
+## What happened?
 
-A clear and concise description of what the bug is.
+Please provide as much info as possible.
+Not doing so may result in your bug not being addressed in a timely manner.
 
-Formatting tips: GitHub supports Markdown: https://guides.github.com/features/mastering-markdown/
+## What did you expect to happen?
 
-## To Reproduce
 
-Provide a link to a live example, or an unambiguous set of steps to reproduce this bug. Include configuration, logs, etc. to reproduce, if relevant.
+## How can we reproduce it (as minimally and precisely as possible)?
 
-1.
-2.
-3.
-4.
+Minimal code helps us to identify the problem faster.
 
-## Expected behavior
+## Anything else we need to know?
 
-A clear and concise description of what you expected to happen.
-
-## Possible Solution
-
-Not obligatory, but suggest a fix/reason for the bug, or ideas how to implement: the addition or change.
 
 ## Your Environment
 
@@ -36,16 +28,5 @@ Include as many relevant details about the environment you experienced the probl
 
 * go-jira version (git tag or sha):
 * Go version (`go version`):
-* Jira version:
 * Jira type (cloud or on-premise):
-* Involved Jira plugins:
-* Operating System and version:
-
-## Additional context
-
-Add any other context about the problem here.
-
-How has this issue affected you? What are you trying to accomplish?
-Providing context helps us come up with a solution that is most useful in the real world.
-
-
+* Jira version / Api version:
