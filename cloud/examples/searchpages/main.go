@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	jira "github.com/andygrunwald/go-jira/cloud"
+	jira "github.com/andygrunwald/go-jira/cloud/v2"
 	"golang.org/x/term"
 )
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	jira "github.com/andygrunwald/go-jira/cloud"
+	jira "github.com/andygrunwald/go-jira/cloud/v2"
 )
 
 func main() {
