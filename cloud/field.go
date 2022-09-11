@@ -29,10 +29,10 @@ type FieldSchema struct {
 	CustomID int64  `json:"customId,omitempty" structs:"customId,omitempty"`
 }
 
-// GetListWithContext gets all fields from Jira
+// GetList gets all fields from Jira
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-field-get
-func (s *FieldService) GetListWithContext(ctx context.Context) ([]Field, *Response, error) {
+func (s *FieldService) GetList(ctx context.Context) ([]Field, *Response, error) {
 	apiEndpoint := "rest/api/2/field"
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -45,9 +45,4 @@ func (s *FieldService) GetListWithContext(ctx context.Context) ([]Field, *Respon
 		return nil, resp, NewJiraError(resp, err)
 	}
 	return fieldList, resp, nil
-}
-
-// GetList wraps GetListWithContext using the background context.
-func (s *FieldService) GetList() ([]Field, *Response, error) {
-	return s.GetListWithContext(context.Background())
 }

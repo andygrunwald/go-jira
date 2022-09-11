@@ -1,6 +1,7 @@
 package cloud
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"reflect"
@@ -126,7 +127,7 @@ func TestRequestService_Create(t *testing.T) {
 		},
 	}
 
-	_, _, err := testClient.Request.Create(wantRequester, wantParticipants, request)
+	_, _, err := testClient.Request.Create(context.Background(), wantRequester, wantParticipants, request)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -192,7 +193,7 @@ func TestRequestService_CreateComment(t *testing.T) {
 		Public: true,
 	}
 
-	_, _, err := testClient.Request.CreateComment("HELPDESK-1", comment)
+	_, _, err := testClient.Request.CreateComment(context.Background(), "HELPDESK-1", comment)
 	if err != nil {
 		t.Fatal(err)
 	}

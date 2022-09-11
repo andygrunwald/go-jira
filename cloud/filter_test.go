@@ -1,6 +1,7 @@
 package cloud
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -21,7 +22,7 @@ func TestFilterService_GetList(t *testing.T) {
 		fmt.Fprint(writer, string(raw))
 	})
 
-	filters, _, err := testClient.Filter.GetList()
+	filters, _, err := testClient.Filter.GetList(context.Background())
 	if filters == nil {
 		t.Error("Expected Filters list. Filters list is nil")
 	}
@@ -44,7 +45,7 @@ func TestFilterService_Get(t *testing.T) {
 		fmt.Fprint(writer, string(raw))
 	})
 
-	filter, _, err := testClient.Filter.Get(10000)
+	filter, _, err := testClient.Filter.Get(context.Background(), 10000)
 	if filter == nil {
 		t.Errorf("Expected Filter, got nil")
 	}
@@ -68,7 +69,7 @@ func TestFilterService_GetFavouriteList(t *testing.T) {
 		fmt.Fprint(writer, string(raw))
 	})
 
-	filters, _, err := testClient.Filter.GetFavouriteList()
+	filters, _, err := testClient.Filter.GetFavouriteList(context.Background())
 	if filters == nil {
 		t.Error("Expected Filters list. Filters list is nil")
 	}
@@ -92,7 +93,7 @@ func TestFilterService_GetMyFilters(t *testing.T) {
 	})
 
 	opts := GetMyFiltersQueryOptions{}
-	filters, _, err := testClient.Filter.GetMyFilters(&opts)
+	filters, _, err := testClient.Filter.GetMyFilters(context.Background(), &opts)
 	if err != nil {
 		t.Errorf("Error given: %s", err)
 	}
@@ -116,7 +117,7 @@ func TestFilterService_Search(t *testing.T) {
 	})
 
 	opt := FilterSearchOptions{}
-	filters, _, err := testClient.Filter.Search(&opt)
+	filters, _, err := testClient.Filter.Search(context.Background(), &opt)
 	if err != nil {
 		t.Errorf("Error given: %s", err)
 	}

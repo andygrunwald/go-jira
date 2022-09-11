@@ -27,10 +27,10 @@ type Holder struct {
 	Expand    string `json:"expand" structs:"expand"`
 }
 
-// GetListWithContext returns a list of all permission schemes
+// GetList returns a list of all permission schemes
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-permissionscheme-get
-func (s *PermissionSchemeService) GetListWithContext(ctx context.Context) (*PermissionSchemes, *Response, error) {
+func (s *PermissionSchemeService) GetList(ctx context.Context) (*PermissionSchemes, *Response, error) {
 	apiEndpoint := "/rest/api/3/permissionscheme"
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -47,15 +47,10 @@ func (s *PermissionSchemeService) GetListWithContext(ctx context.Context) (*Perm
 	return pss, resp, nil
 }
 
-// GetList wraps GetListWithContext using the background context.
-func (s *PermissionSchemeService) GetList() (*PermissionSchemes, *Response, error) {
-	return s.GetListWithContext(context.Background())
-}
-
-// GetWithContext returns a full representation of the permission scheme for the schemeID
+// Get returns a full representation of the permission scheme for the schemeID
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-permissionscheme-schemeId-get
-func (s *PermissionSchemeService) GetWithContext(ctx context.Context, schemeID int) (*PermissionScheme, *Response, error) {
+func (s *PermissionSchemeService) Get(ctx context.Context, schemeID int) (*PermissionScheme, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/3/permissionscheme/%d", schemeID)
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -73,9 +68,4 @@ func (s *PermissionSchemeService) GetWithContext(ctx context.Context, schemeID i
 	}
 
 	return ps, resp, nil
-}
-
-// Get wraps GetWithContext using the background context.
-func (s *PermissionSchemeService) Get(schemeID int) (*PermissionScheme, *Response, error) {
-	return s.GetWithContext(context.Background(), schemeID)
 }

@@ -1,6 +1,7 @@
 package onpremise
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -22,7 +23,7 @@ func TestPermissionSchemeService_GetList(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	permissionScheme, _, err := testClient.PermissionScheme.GetList()
+	permissionScheme, _, err := testClient.PermissionScheme.GetList(context.Background())
 	if err != nil {
 		t.Errorf("Error given: %v", err)
 	}
@@ -50,7 +51,7 @@ func TestPermissionSchemeService_GetList_NoList(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	permissionScheme, _, err := testClient.PermissionScheme.GetList()
+	permissionScheme, _, err := testClient.PermissionScheme.GetList(context.Background())
 	if permissionScheme != nil {
 		t.Errorf("Expected permissionScheme list has %d entries but should be nil", len(permissionScheme.PermissionSchemes))
 	}
@@ -73,7 +74,7 @@ func TestPermissionSchemeService_Get(t *testing.T) {
 		fmt.Fprint(writer, string(raw))
 	})
 
-	permissionScheme, _, err := testClient.PermissionScheme.Get(10100)
+	permissionScheme, _, err := testClient.PermissionScheme.Get(context.Background(), 10100)
 	if permissionScheme == nil {
 		t.Errorf("Expected permissionscheme, got nil")
 	}
@@ -96,7 +97,7 @@ func TestPermissionSchemeService_Get_NoScheme(t *testing.T) {
 		fmt.Fprint(writer, string(raw))
 	})
 
-	permissionScheme, _, err := testClient.PermissionScheme.Get(99999)
+	permissionScheme, _, err := testClient.PermissionScheme.Get(context.Background(), 99999)
 	if permissionScheme != nil {
 		t.Errorf("Expected nil, got permissionschme %v", permissionScheme)
 	}
