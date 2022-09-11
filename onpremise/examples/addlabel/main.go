@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -62,7 +63,7 @@ func main() {
 		},
 	}
 
-	resp, err := client.Issue.UpdateIssue(issueId, c)
+	resp, err := client.Issue.UpdateIssue(context.Background(), issueId, c)
 
 	if err != nil {
 		fmt.Println(err)
@@ -70,7 +71,7 @@ func main() {
 	body, _ := io.ReadAll(resp.Body)
 	fmt.Println(string(body))
 
-	issue, _, _ := client.Issue.Get(issueId, nil)
+	issue, _, _ := client.Issue.Get(context.Background(), issueId, nil)
 
 	fmt.Printf("Issue: %s:%s\n", issue.Key, issue.Fields.Summary)
 	fmt.Printf("\tLabels: %+v\n", issue.Fields.Labels)

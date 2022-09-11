@@ -1,13 +1,14 @@
 package onpremise
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"testing"
 )
 
-func TestOrganizationService_GetAllOrganizationsWithContext(t *testing.T) {
+func TestOrganizationService_GetAllOrganizations(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization", func(w http.ResponseWriter, r *http.Request) {
@@ -18,7 +19,7 @@ func TestOrganizationService_GetAllOrganizationsWithContext(t *testing.T) {
 		fmt.Fprint(w, `{ "_expands": [], "size": 1, "start": 1, "limit": 1, "isLastPage": false, "_links": { "base": "https://your-domain.atlassian.net/rest/servicedeskapi", "context": "context", "next": "https://your-domain.atlassian.net/rest/servicedeskapi/organization?start=2&limit=1", "prev": "https://your-domain.atlassian.net/rest/servicedeskapi/organization?start=0&limit=1" }, "values": [ { "id": "1", "name": "Charlie Cakes Franchises", "_links": { "self": "https://your-domain.atlassian.net/rest/servicedeskapi/organization/1" } } ] }`)
 	})
 
-	result, _, err := testClient.Organization.GetAllOrganizations(0, 50, "")
+	result, _, err := testClient.Organization.GetAllOrganizations(context.Background(), 0, 50, "")
 
 	if result == nil {
 		t.Error("Expected Organizations. Result is nil")
@@ -45,7 +46,7 @@ func TestOrganizationService_CreateOrganization(t *testing.T) {
 	})
 
 	name := "MyOrg"
-	o, _, err := testClient.Organization.CreateOrganization(name)
+	o, _, err := testClient.Organization.CreateOrganization(context.Background(), name)
 
 	if o == nil {
 		t.Error("Expected Organization. Result is nil")
@@ -70,7 +71,7 @@ func TestOrganizationService_GetOrganization(t *testing.T) {
 	})
 
 	id := 1
-	o, _, err := testClient.Organization.GetOrganization(id)
+	o, _, err := testClient.Organization.GetOrganization(context.Background(), id)
 
 	if err != nil {
 		t.Errorf("Error given: %s", err)
@@ -93,7 +94,7 @@ func TestOrganizationService_DeleteOrganization(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	_, err := testClient.Organization.DeleteOrganization(1)
+	_, err := testClient.Organization.DeleteOrganization(context.Background(), 1)
 
 	if err != nil {
 		t.Errorf("Error given: %s", err)
@@ -118,7 +119,7 @@ func TestOrganizationService_GetPropertiesKeys(t *testing.T) {
 		  }`)
 	})
 
-	pk, _, err := testClient.Organization.GetPropertiesKeys(1)
+	pk, _, err := testClient.Organization.GetPropertiesKeys(context.Background(), 1)
 
 	if err != nil {
 		t.Errorf("Error given: %s", err)
@@ -149,7 +150,7 @@ func TestOrganizationService_GetProperty(t *testing.T) {
 	})
 
 	key := "organization.attributes"
-	ep, _, err := testClient.Organization.GetProperty(1, key)
+	ep, _, err := testClient.Organization.GetProperty(context.Background(), 1, key)
 
 	if err != nil {
 		t.Errorf("Error given: %s", err)
@@ -173,7 +174,7 @@ func TestOrganizationService_SetProperty(t *testing.T) {
 	})
 
 	key := "organization.attributes"
-	_, err := testClient.Organization.SetProperty(1, key)
+	_, err := testClient.Organization.SetProperty(context.Background(), 1, key)
 
 	if err != nil {
 		t.Errorf("Error given: %s", err)
@@ -191,7 +192,7 @@ func TestOrganizationService_DeleteProperty(t *testing.T) {
 	})
 
 	key := "organization.attributes"
-	_, err := testClient.Organization.DeleteProperty(1, key)
+	_, err := testClient.Organization.DeleteProperty(context.Background(), 1, key)
 
 	if err != nil {
 		t.Errorf("Error given: %s", err)
@@ -261,7 +262,7 @@ func TestOrganizationService_GetUsers(t *testing.T) {
 		  }`)
 	})
 
-	users, _, err := testClient.Organization.GetUsers(1, 0, 50)
+	users, _, err := testClient.Organization.GetUsers(context.Background(), 1, 0, 50)
 
 	if err != nil {
 		t.Errorf("Error given: %s", err)
@@ -294,7 +295,7 @@ func TestOrganizationService_AddUsers(t *testing.T) {
 			"qm:a713c8ea-1075-4e30-9d96-891a7d181739:5ad6d3a01db05e2a66fa80bd",
 		},
 	}
-	_, err := testClient.Organization.AddUsers(1, users)
+	_, err := testClient.Organization.AddUsers(context.Background(), 1, users)
 
 	if err != nil {
 		t.Errorf("Error given: %s", err)
@@ -317,7 +318,7 @@ func TestOrganizationService_RemoveUsers(t *testing.T) {
 			"qm:a713c8ea-1075-4e30-9d96-891a7d181739:5ad6d3a01db05e2a66fa80bd",
 		},
 	}
-	_, err := testClient.Organization.RemoveUsers(1, users)
+	_, err := testClient.Organization.RemoveUsers(context.Background(), 1, users)
 
 	if err != nil {
 		t.Errorf("Error given: %s", err)

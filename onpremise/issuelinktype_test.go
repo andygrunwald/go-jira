@@ -1,6 +1,7 @@
 package onpremise
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -22,7 +23,7 @@ func TestIssueLinkTypeService_GetList(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	linkTypes, _, err := testClient.IssueLinkType.GetList()
+	linkTypes, _, err := testClient.IssueLinkType.GetList(context.Background())
 	if linkTypes == nil {
 		t.Error("Expected issueLinkType list. LinkTypes is nil")
 	}
@@ -42,7 +43,7 @@ func TestIssueLinkTypeService_Get(t *testing.T) {
 		"self": "https://www.example.com/jira/rest/api/2/issueLinkType/123"}`)
 	})
 
-	if linkType, _, err := testClient.IssueLinkType.Get("123"); err != nil {
+	if linkType, _, err := testClient.IssueLinkType.Get(context.Background(), "123"); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if linkType == nil {
 		t.Error("Expected linkType. LinkType is nil")
@@ -67,7 +68,7 @@ func TestIssueLinkTypeService_Create(t *testing.T) {
 		Outward: "causes",
 	}
 
-	if linkType, _, err := testClient.IssueLinkType.Create(lt); err != nil {
+	if linkType, _, err := testClient.IssueLinkType.Create(context.Background(), lt); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if linkType == nil {
 		t.Error("Expected linkType. LinkType is nil")
@@ -91,7 +92,7 @@ func TestIssueLinkTypeService_Update(t *testing.T) {
 		Outward: "causes",
 	}
 
-	if linkType, _, err := testClient.IssueLinkType.Update(lt); err != nil {
+	if linkType, _, err := testClient.IssueLinkType.Update(context.Background(), lt); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if linkType == nil {
 		t.Error("Expected linkType. LinkType is nil")
@@ -108,7 +109,7 @@ func TestIssueLinkTypeService_Delete(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	resp, err := testClient.IssueLinkType.Delete("100")
+	resp, err := testClient.IssueLinkType.Delete(context.Background(), "100")
 	if resp.StatusCode != http.StatusNoContent {
 		t.Error("Expected issue not deleted.")
 	}

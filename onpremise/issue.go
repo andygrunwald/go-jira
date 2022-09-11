@@ -605,7 +605,7 @@ type RemoteLinkStatus struct {
 	Icon     *RemoteLinkIcon `json:"icon,omitempty" structs:"icon,omitempty"`
 }
 
-// GetWithContext returns a full representation of the issue for the given issue key.
+// Get returns a full representation of the issue for the given issue key.
 // Jira will attempt to identify the issue by the issueIdOrKey path parameter.
 // This can be an issue id, or an issue key.
 // If the issue cannot be found via an exact match, Jira will also look for the issue in a case-insensitive way, or by looking to see if the issue was moved.
@@ -613,7 +613,7 @@ type RemoteLinkStatus struct {
 // # The given options will be appended to the query string
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
-func (s *IssueService) GetWithContext(ctx context.Context, issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
+func (s *IssueService) Get(ctx context.Context, issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -638,16 +638,11 @@ func (s *IssueService) GetWithContext(ctx context.Context, issueID string, optio
 	return issue, resp, nil
 }
 
-// Get wraps GetWithContext using the background context.
-func (s *IssueService) Get(issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
-	return s.GetWithContext(context.Background(), issueID, options)
-}
-
-// DownloadAttachmentWithContext returns a Response of an attachment for a given attachmentID.
+// DownloadAttachment returns a Response of an attachment for a given attachmentID.
 // The attachment is in the Response.Body of the response.
 // This is an io.ReadCloser.
 // Caller must close resp.Body.
-func (s *IssueService) DownloadAttachmentWithContext(ctx context.Context, attachmentID string) (*Response, error) {
+func (s *IssueService) DownloadAttachment(ctx context.Context, attachmentID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("secure/attachment/%s/", attachmentID)
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -663,14 +658,8 @@ func (s *IssueService) DownloadAttachmentWithContext(ctx context.Context, attach
 	return resp, nil
 }
 
-// DownloadAttachment wraps DownloadAttachmentWithContext using the background context.
-// Caller must close resp.Body
-func (s *IssueService) DownloadAttachment(attachmentID string) (*Response, error) {
-	return s.DownloadAttachmentWithContext(context.Background(), attachmentID)
-}
-
-// PostAttachmentWithContext uploads r (io.Reader) as an attachment to a given issueID
-func (s *IssueService) PostAttachmentWithContext(ctx context.Context, issueID string, r io.Reader, attachmentName string) (*[]Attachment, *Response, error) {
+// PostAttachment uploads r (io.Reader) as an attachment to a given issueID
+func (s *IssueService) PostAttachment(ctx context.Context, issueID string, r io.Reader, attachmentName string) (*[]Attachment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/attachments", issueID)
 
 	b := new(bytes.Buffer)
@@ -707,14 +696,9 @@ func (s *IssueService) PostAttachmentWithContext(ctx context.Context, issueID st
 	return attachment, resp, nil
 }
 
-// PostAttachment wraps PostAttachmentWithContext using the background context.
-func (s *IssueService) PostAttachment(issueID string, r io.Reader, attachmentName string) (*[]Attachment, *Response, error) {
-	return s.PostAttachmentWithContext(context.Background(), issueID, r, attachmentName)
-}
-
-// DeleteAttachmentWithContext deletes an attachment of a given attachmentID
+// DeleteAttachment deletes an attachment of a given attachmentID
 // Caller must close resp.Body
-func (s *IssueService) DeleteAttachmentWithContext(ctx context.Context, attachmentID string) (*Response, error) {
+func (s *IssueService) DeleteAttachment(ctx context.Context, attachmentID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/attachment/%s", attachmentID)
 
 	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
@@ -731,15 +715,9 @@ func (s *IssueService) DeleteAttachmentWithContext(ctx context.Context, attachme
 	return resp, nil
 }
 
-// DeleteAttachment wraps DeleteAttachmentWithContext using the background context.
+// DeleteLink deletes a link of a given linkID
 // Caller must close resp.Body
-func (s *IssueService) DeleteAttachment(attachmentID string) (*Response, error) {
-	return s.DeleteAttachmentWithContext(context.Background(), attachmentID)
-}
-
-// DeleteLinkWithContext deletes a link of a given linkID
-// Caller must close resp.Body
-func (s *IssueService) DeleteLinkWithContext(ctx context.Context, linkID string) (*Response, error) {
+func (s *IssueService) DeleteLink(ctx context.Context, linkID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLink/%s", linkID)
 
 	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
@@ -756,17 +734,11 @@ func (s *IssueService) DeleteLinkWithContext(ctx context.Context, linkID string)
 	return resp, nil
 }
 
-// DeleteLink wraps DeleteLinkWithContext using the background context.
-// Caller must close resp.Body
-func (s *IssueService) DeleteLink(linkID string) (*Response, error) {
-	return s.DeleteLinkWithContext(context.Background(), linkID)
-}
-
-// GetWorklogsWithContext gets all the worklogs for an issue.
+// GetWorklogs gets all the worklogs for an issue.
 // This method is especially important if you need to read all the worklogs, not just the first page.
 //
 // https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/worklog-getIssueWorklog
-func (s *IssueService) GetWorklogsWithContext(ctx context.Context, issueID string, options ...func(*http.Request) error) (*Worklog, *Response, error) {
+func (s *IssueService) GetWorklogs(ctx context.Context, issueID string, options ...func(*http.Request) error) (*Worklog, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
 
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
@@ -786,11 +758,6 @@ func (s *IssueService) GetWorklogsWithContext(ctx context.Context, issueID strin
 	return v, resp, err
 }
 
-// GetWorklogs wraps GetWorklogsWithContext using the background context.
-func (s *IssueService) GetWorklogs(issueID string, options ...func(*http.Request) error) (*Worklog, *Response, error) {
-	return s.GetWorklogsWithContext(context.Background(), issueID, options...)
-}
-
 // Applies query options to http request.
 // This helper is meant to be used with all "QueryOptions" structs.
 func WithQueryOptions(options interface{}) func(*http.Request) error {
@@ -807,12 +774,12 @@ func WithQueryOptions(options interface{}) func(*http.Request) error {
 	}
 }
 
-// CreateWithContext creates an issue or a sub-task from a JSON representation.
+// Create creates an issue or a sub-task from a JSON representation.
 // Creating a sub-task is similar to creating a regular issue, with two important differences:
 // The issueType field must correspond to a sub-task issue type and you must provide a parent field in the issue create request containing the id or key of the parent issue.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
-func (s *IssueService) CreateWithContext(ctx context.Context, issue *Issue) (*Issue, *Response, error) {
+func (s *IssueService) Create(ctx context.Context, issue *Issue) (*Issue, *Response, error) {
 	apiEndpoint := "rest/api/2/issue"
 	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, issue)
 	if err != nil {
@@ -837,17 +804,12 @@ func (s *IssueService) CreateWithContext(ctx context.Context, issue *Issue) (*Is
 	return responseIssue, resp, nil
 }
 
-// Create wraps CreateWithContext using the background context.
-func (s *IssueService) Create(issue *Issue) (*Issue, *Response, error) {
-	return s.CreateWithContext(context.Background(), issue)
-}
-
-// UpdateWithOptionsWithContext updates an issue from a JSON representation,
+// UpdateWithOptions updates an issue from a JSON representation,
 // while also specifying query params. The issue is found by key.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
 // Caller must close resp.Body
-func (s *IssueService) UpdateWithOptionsWithContext(ctx context.Context, issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
+func (s *IssueService) UpdateWithOptions(ctx context.Context, issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", issue.Key)
 	url, err := addOptions(apiEndpoint, opts)
 	if err != nil {
@@ -869,29 +831,18 @@ func (s *IssueService) UpdateWithOptionsWithContext(ctx context.Context, issue *
 	return &ret, resp, nil
 }
 
-// UpdateWithOptions wraps UpdateWithOptionsWithContext using the background context.
-// Caller must close resp.Body
-func (s *IssueService) UpdateWithOptions(issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
-	return s.UpdateWithOptionsWithContext(context.Background(), issue, opts)
-}
-
-// UpdateWithContext updates an issue from a JSON representation. The issue is found by key.
+// Update updates an issue from a JSON representation. The issue is found by key.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
-func (s *IssueService) UpdateWithContext(ctx context.Context, issue *Issue) (*Issue, *Response, error) {
-	return s.UpdateWithOptionsWithContext(ctx, issue, nil)
+func (s *IssueService) Update(ctx context.Context, issue *Issue) (*Issue, *Response, error) {
+	return s.UpdateWithOptions(ctx, issue, nil)
 }
 
-// Update wraps UpdateWithContext using the background context.
-func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
-	return s.UpdateWithContext(context.Background(), issue)
-}
-
-// UpdateIssueWithContext updates an issue from a JSON representation. The issue is found by key.
+// UpdateIssue updates an issue from a JSON representation. The issue is found by key.
 //
 // https://docs.atlassian.com/jira/REST/7.4.0/#api/2/issue-editIssue
 // Caller must close resp.Body
-func (s *IssueService) UpdateIssueWithContext(ctx context.Context, jiraID string, data map[string]interface{}) (*Response, error) {
+func (s *IssueService) UpdateIssue(ctx context.Context, jiraID string, data map[string]interface{}) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", jiraID)
 	req, err := s.client.NewRequest(ctx, "PUT", apiEndpoint, data)
 	if err != nil {
@@ -907,16 +858,10 @@ func (s *IssueService) UpdateIssueWithContext(ctx context.Context, jiraID string
 	return resp, nil
 }
 
-// UpdateIssue wraps UpdateIssueWithContext using the background context.
-// Caller must close resp.Body
-func (s *IssueService) UpdateIssue(jiraID string, data map[string]interface{}) (*Response, error) {
-	return s.UpdateIssueWithContext(context.Background(), jiraID, data)
-}
-
-// AddCommentWithContext adds a new comment to issueID.
+// AddComment adds a new comment to issueID.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-addComment
-func (s *IssueService) AddCommentWithContext(ctx context.Context, issueID string, comment *Comment) (*Comment, *Response, error) {
+func (s *IssueService) AddComment(ctx context.Context, issueID string, comment *Comment) (*Comment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment", issueID)
 	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, comment)
 	if err != nil {
@@ -933,15 +878,10 @@ func (s *IssueService) AddCommentWithContext(ctx context.Context, issueID string
 	return responseComment, resp, nil
 }
 
-// AddComment wraps AddCommentWithContext using the background context.
-func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *Response, error) {
-	return s.AddCommentWithContext(context.Background(), issueID, comment)
-}
-
-// UpdateCommentWithContext updates the body of a comment, identified by comment.ID, on the issueID.
+// UpdateComment updates the body of a comment, identified by comment.ID, on the issueID.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/comment-updateComment
-func (s *IssueService) UpdateCommentWithContext(ctx context.Context, issueID string, comment *Comment) (*Comment, *Response, error) {
+func (s *IssueService) UpdateComment(ctx context.Context, issueID string, comment *Comment) (*Comment, *Response, error) {
 	reqBody := struct {
 		Body string `json:"body"`
 	}{
@@ -962,15 +902,10 @@ func (s *IssueService) UpdateCommentWithContext(ctx context.Context, issueID str
 	return responseComment, resp, nil
 }
 
-// UpdateComment wraps UpdateCommentWithContext using the background context.
-func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment, *Response, error) {
-	return s.UpdateCommentWithContext(context.Background(), issueID, comment)
-}
-
-// DeleteCommentWithContext Deletes a comment from an issueID.
+// DeleteComment Deletes a comment from an issueID.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-issue-issueIdOrKey-comment-id-delete
-func (s *IssueService) DeleteCommentWithContext(ctx context.Context, issueID, commentID string) error {
+func (s *IssueService) DeleteComment(ctx context.Context, issueID, commentID string) error {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, commentID)
 	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
 	if err != nil {
@@ -987,15 +922,10 @@ func (s *IssueService) DeleteCommentWithContext(ctx context.Context, issueID, co
 	return nil
 }
 
-// DeleteComment wraps DeleteCommentWithContext using the background context.
-func (s *IssueService) DeleteComment(issueID, commentID string) error {
-	return s.DeleteCommentWithContext(context.Background(), issueID, commentID)
-}
-
-// AddWorklogRecordWithContext adds a new worklog record to issueID.
+// AddWorklogRecord adds a new worklog record to issueID.
 //
 // https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-issue-issueIdOrKey-worklog-post
-func (s *IssueService) AddWorklogRecordWithContext(ctx context.Context, issueID string, record *WorklogRecord, options ...func(*http.Request) error) (*WorklogRecord, *Response, error) {
+func (s *IssueService) AddWorklogRecord(ctx context.Context, issueID string, record *WorklogRecord, options ...func(*http.Request) error) (*WorklogRecord, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
 	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, record)
 	if err != nil {
@@ -1019,15 +949,10 @@ func (s *IssueService) AddWorklogRecordWithContext(ctx context.Context, issueID 
 	return responseRecord, resp, nil
 }
 
-// AddWorklogRecord wraps AddWorklogRecordWithContext using the background context.
-func (s *IssueService) AddWorklogRecord(issueID string, record *WorklogRecord, options ...func(*http.Request) error) (*WorklogRecord, *Response, error) {
-	return s.AddWorklogRecordWithContext(context.Background(), issueID, record, options...)
-}
-
-// UpdateWorklogRecordWithContext updates a worklog record.
+// UpdateWorklogRecord updates a worklog record.
 //
 // https://docs.atlassian.com/software/jira/docs/api/REST/7.1.2/#api/2/issue-updateWorklog
-func (s *IssueService) UpdateWorklogRecordWithContext(ctx context.Context, issueID, worklogID string, record *WorklogRecord, options ...func(*http.Request) error) (*WorklogRecord, *Response, error) {
+func (s *IssueService) UpdateWorklogRecord(ctx context.Context, issueID, worklogID string, record *WorklogRecord, options ...func(*http.Request) error) (*WorklogRecord, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog/%s", issueID, worklogID)
 	req, err := s.client.NewRequest(ctx, "PUT", apiEndpoint, record)
 	if err != nil {
@@ -1051,16 +976,11 @@ func (s *IssueService) UpdateWorklogRecordWithContext(ctx context.Context, issue
 	return responseRecord, resp, nil
 }
 
-// UpdateWorklogRecord wraps UpdateWorklogRecordWithContext using the background context.
-func (s *IssueService) UpdateWorklogRecord(issueID, worklogID string, record *WorklogRecord, options ...func(*http.Request) error) (*WorklogRecord, *Response, error) {
-	return s.UpdateWorklogRecordWithContext(context.Background(), issueID, worklogID, record, options...)
-}
-
-// AddLinkWithContext adds a link between two issues.
+// AddLink adds a link between two issues.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issueLink
 // Caller must close resp.Body
-func (s *IssueService) AddLinkWithContext(ctx context.Context, issueLink *IssueLink) (*Response, error) {
+func (s *IssueService) AddLink(ctx context.Context, issueLink *IssueLink) (*Response, error) {
 	apiEndpoint := "rest/api/2/issueLink"
 	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, issueLink)
 	if err != nil {
@@ -1075,16 +995,10 @@ func (s *IssueService) AddLinkWithContext(ctx context.Context, issueLink *IssueL
 	return resp, err
 }
 
-// AddLink wraps AddLinkWithContext using the background context.
-// Caller must close resp.Body
-func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
-	return s.AddLinkWithContext(context.Background(), issueLink)
-}
-
-// SearchWithContext will search for tickets according to the jql
+// Search will search for tickets according to the jql
 //
 // Jira API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
-func (s *IssueService) SearchWithContext(ctx context.Context, jql string, options *SearchOptions) ([]Issue, *Response, error) {
+func (s *IssueService) Search(ctx context.Context, jql string, options *SearchOptions) ([]Issue, *Response, error) {
 	u := url.URL{
 		Path: "rest/api/2/search",
 	}
@@ -1126,15 +1040,10 @@ func (s *IssueService) SearchWithContext(ctx context.Context, jql string, option
 	return v.Issues, resp, err
 }
 
-// Search wraps SearchWithContext using the background context.
-func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Response, error) {
-	return s.SearchWithContext(context.Background(), jql, options)
-}
-
-// SearchPagesWithContext will get issues from all pages in a search
+// SearchPages will get issues from all pages in a search
 //
 // Jira API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
-func (s *IssueService) SearchPagesWithContext(ctx context.Context, jql string, options *SearchOptions, f func(Issue) error) error {
+func (s *IssueService) SearchPages(ctx context.Context, jql string, options *SearchOptions, f func(Issue) error) error {
 	if options == nil {
 		options = &SearchOptions{
 			StartAt:    0,
@@ -1146,7 +1055,7 @@ func (s *IssueService) SearchPagesWithContext(ctx context.Context, jql string, o
 		options.MaxResults = 50
 	}
 
-	issues, resp, err := s.SearchWithContext(ctx, jql, options)
+	issues, resp, err := s.Search(ctx, jql, options)
 	if err != nil {
 		return err
 	}
@@ -1168,20 +1077,15 @@ func (s *IssueService) SearchPagesWithContext(ctx context.Context, jql string, o
 		}
 
 		options.StartAt += resp.MaxResults
-		issues, resp, err = s.SearchWithContext(ctx, jql, options)
+		issues, resp, err = s.Search(ctx, jql, options)
 		if err != nil {
 			return err
 		}
 	}
 }
 
-// SearchPages wraps SearchPagesWithContext using the background context.
-func (s *IssueService) SearchPages(jql string, options *SearchOptions, f func(Issue) error) error {
-	return s.SearchPagesWithContext(context.Background(), jql, options, f)
-}
-
-// GetCustomFieldsWithContext returns a map of customfield_* keys with string values
-func (s *IssueService) GetCustomFieldsWithContext(ctx context.Context, issueID string) (CustomFields, *Response, error) {
+// GetCustomFields returns a map of customfield_* keys with string values
+func (s *IssueService) GetCustomFields(ctx context.Context, issueID string) (CustomFields, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -1217,16 +1121,11 @@ func (s *IssueService) GetCustomFieldsWithContext(ctx context.Context, issueID s
 	return cf, resp, nil
 }
 
-// GetCustomFields wraps GetCustomFieldsWithContext using the background context.
-func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *Response, error) {
-	return s.GetCustomFieldsWithContext(context.Background(), issueID)
-}
-
-// GetTransitionsWithContext gets a list of the transitions possible for this issue by the current user,
+// GetTransitions gets a list of the transitions possible for this issue by the current user,
 // along with fields that are required and their types.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getTransitions
-func (s *IssueService) GetTransitionsWithContext(ctx context.Context, id string) ([]Transition, *Response, error) {
+func (s *IssueService) GetTransitions(ctx context.Context, id string) ([]Transition, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/transitions?expand=transitions.fields", id)
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -1241,35 +1140,25 @@ func (s *IssueService) GetTransitionsWithContext(ctx context.Context, id string)
 	return result.Transitions, resp, err
 }
 
-// GetTransitions wraps GetTransitionsWithContext using the background context.
-func (s *IssueService) GetTransitions(id string) ([]Transition, *Response, error) {
-	return s.GetTransitionsWithContext(context.Background(), id)
-}
-
-// DoTransitionWithContext performs a transition on an issue.
+// DoTransition performs a transition on an issue.
 // When performing the transition you can update or set other issue fields.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
-func (s *IssueService) DoTransitionWithContext(ctx context.Context, ticketID, transitionID string) (*Response, error) {
+func (s *IssueService) DoTransition(ctx context.Context, ticketID, transitionID string) (*Response, error) {
 	payload := CreateTransitionPayload{
 		Transition: TransitionPayload{
 			ID: transitionID,
 		},
 	}
-	return s.DoTransitionWithPayloadWithContext(ctx, ticketID, payload)
+	return s.DoTransitionWithPayload(ctx, ticketID, payload)
 }
 
-// DoTransition wraps DoTransitionWithContext using the background context.
-func (s *IssueService) DoTransition(ticketID, transitionID string) (*Response, error) {
-	return s.DoTransitionWithContext(context.Background(), ticketID, transitionID)
-}
-
-// DoTransitionWithPayloadWithContext performs a transition on an issue using any payload.
+// DoTransitionWithPayload performs a transition on an issue using any payload.
 // When performing the transition you can update or set other issue fields.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
 // Caller must close resp.Body
-func (s *IssueService) DoTransitionWithPayloadWithContext(ctx context.Context, ticketID, payload interface{}) (*Response, error) {
+func (s *IssueService) DoTransitionWithPayload(ctx context.Context, ticketID, payload interface{}) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/transitions", ticketID)
 
 	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, payload)
@@ -1283,12 +1172,6 @@ func (s *IssueService) DoTransitionWithPayloadWithContext(ctx context.Context, t
 	}
 
 	return resp, err
-}
-
-// DoTransitionWithPayload wraps DoTransitionWithPayloadWithContext using the background context.
-// Caller must close resp.Body
-func (s *IssueService) DoTransitionWithPayload(ticketID, payload interface{}) (*Response, error) {
-	return s.DoTransitionWithPayloadWithContext(context.Background(), ticketID, payload)
 }
 
 // InitIssueWithMetaAndFields returns Issue with with values from fieldsConfig properly set.
@@ -1372,9 +1255,9 @@ func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIss
 	return issue, nil
 }
 
-// DeleteWithContext will delete a specified issue.
+// Delete will delete a specified issue.
 // Caller must close resp.Body
-func (s *IssueService) DeleteWithContext(ctx context.Context, issueID string) (*Response, error) {
+func (s *IssueService) Delete(ctx context.Context, issueID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 
 	// to enable deletion of subtasks; without this, the request will fail if the issue has subtasks
@@ -1391,16 +1274,10 @@ func (s *IssueService) DeleteWithContext(ctx context.Context, issueID string) (*
 	return resp, err
 }
 
-// Delete wraps DeleteWithContext using the background context.
-// Caller must close resp.Body
-func (s *IssueService) Delete(issueID string) (*Response, error) {
-	return s.DeleteWithContext(context.Background(), issueID)
-}
-
-// GetWatchersWithContext wil return all the users watching/observing the given issue
+// GetWatchers wil return all the users watching/observing the given issue
 //
 // Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-getIssueWatchers
-func (s *IssueService) GetWatchersWithContext(ctx context.Context, issueID string) (*[]User, *Response, error) {
+func (s *IssueService) GetWatchers(ctx context.Context, issueID string) (*[]User, *Response, error) {
 	watchesAPIEndpoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
 	req, err := s.client.NewRequest(ctx, "GET", watchesAPIEndpoint, nil)
@@ -1429,16 +1306,11 @@ func (s *IssueService) GetWatchersWithContext(ctx context.Context, issueID strin
 	return &result, resp, nil
 }
 
-// GetWatchers wraps GetWatchersWithContext using the background context.
-func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
-	return s.GetWatchersWithContext(context.Background(), issueID)
-}
-
-// AddWatcherWithContext adds watcher to the given issue
+// AddWatcher adds watcher to the given issue
 //
 // Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-addWatcher
 // Caller must close resp.Body
-func (s *IssueService) AddWatcherWithContext(ctx context.Context, issueID string, userName string) (*Response, error) {
+func (s *IssueService) AddWatcher(ctx context.Context, issueID string, userName string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
 	req, err := s.client.NewRequest(ctx, "POST", apiEndPoint, userName)
@@ -1454,17 +1326,11 @@ func (s *IssueService) AddWatcherWithContext(ctx context.Context, issueID string
 	return resp, err
 }
 
-// AddWatcher wraps AddWatcherWithContext using the background context.
-// Caller must close resp.Body
-func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, error) {
-	return s.AddWatcherWithContext(context.Background(), issueID, userName)
-}
-
-// RemoveWatcherWithContext removes given user from given issue
+// RemoveWatcher removes given user from given issue
 //
 // Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-removeWatcher
 // Caller must close resp.Body
-func (s *IssueService) RemoveWatcherWithContext(ctx context.Context, issueID string, userName string) (*Response, error) {
+func (s *IssueService) RemoveWatcher(ctx context.Context, issueID string, userName string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
 	req, err := s.client.NewRequest(ctx, "DELETE", apiEndPoint, userName)
@@ -1480,17 +1346,11 @@ func (s *IssueService) RemoveWatcherWithContext(ctx context.Context, issueID str
 	return resp, err
 }
 
-// RemoveWatcher wraps RemoveWatcherWithContext using the background context.
-// Caller must close resp.Body
-func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response, error) {
-	return s.RemoveWatcherWithContext(context.Background(), issueID, userName)
-}
-
-// UpdateAssigneeWithContext updates the user assigned to work on the given issue
+// UpdateAssignee updates the user assigned to work on the given issue
 //
 // Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/7.10.2/#api/2/issue-assign
 // Caller must close resp.Body
-func (s *IssueService) UpdateAssigneeWithContext(ctx context.Context, issueID string, assignee *User) (*Response, error) {
+func (s *IssueService) UpdateAssignee(ctx context.Context, issueID string, assignee *User) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/assignee", issueID)
 
 	req, err := s.client.NewRequest(ctx, "PUT", apiEndPoint, assignee)
@@ -1506,12 +1366,6 @@ func (s *IssueService) UpdateAssigneeWithContext(ctx context.Context, issueID st
 	return resp, err
 }
 
-// UpdateAssignee wraps UpdateAssigneeWithContext using the background context.
-// Caller must close resp.Body
-func (s *IssueService) UpdateAssignee(issueID string, assignee *User) (*Response, error) {
-	return s.UpdateAssigneeWithContext(context.Background(), issueID, assignee)
-}
-
 func (c ChangelogHistory) CreatedTime() (time.Time, error) {
 	var t time.Time
 	// Ignore null
@@ -1522,10 +1376,10 @@ func (c ChangelogHistory) CreatedTime() (time.Time, error) {
 	return t, err
 }
 
-// GetRemoteLinksWithContext gets remote issue links on the issue.
+// GetRemoteLinks gets remote issue links on the issue.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getRemoteIssueLinks
-func (s *IssueService) GetRemoteLinksWithContext(ctx context.Context, id string) (*[]RemoteLink, *Response, error) {
+func (s *IssueService) GetRemoteLinks(ctx context.Context, id string) (*[]RemoteLink, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/remotelink", id)
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -1540,16 +1394,10 @@ func (s *IssueService) GetRemoteLinksWithContext(ctx context.Context, id string)
 	return result, resp, err
 }
 
-// GetRemoteLinks wraps GetRemoteLinksWithContext using the background context.
-// Caller must close resp.Body
-func (s *IssueService) GetRemoteLinks(id string) (*[]RemoteLink, *Response, error) {
-	return s.GetRemoteLinksWithContext(context.Background(), id)
-}
-
-// AddRemoteLinkWithContext adds a remote link to issueID.
+// AddRemoteLink adds a remote link to issueID.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issue-issueIdOrKey-remotelink-post
-func (s *IssueService) AddRemoteLinkWithContext(ctx context.Context, issueID string, remotelink *RemoteLink) (*RemoteLink, *Response, error) {
+func (s *IssueService) AddRemoteLink(ctx context.Context, issueID string, remotelink *RemoteLink) (*RemoteLink, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/remotelink", issueID)
 	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, remotelink)
 	if err != nil {
@@ -1566,15 +1414,10 @@ func (s *IssueService) AddRemoteLinkWithContext(ctx context.Context, issueID str
 	return responseRemotelink, resp, nil
 }
 
-// AddRemoteLink wraps AddRemoteLinkWithContext using the background context.
-func (s *IssueService) AddRemoteLink(issueID string, remotelink *RemoteLink) (*RemoteLink, *Response, error) {
-	return s.AddRemoteLinkWithContext(context.Background(), issueID, remotelink)
-}
-
-// UpdateRemoteLinkWithContext updates a remote issue link by linkID.
+// UpdateRemoteLink updates a remote issue link by linkID.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-remote-links/#api-rest-api-2-issue-issueidorkey-remotelink-linkid-put
-func (s *IssueService) UpdateRemoteLinkWithContext(ctx context.Context, issueID string, linkID int, remotelink *RemoteLink) (*Response, error) {
+func (s *IssueService) UpdateRemoteLink(ctx context.Context, issueID string, linkID int, remotelink *RemoteLink) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/remotelink/%d", issueID, linkID)
 	req, err := s.client.NewRequest(ctx, "PUT", apiEndpoint, remotelink)
 	if err != nil {
@@ -1588,9 +1431,4 @@ func (s *IssueService) UpdateRemoteLinkWithContext(ctx context.Context, issueID 
 	}
 
 	return resp, nil
-}
-
-// UpdateRemoteLink wraps UpdateRemoteLinkWithContext using the background context.
-func (s *IssueService) UpdateRemoteLink(issueID string, linkID int, remotelink *RemoteLink) (*Response, error) {
-	return s.UpdateRemoteLinkWithContext(context.Background(), issueID, linkID, remotelink)
 }
