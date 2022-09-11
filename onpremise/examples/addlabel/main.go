@@ -9,7 +9,7 @@ import (
 	"strings"
 	"syscall"
 
-	jira "github.com/andygrunwald/go-jira/onpremise/v2"
+	jira "github.com/andygrunwald/go-jira/v2/onpremise"
 	"golang.org/x/term"
 )
 

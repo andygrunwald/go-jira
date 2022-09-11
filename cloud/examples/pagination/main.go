@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	jira "github.com/andygrunwald/go-jira/cloud/v2"
+	jira "github.com/andygrunwald/go-jira/v2/cloud"
 )
 
 // GetAllIssues will implement pagination of api and get all the issues.
