@@ -12,10 +12,10 @@ import (
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-group-Issue-link-types
 type IssueLinkTypeService service
 
-// GetListWithContext gets all of the issue link types from Jira.
+// GetList gets all of the issue link types from Jira.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-get
-func (s *IssueLinkTypeService) GetListWithContext(ctx context.Context) ([]IssueLinkType, *Response, error) {
+func (s *IssueLinkTypeService) GetList(ctx context.Context) ([]IssueLinkType, *Response, error) {
 	apiEndpoint := "rest/api/2/issueLinkType"
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -30,15 +30,10 @@ func (s *IssueLinkTypeService) GetListWithContext(ctx context.Context) ([]IssueL
 	return linkTypeList, resp, nil
 }
 
-// GetList wraps GetListWithContext using the background context.
-func (s *IssueLinkTypeService) GetList() ([]IssueLinkType, *Response, error) {
-	return s.GetListWithContext(context.Background())
-}
-
-// GetWithContext gets info of a specific issue link type from Jira.
+// Get gets info of a specific issue link type from Jira.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-get
-func (s *IssueLinkTypeService) GetWithContext(ctx context.Context, ID string) (*IssueLinkType, *Response, error) {
+func (s *IssueLinkTypeService) Get(ctx context.Context, ID string) (*IssueLinkType, *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", ID)
 	req, err := s.client.NewRequest(ctx, "GET", apiEndPoint, nil)
 	if err != nil {
@@ -53,15 +48,10 @@ func (s *IssueLinkTypeService) GetWithContext(ctx context.Context, ID string) (*
 	return linkType, resp, nil
 }
 
-// Get wraps GetWithContext using the background context.
-func (s *IssueLinkTypeService) Get(ID string) (*IssueLinkType, *Response, error) {
-	return s.GetWithContext(context.Background(), ID)
-}
-
-// CreateWithContext creates an issue link type in Jira.
+// Create creates an issue link type in Jira.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-post
-func (s *IssueLinkTypeService) CreateWithContext(ctx context.Context, linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
+func (s *IssueLinkTypeService) Create(ctx context.Context, linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
 	apiEndpoint := "/rest/api/2/issueLinkType"
 	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, linkType)
 	if err != nil {
@@ -88,16 +78,11 @@ func (s *IssueLinkTypeService) CreateWithContext(ctx context.Context, linkType *
 	return linkType, resp, nil
 }
 
-// Create wraps CreateWithContext using the background context.
-func (s *IssueLinkTypeService) Create(linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
-	return s.CreateWithContext(context.Background(), linkType)
-}
-
-// UpdateWithContext updates an issue link type.  The issue is found by key.
+// Update updates an issue link type.  The issue is found by key.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-put
 // Caller must close resp.Body
-func (s *IssueLinkTypeService) UpdateWithContext(ctx context.Context, linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
+func (s *IssueLinkTypeService) Update(ctx context.Context, linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", linkType.ID)
 	req, err := s.client.NewRequest(ctx, "PUT", apiEndpoint, linkType)
 	if err != nil {
@@ -111,17 +96,11 @@ func (s *IssueLinkTypeService) UpdateWithContext(ctx context.Context, linkType *
 	return &ret, resp, nil
 }
 
-// Update wraps UpdateWithContext using the background context.
-// Caller must close resp.Body
-func (s *IssueLinkTypeService) Update(linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
-	return s.UpdateWithContext(context.Background(), linkType)
-}
-
-// DeleteWithContext deletes an issue link type based on provided ID.
+// Delete deletes an issue link type based on provided ID.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-delete
 // Caller must close resp.Body
-func (s *IssueLinkTypeService) DeleteWithContext(ctx context.Context, ID string) (*Response, error) {
+func (s *IssueLinkTypeService) Delete(ctx context.Context, ID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", ID)
 	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
 	if err != nil {
@@ -130,10 +109,4 @@ func (s *IssueLinkTypeService) DeleteWithContext(ctx context.Context, ID string)
 
 	resp, err := s.client.Do(req, nil)
 	return resp, err
-}
-
-// Delete wraps DeleteWithContext using the background context.
-// Caller must close resp.Body
-func (s *IssueLinkTypeService) Delete(ID string) (*Response, error) {
-	return s.DeleteWithContext(context.Background(), ID)
 }
