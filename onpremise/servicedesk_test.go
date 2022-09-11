@@ -1,6 +1,7 @@
 package onpremise
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -56,7 +57,7 @@ func TestServiceDeskService_GetOrganizations(t *testing.T) {
 		  }`)
 	})
 
-	orgs, _, err := testClient.ServiceDesk.GetOrganizations(10001, 3, 3, "")
+	orgs, _, err := testClient.ServiceDesk.GetOrganizations(context.Background(), 10001, 3, 3, "")
 
 	if orgs == nil {
 		t.Error("Expected Organizations. Result is nil")
@@ -79,7 +80,7 @@ func TestServiceDeskService_AddOrganizations(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	_, err := testClient.ServiceDesk.AddOrganization(10001, 1)
+	_, err := testClient.ServiceDesk.AddOrganization(context.Background(), 10001, 1)
 
 	if err != nil {
 		t.Errorf("Error given: %s", err)
@@ -96,7 +97,7 @@ func TestServiceDeskService_RemoveOrganizations(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	_, err := testClient.ServiceDesk.RemoveOrganization(10001, 1)
+	_, err := testClient.ServiceDesk.RemoveOrganization(context.Background(), 10001, 1)
 
 	if err != nil {
 		t.Errorf("Error given: %s", err)
@@ -149,7 +150,7 @@ func TestServiceDeskServiceStringServiceDeskID_GetOrganizations(t *testing.T) {
 		  }`)
 	})
 
-	orgs, _, err := testClient.ServiceDesk.GetOrganizations("TEST", 3, 3, "")
+	orgs, _, err := testClient.ServiceDesk.GetOrganizations(context.Background(), "TEST", 3, 3, "")
 
 	if orgs == nil {
 		t.Error("Expected Organizations. Result is nil")
@@ -172,7 +173,7 @@ func TestServiceDeskServiceStringServiceDeskID_AddOrganizations(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	_, err := testClient.ServiceDesk.AddOrganization("TEST", 1)
+	_, err := testClient.ServiceDesk.AddOrganization(context.Background(), "TEST", 1)
 
 	if err != nil {
 		t.Errorf("Error given: %s", err)
@@ -189,7 +190,7 @@ func TestServiceDeskServiceStringServiceDeskID_RemoveOrganizations(t *testing.T)
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	_, err := testClient.ServiceDesk.RemoveOrganization("TEST", 1)
+	_, err := testClient.ServiceDesk.RemoveOrganization(context.Background(), "TEST", 1)
 
 	if err != nil {
 		t.Errorf("Error given: %s", err)
@@ -242,7 +243,7 @@ func TestServiceDeskService_AddCustomers(t *testing.T) {
 				w.WriteHeader(http.StatusNoContent)
 			})
 
-			_, err := testClient.ServiceDesk.AddCustomers(test.serviceDeskID, wantAccountIDs...)
+			_, err := testClient.ServiceDesk.AddCustomers(context.Background(), test.serviceDeskID, wantAccountIDs...)
 
 			if err != nil {
 				t.Errorf("Error given: %s", err)
@@ -308,7 +309,7 @@ func TestServiceDeskService_RemoveCustomers(t *testing.T) {
 				w.WriteHeader(http.StatusNoContent)
 			})
 
-			_, err := testClient.ServiceDesk.RemoveCustomers(test.serviceDeskID, wantAccountIDs...)
+			_, err := testClient.ServiceDesk.RemoveCustomers(context.Background(), test.serviceDeskID, wantAccountIDs...)
 
 			if err != nil {
 				t.Errorf("Error given: %s", err)
@@ -409,7 +410,7 @@ func TestServiceDeskService_ListCustomers(t *testing.T) {
 				}`))
 			})
 
-			customerList, _, err := testClient.ServiceDesk.ListCustomers(test.serviceDeskID, wantOptions)
+			customerList, _, err := testClient.ServiceDesk.ListCustomers(context.Background(), test.serviceDeskID, wantOptions)
 			if err != nil {
 				t.Fatal(err)
 			}
