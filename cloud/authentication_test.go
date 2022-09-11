@@ -291,7 +291,7 @@ func TestAuthenticationService_Logout_Success(t *testing.T) {
 			fmt.Fprint(w, `{"session":{"name":"JSESSIONID","value":"12345678901234567890"},"loginInfo":{"failedLoginCount":10,"loginCount":127,"lastFailedLoginTime":"2016-03-16T04:22:35.386+0000","previousLoginTime":"2016-03-16T04:22:35.386+0000"}}`)
 		}
 
-		if r.Method == "DELETE" {
+		if r.Method == http.MethodDelete {
 			// return 204
 			w.WriteHeader(http.StatusNoContent)
 		}
@@ -310,7 +310,7 @@ func TestAuthenticationService_Logout_FailWithoutLogin(t *testing.T) {
 	defer teardown()
 
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "DELETE" {
+		if r.Method == http.MethodDelete {
 			// 401
 			w.WriteHeader(http.StatusUnauthorized)
 		}

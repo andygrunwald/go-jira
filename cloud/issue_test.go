@@ -237,7 +237,7 @@ func TestIssueService_DeleteComment(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10000/comment/10001", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "DELETE")
+		testMethod(t, r, http.MethodDelete)
 		testRequestURL(t, r, "/rest/api/2/issue/10000/comment/10001")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -567,7 +567,7 @@ func TestIssueService_DeleteAttachment(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/attachment/10054", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "DELETE")
+		testMethod(t, r, http.MethodDelete)
 		testRequestURL(t, r, "/rest/api/2/attachment/10054")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -594,7 +594,7 @@ func TestIssueService_DeleteLink(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issueLink/10054", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "DELETE")
+		testMethod(t, r, http.MethodDelete)
 		testRequestURL(t, r, "/rest/api/2/issueLink/10054")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -1443,7 +1443,7 @@ func TestIssueService_Delete(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10002", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "DELETE")
+		testMethod(t, r, http.MethodDelete)
 		testRequestURL(t, r, "/rest/api/2/issue/10002")
 
 		w.WriteHeader(http.StatusNoContent)

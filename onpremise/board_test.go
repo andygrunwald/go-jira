@@ -139,7 +139,7 @@ func TestBoardService_DeleteBoard(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/agile/1.0/board/1", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "DELETE")
+		testMethod(t, r, http.MethodDelete)
 		testRequestURL(t, r, "/rest/agile/1.0/board/1")
 
 		w.WriteHeader(http.StatusNoContent)

@@ -88,7 +88,7 @@ func (s *ServiceDeskService) RemoveOrganization(ctx context.Context, serviceDesk
 		OrganizationID: organizationID,
 	}
 
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndPoint, organization)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndPoint, organization)
 
 	if err != nil {
 		return nil, err
@@ -141,7 +141,7 @@ func (s *ServiceDeskService) RemoveCustomers(ctx context.Context, serviceDeskID 
 	}{
 		AccountIDs: acountIDs,
 	}
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, payload)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, payload)
 	if err != nil {
 		return nil, err
 	}

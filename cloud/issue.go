@@ -701,7 +701,7 @@ func (s *IssueService) PostAttachment(ctx context.Context, issueID string, r io.
 func (s *IssueService) DeleteAttachment(ctx context.Context, attachmentID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/attachment/%s", attachmentID)
 
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -720,7 +720,7 @@ func (s *IssueService) DeleteAttachment(ctx context.Context, attachmentID string
 func (s *IssueService) DeleteLink(ctx context.Context, linkID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLink/%s", linkID)
 
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -907,7 +907,7 @@ func (s *IssueService) UpdateComment(ctx context.Context, issueID string, commen
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-issue-issueIdOrKey-comment-id-delete
 func (s *IssueService) DeleteComment(ctx context.Context, issueID, commentID string) error {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, commentID)
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
 	if err != nil {
 		return err
 	}
@@ -1265,7 +1265,7 @@ func (s *IssueService) Delete(ctx context.Context, issueID string) (*Response, e
 	deletePayload["deleteSubtasks"] = "true"
 	content, _ := json.Marshal(deletePayload)
 
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, content)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, content)
 	if err != nil {
 		return nil, err
 	}
@@ -1333,7 +1333,7 @@ func (s *IssueService) AddWatcher(ctx context.Context, issueID string, userName 
 func (s *IssueService) RemoveWatcher(ctx context.Context, issueID string, userName string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndPoint, userName)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndPoint, userName)
 	if err != nil {
 		return nil, err
 	}

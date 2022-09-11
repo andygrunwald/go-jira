@@ -84,7 +84,7 @@ func TestUserService_Delete(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/user", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "DELETE")
+		testMethod(t, r, http.MethodDelete)
 		testRequestURL(t, r, "/rest/api/2/user?accountId=000000000000000000000000")
 
 		w.WriteHeader(http.StatusNoContent)

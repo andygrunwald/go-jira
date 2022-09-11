@@ -103,7 +103,7 @@ func (s *IssueLinkTypeService) Update(ctx context.Context, linkType *IssueLinkTy
 // Caller must close resp.Body
 func (s *IssueLinkTypeService) Delete(ctx context.Context, ID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", ID)
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
 	if err != nil {
 		return nil, err
 	}

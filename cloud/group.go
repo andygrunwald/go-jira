@@ -142,7 +142,7 @@ func (s *GroupService) Add(ctx context.Context, groupname string, username strin
 // Caller must close resp.Body
 func (s *GroupService) Remove(ctx context.Context, groupname string, username string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s&username=%s", groupname, username)
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -119,7 +119,7 @@ func (s *UserService) Create(ctx context.Context, user *User) (*User, *Response,
 // Caller must close resp.Body
 func (s *UserService) Delete(ctx context.Context, accountId string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user?accountId=%s", accountId)
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
 	if err != nil {
 		return nil, err
 	}

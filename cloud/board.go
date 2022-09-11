@@ -202,7 +202,7 @@ func (s *BoardService) CreateBoard(ctx context.Context, board *Board) (*Board, *
 // Caller must close resp.Body
 func (s *BoardService) DeleteBoard(ctx context.Context, boardID int) (*Board, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%v", boardID)
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}

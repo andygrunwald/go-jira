@@ -126,7 +126,7 @@ func (s *AuthenticationService) Logout(ctx context.Context) error {
 	}
 
 	apiEndpoint := "rest/auth/1/session"
-	req, err := s.client.NewRequest(ctx, "DELETE", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
 	if err != nil {
 		return fmt.Errorf("creating the request to log the user out failed : %s", err)
 	}
