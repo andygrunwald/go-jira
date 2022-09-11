@@ -135,11 +135,44 @@ Like
 client.NewMultiPartRequest(context.Background(), "GET", .....)
 ```
 
+#### `context` is a first class citizen
+
+All API methods require a `context` as first argument.
+
+In the v1, some methods had a `...WithContext` suffix.
+These methods have been removed.
+
+If you used a service like
+
+```go
+client.Issue.CreateWithContext(ctx, ...)
+```
+
+the new call would be
+
+```go
+client.Issue.Create(ctx, ...)
+```
+
+If you used API calls without a context, like
+
+```go
+client.Issue.Create(...)
+```
+
+the new call would be
+
+```go
+client.Issue.Create(ctx, ...)
+```
+
 ### Breaking changes
 
 * Jira On-Premise and Jira Cloud have now different clients, because the API differs
 * `client.NewRawRequestWithContext()` has been removed in favor of `client.NewRawRequest()`, which requires now a context as first argument
 * `client.NewRequestWithContext()` has been removed in favor of `client.NewRequest()`, which requires now a context as first argument
+* `client.NewMultiPartRequestWithContext()` has been removed in favor of `client.NewMultiPartRequest()`, which requires now a context as first argument
+* `context` is now a first class citizen in all API calls. Functions that had a suffix like `...WithContext` have been removed entirely. The API methods support the context now as first argument.
 
 ### Features
 
