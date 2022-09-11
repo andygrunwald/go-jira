@@ -25,10 +25,10 @@ const (
 	StatusCategoryUndefined  = "undefined"
 )
 
-// GetListWithContext gets all status categories from Jira
+// GetList gets all status categories from Jira
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-statuscategory-get
-func (s *StatusCategoryService) GetListWithContext(ctx context.Context) ([]StatusCategory, *Response, error) {
+func (s *StatusCategoryService) GetList(ctx context.Context) ([]StatusCategory, *Response, error) {
 	apiEndpoint := "rest/api/2/statuscategory"
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -41,9 +41,4 @@ func (s *StatusCategoryService) GetListWithContext(ctx context.Context) ([]Statu
 		return nil, resp, NewJiraError(resp, err)
 	}
 	return statusCategoryList, resp, nil
-}
-
-// GetList wraps GetListWithContext using the background context.
-func (s *StatusCategoryService) GetList() ([]StatusCategory, *Response, error) {
-	return s.GetListWithContext(context.Background())
 }

@@ -1,6 +1,7 @@
 package onpremise
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -22,7 +23,7 @@ func TestStatusCategoryService_GetList(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	statusCategory, _, err := testClient.StatusCategory.GetList()
+	statusCategory, _, err := testClient.StatusCategory.GetList(context.Background())
 	if statusCategory == nil {
 		t.Error("Expected statusCategory list. StatusCategory list is nil")
 	}
