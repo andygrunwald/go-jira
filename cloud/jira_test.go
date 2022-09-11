@@ -302,7 +302,7 @@ func TestClient_NewMultiPartRequest(t *testing.T) {
 
 	inURL := "rest/api/2/issue/"
 	inBuf := bytes.NewBufferString("teststring")
-	req, err := c.NewMultiPartRequest("GET", inURL, inBuf)
+	req, err := c.NewMultiPartRequest(context.Background(), "GET", inURL, inBuf)
 
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
@@ -333,7 +333,7 @@ func TestClient_NewMultiPartRequest_BasicAuth(t *testing.T) {
 
 	inURL := "rest/api/2/issue/"
 	inBuf := bytes.NewBufferString("teststring")
-	req, err := c.NewMultiPartRequest("GET", inURL, inBuf)
+	req, err := c.NewMultiPartRequest(context.Background(), "GET", inURL, inBuf)
 
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)

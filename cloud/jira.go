@@ -242,10 +242,10 @@ func addOptions(s string, opts interface{}) (string, error) {
 	return u.String(), nil
 }
 
-// NewMultiPartRequestWithContext creates an API request including a multi-part file.
+// NewMultiPartRequest creates an API request including a multi-part file.
 // A relative URL can be provided in urlStr, in which case it is resolved relative to the baseURL of the Client.
 // If specified, the value pointed to by buf is a multipart form.
-func (c *Client) NewMultiPartRequestWithContext(ctx context.Context, method, urlStr string, buf *bytes.Buffer) (*http.Request, error) {
+func (c *Client) NewMultiPartRequest(ctx context.Context, method, urlStr string, buf *bytes.Buffer) (*http.Request, error) {
 	rel, err := url.Parse(urlStr)
 	if err != nil {
 		return nil, err
@@ -279,11 +279,6 @@ func (c *Client) NewMultiPartRequestWithContext(ctx context.Context, method, url
 	}
 
 	return req, nil
-}
-
-// NewMultiPartRequest wraps NewMultiPartRequestWithContext using the background context.
-func (c *Client) NewMultiPartRequest(method, urlStr string, buf *bytes.Buffer) (*http.Request, error) {
-	return c.NewMultiPartRequestWithContext(context.Background(), method, urlStr, buf)
 }
 
 // Do sends an API request and returns the API response.

@@ -689,7 +689,7 @@ func (s *IssueService) PostAttachmentWithContext(ctx context.Context, issueID st
 	}
 	writer.Close()
 
-	req, err := s.client.NewMultiPartRequestWithContext(ctx, "POST", apiEndpoint, b)
+	req, err := s.client.NewMultiPartRequest(ctx, "POST", apiEndpoint, b)
 	if err != nil {
 		return nil, nil, err
 	}

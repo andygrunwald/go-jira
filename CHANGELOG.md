@@ -110,6 +110,31 @@ Like
 client.NewRequest(context.Background(), "GET", .....)
 ```
 
+#### `NewMultiPartRequestWithContext` removed, `NewMultiPartRequest` requires `context`
+
+The function `client.NewMultiPartRequestWithContext()` has been removed.
+`client.NewMultiPartRequest()` accepts now a context as the first argument.
+This is a drop in replacement.
+
+Before:
+
+```go
+client.NewMultiPartRequestWithContext(context.Background(), "GET", .....)
+```
+
+After:
+
+```go
+client.NewMultiPartRequest(context.Background(), "GET", .....)
+```
+
+For people who used `jira.NewMultiPartRequest()`: You need to pass a context as the first argument.
+Like
+
+```go
+client.NewMultiPartRequest(context.Background(), "GET", .....)
+```
+
 ### Breaking changes
 
 * Jira On-Premise and Jira Cloud have now different clients, because the API differs
