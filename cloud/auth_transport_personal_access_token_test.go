@@ -1,6 +1,7 @@
 package cloud
 
 import (
+	"context"
 	"net/http"
 	"testing"
 )
@@ -24,6 +25,6 @@ func TestPATAuthTransport_HeaderContainsAuth(t *testing.T) {
 	})
 
 	client, _ := NewClient(testServer.URL, patTransport.Client())
-	client.User.GetSelf()
+	client.User.GetSelf(context.Background())
 
 }

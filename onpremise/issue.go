@@ -1418,7 +1418,7 @@ func (s *IssueService) GetWatchersWithContext(ctx context.Context, issueID strin
 	for _, watcher := range watches.Watchers {
 		var user *User
 		if watcher.AccountID != "" {
-			user, resp, err = s.client.User.GetByAccountID(watcher.AccountID)
+			user, resp, err = s.client.User.GetByAccountID(context.Background(), watcher.AccountID)
 			if err != nil {
 				return nil, resp, NewJiraError(resp, err)
 			}
