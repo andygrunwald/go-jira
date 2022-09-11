@@ -54,10 +54,10 @@ type RequestComment struct {
 	Expands []string     `json:"_expands,omitempty" structs:"_expands,omitempty"`
 }
 
-// CreateWithContext creates a new request.
+// Create creates a new request.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-post
-func (r *RequestService) CreateWithContext(ctx context.Context, requester string, participants []string, request *Request) (*Request, *Response, error) {
+func (r *RequestService) Create(ctx context.Context, requester string, participants []string, request *Request) (*Request, *Response, error) {
 	apiEndpoint := "rest/servicedeskapi/request"
 
 	payload := struct {
@@ -90,15 +90,10 @@ func (r *RequestService) CreateWithContext(ctx context.Context, requester string
 	return responseRequest, resp, nil
 }
 
-// Create wraps CreateWithContext using the background context.
-func (r *RequestService) Create(requester string, participants []string, request *Request) (*Request, *Response, error) {
-	return r.CreateWithContext(context.Background(), requester, participants, request)
-}
-
-// CreateCommentWithContext creates a comment on a request.
+// CreateComment creates a comment on a request.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-issueidorkey-comment-post
-func (r *RequestService) CreateCommentWithContext(ctx context.Context, issueIDOrKey string, comment *RequestComment) (*RequestComment, *Response, error) {
+func (r *RequestService) CreateComment(ctx context.Context, issueIDOrKey string, comment *RequestComment) (*RequestComment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%v/comment", issueIDOrKey)
 
 	req, err := r.client.NewRequest(ctx, "POST", apiEndpoint, comment)
@@ -113,9 +108,4 @@ func (r *RequestService) CreateCommentWithContext(ctx context.Context, issueIDOr
 	}
 
 	return responseComment, resp, nil
-}
-
-// CreateComment wraps CreateCommentWithContext using the background context.
-func (r *RequestService) CreateComment(issueIDOrKey string, comment *RequestComment) (*RequestComment, *Response, error) {
-	return r.CreateCommentWithContext(context.Background(), issueIDOrKey, comment)
 }
