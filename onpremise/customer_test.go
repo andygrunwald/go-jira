@@ -1,6 +1,7 @@
 package onpremise
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"testing"
@@ -41,7 +42,7 @@ func TestCustomerService_Create(t *testing.T) {
 		}`, wantEmailAddress, wantDisplayName)
 	})
 
-	gotCustomer, _, err := testClient.Customer.Create(wantEmailAddress, wantDisplayName)
+	gotCustomer, _, err := testClient.Customer.Create(context.Background(), wantEmailAddress, wantDisplayName)
 	if err != nil {
 		t.Fatal(err)
 	}

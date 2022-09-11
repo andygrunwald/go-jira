@@ -36,10 +36,10 @@ type CustomerList struct {
 	Expands []string   `json:"_expands,omitempty" structs:"_expands,omitempty"`
 }
 
-// CreateWithContext creates a ServiceDesk customer.
+// Create creates a ServiceDesk customer.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-customer/#api-rest-servicedeskapi-customer-post
-func (c *CustomerService) CreateWithContext(ctx context.Context, email, displayName string) (*Customer, *Response, error) {
+func (c *CustomerService) Create(ctx context.Context, email, displayName string) (*Customer, *Response, error) {
 	const apiEndpoint = "rest/servicedeskapi/customer"
 
 	payload := struct {
@@ -62,9 +62,4 @@ func (c *CustomerService) CreateWithContext(ctx context.Context, email, displayN
 	}
 
 	return responseCustomer, resp, nil
-}
-
-// Create wraps CreateWithContext using the background context.
-func (c *CustomerService) Create(email, displayName string) (*Customer, *Response, error) {
-	return c.CreateWithContext(context.Background(), email, displayName)
 }
