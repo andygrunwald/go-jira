@@ -1,6 +1,7 @@
 package onpremise
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -22,7 +23,7 @@ func TestPriorityService_GetList(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	priorities, _, err := testClient.Priority.GetList()
+	priorities, _, err := testClient.Priority.GetList(context.Background())
 	if priorities == nil {
 		t.Error("Expected priority list. Priority list is nil")
 	}
