@@ -1,6 +1,7 @@
 package onpremise
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -36,8 +37,8 @@ func TestCookieAuthTransport_SessionObject_Exists(t *testing.T) {
 		SessionObject: []*http.Cookie{testCookie},
 	}
 
-	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL)
-	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
+	basicAuthClient, _ := NewClient(testServer.URL, tp.Client())
+	req, _ := basicAuthClient.NewRequest(context.Background(), "GET", ".", nil)
 	basicAuthClient.Do(req, nil)
 }
 
@@ -72,8 +73,8 @@ func TestCookieAuthTransport_SessionObject_ExistsWithEmptyCookie(t *testing.T) {
 		SessionObject: []*http.Cookie{emptyCookie, testCookie},
 	}
 
-	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL)
-	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
+	basicAuthClient, _ := NewClient(testServer.URL, tp.Client())
+	req, _ := basicAuthClient.NewRequest(context.Background(), "GET", ".", nil)
 	basicAuthClient.Do(req, nil)
 }
 
@@ -113,7 +114,7 @@ func TestCookieAuthTransport_SessionObject_DoesNotExist(t *testing.T) {
 		AuthURL:  ts.URL,
 	}
 
-	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL)
-	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
+	basicAuthClient, _ := NewClient(testServer.URL, tp.Client())
+	req, _ := basicAuthClient.NewRequest(context.Background(), "GET", ".", nil)
 	basicAuthClient.Do(req, nil)
 }

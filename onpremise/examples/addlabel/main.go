@@ -8,7 +8,7 @@ import (
 	"strings"
 	"syscall"
 
-	jira "github.com/andygrunwald/go-jira/onpremise"
+	jira "github.com/andygrunwald/go-jira/cloud"
 	"golang.org/x/term"
 )
 
@@ -38,7 +38,7 @@ func main() {
 		Password: strings.TrimSpace(password),
 	}
 
-	client, err := jira.NewClient(tp.Client(), strings.TrimSpace(jiraURL))
+	client, err := jira.NewClient(strings.TrimSpace(jiraURL), tp.Client())
 	if err != nil {
 		fmt.Printf("\nerror: %v\n", err)
 		return

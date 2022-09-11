@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 
-	jira "github.com/andygrunwald/go-jira/onpremise"
+	jira "github.com/andygrunwald/go-jira/cloud"
 )
 
 func main() {
-	jiraClient, _ := jira.NewClient(nil, "https://issues.apache.org/jira/")
+	jiraClient, _ := jira.NewClient("https://issues.apache.org/jira/", nil)
 
 	// Running JQL query
 

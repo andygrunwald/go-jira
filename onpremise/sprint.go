@@ -9,9 +9,7 @@ import (
 
 // SprintService handles sprints in Jira Agile API.
 // See https://docs.atlassian.com/jira-software/REST/cloud/
-type SprintService struct {
-	client *Client
-}
+type SprintService service
 
 // IssuesWrapper represents a wrapper struct for moving issues to sprint
 type IssuesWrapper struct {
@@ -34,7 +32,7 @@ func (s *SprintService) MoveIssuesToSprintWithContext(ctx context.Context, sprin
 
 	payload := IssuesWrapper{Issues: issueIDs}
 
-	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, payload)
+	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, payload)
 
 	if err != nil {
 		return nil, err
@@ -61,7 +59,7 @@ func (s *SprintService) MoveIssuesToSprint(sprintID int, issueIDs []string) (*Re
 func (s *SprintService) GetIssuesForSprintWithContext(ctx context.Context, sprintID int) ([]Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/sprint/%d/issue", sprintID)
 
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -94,7 +92,7 @@ func (s *SprintService) GetIssuesForSprint(sprintID int) ([]Issue, *Response, er
 func (s *SprintService) GetIssueWithContext(ctx context.Context, issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/issue/%s", issueID)
 
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 
 	if err != nil {
 		return nil, nil, err
