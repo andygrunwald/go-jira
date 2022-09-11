@@ -85,7 +85,7 @@ func (s *IssueLinkTypeService) Create(ctx context.Context, linkType *IssueLinkTy
 // Caller must close resp.Body
 func (s *IssueLinkTypeService) Update(ctx context.Context, linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", linkType.ID)
-	req, err := s.client.NewRequest(ctx, "PUT", apiEndpoint, linkType)
+	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndpoint, linkType)
 	if err != nil {
 		return nil, nil, err
 	}

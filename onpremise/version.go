@@ -81,7 +81,7 @@ func (s *VersionService) Create(ctx context.Context, version *Version) (*Version
 // Caller must close resp.Body
 func (s *VersionService) Update(ctx context.Context, version *Version) (*Version, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/version/%v", version.ID)
-	req, err := s.client.NewRequest(ctx, "PUT", apiEndpoint, version)
+	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndpoint, version)
 	if err != nil {
 		return nil, nil, err
 	}

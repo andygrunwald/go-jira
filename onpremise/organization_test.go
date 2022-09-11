@@ -167,7 +167,7 @@ func TestOrganizationService_SetProperty(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization/1/property/organization.attributes", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "PUT")
+		testMethod(t, r, http.MethodPut)
 		testRequestURL(t, r, "/rest/servicedeskapi/organization/1/property/organization.attributes")
 
 		w.WriteHeader(http.StatusOK)

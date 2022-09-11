@@ -224,7 +224,7 @@ func (s *OrganizationService) GetProperty(ctx context.Context, organizationID in
 func (s *OrganizationService) SetProperty(ctx context.Context, organizationID int, propertyKey string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property/%s", organizationID, propertyKey)
 
-	req, err := s.client.NewRequest(ctx, "PUT", apiEndPoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndPoint, nil)
 	req.Header.Set("Accept", "application/json")
 
 	if err != nil {

@@ -82,7 +82,7 @@ func TestServiceService_Update(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/version/10002", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "PUT")
+		testMethod(t, r, http.MethodPut)
 		testRequestURL(t, r, "/rest/api/2/version/10002")
 		fmt.Fprint(w, `{
 			"description": "An excellent updated version",

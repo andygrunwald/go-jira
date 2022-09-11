@@ -134,7 +134,7 @@ func TestIssueService_Update(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/PROJ-9001", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "PUT")
+		testMethod(t, r, http.MethodPut)
 		testRequestURL(t, r, "/rest/api/2/issue/PROJ-9001")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -159,7 +159,7 @@ func TestIssueService_UpdateIssue(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/PROJ-9001", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "PUT")
+		testMethod(t, r, http.MethodPut)
 		testRequestURL(t, r, "/rest/api/2/issue/PROJ-9001")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -209,7 +209,7 @@ func TestIssueService_UpdateComment(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10000/comment/10001", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "PUT")
+		testMethod(t, r, http.MethodPut)
 		testRequestURL(t, r, "/rest/api/2/issue/10000/comment/10001")
 
 		w.WriteHeader(http.StatusCreated)
@@ -276,7 +276,7 @@ func TestIssueService_UpdateWorklogRecord(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10000/worklog/1", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "PUT")
+		testMethod(t, r, http.MethodPut)
 		testRequestURL(t, r, "/rest/api/2/issue/10000/worklog/1")
 
 		w.WriteHeader(http.StatusOK)
@@ -1669,7 +1669,7 @@ func TestIssueService_UpdateAssignee(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10002/assignee", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "PUT")
+		testMethod(t, r, http.MethodPut)
 		testRequestURL(t, r, "/rest/api/2/issue/10002/assignee")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -1866,7 +1866,7 @@ func TestIssueService_UpdateRemoteLink(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/100/remotelink/200", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "PUT")
+		testMethod(t, r, http.MethodPut)
 		testRequestURL(t, r, "/rest/api/2/issue/100/remotelink/200")
 
 		w.WriteHeader(http.StatusNoContent)

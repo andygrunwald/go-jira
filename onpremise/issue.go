@@ -815,7 +815,7 @@ func (s *IssueService) UpdateWithOptions(ctx context.Context, issue *Issue, opts
 	if err != nil {
 		return nil, nil, err
 	}
-	req, err := s.client.NewRequest(ctx, "PUT", url, issue)
+	req, err := s.client.NewRequest(ctx, http.MethodPut, url, issue)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -844,7 +844,7 @@ func (s *IssueService) Update(ctx context.Context, issue *Issue) (*Issue, *Respo
 // Caller must close resp.Body
 func (s *IssueService) UpdateIssue(ctx context.Context, jiraID string, data map[string]interface{}) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", jiraID)
-	req, err := s.client.NewRequest(ctx, "PUT", apiEndpoint, data)
+	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndpoint, data)
 	if err != nil {
 		return nil, err
 	}
@@ -888,7 +888,7 @@ func (s *IssueService) UpdateComment(ctx context.Context, issueID string, commen
 		Body: comment.Body,
 	}
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, comment.ID)
-	req, err := s.client.NewRequest(ctx, "PUT", apiEndpoint, reqBody)
+	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndpoint, reqBody)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -954,7 +954,7 @@ func (s *IssueService) AddWorklogRecord(ctx context.Context, issueID string, rec
 // https://docs.atlassian.com/software/jira/docs/api/REST/7.1.2/#api/2/issue-updateWorklog
 func (s *IssueService) UpdateWorklogRecord(ctx context.Context, issueID, worklogID string, record *WorklogRecord, options ...func(*http.Request) error) (*WorklogRecord, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog/%s", issueID, worklogID)
-	req, err := s.client.NewRequest(ctx, "PUT", apiEndpoint, record)
+	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndpoint, record)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1353,7 +1353,7 @@ func (s *IssueService) RemoveWatcher(ctx context.Context, issueID string, userNa
 func (s *IssueService) UpdateAssignee(ctx context.Context, issueID string, assignee *User) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/assignee", issueID)
 
-	req, err := s.client.NewRequest(ctx, "PUT", apiEndPoint, assignee)
+	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndPoint, assignee)
 	if err != nil {
 		return nil, err
 	}
@@ -1419,7 +1419,7 @@ func (s *IssueService) AddRemoteLink(ctx context.Context, issueID string, remote
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-remote-links/#api-rest-api-2-issue-issueidorkey-remotelink-linkid-put
 func (s *IssueService) UpdateRemoteLink(ctx context.Context, issueID string, linkID int, remotelink *RemoteLink) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/remotelink/%d", issueID, linkID)
-	req, err := s.client.NewRequest(ctx, "PUT", apiEndpoint, remotelink)
+	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndpoint, remotelink)
 	if err != nil {
 		return nil, err
 	}

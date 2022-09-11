@@ -79,7 +79,7 @@ func TestIssueLinkTypeService_Update(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issueLinkType/100", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "PUT")
+		testMethod(t, r, http.MethodPut)
 		testRequestURL(t, r, "/rest/api/2/issueLinkType/100")
 
 		w.WriteHeader(http.StatusNoContent)
