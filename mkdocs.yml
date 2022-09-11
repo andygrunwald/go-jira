@@ -1,0 +1,19 @@
+site_name: go-jira - Go client library for Atlassian Jira
+repo_url: https://github.com/andygrunwald/go-jira
+theme:
+  name: material
+  language: en
+
+plugins:
+  - search
+
+extra:
+#  version:
+#    provider: mike
+  social:
+    - icon: fontawesome/brands/twitter 
+      link: https://twitter.com/andygrunwald
+      name: Andy Grunwald on Twitter
+    - icon: fontawesome/brands/github
+      link: https://github.com/andygrunwald/go-jira
+      
