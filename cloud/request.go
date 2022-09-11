@@ -6,9 +6,7 @@ import (
 )
 
 // RequestService handles ServiceDesk customer requests for the Jira instance / API.
-type RequestService struct {
-	client *Client
-}
+type RequestService service
 
 // Request represents a ServiceDesk customer request.
 type Request struct {
@@ -78,7 +76,7 @@ func (r *RequestService) CreateWithContext(ctx context.Context, requester string
 		payload.FieldValues[field.FieldID] = field.Value
 	}
 
-	req, err := r.client.NewRequestWithContext(ctx, "POST", apiEndpoint, payload)
+	req, err := r.client.NewRequest(ctx, "POST", apiEndpoint, payload)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -103,7 +101,7 @@ func (r *RequestService) Create(requester string, participants []string, request
 func (r *RequestService) CreateCommentWithContext(ctx context.Context, issueIDOrKey string, comment *RequestComment) (*RequestComment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%v/comment", issueIDOrKey)
 
-	req, err := r.client.NewRequestWithContext(ctx, "POST", apiEndpoint, comment)
+	req, err := r.client.NewRequest(ctx, "POST", apiEndpoint, comment)
 	if err != nil {
 		return nil, nil, err
 	}

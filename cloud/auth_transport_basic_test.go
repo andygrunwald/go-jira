@@ -1,6 +1,7 @@
 package cloud
 
 import (
+	"context"
 	"net/http"
 	"testing"
 )
@@ -29,8 +30,8 @@ func TestBasicAuthTransport(t *testing.T) {
 		Password: password,
 	}
 
-	basicAuthClient, _ := NewClient(tp.Client(), testServer.URL)
-	req, _ := basicAuthClient.NewRequest("GET", ".", nil)
+	basicAuthClient, _ := NewClient(testServer.URL, tp.Client())
+	req, _ := basicAuthClient.NewRequest(context.Background(), "GET", ".", nil)
 	basicAuthClient.Do(req, nil)
 }
 

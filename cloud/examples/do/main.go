@@ -1,14 +1,15 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	jira "github.com/andygrunwald/go-jira/cloud"
 )
 
 func main() {
-	jiraClient, _ := jira.NewClient(nil, "https://jira.atlassian.com/")
-	req, _ := jiraClient.NewRequest("GET", "/rest/api/2/project", nil)
+	jiraClient, _ := jira.NewClient("https://jira.atlassian.com/", nil)
+	req, _ := jiraClient.NewRequest(context.Background(), "GET", "/rest/api/2/project", nil)
 
 	projects := new([]jira.Project)
 	res, err := jiraClient.Do(req, projects)

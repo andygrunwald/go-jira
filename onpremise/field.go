@@ -5,9 +5,7 @@ import "context"
 // FieldService handles fields for the Jira instance / API.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-Field
-type FieldService struct {
-	client *Client
-}
+type FieldService service
 
 // Field represents a field of a Jira issue.
 type Field struct {
@@ -36,7 +34,7 @@ type FieldSchema struct {
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-field-get
 func (s *FieldService) GetListWithContext(ctx context.Context) ([]Field, *Response, error) {
 	apiEndpoint := "rest/api/2/field"
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}

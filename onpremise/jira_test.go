@@ -2,6 +2,7 @@ package onpremise
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -36,7 +37,7 @@ func setup() {
 	testServer = httptest.NewServer(testMux)
 
 	// jira client configured to use test server
-	testClient, _ = NewClient(nil, testServer.URL)
+	testClient, _ = NewClient(testServer.URL, nil)
 }
 
 // teardown closes the test HTTP server.
@@ -73,7 +74,7 @@ func testRequestParams(t *testing.T, r *http.Request, want map[string]string) {
 }
 
 func TestNewClient_WrongUrl(t *testing.T) {
-	c, err := NewClient(nil, "://issues.apache.org/jira/")
+	c, err := NewClient("://issues.apache.org/jira/", nil)
 
 	if err == nil {
 		t.Error("Expected an error. Got none")
@@ -87,7 +88,7 @@ func TestNewClient_WithHttpClient(t *testing.T) {
 	httpClient := http.DefaultClient
 	httpClient.Timeout = 10 * time.Minute
 
-	c, err := NewClient(httpClient, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, httpClient)
 	if err != nil {
 		t.Errorf("Got an error: %s", err)
 	}
@@ -101,7 +102,7 @@ func TestNewClient_WithHttpClient(t *testing.T) {
 }
 
 func TestNewClient_WithServices(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 
 	if err != nil {
 		t.Errorf("Got an error: %s", err)
@@ -157,14 +158,14 @@ func TestCheckResponse(t *testing.T) {
 }
 
 func TestClient_NewRequest(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
 
 	inURL, outURL := "rest/api/2/issue/", testJiraInstanceURL+"rest/api/2/issue/"
 	inBody, outBody := &Issue{Key: "MESOS"}, `{"key":"MESOS"}`+"\n"
-	req, _ := c.NewRequest("GET", inURL, inBody)
+	req, _ := c.NewRequest(context.Background(), "GET", inURL, inBody)
 
 	// Test that relative URL was expanded
 	if got, want := req.URL.String(), outURL; got != want {
@@ -179,7 +180,7 @@ func TestClient_NewRequest(t *testing.T) {
 }
 
 func TestClient_NewRawRequest(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -188,7 +189,7 @@ func TestClient_NewRawRequest(t *testing.T) {
 
 	outBody := `{"key":"MESOS"}` + "\n"
 	inBody := outBody
-	req, _ := c.NewRawRequest("GET", inURL, strings.NewReader(outBody))
+	req, _ := c.NewRawRequest(context.Background(), "GET", inURL, strings.NewReader(outBody))
 
 	// Test that relative URL was expanded
 	if got, want := req.URL.String(), outURL; got != want {
@@ -212,16 +213,16 @@ func testURLParseError(t *testing.T, err error) {
 }
 
 func TestClient_NewRequest_BadURL(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
-	_, err = c.NewRequest("GET", ":", nil)
+	_, err = c.NewRequest(context.Background(), "GET", ":", nil)
 	testURLParseError(t, err)
 }
 
 func TestClient_NewRequest_SessionCookies(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -232,7 +233,7 @@ func TestClient_NewRequest_SessionCookies(t *testing.T) {
 
 	inURL := "rest/api/2/issue/"
 	inBody := &Issue{Key: "MESOS"}
-	req, err := c.NewRequest("GET", inURL, inBody)
+	req, err := c.NewRequest(context.Background(), "GET", inURL, inBody)
 
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
@@ -250,7 +251,7 @@ func TestClient_NewRequest_SessionCookies(t *testing.T) {
 }
 
 func TestClient_NewRequest_BasicAuth(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -259,7 +260,7 @@ func TestClient_NewRequest_BasicAuth(t *testing.T) {
 
 	inURL := "rest/api/2/issue/"
 	inBody := &Issue{Key: "MESOS"}
-	req, err := c.NewRequest("GET", inURL, inBody)
+	req, err := c.NewRequest(context.Background(), "GET", inURL, inBody)
 
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
@@ -276,11 +277,11 @@ func TestClient_NewRequest_BasicAuth(t *testing.T) {
 // since there is no difference between an HTTP request body that is an empty string versus one that is not set at all.
 // However in certain cases, intermediate systems may treat these differently resulting in subtle errors.
 func TestClient_NewRequest_EmptyBody(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
-	req, err := c.NewRequest("GET", "/", nil)
+	req, err := c.NewRequest(context.Background(), "GET", "/", nil)
 	if err != nil {
 		t.Fatalf("NewRequest returned unexpected error: %v", err)
 	}
@@ -290,7 +291,7 @@ func TestClient_NewRequest_EmptyBody(t *testing.T) {
 }
 
 func TestClient_NewMultiPartRequest(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -323,7 +324,7 @@ func TestClient_NewMultiPartRequest(t *testing.T) {
 }
 
 func TestClient_NewMultiPartRequest_BasicAuth(t *testing.T) {
-	c, err := NewClient(nil, testJiraInstanceURL)
+	c, err := NewClient(testJiraInstanceURL, nil)
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
@@ -363,7 +364,7 @@ func TestClient_Do(t *testing.T) {
 		fmt.Fprint(w, `{"A":"a"}`)
 	})
 
-	req, _ := testClient.NewRequest("GET", "/", nil)
+	req, _ := testClient.NewRequest(context.Background(), "GET", "/", nil)
 	body := new(foo)
 	testClient.Do(req, body)
 
@@ -384,7 +385,7 @@ func TestClient_Do_HTTPResponse(t *testing.T) {
 		fmt.Fprint(w, `{"A":"a"}`)
 	})
 
-	req, _ := testClient.NewRequest("GET", "/", nil)
+	req, _ := testClient.NewRequest(context.Background(), "GET", "/", nil)
 	res, _ := testClient.Do(req, nil)
 	_, err := io.ReadAll(res.Body)
 
@@ -403,7 +404,7 @@ func TestClient_Do_HTTPError(t *testing.T) {
 		http.Error(w, "Bad Request", 400)
 	})
 
-	req, _ := testClient.NewRequest("GET", "/", nil)
+	req, _ := testClient.NewRequest(context.Background(), "GET", "/", nil)
 	_, err := testClient.Do(req, nil)
 
 	if err == nil {
@@ -421,7 +422,7 @@ func TestClient_Do_RedirectLoop(t *testing.T) {
 		http.Redirect(w, r, "/", http.StatusFound)
 	})
 
-	req, _ := testClient.NewRequest("GET", "/", nil)
+	req, _ := testClient.NewRequest(context.Background(), "GET", "/", nil)
 	_, err := testClient.Do(req, nil)
 
 	if err == nil {
@@ -429,24 +430,5 @@ func TestClient_Do_RedirectLoop(t *testing.T) {
 	}
 	if err, ok := err.(*url.Error); !ok {
 		t.Errorf("Expected a URL error; got %+v.", err)
-	}
-}
-
-func TestClient_GetBaseURL_WithURL(t *testing.T) {
-	u, err := url.Parse(testJiraInstanceURL)
-	if err != nil {
-		t.Errorf("URL parsing -> Got an error: %s", err)
-	}
-
-	c, err := NewClient(nil, testJiraInstanceURL)
-	if err != nil {
-		t.Errorf("Client creation -> Got an error: %s", err)
-	}
-	if c == nil {
-		t.Error("Expected a client. Got none")
-	}
-
-	if b := c.GetBaseURL(); !reflect.DeepEqual(b, *u) {
-		t.Errorf("Base URLs are not equal. Expected %+v, got %+v", *u, b)
 	}
 }

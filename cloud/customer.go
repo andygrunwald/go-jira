@@ -6,9 +6,7 @@ import (
 )
 
 // CustomerService handles ServiceDesk customers for the Jira instance / API.
-type CustomerService struct {
-	client *Client
-}
+type CustomerService service
 
 // Customer represents a ServiceDesk customer.
 type Customer struct {
@@ -52,7 +50,7 @@ func (c *CustomerService) CreateWithContext(ctx context.Context, email, displayN
 		DisplayName: displayName,
 	}
 
-	req, err := c.client.NewRequestWithContext(ctx, http.MethodPost, apiEndpoint, payload)
+	req, err := c.client.NewRequest(ctx, http.MethodPost, apiEndpoint, payload)
 	if err != nil {
 		return nil, nil, err
 	}
