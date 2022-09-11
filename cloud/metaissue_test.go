@@ -1,6 +1,7 @@
 package cloud
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -348,7 +349,7 @@ func TestIssueService_GetCreateMeta_Success(t *testing.T) {
     }`)
 	})
 
-	issue, _, err := testClient.Issue.GetCreateMeta("SPN")
+	issue, _, err := testClient.Issue.GetCreateMeta(context.Background(), "SPN")
 	if err != nil {
 		t.Errorf("Expected nil error but got %s", err)
 	}
@@ -420,7 +421,7 @@ func TestIssueService_GetEditMeta_Success(t *testing.T) {
 	}`)
 	})
 
-	editMeta, _, err := testClient.Issue.GetEditMeta(&Issue{Key: "PROJ-9001"})
+	editMeta, _, err := testClient.Issue.GetEditMeta(context.Background(), &Issue{Key: "PROJ-9001"})
 	if err != nil {
 		t.Errorf("Expected nil error but got %s", err)
 	}
@@ -446,7 +447,7 @@ func TestIssueService_GetEditMeta_Success(t *testing.T) {
 }
 
 func TestIssueService_GetEditMeta_Fail(t *testing.T) {
-	_, _, err := testClient.Issue.GetEditMeta(&Issue{Key: "PROJ-9001"})
+	_, _, err := testClient.Issue.GetEditMeta(context.Background(), &Issue{Key: "PROJ-9001"})
 	if err == nil {
 		t.Error("Expected to receive an error, received nil instead")
 	}
@@ -797,7 +798,7 @@ func TestMetaIssueType_GetCreateMetaWithOptions(t *testing.T) {
     }`)
 	})
 
-	issue, _, err := testClient.Issue.GetCreateMetaWithOptions(&GetQueryOptions{Expand: "projects.issuetypes.fields"})
+	issue, _, err := testClient.Issue.GetCreateMetaWithOptions(context.Background(), &GetQueryOptions{Expand: "projects.issuetypes.fields"})
 	if err != nil {
 		t.Errorf("Expected nil error but got %s", err)
 	}

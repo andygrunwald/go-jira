@@ -48,18 +48,13 @@ type MetaIssueType struct {
 	Fields      tcontainer.MarshalMap `json:"fields,omitempty"`
 }
 
-// GetCreateMetaWithContext makes the api call to get the meta information required to create a ticket
-func (s *IssueService) GetCreateMetaWithContext(ctx context.Context, projectkeys string) (*CreateMetaInfo, *Response, error) {
-	return s.GetCreateMetaWithOptionsWithContext(ctx, &GetQueryOptions{ProjectKeys: projectkeys, Expand: "projects.issuetypes.fields"})
+// GetCreateMeta makes the api call to get the meta information required to create a ticket
+func (s *IssueService) GetCreateMeta(ctx context.Context, projectkeys string) (*CreateMetaInfo, *Response, error) {
+	return s.GetCreateMetaWithOptions(ctx, &GetQueryOptions{ProjectKeys: projectkeys, Expand: "projects.issuetypes.fields"})
 }
 
-// GetCreateMeta wraps GetCreateMetaWithContext using the background context.
-func (s *IssueService) GetCreateMeta(projectkeys string) (*CreateMetaInfo, *Response, error) {
-	return s.GetCreateMetaWithContext(context.Background(), projectkeys)
-}
-
-// GetCreateMetaWithOptionsWithContext makes the api call to get the meta information without requiring to have a projectKey
-func (s *IssueService) GetCreateMetaWithOptionsWithContext(ctx context.Context, options *GetQueryOptions) (*CreateMetaInfo, *Response, error) {
+// GetCreateMetaWithOptions makes the api call to get the meta information without requiring to have a projectKey
+func (s *IssueService) GetCreateMetaWithOptions(ctx context.Context, options *GetQueryOptions) (*CreateMetaInfo, *Response, error) {
 	apiEndpoint := "rest/api/2/issue/createmeta"
 
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
@@ -84,13 +79,8 @@ func (s *IssueService) GetCreateMetaWithOptionsWithContext(ctx context.Context, 
 	return meta, resp, nil
 }
 
-// GetCreateMetaWithOptions wraps GetCreateMetaWithOptionsWithContext using the background context.
-func (s *IssueService) GetCreateMetaWithOptions(options *GetQueryOptions) (*CreateMetaInfo, *Response, error) {
-	return s.GetCreateMetaWithOptionsWithContext(context.Background(), options)
-}
-
-// GetEditMetaWithContext makes the api call to get the edit meta information for an issue
-func (s *IssueService) GetEditMetaWithContext(ctx context.Context, issue *Issue) (*EditMetaInfo, *Response, error) {
+// GetEditMeta makes the api call to get the edit meta information for an issue
+func (s *IssueService) GetEditMeta(ctx context.Context, issue *Issue) (*EditMetaInfo, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/issue/%s/editmeta", issue.Key)
 
 	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
@@ -106,11 +96,6 @@ func (s *IssueService) GetEditMetaWithContext(ctx context.Context, issue *Issue)
 	}
 
 	return meta, resp, nil
-}
-
-// GetEditMeta wraps GetEditMetaWithContext using the background context.
-func (s *IssueService) GetEditMeta(issue *Issue) (*EditMetaInfo, *Response, error) {
-	return s.GetEditMetaWithContext(context.Background(), issue)
 }
 
 // GetProjectWithName returns a project with "name" from the meta information received. If not found, this returns nil.
