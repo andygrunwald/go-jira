@@ -1,6 +1,7 @@
 package onpremise
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -23,7 +24,7 @@ func TestRoleService_GetList_NoList(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	roles, _, err := testClient.Role.GetList()
+	roles, _, err := testClient.Role.GetList(context.Background())
 	if roles != nil {
 		t.Errorf("Expected role list has %d entries but should be nil", len(*roles))
 	}
@@ -47,7 +48,7 @@ func TestRoleService_GetList(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	roles, _, err := testClient.Role.GetList()
+	roles, _, err := testClient.Role.GetList(context.Background())
 	if err != nil {
 		t.Errorf("Error given: %v", err)
 	}
@@ -74,7 +75,7 @@ func TestRoleService_Get_NoRole(t *testing.T) {
 		fmt.Fprint(writer, string(raw))
 	})
 
-	role, _, err := testClient.Role.Get(99999)
+	role, _, err := testClient.Role.Get(context.Background(), 99999)
 	if role != nil {
 		t.Errorf("Expected nil, got role %v", role)
 	}
@@ -97,7 +98,7 @@ func TestRoleService_Get(t *testing.T) {
 		fmt.Fprint(writer, string(raw))
 	})
 
-	role, _, err := testClient.Role.Get(10002)
+	role, _, err := testClient.Role.Get(context.Background(), 10002)
 	if role == nil {
 		t.Errorf("Expected Role, got nil")
 	}
