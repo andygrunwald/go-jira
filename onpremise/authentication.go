@@ -159,7 +159,7 @@ func (s *AuthenticationService) GetCurrentUser(ctx context.Context) (*Session, e
 	}
 
 	apiEndpoint := "rest/auth/1/session"
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, fmt.Errorf("could not create request for getting user info : %s", err)
 	}

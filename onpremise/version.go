@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/http"
 )
 
 // VersionService handles Versions for the Jira instance / API.
@@ -31,7 +32,7 @@ type Version struct {
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-version-id-get
 func (s *VersionService) Get(ctx context.Context, versionID int) (*Version, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/version/%v", versionID)
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -615,7 +615,7 @@ type RemoteLinkStatus struct {
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
 func (s *IssueService) Get(ctx context.Context, issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -644,7 +644,7 @@ func (s *IssueService) Get(ctx context.Context, issueID string, options *GetQuer
 // Caller must close resp.Body.
 func (s *IssueService) DownloadAttachment(ctx context.Context, attachmentID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("secure/attachment/%s/", attachmentID)
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -741,7 +741,7 @@ func (s *IssueService) DeleteLink(ctx context.Context, linkID string) (*Response
 func (s *IssueService) GetWorklogs(ctx context.Context, issueID string, options ...func(*http.Request) error) (*Worklog, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
 
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1027,7 +1027,7 @@ func (s *IssueService) Search(ctx context.Context, jql string, options *SearchOp
 
 	u.RawQuery = uv.Encode()
 
-	req, err := s.client.NewRequest(ctx, "GET", u.String(), nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, u.String(), nil)
 	if err != nil {
 		return []Issue{}, nil, err
 	}
@@ -1087,7 +1087,7 @@ func (s *IssueService) SearchPages(ctx context.Context, jql string, options *Sea
 // GetCustomFields returns a map of customfield_* keys with string values
 func (s *IssueService) GetCustomFields(ctx context.Context, issueID string) (CustomFields, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1127,7 +1127,7 @@ func (s *IssueService) GetCustomFields(ctx context.Context, issueID string) (Cus
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getTransitions
 func (s *IssueService) GetTransitions(ctx context.Context, id string) ([]Transition, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/transitions?expand=transitions.fields", id)
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1280,7 +1280,7 @@ func (s *IssueService) Delete(ctx context.Context, issueID string) (*Response, e
 func (s *IssueService) GetWatchers(ctx context.Context, issueID string) (*[]User, *Response, error) {
 	watchesAPIEndpoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
-	req, err := s.client.NewRequest(ctx, "GET", watchesAPIEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, watchesAPIEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1381,7 +1381,7 @@ func (c ChangelogHistory) CreatedTime() (time.Time, error) {
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getRemoteIssueLinks
 func (s *IssueService) GetRemoteLinks(ctx context.Context, id string) (*[]RemoteLink, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/remotelink", id)
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}

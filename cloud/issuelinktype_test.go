@@ -18,7 +18,7 @@ func TestIssueLinkTypeService_GetList(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
@@ -36,7 +36,7 @@ func TestIssueLinkTypeService_Get(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issueLinkType/123", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/api/2/issueLinkType/123")
 
 		fmt.Fprint(w, `{"id": "123","name": "Blocked","inward": "Blocked","outward": "Blocked",

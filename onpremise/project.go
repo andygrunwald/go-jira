@@ -3,6 +3,7 @@ package onpremise
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/google/go-querystring/query"
 )
@@ -92,7 +93,7 @@ func (s *ProjectService) GetList(ctx context.Context) (*ProjectList, *Response, 
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
 func (s *ProjectService) ListWithOptions(ctx context.Context, options *GetQueryOptions) (*ProjectList, *Response, error) {
 	apiEndpoint := "rest/api/2/project"
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -122,7 +123,7 @@ func (s *ProjectService) ListWithOptions(ctx context.Context, options *GetQueryO
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
 func (s *ProjectService) Get(ctx context.Context, projectID string) (*Project, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/project/%s", projectID)
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -144,7 +145,7 @@ func (s *ProjectService) Get(ctx context.Context, projectID string) (*Project, *
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
 func (s *ProjectService) GetPermissionScheme(ctx context.Context, projectID string) (*PermissionScheme, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/project/%s/permissionscheme", projectID)
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -17,7 +17,7 @@ func TestFilterService_GetList(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEndpoint, func(writer http.ResponseWriter, request *http.Request) {
-		testMethod(t, request, "GET")
+		testMethod(t, request, http.MethodGet)
 		testRequestURL(t, request, testAPIEndpoint)
 		fmt.Fprint(writer, string(raw))
 	})
@@ -40,7 +40,7 @@ func TestFilterService_Get(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEndpoint, func(writer http.ResponseWriter, request *http.Request) {
-		testMethod(t, request, "GET")
+		testMethod(t, request, http.MethodGet)
 		testRequestURL(t, request, testAPIEndpoint)
 		fmt.Fprint(writer, string(raw))
 	})
@@ -64,7 +64,7 @@ func TestFilterService_GetFavouriteList(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEndpoint, func(writer http.ResponseWriter, request *http.Request) {
-		testMethod(t, request, "GET")
+		testMethod(t, request, http.MethodGet)
 		testRequestURL(t, request, testAPIEndpoint)
 		fmt.Fprint(writer, string(raw))
 	})
@@ -87,7 +87,7 @@ func TestFilterService_GetMyFilters(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEndpoint, func(writer http.ResponseWriter, request *http.Request) {
-		testMethod(t, request, "GET")
+		testMethod(t, request, http.MethodGet)
 		testRequestURL(t, request, testAPIEndpoint)
 		fmt.Fprint(writer, string(raw))
 	})
@@ -111,7 +111,7 @@ func TestFilterService_Search(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEndpoint, func(writer http.ResponseWriter, request *http.Request) {
-		testMethod(t, request, "GET")
+		testMethod(t, request, http.MethodGet)
 		testRequestURL(t, request, testAPIEndpoint)
 		fmt.Fprint(writer, string(raw))
 	})

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/http"
 )
 
 // IssueLinkTypeService handles issue link types for the Jira instance / API.
@@ -17,7 +18,7 @@ type IssueLinkTypeService service
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-get
 func (s *IssueLinkTypeService) GetList(ctx context.Context) ([]IssueLinkType, *Response, error) {
 	apiEndpoint := "rest/api/2/issueLinkType"
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -35,7 +36,7 @@ func (s *IssueLinkTypeService) GetList(ctx context.Context) ([]IssueLinkType, *R
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-get
 func (s *IssueLinkTypeService) Get(ctx context.Context, ID string) (*IssueLinkType, *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", ID)
-	req, err := s.client.NewRequest(ctx, "GET", apiEndPoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}

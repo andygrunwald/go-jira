@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/http"
 )
 
 // UserService handles users for the Jira instance / API.
@@ -49,7 +50,7 @@ type userSearchF func(userSearch) userSearch
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-user-get
 func (s *UserService) Get(ctx context.Context, accountId string) (*User, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user?accountId=%s", accountId)
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -68,7 +69,7 @@ func (s *UserService) Get(ctx context.Context, accountId string) (*User, *Respon
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUser
 func (s *UserService) GetByAccountID(ctx context.Context, accountID string) (*User, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user?accountId=%s", accountID)
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -135,7 +136,7 @@ func (s *UserService) Delete(ctx context.Context, accountId string) (*Response, 
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-user-groups-get
 func (s *UserService) GetGroups(ctx context.Context, accountId string) (*[]UserGroup, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user/groups?accountId=%s", accountId)
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -153,7 +154,7 @@ func (s *UserService) GetGroups(ctx context.Context, accountId string) (*[]UserG
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-myself-get
 func (s *UserService) GetSelf(ctx context.Context) (*User, *Response, error) {
 	const apiEndpoint = "rest/api/2/myself"
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -242,7 +243,7 @@ func (s *UserService) Find(ctx context.Context, property string, tweaks ...userS
 	}
 
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user/search?%s", queryString[:len(queryString)-1])
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}

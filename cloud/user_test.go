@@ -11,7 +11,7 @@ func TestUserService_Get_Success(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/user", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/api/2/user?accountId=000000000000000000000000")
 
 		fmt.Fprint(w, `{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","key":"fred",
@@ -34,7 +34,7 @@ func TestUserService_GetByAccountID_Success(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/user", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/api/2/user?accountId=000000000000000000000000")
 
 		fmt.Fprint(w, `{"self":"http://www.example.com/jira/rest/api/2/user?accountId=000000000000000000000000","accountId": "000000000000000000000000",
@@ -104,7 +104,7 @@ func TestUserService_GetGroups(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/user/groups", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/api/2/user/groups?accountId=000000000000000000000000")
 
 		w.WriteHeader(http.StatusCreated)
@@ -122,7 +122,7 @@ func TestUserService_GetSelf(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/myself", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/api/2/myself")
 
 		w.WriteHeader(http.StatusCreated)
@@ -150,7 +150,7 @@ func TestUserService_Find_Success(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/user/search", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/api/2/user/search?query=fred@example.com")
 
 		fmt.Fprint(w, `[{"self":"http://www.example.com/jira/rest/api/2/user?accountId=000000000000000000000000","key":"fred",
@@ -173,7 +173,7 @@ func TestUserService_Find_SuccessParams(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/user/search", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/api/2/user/search?query=fred@example.com&startAt=100&maxResults=1000")
 
 		fmt.Fprint(w, `[{"self":"http://www.example.com/jira/rest/api/2/user?query=fred","key":"fred",

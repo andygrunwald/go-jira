@@ -19,7 +19,7 @@ func TestRoleService_GetList_NoList(t *testing.T) {
 	}
 
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
@@ -43,7 +43,7 @@ func TestRoleService_GetList(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testAPIEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
@@ -70,7 +70,7 @@ func TestRoleService_Get_NoRole(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEdpoint, func(writer http.ResponseWriter, request *http.Request) {
-		testMethod(t, request, "GET")
+		testMethod(t, request, http.MethodGet)
 		testRequestURL(t, request, testAPIEdpoint)
 		fmt.Fprint(writer, string(raw))
 	})
@@ -93,7 +93,7 @@ func TestRoleService_Get(t *testing.T) {
 		t.Error(err.Error())
 	}
 	testMux.HandleFunc(testAPIEdpoint, func(writer http.ResponseWriter, request *http.Request) {
-		testMethod(t, request, "GET")
+		testMethod(t, request, http.MethodGet)
 		testRequestURL(t, request, testAPIEdpoint)
 		fmt.Fprint(writer, string(raw))
 	})
