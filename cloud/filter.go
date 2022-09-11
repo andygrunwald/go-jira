@@ -118,8 +118,8 @@ type FilterSearchOptions struct {
 	Expand string `url:"expand,omitempty"`
 }
 
-// GetListWithContext retrieves all filters from Jira
-func (fs *FilterService) GetListWithContext(ctx context.Context) ([]*Filter, *Response, error) {
+// GetList retrieves all filters from Jira
+func (fs *FilterService) GetList(ctx context.Context) ([]*Filter, *Response, error) {
 
 	options := &GetQueryOptions{}
 	apiEndpoint := "rest/api/2/filter"
@@ -143,13 +143,8 @@ func (fs *FilterService) GetListWithContext(ctx context.Context) ([]*Filter, *Re
 	return filters, resp, err
 }
 
-// GetList wraps GetListWithContext using the background context.
-func (fs *FilterService) GetList() ([]*Filter, *Response, error) {
-	return fs.GetListWithContext(context.Background())
-}
-
-// GetFavouriteListWithContext retrieves the user's favourited filters from Jira
-func (fs *FilterService) GetFavouriteListWithContext(ctx context.Context) ([]*Filter, *Response, error) {
+// GetFavouriteList retrieves the user's favourited filters from Jira
+func (fs *FilterService) GetFavouriteList(ctx context.Context) ([]*Filter, *Response, error) {
 	apiEndpoint := "rest/api/2/filter/favourite"
 	req, err := fs.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -164,13 +159,8 @@ func (fs *FilterService) GetFavouriteListWithContext(ctx context.Context) ([]*Fi
 	return filters, resp, err
 }
 
-// GetFavouriteList wraps GetFavouriteListWithContext using the background context.
-func (fs *FilterService) GetFavouriteList() ([]*Filter, *Response, error) {
-	return fs.GetFavouriteListWithContext(context.Background())
-}
-
-// GetWithContext retrieves a single Filter from Jira
-func (fs *FilterService) GetWithContext(ctx context.Context, filterID int) (*Filter, *Response, error) {
+// Get retrieves a single Filter from Jira
+func (fs *FilterService) Get(ctx context.Context, filterID int) (*Filter, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/filter/%d", filterID)
 	req, err := fs.client.NewRequest(ctx, "GET", apiEndpoint, nil)
 	if err != nil {
@@ -186,15 +176,10 @@ func (fs *FilterService) GetWithContext(ctx context.Context, filterID int) (*Fil
 	return filter, resp, err
 }
 
-// Get wraps GetWithContext using the background context.
-func (fs *FilterService) Get(filterID int) (*Filter, *Response, error) {
-	return fs.GetWithContext(context.Background(), filterID)
-}
-
-// GetMyFiltersWithContext retrieves the my Filters.
+// GetMyFilters retrieves the my Filters.
 //
 // https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-rest-api-3-filter-my-get
-func (fs *FilterService) GetMyFiltersWithContext(ctx context.Context, opts *GetMyFiltersQueryOptions) ([]*Filter, *Response, error) {
+func (fs *FilterService) GetMyFilters(ctx context.Context, opts *GetMyFiltersQueryOptions) ([]*Filter, *Response, error) {
 	apiEndpoint := "rest/api/3/filter/my"
 	url, err := addOptions(apiEndpoint, opts)
 	if err != nil {
@@ -214,15 +199,10 @@ func (fs *FilterService) GetMyFiltersWithContext(ctx context.Context, opts *GetM
 	return filters, resp, nil
 }
 
-// GetMyFilters wraps GetMyFiltersWithContext using the background context.
-func (fs *FilterService) GetMyFilters(opts *GetMyFiltersQueryOptions) ([]*Filter, *Response, error) {
-	return fs.GetMyFiltersWithContext(context.Background(), opts)
-}
-
-// SearchWithContext will search for filter according to the search options
+// Search will search for filter according to the search options
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-rest-api-3-filter-search-get
-func (fs *FilterService) SearchWithContext(ctx context.Context, opt *FilterSearchOptions) (*FiltersList, *Response, error) {
+func (fs *FilterService) Search(ctx context.Context, opt *FilterSearchOptions) (*FiltersList, *Response, error) {
 	apiEndpoint := "rest/api/3/filter/search"
 	url, err := addOptions(apiEndpoint, opt)
 	if err != nil {
@@ -241,9 +221,4 @@ func (fs *FilterService) SearchWithContext(ctx context.Context, opt *FilterSearc
 	}
 
 	return filters, resp, err
-}
-
-// Search wraps SearchWithContext using the background context.
-func (fs *FilterService) Search(opt *FilterSearchOptions) (*FiltersList, *Response, error) {
-	return fs.SearchWithContext(context.Background(), opt)
 }
