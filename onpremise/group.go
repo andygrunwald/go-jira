@@ -121,7 +121,7 @@ func (s *GroupService) Add(ctx context.Context, groupname string, username strin
 		Name string `json:"name"`
 	}
 	user.Name = username
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, &user)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, &user)
 	if err != nil {
 		return nil, nil, err
 	}

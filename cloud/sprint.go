@@ -33,7 +33,7 @@ func (s *SprintService) MoveIssuesToSprint(ctx context.Context, sprintID int, is
 
 	payload := IssuesWrapper{Issues: issueIDs}
 
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, payload)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, payload)
 
 	if err != nil {
 		return nil, err

@@ -54,7 +54,7 @@ func (s *IssueLinkTypeService) Get(ctx context.Context, ID string) (*IssueLinkTy
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-post
 func (s *IssueLinkTypeService) Create(ctx context.Context, linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
 	apiEndpoint := "/rest/api/2/issueLinkType"
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, linkType)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, linkType)
 	if err != nil {
 		return nil, nil, err
 	}

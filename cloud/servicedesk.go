@@ -59,7 +59,7 @@ func (s *ServiceDeskService) AddOrganization(ctx context.Context, serviceDeskID 
 		OrganizationID: organizationID,
 	}
 
-	req, err := s.client.NewRequest(ctx, "POST", apiEndPoint, organization)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndPoint, organization)
 
 	if err != nil {
 		return nil, err
@@ -114,7 +114,7 @@ func (s *ServiceDeskService) AddCustomers(ctx context.Context, serviceDeskID int
 	}{
 		AccountIDs: acountIDs,
 	}
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, payload)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, payload)
 	if err != nil {
 		return nil, err
 	}

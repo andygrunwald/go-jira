@@ -14,7 +14,7 @@ func TestAuthenticationService_AcquireSessionCookie_Failure(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/auth/1/session")
 		b, err := io.ReadAll(r.Body)
 		if err != nil {
@@ -48,7 +48,7 @@ func TestAuthenticationService_AcquireSessionCookie_Success(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/auth/1/session")
 		b, err := io.ReadAll(r.Body)
 		if err != nil {
@@ -138,8 +138,8 @@ func TestAuthenticationService_GetUserInfo_AccessForbidden_Fail(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "POST" {
-			testMethod(t, r, "POST")
+		if r.Method == http.MethodPost {
+			testMethod(t, r, http.MethodPost)
 			testRequestURL(t, r, "/rest/auth/1/session")
 			b, err := io.ReadAll(r.Body)
 			if err != nil {
@@ -176,8 +176,8 @@ func TestAuthenticationService_GetUserInfo_NonOkStatusCode_Fail(t *testing.T) {
 	defer teardown()
 
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "POST" {
-			testMethod(t, r, "POST")
+		if r.Method == http.MethodPost {
+			testMethod(t, r, http.MethodPost)
 			testRequestURL(t, r, "/rest/auth/1/session")
 			b, err := io.ReadAll(r.Body)
 			if err != nil {
@@ -232,8 +232,8 @@ func TestAuthenticationService_GetUserInfo_Success(t *testing.T) {
 	testUserInfo.LoginInfo.PreviousLoginTime = "2016-09-07T11:36:23.476+0200"
 
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "POST" {
-			testMethod(t, r, "POST")
+		if r.Method == http.MethodPost {
+			testMethod(t, r, http.MethodPost)
 			testRequestURL(t, r, "/rest/auth/1/session")
 			b, err := io.ReadAll(r.Body)
 			if err != nil {
@@ -274,8 +274,8 @@ func TestAuthenticationService_Logout_Success(t *testing.T) {
 	defer teardown()
 
 	testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "POST" {
-			testMethod(t, r, "POST")
+		if r.Method == http.MethodPost {
+			testMethod(t, r, http.MethodPost)
 			testRequestURL(t, r, "/rest/auth/1/session")
 			b, err := io.ReadAll(r.Body)
 			if err != nil {

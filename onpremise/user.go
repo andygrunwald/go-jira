@@ -87,7 +87,7 @@ func (s *UserService) GetByAccountID(ctx context.Context, accountID string) (*Us
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-createUser
 func (s *UserService) Create(ctx context.Context, user *User) (*User, *Response, error) {
 	apiEndpoint := "/rest/api/2/user"
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, user)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, user)
 	if err != nil {
 		return nil, nil, err
 	}

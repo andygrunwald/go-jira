@@ -678,7 +678,7 @@ func (s *IssueService) PostAttachment(ctx context.Context, issueID string, r io.
 	}
 	writer.Close()
 
-	req, err := s.client.NewMultiPartRequest(ctx, "POST", apiEndpoint, b)
+	req, err := s.client.NewMultiPartRequest(ctx, http.MethodPost, apiEndpoint, b)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -781,7 +781,7 @@ func WithQueryOptions(options interface{}) func(*http.Request) error {
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
 func (s *IssueService) Create(ctx context.Context, issue *Issue) (*Issue, *Response, error) {
 	apiEndpoint := "rest/api/2/issue"
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, issue)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, issue)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -863,7 +863,7 @@ func (s *IssueService) UpdateIssue(ctx context.Context, jiraID string, data map[
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-addComment
 func (s *IssueService) AddComment(ctx context.Context, issueID string, comment *Comment) (*Comment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment", issueID)
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, comment)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, comment)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -927,7 +927,7 @@ func (s *IssueService) DeleteComment(ctx context.Context, issueID, commentID str
 // https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-issue-issueIdOrKey-worklog-post
 func (s *IssueService) AddWorklogRecord(ctx context.Context, issueID string, record *WorklogRecord, options ...func(*http.Request) error) (*WorklogRecord, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, record)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, record)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -982,7 +982,7 @@ func (s *IssueService) UpdateWorklogRecord(ctx context.Context, issueID, worklog
 // Caller must close resp.Body
 func (s *IssueService) AddLink(ctx context.Context, issueLink *IssueLink) (*Response, error) {
 	apiEndpoint := "rest/api/2/issueLink"
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, issueLink)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, issueLink)
 	if err != nil {
 		return nil, err
 	}
@@ -1161,7 +1161,7 @@ func (s *IssueService) DoTransition(ctx context.Context, ticketID, transitionID 
 func (s *IssueService) DoTransitionWithPayload(ctx context.Context, ticketID, payload interface{}) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/transitions", ticketID)
 
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, payload)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, payload)
 	if err != nil {
 		return nil, err
 	}
@@ -1313,7 +1313,7 @@ func (s *IssueService) GetWatchers(ctx context.Context, issueID string) (*[]User
 func (s *IssueService) AddWatcher(ctx context.Context, issueID string, userName string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
-	req, err := s.client.NewRequest(ctx, "POST", apiEndPoint, userName)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndPoint, userName)
 	if err != nil {
 		return nil, err
 	}
@@ -1399,7 +1399,7 @@ func (s *IssueService) GetRemoteLinks(ctx context.Context, id string) (*[]Remote
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issue-issueIdOrKey-remotelink-post
 func (s *IssueService) AddRemoteLink(ctx context.Context, issueID string, remotelink *RemoteLink) (*RemoteLink, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/remotelink", issueID)
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, remotelink)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, remotelink)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -19,7 +19,7 @@ func TestSprintService_MoveIssuesToSprint(t *testing.T) {
 	issuesToMove := []string{"KEY-1", "KEY-2"}
 
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, testAPIEndpoint)
 
 		decoder := json.NewDecoder(r.Body)

@@ -50,7 +50,7 @@ func (s *VersionService) Get(ctx context.Context, versionID int) (*Version, *Res
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-version-post
 func (s *VersionService) Create(ctx context.Context, version *Version) (*Version, *Response, error) {
 	apiEndpoint := "/rest/api/2/version"
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, version)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, version)
 	if err != nil {
 		return nil, nil, err
 	}

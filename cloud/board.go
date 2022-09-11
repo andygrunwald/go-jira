@@ -181,7 +181,7 @@ func (s *BoardService) GetBoard(ctx context.Context, boardID int) (*Board, *Resp
 // Jira API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-createBoard
 func (s *BoardService) CreateBoard(ctx context.Context, board *Board) (*Board, *Response, error) {
 	apiEndpoint := "rest/agile/1.0/board"
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, board)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, board)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -3,6 +3,7 @@ package onpremise
 import (
 	"context"
 	"fmt"
+	"net/http"
 )
 
 // RequestService handles ServiceDesk customer requests for the Jira instance / API.
@@ -76,7 +77,7 @@ func (r *RequestService) Create(ctx context.Context, requester string, participa
 		payload.FieldValues[field.FieldID] = field.Value
 	}
 
-	req, err := r.client.NewRequest(ctx, "POST", apiEndpoint, payload)
+	req, err := r.client.NewRequest(ctx, http.MethodPost, apiEndpoint, payload)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -96,7 +97,7 @@ func (r *RequestService) Create(ctx context.Context, requester string, participa
 func (r *RequestService) CreateComment(ctx context.Context, issueIDOrKey string, comment *RequestComment) (*RequestComment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%v/comment", issueIDOrKey)
 
-	req, err := r.client.NewRequest(ctx, "POST", apiEndpoint, comment)
+	req, err := r.client.NewRequest(ctx, http.MethodPost, apiEndpoint, comment)
 	if err != nil {
 		return nil, nil, err
 	}

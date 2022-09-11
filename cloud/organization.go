@@ -95,7 +95,7 @@ func (s *OrganizationService) CreateOrganization(ctx context.Context, name strin
 		Name: name,
 	}
 
-	req, err := s.client.NewRequest(ctx, "POST", apiEndPoint, organization)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndPoint, organization)
 	req.Header.Set("Accept", "application/json")
 
 	if err != nil {
@@ -297,7 +297,7 @@ func (s *OrganizationService) GetUsers(ctx context.Context, organizationID int, 
 func (s *OrganizationService) AddUsers(ctx context.Context, organizationID int, users OrganizationUsersDTO) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/user", organizationID)
 
-	req, err := s.client.NewRequest(ctx, "POST", apiEndPoint, users)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndPoint, users)
 
 	if err != nil {
 		return nil, err

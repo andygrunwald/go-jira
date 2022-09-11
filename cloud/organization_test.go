@@ -36,7 +36,7 @@ func TestOrganizationService_CreateOrganization(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/servicedeskapi/organization")
 
 		o := new(OrganizationCreationDTO)
@@ -283,7 +283,7 @@ func TestOrganizationService_AddUsers(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/organization/1/user", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/servicedeskapi/organization/1/user")
 
 		w.WriteHeader(http.StatusNoContent)

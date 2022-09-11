@@ -54,7 +54,7 @@ func TestIssueLinkTypeService_Create(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issueLinkType", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/api/2/issueLinkType")
 
 		w.WriteHeader(http.StatusCreated)

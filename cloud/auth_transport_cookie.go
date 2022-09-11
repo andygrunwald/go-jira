@@ -90,7 +90,7 @@ func (t *CookieAuthTransport) buildAuthRequest() (*http.Request, error) {
 	json.NewEncoder(b).Encode(body)
 
 	// TODO Use a context here
-	req, err := http.NewRequest("POST", t.AuthURL, b)
+	req, err := http.NewRequest(http.MethodPost, t.AuthURL, b)
 	if err != nil {
 		return nil, err
 	}

@@ -61,7 +61,7 @@ func TestIssueService_Create(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/api/2/issue")
 
 		w.WriteHeader(http.StatusCreated)
@@ -86,7 +86,7 @@ func TestIssueService_CreateThenGet(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/api/2/issue")
 
 		w.WriteHeader(http.StatusCreated)
@@ -182,7 +182,7 @@ func TestIssueService_AddComment(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10000/comment", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/api/2/issue/10000/comment")
 
 		w.WriteHeader(http.StatusCreated)
@@ -254,7 +254,7 @@ func TestIssueService_AddWorklogRecord(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10000/worklog", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/api/2/issue/10000/worklog")
 
 		w.WriteHeader(http.StatusCreated)
@@ -298,7 +298,7 @@ func TestIssueService_AddLink(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issueLink", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/api/2/issueLink")
 
 		w.WriteHeader(http.StatusOK)
@@ -464,7 +464,7 @@ func TestIssueService_PostAttachment(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10000/attachments", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/api/2/issue/10000/attachments")
 		status := http.StatusOK
 
@@ -513,7 +513,7 @@ func TestIssueService_PostAttachment_NoResponse(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10000/attachments", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/api/2/issue/10000/attachments")
 		w.WriteHeader(http.StatusOK)
 	})
@@ -532,7 +532,7 @@ func TestIssueService_PostAttachment_NoFilename(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10000/attachments", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/api/2/issue/10000/attachments")
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, `[{"self":"http://jira/jira/rest/api/2/attachment/228924","id":"228924","filename":"example.jpg","author":{"self":"http://jira/jira/rest/api/2/user?username=test","name":"test","emailAddress":"test@test.com","avatarUrls":{"16x16":"http://jira/jira/secure/useravatar?size=small&avatarId=10082","48x48":"http://jira/jira/secure/useravatar?avatarId=10082"},"displayName":"Tester","active":true},"created":"2016-05-24T00:25:17.000-0700","size":32280,"mimeType":"image/jpeg","content":"http://jira/jira/secure/attachment/228924/example.jpg","thumbnail":"http://jira/jira/secure/thumbnail/228924/_thumb_228924.png"}]`)
@@ -550,7 +550,7 @@ func TestIssueService_PostAttachment_NoAttachment(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10000/attachments", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/api/2/issue/10000/attachments")
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, `[{"self":"http://jira/jira/rest/api/2/attachment/228924","id":"228924","filename":"example.jpg","author":{"self":"http://jira/jira/rest/api/2/user?username=test","name":"test","emailAddress":"test@test.com","avatarUrls":{"16x16":"http://jira/jira/secure/useravatar?size=small&avatarId=10082","48x48":"http://jira/jira/secure/useravatar?avatarId=10082"},"displayName":"Tester","active":true},"created":"2016-05-24T00:25:17.000-0700","size":32280,"mimeType":"image/jpeg","content":"http://jira/jira/secure/attachment/228924/example.jpg","thumbnail":"http://jira/jira/secure/thumbnail/228924/_thumb_228924.png"}]`)
@@ -863,7 +863,7 @@ func TestIssueService_DoTransition(t *testing.T) {
 	transitionID := "22"
 
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, testAPIEndpoint)
 
 		decoder := json.NewDecoder(r.Body)
@@ -908,7 +908,7 @@ func TestIssueService_DoTransitionWithPayload(t *testing.T) {
 	}
 
 	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, testAPIEndpoint)
 
 		decoder := json.NewDecoder(r.Body)
@@ -1822,7 +1822,7 @@ func TestIssueService_AddRemoteLink(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/issue/10000/remotelink", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/api/2/issue/10000/remotelink")
 
 		w.WriteHeader(http.StatusCreated)

@@ -23,7 +23,7 @@ func TestRequestService_Create(t *testing.T) {
 	)
 
 	testMux.HandleFunc("/rest/servicedeskapi/request", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/servicedeskapi/request")
 
 		var payload struct {
@@ -146,7 +146,7 @@ func TestRequestService_CreateComment(t *testing.T) {
 	defer teardown()
 
 	testMux.HandleFunc("/rest/servicedeskapi/request/HELPDESK-1/comment", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/servicedeskapi/request/HELPDESK-1/comment")
 
 		w.Write([]byte(`{

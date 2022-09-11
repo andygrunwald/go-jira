@@ -74,7 +74,7 @@ func TestServiceDeskService_AddOrganizations(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/servicedesk/10001/organization", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/servicedeskapi/servicedesk/10001/organization")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -167,7 +167,7 @@ func TestServiceDeskServiceStringServiceDeskID_AddOrganizations(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/servicedeskapi/servicedesk/TEST/organization", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/servicedeskapi/servicedesk/TEST/organization")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -227,7 +227,7 @@ func TestServiceDeskService_AddCustomers(t *testing.T) {
 			)
 
 			testMux.HandleFunc(fmt.Sprintf("/rest/servicedeskapi/servicedesk/%v/customer", test.serviceDeskID), func(w http.ResponseWriter, r *http.Request) {
-				testMethod(t, r, "POST")
+				testMethod(t, r, http.MethodPost)
 				testRequestURL(t, r, fmt.Sprintf("/rest/servicedeskapi/servicedesk/%v/customer", test.serviceDeskID))
 
 				var payload struct {

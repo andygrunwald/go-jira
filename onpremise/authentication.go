@@ -67,7 +67,7 @@ func (s *AuthenticationService) AcquireSessionCookie(ctx context.Context, userna
 		password,
 	}
 
-	req, err := s.client.NewRequest(ctx, "POST", apiEndpoint, body)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, body)
 	if err != nil {
 		return false, err
 	}

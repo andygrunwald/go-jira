@@ -114,7 +114,7 @@ func TestBoardService_CreateBoard(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/agile/1.0/board", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/agile/1.0/board")
 
 		w.WriteHeader(http.StatusCreated)

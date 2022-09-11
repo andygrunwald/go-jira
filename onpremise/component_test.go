@@ -11,7 +11,7 @@ func TestComponentService_Create_Success(t *testing.T) {
 	setup()
 	defer teardown()
 	testMux.HandleFunc("/rest/api/2/component", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testRequestURL(t, r, "/rest/api/2/component")
 
 		w.WriteHeader(http.StatusCreated)
