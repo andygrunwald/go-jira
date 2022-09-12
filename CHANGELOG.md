@@ -166,6 +166,40 @@ the new call would be
 client.Issue.Create(ctx, ...)
 ```
 
+#### `BoardService.GetAllSprints` removed, `BoardService.GetAllSprintsWithOptions` renamed
+
+
+The function `client.BoardService.GetAllSprints()` has been removed.
+The function `client.BoardService.GetAllSprintsWithOptions()` has been renamed to `client.BoardService.GetAllSprints()`.
+
+##### If you used `client.BoardService.GetAllSprints()`:
+
+Before:
+
+```go
+client.Board.GetAllSprints(context.Background(), "123")
+```
+
+After:
+
+```go
+client.Board.GetAllSprints(context.Background(), "123", nil)
+```
+
+##### If you used `client.BoardService.GetAllSprintsWithOptions()`:
+
+Before:
+
+```go
+client.Board.GetAllSprintsWithOptions(context.Background(), 123, &GetAllSprintsOptions{State: "active,future"})
+```
+
+After:
+
+```go
+client.Board.GetAllSprints(context.Background(), 123, &GetAllSprintsOptions{State: "active,future"})
+```
+
 ### Breaking changes
 
 * Jira On-Premise and Jira Cloud have now different clients, because the API differs
@@ -173,6 +207,7 @@ client.Issue.Create(ctx, ...)
 * `client.NewRequestWithContext()` has been removed in favor of `client.NewRequest()`, which requires now a context as first argument
 * `client.NewMultiPartRequestWithContext()` has been removed in favor of `client.NewMultiPartRequest()`, which requires now a context as first argument
 * `context` is now a first class citizen in all API calls. Functions that had a suffix like `...WithContext` have been removed entirely. The API methods support the context now as first argument.
+* `BoardService.GetAllSprints` has been removed and `BoardService.GetAllSprintsWithOptions` has been renamed to `BoardService.GetAllSprints`
 
 ### Features
 
