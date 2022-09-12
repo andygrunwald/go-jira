@@ -262,6 +262,38 @@ After:
 client.Issue.Update(context.Background(), issue, nil)
 ```
 
+#### `Issue.GetCreateMeta` removed, `Issue.GetCreateMetaWithOptions` renamed
+
+The function `client.Issue.GetCreateMetaWithOptions()` has been renamed to `client.Issue.GetCreateMeta()`.
+
+##### If you used `client.Issue.GetCreateMeta()`:
+
+Before:
+
+```go
+client.Issue.GetCreateMeta(context.Background(), "SPN")
+```
+
+After:
+
+```go
+client.Issue.GetCreateMetaWithOptions(ctx, &GetQueryOptions{ProjectKeys: "SPN", Expand: "projects.issuetypes.fields"})
+```
+
+##### If you used `client.Issue.GetCreateMetaWithOptions()`:
+
+Before:
+
+```go
+client.Issue.GetCreateMetaWithOptions(ctx, &GetQueryOptions{ProjectKeys: "SPN", Expand: "projects.issuetypes.fields"})
+```
+
+After:
+
+```go
+client.Issue.GetCreateMeta(ctx, &GetQueryOptions{ProjectKeys: "SPN", Expand: "projects.issuetypes.fields"})
+```
+
 ### Breaking changes
 
 * Jira On-Premise and Jira Cloud have now different clients, because the API differs
