@@ -23,3 +23,7 @@ staticcheck: ## Runs static analysis to prevend bugs, foster code simplicity, pe
 
 .PHONY: all
 all: test vet fmt staticcheck ## Runs all source code quality targets (like test, vet, fmt, staticcheck)
+
+.PHONY: docs-serve
+docs-serve: ## Runs the documentation development server (based on mkdocs)
+	mkdocs serve
