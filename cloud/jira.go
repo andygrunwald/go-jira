@@ -64,6 +64,7 @@ type Client struct {
 	ServiceDesk      *ServiceDeskService
 	Customer         *CustomerService
 	Request          *RequestService
+	GroupUserPicker  *GroupUserPickerService
 }
 
 // service is the base structure to bundle API services
@@ -128,6 +129,7 @@ func NewClient(baseURL string, httpClient *http.Client) (*Client, error) {
 	c.ServiceDesk = (*ServiceDeskService)(&c.common)
 	c.Customer = (*CustomerService)(&c.common)
 	c.Request = (*RequestService)(&c.common)
+	c.GroupUserPicker = (*GroupUserPickerService)(&c.common)
 
 	return c, nil
 }

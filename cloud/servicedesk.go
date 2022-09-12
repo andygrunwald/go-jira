@@ -7,6 +7,8 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/andygrunwald/go-jira/v2/cloud/models"
+	"github.com/andygrunwald/go-jira/v2/cloud/models/servicedesk"
 	"github.com/google/go-querystring/query"
 )
 
@@ -160,14 +162,14 @@ func (s *ServiceDeskService) RemoveCustomers(ctx context.Context, serviceDeskID 
 // ListCustomers lists customers for a ServiceDesk.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-customer-get
-func (s *ServiceDeskService) ListCustomers(ctx context.Context, serviceDeskID interface{}, options *CustomerListOptions) (*CustomerList, *Response, error) {
+func (s *ServiceDeskService) ListCustomers(ctx context.Context, serviceDeskID interface{}, options *servicedesk.CustomerListOptions) (*models.PagedDTOT[servicedesk.Customer], *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%v/customer", serviceDeskID)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	// this is an experiemntal endpoint
+	// this is an experimental endpoint
 	req.Header.Set("X-ExperimentalApi", "opt-in")
 
 	if options != nil {
@@ -184,7 +186,7 @@ func (s *ServiceDeskService) ListCustomers(ctx context.Context, serviceDeskID in
 	}
 	defer resp.Body.Close()
 
-	customerList := new(CustomerList)
+	customerList := new(models.PagedDTOT[servicedesk.Customer])
 	if err := json.NewDecoder(resp.Body).Decode(customerList); err != nil {
 		return nil, resp, fmt.Errorf("could not unmarshall the data into struct")
 	}
