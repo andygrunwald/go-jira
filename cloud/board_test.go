@@ -161,38 +161,6 @@ func TestBoardService_GetAllSprints(t *testing.T) {
 
 	testAPIEndpoint := "/rest/agile/1.0/board/123/sprint"
 
-	raw, err := os.ReadFile("../testing/mock-data/sprints.json")
-	if err != nil {
-		t.Error(err.Error())
-	}
-
-	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEndpoint)
-		fmt.Fprint(w, string(raw))
-	})
-
-	sprints, _, err := testClient.Board.GetAllSprints(context.Background(), "123")
-
-	if err != nil {
-		t.Errorf("Got error: %v", err)
-	}
-
-	if sprints == nil {
-		t.Error("Expected sprint list. Got nil.")
-	}
-
-	if len(sprints) != 4 {
-		t.Errorf("Expected 4 transitions. Got %d", len(sprints))
-	}
-}
-
-func TestBoardService_GetAllSprintsWithOptions(t *testing.T) {
-	setup()
-	defer teardown()
-
-	testAPIEndpoint := "/rest/agile/1.0/board/123/sprint"
-
 	raw, err := os.ReadFile("../testing/mock-data/sprints_filtered.json")
 	if err != nil {
 		t.Error(err.Error())
@@ -204,7 +172,7 @@ func TestBoardService_GetAllSprintsWithOptions(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	sprints, _, err := testClient.Board.GetAllSprintsWithOptions(context.Background(), 123, &GetAllSprintsOptions{State: "active,future"})
+	sprints, _, err := testClient.Board.GetAllSprints(context.Background(), 123, &GetAllSprintsOptions{State: "active,future"})
 	if err != nil {
 		t.Errorf("Got error: %v", err)
 	}
