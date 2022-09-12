@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/models"
-	"github.com/andygrunwald/go-jira/v2/cloud/models/servicedesk"
 	"github.com/google/go-querystring/query"
+	"github.com/mcl-de/go-jira/v2/cloud/models"
+	"github.com/mcl-de/go-jira/v2/cloud/models/servicedesk"
 )
 
 // RequestService handles ServiceDesk customer requests for the Jira instance / API.

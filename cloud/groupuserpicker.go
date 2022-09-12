@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/models"
+	"github.com/mcl-de/go-jira/v2/cloud/models"
 )
 
 // GroupUserPickerService  handles Groups for the Jira instance / API.

@@ -7,7 +7,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/models/apps/insights"
+	"github.com/mcl-de/go-jira/v2/cloud/models/apps/insights"
 )
 
 // GetObject returns a single object by id

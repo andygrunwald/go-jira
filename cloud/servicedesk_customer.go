@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/models/servicedesk"
+	"github.com/mcl-de/go-jira/v2/cloud/models/servicedesk"
 )
 
 // CustomerService handles ServiceDesk customers for the Jira instance / API.

@@ -16,7 +16,7 @@ Previously you used this library like:
 
 ```go
 import (
-    "github.com/andygrunwald/go-jira"
+    "github.com/mcl-de/go-jira"
 )
 ```
 
@@ -25,7 +25,7 @@ For the cloud version, you will import this library like
 
 ```go
 import (
-	jira "github.com/andygrunwald/go-jira/cloud"
+	jira "github.com/mcl-de/go-jira/cloud"
 )
 ```
 
@@ -33,7 +33,7 @@ For On-Premise it looks like
 
 ```go
 import (
-	jira "github.com/andygrunwald/go-jira/onpremise"
+	jira "github.com/mcl-de/go-jira/onpremise"
 )
 ```
 

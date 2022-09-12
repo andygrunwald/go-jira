@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/models/apps/insights"
+	"github.com/mcl-de/go-jira/v2/cloud/models/apps/insights"
 )
 
 // GetObjectSchemaList resource to find object schemas

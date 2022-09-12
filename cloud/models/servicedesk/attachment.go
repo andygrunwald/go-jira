@@ -3,7 +3,7 @@ package servicedesk
 import (
 	"io"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/models"
+	"github.com/mcl-de/go-jira/v2/cloud/models"
 )
 
 type TemporaryFile struct {

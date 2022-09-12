@@ -1,6 +1,6 @@
 package servicedesk
 
-import "github.com/andygrunwald/go-jira/v2/cloud/models"
+import "github.com/mcl-de/go-jira/v2/cloud/models"
 
 // RequestType contains RequestType data
 type RequestType struct {

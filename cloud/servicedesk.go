@@ -7,9 +7,9 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/models"
-	"github.com/andygrunwald/go-jira/v2/cloud/models/servicedesk"
 	"github.com/google/go-querystring/query"
+	"github.com/mcl-de/go-jira/v2/cloud/models"
+	"github.com/mcl-de/go-jira/v2/cloud/models/servicedesk"
 )
 
 // ServiceDeskService handles ServiceDesk for the Jira instance / API.
