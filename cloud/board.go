@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -214,29 +213,11 @@ func (s *BoardService) DeleteBoard(ctx context.Context, boardID int) (*Board, *R
 	return nil, resp, err
 }
 
-// GetAllSprints will return all sprints from a board, for a given board Id.
+// GetAllSprints returns all sprints from a board, for a given board ID.
 // This only includes sprints that the user has permission to view.
 //
-// Jira API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board/{boardId}/sprint
-func (s *BoardService) GetAllSprints(ctx context.Context, boardID string) ([]Sprint, *Response, error) {
-	id, err := strconv.Atoi(boardID)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	result, response, err := s.GetAllSprintsWithOptions(ctx, id, &GetAllSprintsOptions{})
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return result.Values, response, nil
-}
-
-// GetAllSprintsWithOptions will return sprints from a board, for a given board Id and filtering options
-// This only includes sprints that the user has permission to view.
-//
-// Jira API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board/{boardId}/sprint
-func (s *BoardService) GetAllSprintsWithOptions(ctx context.Context, boardID int, options *GetAllSprintsOptions) (*SprintsList, *Response, error) {
+// Jira API docs: https://developer.atlassian.com/cloud/jira/software/rest/api-group-board/#api-rest-agile-1-0-board-boardid-sprint-get
+func (s *BoardService) GetAllSprints(ctx context.Context, boardID int, options *GetAllSprintsOptions) (*SprintsList, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%d/sprint", boardID)
 	url, err := addOptions(apiEndpoint, options)
 	if err != nil {

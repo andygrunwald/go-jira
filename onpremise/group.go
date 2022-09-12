@@ -58,39 +58,19 @@ type GroupSearchOptions struct {
 	IncludeInactiveUsers bool
 }
 
-// Get returns a paginated list of users who are members of the specified group and its subgroups.
+// Get returns a paginated list of members of the specified group and its subgroups.
 // Users in the page are ordered by user names.
 // User of this resource is required to have sysadmin or admin permissions.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/server/#api/2/group-getUsersFromGroup
 //
 // WARNING: This API only returns the first page of group members
-func (s *GroupService) Get(ctx context.Context, name string) ([]GroupMember, *Response, error) {
-	apiEndpoint := fmt.Sprintf("/rest/api/2/group/member?groupname=%s", url.QueryEscape(name))
-	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	group := new(groupMembersResult)
-	resp, err := s.client.Do(req, group)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return group.Members, resp, nil
-}
-
-// GetWithOptions returns a paginated list of members of the specified group and its subgroups.
-// Users in the page are ordered by user names.
-// User of this resource is required to have sysadmin or admin permissions.
-//
-// Jira API docs: https://docs.atlassian.com/jira/REST/server/#api/2/group-getUsersFromGroup
-func (s *GroupService) GetWithOptions(ctx context.Context, name string, options *GroupSearchOptions) ([]GroupMember, *Response, error) {
+func (s *GroupService) Get(ctx context.Context, name string, options *GroupSearchOptions) ([]GroupMember, *Response, error) {
 	var apiEndpoint string
 	if options == nil {
 		apiEndpoint = fmt.Sprintf("/rest/api/2/group/member?groupname=%s", url.QueryEscape(name))
 	} else {
+		// TODO use addOptions
 		apiEndpoint = fmt.Sprintf(
 			"/rest/api/2/group/member?groupname=%s&startAt=%d&maxResults=%d&includeInactiveUsers=%t",
 			url.QueryEscape(name),

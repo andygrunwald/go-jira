@@ -8,31 +8,7 @@ import (
 	"testing"
 )
 
-func TestProjectService_GetList(t *testing.T) {
-	setup()
-	defer teardown()
-	testAPIEdpoint := "/rest/api/2/project"
-
-	raw, err := os.ReadFile("../testing/mock-data/all_projects.json")
-	if err != nil {
-		t.Error(err.Error())
-	}
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEdpoint)
-		fmt.Fprint(w, string(raw))
-	})
-
-	projects, _, err := testClient.Project.GetList(context.Background())
-	if projects == nil {
-		t.Error("Expected project list. Project list is nil")
-	}
-	if err != nil {
-		t.Errorf("Error given: %s", err)
-	}
-}
-
-func TestProjectService_ListWithOptions(t *testing.T) {
+func TestProjectService_GetAll(t *testing.T) {
 	setup()
 	defer teardown()
 	testAPIEdpoint := "/rest/api/2/project"
@@ -47,7 +23,7 @@ func TestProjectService_ListWithOptions(t *testing.T) {
 		fmt.Fprint(w, string(raw))
 	})
 
-	projects, _, err := testClient.Project.ListWithOptions(context.Background(), &GetQueryOptions{Expand: "issueTypes"})
+	projects, _, err := testClient.Project.GetAll(context.Background(), &GetQueryOptions{Expand: "issueTypes"})
 	if projects == nil {
 		t.Error("Expected project list. Project list is nil")
 	}
