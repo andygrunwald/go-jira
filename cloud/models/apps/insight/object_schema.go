@@ -1,4 +1,4 @@
-package insights
+package insight
 
 type ObjectSchemaList struct {
 	StartAt    int            `json:"startAt" validate:"required"`

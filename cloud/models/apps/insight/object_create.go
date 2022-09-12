@@ -1,4 +1,4 @@
-package insights
+package insight
 
 type ObjectCreate struct {
 	ObjectTypeID string              `json:"objectTypeId" validate:"required"`
