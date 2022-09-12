@@ -26,6 +26,13 @@ func (i *InsightService) GetObjectSchemaList(ctx context.Context, workspaceID st
 		return nil, err
 	}
 
+	switch res.StatusCode {
+	case http.StatusUnauthorized:
+		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
+	case http.StatusInternalServerError:
+		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	}
+
 	list := new(insights.GenericList[insights.ObjectSchema])
 	err = json.NewDecoder(res.Body).Decode(&list)
 
@@ -47,6 +54,15 @@ func (i *InsightService) GetObjectSchemaAttributes(ctx context.Context, workspac
 	res, err := i.client.client.Do(req)
 	if err != nil {
 		return nil, err
+	}
+
+	switch res.StatusCode {
+	case http.StatusUnauthorized:
+		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
+	case http.StatusNotFound:
+		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
+	case http.StatusInternalServerError:
+		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
 	}
 
 	var attributes []insights.ObjectTypeAttribute
