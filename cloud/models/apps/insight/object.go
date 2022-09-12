@@ -1,4 +1,4 @@
-package insights
+package insight
 
 import "encoding/json"
 
@@ -153,4 +153,10 @@ type GenericList[T any] struct {
 	MaxResults int `json:"maxResults" validate:"required"`
 	Total      int `json:"total" validate:"required"`
 	Values     []T `json:"values" validate:"required"`
+}
+
+type ObjectAttributeOptions struct {
+	OnlyValueEditable bool   `url:"onlyValueEditable,omitempty" url:"onlyValueEditable"`
+	Extended          bool   `url:"extended,omitempty" url:"extended"`
+	Query             string `url:"query,omitempty" url:"query"`
 }

@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/models/apps/insights"
+	"github.com/andygrunwald/go-jira/v2/cloud/models/apps/insight"
 )
 
 // GetObjectSchemaList resource to find object schemas
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-objectschema/#api-objectschema-list-get
-func (i *InsightService) GetObjectSchemaList(ctx context.Context, workspaceID string) (*insights.GenericList[insights.ObjectSchema], error) {
+func (i *InsightService) GetObjectSchemaList(ctx context.Context, workspaceID string) (*insight.GenericList[insight.ObjectSchema], error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objectschema/list`, insightURL, workspaceID)
 
 	req, err := i.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
@@ -33,7 +33,7 @@ func (i *InsightService) GetObjectSchemaList(ctx context.Context, workspaceID st
 		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
 	}
 
-	list := new(insights.GenericList[insights.ObjectSchema])
+	list := new(insight.GenericList[insight.ObjectSchema])
 	err = json.NewDecoder(res.Body).Decode(&list)
 
 	return list, err
@@ -41,7 +41,7 @@ func (i *InsightService) GetObjectSchemaList(ctx context.Context, workspaceID st
 
 // GetObjectSchemaAttributes find all object type attributes for this object schema
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-objectschema/#api-objectschema-id-attributes-get
-func (i *InsightService) GetObjectSchemaAttributes(ctx context.Context, workspaceID, id string) ([]insights.ObjectTypeAttribute, error) {
+func (i *InsightService) GetObjectSchemaAttributes(ctx context.Context, workspaceID, id string) ([]insight.ObjectTypeAttribute, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objectschema/%s/attributes`, insightURL, workspaceID, id)
 
 	req, err := i.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
@@ -65,7 +65,7 @@ func (i *InsightService) GetObjectSchemaAttributes(ctx context.Context, workspac
 		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
 	}
 
-	var attributes []insights.ObjectTypeAttribute
+	var attributes []insight.ObjectTypeAttribute
 	err = json.NewDecoder(res.Body).Decode(&attributes)
 
 	return attributes, err

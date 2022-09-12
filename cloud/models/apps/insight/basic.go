@@ -1,4 +1,4 @@
-package insights
+package insight
 
 type Avatar struct {
 	WorkspaceID string `json:"workspaceId" validate:"required"`
