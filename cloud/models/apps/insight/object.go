@@ -156,7 +156,7 @@ type GenericList[T any] struct {
 }
 
 type ObjectAttributeOptions struct {
-	OnlyValueEditable bool   `url:"onlyValueEditable,omitempty" url:"onlyValueEditable"`
-	Extended          bool   `url:"extended,omitempty" url:"extended"`
-	Query             string `url:"query,omitempty" url:"query"`
+	OnlyValueEditable bool   `url:"onlyValueEditable,omitempty"`
+	Extended          bool   `url:"extended,omitempty"`
+	Query             string `url:"query,omitempty"`
 }
