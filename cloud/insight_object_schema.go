@@ -11,8 +11,8 @@ import (
 
 // GetObjectSchemaList resource to find object schemas
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-objectschema/#api-objectschema-list-get
-func (i *InsightsService) GetObjectSchemaList(ctx context.Context, workspaceID string) (*insights.GenericList[insights.ObjectSchema], error) {
-	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objectschema/list`, insightsURL, workspaceID)
+func (i *InsightService) GetObjectSchemaList(ctx context.Context, workspaceID string) (*insights.GenericList[insights.ObjectSchema], error) {
+	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objectschema/list`, insightURL, workspaceID)
 
 	req, err := i.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
 	if err != nil {
@@ -34,8 +34,8 @@ func (i *InsightsService) GetObjectSchemaList(ctx context.Context, workspaceID s
 
 // GetObjectSchemaAttributes find all object type attributes for this object schema
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-objectschema/#api-objectschema-id-attributes-get
-func (i *InsightsService) GetObjectSchemaAttributes(ctx context.Context, workspaceID, id string) ([]insights.ObjectTypeAttribute, error) {
-	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objectschema/%s/attributes`, insightsURL, workspaceID, id)
+func (i *InsightService) GetObjectSchemaAttributes(ctx context.Context, workspaceID, id string) ([]insights.ObjectTypeAttribute, error) {
+	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objectschema/%s/attributes`, insightURL, workspaceID, id)
 
 	req, err := i.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
 	if err != nil {

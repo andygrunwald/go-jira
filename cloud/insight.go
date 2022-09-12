@@ -7,7 +7,7 @@ var ErrUnauthorized = errors.New("client must be authenticated to access this re
 var ErrNotFound = errors.New("target resource do not exist")
 var ErrUnknown = errors.New("internal server error")
 
-const insightsURL = "https://api.atlassian.com"
+const insightURL = "https://api.atlassian.com"
 
-// InsightsService handles Insights App for the Jira instance / API.
-type InsightsService service
+// InsightService handles Insight App for the Jira instance / API.
+type InsightService service
