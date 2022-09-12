@@ -139,3 +139,29 @@ func (r *RequestService) RemoveRequestParticipants(ctx context.Context, idOrKey 
 
 	return responseRequest, resp, nil
 }
+
+// CreateRequestComments create a comment for a ServiceDesk request.
+//
+// https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-issueidorkey-comment-post
+func (s *ServiceDeskService) CreateRequestComments(ctx context.Context, idOrKey string, request servicedesk.CreateRequestComment) (*servicedesk.CommentDTO, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%s/comment", idOrKey)
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, request)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+	defer resp.Body.Close()
+
+	comment := new(servicedesk.CommentDTO)
+	if err = json.NewDecoder(resp.Body).Decode(comment); err != nil {
+		return nil, resp, err
+	}
+
+	return comment, resp, nil
+}

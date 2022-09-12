@@ -18,6 +18,7 @@ const boundary = "rjMhuusQtNPAshccLgTNLBqzpuVSjpRm"
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-attachtemporaryfile-post
 func (s *ServiceDeskService) AttachTemporaryFile(ctx context.Context, serviceDeskID int, files []servicedesk.TemporaryFile) (*servicedesk.AttachedTemporaryFile, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%d/attachTemporaryFile", serviceDeskID)
 	pipeRead, pipeWrite := io.Pipe()
 
 	// Set up multipart body for reading
@@ -56,7 +57,6 @@ func (s *ServiceDeskService) AttachTemporaryFile(ctx context.Context, serviceDes
 		return multipartWriter.Close()
 	})
 	wg.Go(func() error {
-		apiEndpoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%d/attachTemporaryFile", serviceDeskID)
 		req, err := s.client.NewRawRequest(gCtx, http.MethodPost, apiEndpoint, pipeRead)
 		if err != nil {
 			return err
@@ -85,4 +85,28 @@ func (s *ServiceDeskService) AttachTemporaryFile(ctx context.Context, serviceDes
 	}
 
 	return commentList, resp, nil
+}
+
+func (s *ServiceDeskService) CreateAttachment(ctx context.Context, idOrKey string, request servicedesk.CreateRequestAttachment) (*servicedesk.AttachmentCreateResultDTO, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%s/attachment", idOrKey)
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, request)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+	defer resp.Body.Close()
+
+	attachment := new(servicedesk.AttachmentCreateResultDTO)
+	if err = json.NewDecoder(resp.Body).Decode(attachment); err != nil {
+		return nil, resp, err
+	}
+
+	return attachment, resp, nil
 }
