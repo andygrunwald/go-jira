@@ -200,6 +200,40 @@ After:
 client.Board.GetAllSprints(context.Background(), 123, &GetAllSprintsOptions{State: "active,future"})
 ```
 
+#### `GroupService.Get` removed, `GroupService.GetWithOptions` renamed
+
+
+The function `client.GroupService.Get()` has been removed.
+The function `client.GroupService.GetWithOptions()` has been renamed to `client.GroupService.Get()`.
+
+##### If you used `client.GroupService.Get()`:
+
+Before:
+
+```go
+client.Group.Get(context.Background(), "default")
+```
+
+After:
+
+```go
+client.Group.Get(context.Background(), "default", nil)
+```
+
+##### If you used `client.GroupService.GetWithOptions()`:
+
+Before:
+
+```go
+client.Group.GetWithOptions(context.Background(), "default", &GroupSearchOptions{StartAt: 0, MaxResults: 2})
+```
+
+After:
+
+```go
+client.Group.Get(context.Background(), "default", &GroupSearchOptions{StartAt: 0, MaxResults: 2})
+```
+
 ### Breaking changes
 
 * Jira On-Premise and Jira Cloud have now different clients, because the API differs
@@ -208,6 +242,7 @@ client.Board.GetAllSprints(context.Background(), 123, &GetAllSprintsOptions{Stat
 * `client.NewMultiPartRequestWithContext()` has been removed in favor of `client.NewMultiPartRequest()`, which requires now a context as first argument
 * `context` is now a first class citizen in all API calls. Functions that had a suffix like `...WithContext` have been removed entirely. The API methods support the context now as first argument.
 * `BoardService.GetAllSprints` has been removed and `BoardService.GetAllSprintsWithOptions` has been renamed to `BoardService.GetAllSprints`
+* `GroupService.Get` has been removed and `GroupService.GetWithOptions` has been renamed to `GroupService.Get`
 
 ### Features
 
