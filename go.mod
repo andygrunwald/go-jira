@@ -1,4 +1,4 @@
-module github.com/andygrunwald/go-jira/v2
+module github.com/mcl-de/go-jira/v2
 
 go 1.18
 
