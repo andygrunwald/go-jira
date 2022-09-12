@@ -65,11 +65,11 @@ func (s *ServiceDeskService) GetRequestTypeFields(ctx context.Context, serviceDe
 	return o, resp, nil
 }
 
-// GetGroupsWithContext returns groups for
+// GetRequestTypeGroups returns groups for
 // a given service desk id.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-servicedesk/#api-rest-servicedeskapi-servicedesk-servicedeskid-requesttypegroup-get
-func (s *ServiceDeskService) GetGroupsWithContext(ctx context.Context, serviceDeskID int) (*models.PagedDTOT[servicedesk.RequestTypeGroup], *Response, error) {
+func (s *ServiceDeskService) GetRequestTypeGroups(ctx context.Context, serviceDeskID int) (*models.PagedDTOT[servicedesk.RequestTypeGroup], *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/servicedesk/%d/requesttypegroup", serviceDeskID)
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
