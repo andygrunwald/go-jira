@@ -168,8 +168,6 @@ client.Issue.Create(ctx, ...)
 
 #### `BoardService.GetAllSprints` removed, `BoardService.GetAllSprintsWithOptions` renamed
 
-
-The function `client.BoardService.GetAllSprints()` has been removed.
 The function `client.BoardService.GetAllSprintsWithOptions()` has been renamed to `client.BoardService.GetAllSprints()`.
 
 ##### If you used `client.BoardService.GetAllSprints()`:
@@ -202,8 +200,6 @@ client.Board.GetAllSprints(context.Background(), 123, &GetAllSprintsOptions{Stat
 
 #### `GroupService.Get` removed, `GroupService.GetWithOptions` renamed
 
-
-The function `client.GroupService.Get()` has been removed.
 The function `client.GroupService.GetWithOptions()` has been renamed to `client.GroupService.Get()`.
 
 ##### If you used `client.GroupService.Get()`:
@@ -234,6 +230,38 @@ After:
 client.Group.Get(context.Background(), "default", &GroupSearchOptions{StartAt: 0, MaxResults: 2})
 ```
 
+#### `Issue.Update` removed, `Issue.UpdateWithOptions` renamed
+
+The function `client.Issue.UpdateWithOptions()` has been renamed to `client.Issue.Update()`.
+
+##### If you used `client.Issue.Update()`:
+
+Before:
+
+```go
+client.Issue.Update(context.Background(), issue)
+```
+
+After:
+
+```go
+client.Issue.Update(context.Background(), issue, nil)
+```
+
+##### If you used `client.Issue.UpdateWithOptions()`:
+
+Before:
+
+```go
+client.Issue.UpdateWithOptions(context.Background(), issue, nil)
+```
+
+After:
+
+```go
+client.Issue.Update(context.Background(), issue, nil)
+```
+
 ### Breaking changes
 
 * Jira On-Premise and Jira Cloud have now different clients, because the API differs
@@ -243,6 +271,7 @@ client.Group.Get(context.Background(), "default", &GroupSearchOptions{StartAt: 0
 * `context` is now a first class citizen in all API calls. Functions that had a suffix like `...WithContext` have been removed entirely. The API methods support the context now as first argument.
 * `BoardService.GetAllSprints` has been removed and `BoardService.GetAllSprintsWithOptions` has been renamed to `BoardService.GetAllSprints`
 * `GroupService.Get` has been removed and `GroupService.GetWithOptions` has been renamed to `GroupService.Get`
+* `Issue.Update` has been removed and `Issue.UpdateWithOptions` has been renamed to `Issue.Update`
 
 ### Features
 

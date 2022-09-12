@@ -146,7 +146,7 @@ func TestIssueService_Update(t *testing.T) {
 			Description: "example bug report",
 		},
 	}
-	issue, _, err := testClient.Issue.Update(context.Background(), i)
+	issue, _, err := testClient.Issue.Update(context.Background(), i, nil)
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
 	}

@@ -804,12 +804,12 @@ func (s *IssueService) Create(ctx context.Context, issue *Issue) (*Issue, *Respo
 	return responseIssue, resp, nil
 }
 
-// UpdateWithOptions updates an issue from a JSON representation,
+// Update updates an issue from a JSON representation,
 // while also specifying query params. The issue is found by key.
 //
-// Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-issueidorkey-put
 // Caller must close resp.Body
-func (s *IssueService) UpdateWithOptions(ctx context.Context, issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
+func (s *IssueService) Update(ctx context.Context, issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", issue.Key)
 	url, err := addOptions(apiEndpoint, opts)
 	if err != nil {
@@ -829,13 +829,6 @@ func (s *IssueService) UpdateWithOptions(ctx context.Context, issue *Issue, opts
 	// Returning the same pointer here is pointless, so we return a copy instead.
 	ret := *issue
 	return &ret, resp, nil
-}
-
-// Update updates an issue from a JSON representation. The issue is found by key.
-//
-// Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-editIssue
-func (s *IssueService) Update(ctx context.Context, issue *Issue) (*Issue, *Response, error) {
-	return s.UpdateWithOptions(ctx, issue, nil)
 }
 
 // UpdateIssue updates an issue from a JSON representation. The issue is found by key.
