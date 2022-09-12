@@ -9,6 +9,8 @@ import (
 	"sort"
 	"strconv"
 	"testing"
+
+	"github.com/andygrunwald/go-jira/v2/cloud/models/servicedesk"
 )
 
 func TestServiceDeskService_GetOrganizations(t *testing.T) {
@@ -352,13 +354,13 @@ func TestServiceDeskService_ListCustomers(t *testing.T) {
 
 			var (
 				email       = "fred@example.com"
-				wantOptions = &CustomerListOptions{
+				wantOptions = &servicedesk.CustomerListOptions{
 					Query: email,
 					Start: 1,
 					Limit: 10,
 				}
 
-				gotOptions = new(CustomerListOptions)
+				gotOptions = new(servicedesk.CustomerListOptions)
 			)
 
 			testMux.HandleFunc(fmt.Sprintf("/rest/servicedeskapi/servicedesk/%v/customer", test.serviceDeskID), func(w http.ResponseWriter, r *http.Request) {

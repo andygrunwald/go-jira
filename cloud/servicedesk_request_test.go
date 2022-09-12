@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"reflect"
 	"testing"
+
+	"github.com/andygrunwald/go-jira/v2/cloud/models/servicedesk"
 )
 
 func TestRequestService_Create(t *testing.T) {
@@ -112,22 +114,16 @@ func TestRequestService_Create(t *testing.T) {
 		}`))
 	})
 
-	request := &Request{
+	_, _, err := testClient.Request.Create(context.Background(), &servicedesk.CreateRequest{
 		ServiceDeskID: "10",
 		TypeID:        "25",
-		FieldValues: []RequestFieldValue{
-			{
-				FieldID: "summary",
-				Value:   "Request JSD help via REST",
-			},
-			{
-				FieldID: "description",
-				Value:   "I need a new *mouse* for my Mac",
-			},
+		FieldValues: map[string]any{
+			"summary":     "Request JSD help via REST",
+			"description": "I need a new *mouse* for my Mac",
 		},
-	}
-
-	_, _, err := testClient.Request.Create(context.Background(), wantRequester, wantParticipants, request)
+		Requester:    wantRequester,
+		Participants: wantParticipants,
+	})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -188,7 +184,7 @@ func TestRequestService_CreateComment(t *testing.T) {
 		}`))
 	})
 
-	comment := &RequestComment{
+	comment := &servicedesk.RequestComment{
 		Body:   "Hello there",
 		Public: true,
 	}
