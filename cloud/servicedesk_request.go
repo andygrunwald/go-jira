@@ -8,6 +8,7 @@ import (
 
 	"github.com/andygrunwald/go-jira/v2/cloud/models"
 	"github.com/andygrunwald/go-jira/v2/cloud/models/servicedesk"
+	"github.com/google/go-querystring/query"
 )
 
 // RequestService handles ServiceDesk customer requests for the Jira instance / API.
@@ -145,6 +146,7 @@ func (r *RequestService) RemoveRequestParticipants(ctx context.Context, idOrKey 
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-issueidorkey-comment-post
 func (s *ServiceDeskService) CreateRequestComments(ctx context.Context, idOrKey string, request servicedesk.CreateRequestComment) (*servicedesk.CommentDTO, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%s/comment", idOrKey)
+
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, request)
 	if err != nil {
 		return nil, nil, err
@@ -164,4 +166,37 @@ func (s *ServiceDeskService) CreateRequestComments(ctx context.Context, idOrKey 
 	}
 
 	return comment, resp, nil
+}
+
+// ListRequestComments lists comments for a ServiceDesk request.
+//
+// https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-issueidorkey-comment-get
+func (s *ServiceDeskService) ListRequestComments(ctx context.Context, idOrKey string, options *servicedesk.RequestCommentListOptions) (*models.PagedDTOT[servicedesk.CommentDTO], *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%s/comment", idOrKey)
+
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if options != nil {
+		q, err := query.Values(options)
+		if err != nil {
+			return nil, nil, err
+		}
+		req.URL.RawQuery = q.Encode()
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+	defer resp.Body.Close()
+
+	commentList := new(models.PagedDTOT[servicedesk.CommentDTO])
+	if err := json.NewDecoder(resp.Body).Decode(commentList); err != nil {
+		return nil, resp, err
+	}
+
+	return commentList, resp, nil
 }
