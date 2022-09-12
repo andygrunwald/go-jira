@@ -1,6 +1,8 @@
 package servicedesk
 
-import "github.com/andygrunwald/go-jira/v2/cloud/models"
+import (
+	"github.com/andygrunwald/go-jira/v2/cloud/models"
+)
 
 type CreateRequest struct {
 	ServiceDeskID string         `json:"serviceDeskId,omitempty" structs:"serviceDeskId,omitempty"`
@@ -54,4 +56,18 @@ type RequestComment struct {
 	Created *RequestDate     `json:"created,omitempty" structs:"created,omitempty"`
 	Links   *models.SelfLink `json:"_links,omitempty" structs:"_links,omitempty"`
 	Expands []string         `json:"_expands,omitempty" structs:"_expands,omitempty"`
+}
+
+// RequestCommentListOptions is the query options for listing comments for a ServiceDesk request.
+type RequestCommentListOptions struct {
+	Public   *bool    `url:"public,omitempty" query:"public"`
+	Internal *bool    `url:"internal,omitempty" query:"internal"`
+	Expand   []string `url:"expand,omitempty" query:"expand"`
+	Start    int      `url:"start,omitempty" query:"start"`
+	Limit    int      `url:"limit,omitempty" query:"limit"`
+}
+
+type CreateRequestComment struct {
+	Body   string `json:"body" structs:"body"`
+	Public bool   `json:"public" structs:"public"`
 }
