@@ -294,6 +294,38 @@ After:
 client.Issue.GetCreateMeta(ctx, &GetQueryOptions{ProjectKeys: "SPN", Expand: "projects.issuetypes.fields"})
 ```
 
+#### `Project.GetList` removed, `Project.ListWithOptions` renamed
+
+The function `client.Project.ListWithOptions()` has been renamed to `client.Project.GetAll()`.
+
+##### If you used `client.Project.GetList()`:
+
+Before:
+
+```go
+client.Project.GetList(context.Background())
+```
+
+After:
+
+```go
+client.Project.GetAll(context.Background(), nil)
+```
+
+##### If you used `client.Project.ListWithOptions()`:
+
+Before:
+
+```go
+client.Project.ListWithOptions(ctx, &GetQueryOptions{})
+```
+
+After:
+
+```go
+client.Project.GetAll(ctx, &GetQueryOptions{})
+```
+
 ### Breaking changes
 
 * Jira On-Premise and Jira Cloud have now different clients, because the API differs
@@ -304,6 +336,8 @@ client.Issue.GetCreateMeta(ctx, &GetQueryOptions{ProjectKeys: "SPN", Expand: "pr
 * `BoardService.GetAllSprints` has been removed and `BoardService.GetAllSprintsWithOptions` has been renamed to `BoardService.GetAllSprints`
 * `GroupService.Get` has been removed and `GroupService.GetWithOptions` has been renamed to `GroupService.Get`
 * `Issue.Update` has been removed and `Issue.UpdateWithOptions` has been renamed to `Issue.Update`
+* `Issue.GetCreateMeta` has been removed and `Issue.GetCreateMetaWithOptions` has been renamed to `Issue.GetCreateMeta`
+* `Project.GetList` has been removed and `Project.ListWithOptions` has been renamed to `Project.GetAll`
 
 ### Features
 
