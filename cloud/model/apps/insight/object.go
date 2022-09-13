@@ -160,3 +160,19 @@ type ObjectAttributeOptions struct {
 	Extended          bool   `url:"extended,omitempty"`
 	Query             string `url:"query,omitempty"`
 }
+
+type ObjectHistoryOptions struct {
+	AscendingOrder bool `url:"asc,omitempty"`
+	Abbreviate     bool `url:"abbreviate,omitempty"`
+}
+
+type ObjectHistory struct {
+	Actor             User   `json:"actor" validate:"required"`
+	ID                string `json:"id" validate:"required"`
+	AffectedAttribute string `json:"affectedAttribute"`
+	OldValue          string `json:"oldValue"`
+	NewValue          string `json:"newValue"`
+	Type              string `json:"type" validate:"required"`
+	Created           string `json:"created" validate:"required"`
+	ObjectID          string `json:"objectId" validate:"required"`
+}
