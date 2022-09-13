@@ -1,4 +1,4 @@
-package models
+package model
 
 // FindGroupAndUsersQueryOptions specifies the optional parameters to the Edit issue
 type FindGroupAndUsersQueryOptions struct {

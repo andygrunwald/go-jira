@@ -1,4 +1,4 @@
-package models
+package model
 
 // PagedDTOT is response of a paged list (PagedDTO) with generic support for values
 type PagedDTOT[T any] struct {

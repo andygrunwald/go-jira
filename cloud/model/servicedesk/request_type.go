@@ -1,6 +1,6 @@
 package servicedesk
 
-import "github.com/mcl-de/go-jira/v2/cloud/models"
+import "github.com/mcl-de/go-jira/v2/cloud/model"
 
 // RequestType contains RequestType data
 type RequestType struct {
@@ -14,7 +14,7 @@ type RequestType struct {
 	Icon          *RequestTypeIcon `json:"icon,omitempty" structs:"icon,omitempty"`
 	Practice      string           `json:"practice,omitempty" structs:"practice,omitempty"`
 	Expands       []string         `json:"_expands,omitempty" structs:"_expands,omitempty"`
-	Links         *models.SelfLink `json:"_links,omitempty" structs:"_links,omitempty"`
+	Links         *model.SelfLink  `json:"_links,omitempty" structs:"_links,omitempty"`
 }
 
 // RequestTypeIcon contains RequestType icon data
