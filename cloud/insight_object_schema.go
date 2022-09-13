@@ -6,12 +6,15 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/models/apps/insight"
+	"github.com/andygrunwald/go-jira/v2/cloud/model/apps/insight"
 )
 
-// GetObjectSchemaList resource to find object schemas
+// InsightObjectSchemaService handles object schema in Insight App for the Jira instance / API.
+type InsightObjectSchemaService service
+
+// List resource to find object schemas
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-objectschema/#api-objectschema-list-get
-func (i *InsightService) GetObjectSchemaList(ctx context.Context, workspaceID string) (*insight.GenericList[insight.ObjectSchema], error) {
+func (i *InsightObjectSchemaService) List(ctx context.Context, workspaceID string) (*insight.GenericList[insight.ObjectSchema], error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objectschema/list`, insightURL, workspaceID)
 
 	req, err := i.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
@@ -39,9 +42,9 @@ func (i *InsightService) GetObjectSchemaList(ctx context.Context, workspaceID st
 	return list, err
 }
 
-// GetObjectSchemaAttributes find all object type attributes for this object schema
+// GetAttributes find all object type attributes for this object schema
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-objectschema/#api-objectschema-id-attributes-get
-func (i *InsightService) GetObjectSchemaAttributes(ctx context.Context, workspaceID, id string) ([]insight.ObjectTypeAttribute, error) {
+func (i *InsightObjectSchemaService) GetAttributes(ctx context.Context, workspaceID, id string) ([]insight.ObjectTypeAttribute, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objectschema/%s/attributes`, insightURL, workspaceID, id)
 
 	req, err := i.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)

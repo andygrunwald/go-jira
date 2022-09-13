@@ -7,12 +7,15 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/models/apps/insight"
+	"github.com/andygrunwald/go-jira/v2/cloud/model/apps/insight"
 )
 
-// GetObject returns a single object by id
+// InsightObjectService handles object in Insight App for the Jira instance / API.
+type InsightObjectService service
+
+// Get returns a single object by id
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-object/#api-object-id-get
-func (i *InsightService) GetObject(ctx context.Context, workspaceID, id string) (*insight.Object, error) {
+func (i *InsightObjectService) Get(ctx context.Context, workspaceID, id string) (*insight.Object, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/object/%s`, insightURL, workspaceID, id)
 
 	req, err := i.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
@@ -42,9 +45,9 @@ func (i *InsightService) GetObject(ctx context.Context, workspaceID, id string) 
 	return object, err
 }
 
-// UpdateObject updates an object and returns it
+// Update updates an object and returns it
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-object/#api-object-id-put
-func (i *InsightService) UpdateObject(ctx context.Context, workspaceID, id string, body insight.PutObject) (*insight.Object, error) {
+func (i *InsightObjectService) Update(ctx context.Context, workspaceID, id string, body insight.PutObject) (*insight.Object, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/object/%s`, insightURL, workspaceID, id)
 
 	req, err := i.client.NewRequest(ctx, http.MethodGet, apiEndPoint, body)
@@ -81,9 +84,9 @@ func (i *InsightService) UpdateObject(ctx context.Context, workspaceID, id strin
 	return object, err
 }
 
-// DeleteObject delete an object
+// Delete delete an object
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-object/#api-object-id-delete
-func (i *InsightService) DeleteObject(ctx context.Context, workspaceID, id string) error {
+func (i *InsightObjectService) Delete(ctx context.Context, workspaceID, id string) error {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/object/%s`, insightURL, workspaceID, id)
 
 	req, err := i.client.NewRequest(ctx, http.MethodDelete, apiEndPoint, nil)
@@ -115,9 +118,9 @@ func (i *InsightService) DeleteObject(ctx context.Context, workspaceID, id strin
 	return err
 }
 
-// GetObjectAttributes list all attributes for the given object
+// GetAttributes list all attributes for the given object
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-object/#api-object-id-attributes-get
-func (i *InsightService) GetObjectAttributes(ctx context.Context, workspaceID, id string, options insight.ObjectAttributeOptions) ([]insight.ObjectAttribute, error) {
+func (i *InsightObjectService) GetAttributes(ctx context.Context, workspaceID, id string, options insight.ObjectAttributeOptions) ([]insight.ObjectAttribute, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/object/%s/attributes`, insightURL, workspaceID, id)
 	url, err := addOptions(apiEndPoint, options)
 	if err != nil {
@@ -151,9 +154,9 @@ func (i *InsightService) GetObjectAttributes(ctx context.Context, workspaceID, i
 	return attributes, err
 }
 
-// GetObjectReferenceInfo find all references for an object
+// GetReferenceInfo find all references for an object
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-object/#api-object-id-referenceinfo-get
-func (i *InsightService) GetObjectReferenceInfo(ctx context.Context, workspaceID, id string) ([]insight.ObjectReferenceTypeInfo, error) {
+func (i *InsightObjectService) GetReferenceInfo(ctx context.Context, workspaceID, id string) ([]insight.ObjectReferenceTypeInfo, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/object/%s/referenceinfo`, insightURL, workspaceID, id)
 
 	req, err := i.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
@@ -183,9 +186,9 @@ func (i *InsightService) GetObjectReferenceInfo(ctx context.Context, workspaceID
 	return referenceInfos, err
 }
 
-// CreateObject create a new object
+// Create creates a new object
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-object/#api-object-create-post
-func (i *InsightService) CreateObject(ctx context.Context, workspaceID string, body insight.PutObject) (*insight.Object, error) {
+func (i *InsightObjectService) Create(ctx context.Context, workspaceID string, body insight.PutObject) (*insight.Object, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/object/create`, insightURL, workspaceID)
 
 	req, err := i.client.NewRequest(ctx, http.MethodPost, apiEndPoint, body)

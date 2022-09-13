@@ -7,12 +7,15 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/models/apps/insight"
+	"github.com/andygrunwald/go-jira/v2/cloud/model/apps/insight"
 )
 
-// GetObjectType resource to return an object type
+// InsightObjectTypeService handles object type in Insight App for the Jira instance / API.
+type InsightObjectTypeService service
+
+// Get resource to return an object type
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-objecttype/#api-objecttype-id-get
-func (i *InsightService) GetObjectType(ctx context.Context, workspaceID, id string) (*insight.ObjectType, error) {
+func (i *InsightObjectTypeService) Get(ctx context.Context, workspaceID, id string) (*insight.ObjectType, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objecttype/%s`, insightURL, workspaceID, id)
 
 	req, err := i.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
@@ -42,9 +45,9 @@ func (i *InsightService) GetObjectType(ctx context.Context, workspaceID, id stri
 	return object, err
 }
 
-// UpdateObjectType updates an object type and returns it
+// Update updates an object type and returns it
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-objecttype/#api-objecttype-id-put
-func (i *InsightService) UpdateObjectType(ctx context.Context, workspaceID, id string, body insight.PutObjectType) (*insight.ObjectType, error) {
+func (i *InsightObjectTypeService) Update(ctx context.Context, workspaceID, id string, body insight.PutObjectType) (*insight.ObjectType, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objecttype/%s`, insightURL, workspaceID, id)
 
 	req, err := i.client.NewRequest(ctx, http.MethodPut, apiEndPoint, body)
@@ -81,9 +84,9 @@ func (i *InsightService) UpdateObjectType(ctx context.Context, workspaceID, id s
 	return object, err
 }
 
-// DeleteObjectType delete an object type
+// Delete delete an object type
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-objecttype/#api-objecttype-id-delete
-func (i *InsightService) DeleteObjectType(ctx context.Context, workspaceID, id string) error {
+func (i *InsightObjectTypeService) Delete(ctx context.Context, workspaceID, id string) error {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objecttype/%s`, insightURL, workspaceID, id)
 
 	req, err := i.client.NewRequest(ctx, http.MethodDelete, apiEndPoint, nil)
@@ -115,9 +118,9 @@ func (i *InsightService) DeleteObjectType(ctx context.Context, workspaceID, id s
 	return err
 }
 
-// GetObjectTypeAttributes list all attributes for the given object type
+// GetAttributes list all attributes for the given object type
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-objecttype/#api-objecttype-id-attributes-get
-func (i *InsightService) GetObjectTypeAttributes(ctx context.Context, workspaceID, id string, options insight.ObjectTypeAttributeOptions) ([]insight.ObjectAttribute, error) {
+func (i *InsightObjectTypeService) GetAttributes(ctx context.Context, workspaceID, id string, options insight.ObjectTypeAttributeOptions) ([]insight.ObjectAttribute, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objecttype/%s/attributes`, insightURL, workspaceID, id)
 	url, err := addOptions(apiEndPoint, options)
 	if err != nil {

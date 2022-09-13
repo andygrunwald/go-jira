@@ -129,7 +129,13 @@ func NewClient(baseURL string, httpClient *http.Client) (*Client, error) {
 	c.ServiceDesk = (*ServiceDeskService)(&c.common)
 	c.Customer = (*CustomerService)(&c.common)
 	c.Request = (*RequestService)(&c.common)
-	c.Insight = (*InsightService)(&c.common)
+	c.Insight = &InsightService{
+		common: c.common,
+
+		Object:       (*InsightObjectService)(&c.common),
+		ObjectSchema: (*InsightObjectSchemaService)(&c.common),
+		ObjectType:   (*InsightObjectTypeService)(&c.common),
+	}
 
 	return c, nil
 }

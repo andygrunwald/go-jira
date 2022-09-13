@@ -10,4 +10,10 @@ var ErrUnknown = errors.New("internal server error")
 const insightURL = "https://api.atlassian.com"
 
 // InsightService handles Insight App for the Jira instance / API.
-type InsightService service
+type InsightService struct {
+	common service
+
+	Object       *InsightObjectService
+	ObjectSchema *InsightObjectSchemaService
+	ObjectType   *InsightObjectTypeService
+}
