@@ -21,3 +21,9 @@ type ObjectSchema struct {
 	ObjectTypeCount int    `json:"objectTypeCount"`
 	CanManage       bool   `json:"canManage,omitempty"`
 }
+
+type ObjectSchemaAttributeOptions struct {
+	OnlyValueEditable bool   `url:"onlyValueEditable,omitempty"`
+	Extended          bool   `url:"extended,omitempty"`
+	Query             string `url:"query,omitempty"`
+}

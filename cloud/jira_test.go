@@ -36,6 +36,7 @@ func setup() {
 	testMux = http.NewServeMux()
 	testServer = httptest.NewServer(testMux)
 
+	insightURL = testServer.URL
 	// jira client configured to use test server
 	testClient, _ = NewClient(testServer.URL, nil)
 }

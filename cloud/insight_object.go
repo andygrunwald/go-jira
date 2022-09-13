@@ -50,7 +50,7 @@ func (i *InsightObjectService) Get(ctx context.Context, workspaceID, id string) 
 func (i *InsightObjectService) Update(ctx context.Context, workspaceID, id string, body insight.PutObject) (*insight.Object, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/object/%s`, insightURL, workspaceID, id)
 
-	req, err := i.client.NewRequest(ctx, http.MethodGet, apiEndPoint, body)
+	req, err := i.client.NewRequest(ctx, http.MethodPut, apiEndPoint, body)
 	if err != nil {
 		return nil, err
 	}
@@ -120,14 +120,10 @@ func (i *InsightObjectService) Delete(ctx context.Context, workspaceID, id strin
 
 // GetAttributes list all attributes for the given object
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-object/#api-object-id-attributes-get
-func (i *InsightObjectService) GetAttributes(ctx context.Context, workspaceID, id string, options insight.ObjectAttributeOptions) ([]insight.ObjectAttribute, error) {
+func (i *InsightObjectService) GetAttributes(ctx context.Context, workspaceID, id string) ([]insight.ObjectAttribute, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/object/%s/attributes`, insightURL, workspaceID, id)
-	url, err := addOptions(apiEndPoint, options)
-	if err != nil {
-		return nil, err
-	}
 
-	req, err := i.client.NewRequest(ctx, http.MethodGet, url, nil)
+	req, err := i.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
 	if err != nil {
 		return nil, err
 	}

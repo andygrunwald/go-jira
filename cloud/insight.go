@@ -7,7 +7,8 @@ var ErrUnauthorized = errors.New("client must be authenticated to access this re
 var ErrNotFound = errors.New("target resource do not exist")
 var ErrUnknown = errors.New("internal server error")
 
-const insightURL = "https://api.atlassian.com"
+// needs to be var, so we can change it for testing
+var insightURL = "https://api.atlassian.com"
 
 // InsightService handles Insight App for the Jira instance / API.
 type InsightService struct {

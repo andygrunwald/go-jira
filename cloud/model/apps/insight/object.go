@@ -69,7 +69,7 @@ type ObjectAttribute struct {
 	GlobalID              string                 `json:"globalId" validate:"required"`
 	ID                    string                 `json:"id" validate:"required"`
 	ObjectTypeAttribute   ObjectTypeAttribute    `json:"objectTypeAttribute" validate:"required"`
-	ObjectTypeAttributeID int                    `json:"objectTypeAttributeId" validate:"required"`
+	ObjectTypeAttributeID string                 `json:"objectTypeAttributeId" validate:"required"`
 	ObjectAttributeValues []ObjectAttributeValue `json:"objectAttributeValues" validate:"required,dive"`
 }
 
@@ -153,12 +153,6 @@ type GenericList[T any] struct {
 	MaxResults int `json:"maxResults" validate:"required"`
 	Total      int `json:"total" validate:"required"`
 	Values     []T `json:"values" validate:"required"`
-}
-
-type ObjectAttributeOptions struct {
-	OnlyValueEditable bool   `url:"onlyValueEditable,omitempty"`
-	Extended          bool   `url:"extended,omitempty"`
-	Query             string `url:"query,omitempty"`
 }
 
 type ObjectHistoryOptions struct {
