@@ -152,7 +152,7 @@ func (i *InsightObjectService) GetAttributes(ctx context.Context, workspaceID, i
 
 // GetHistory list history for the given object
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-object/#api-object-id-history-get
-func (i *InsightObjectService) GetHistory(ctx context.Context, workspaceID, id string, options insight.ObjectHistoryOptions) ([]insight.ObjectHistory, error) {
+func (i *InsightObjectService) GetHistory(ctx context.Context, workspaceID, id string, options *insight.ObjectHistoryOptions) ([]insight.ObjectHistory, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/object/%s/history`, insightURL, workspaceID, id)
 	url, err := addOptions(apiEndPoint, options)
 	if err != nil {

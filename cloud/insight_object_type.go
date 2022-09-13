@@ -120,7 +120,7 @@ func (i *InsightObjectTypeService) Delete(ctx context.Context, workspaceID, id s
 
 // GetAttributes list all attributes for the given object type
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-objecttype/#api-objecttype-id-attributes-get
-func (i *InsightObjectTypeService) GetAttributes(ctx context.Context, workspaceID, id string, options insight.ObjectTypeAttributeOptions) ([]insight.ObjectAttribute, error) {
+func (i *InsightObjectTypeService) GetAttributes(ctx context.Context, workspaceID, id string, options *insight.ObjectTypeAttributeOptions) ([]insight.ObjectTypeAttribute, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objecttype/%s/attributes`, insightURL, workspaceID, id)
 	url, err := addOptions(apiEndPoint, options)
 	if err != nil {
@@ -148,7 +148,7 @@ func (i *InsightObjectTypeService) GetAttributes(ctx context.Context, workspaceI
 		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
 	}
 
-	var attributes []insight.ObjectAttribute
+	var attributes []insight.ObjectTypeAttribute
 	err = json.NewDecoder(res.Body).Decode(&attributes)
 
 	return attributes, err
