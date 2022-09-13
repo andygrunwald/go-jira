@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 )
 
@@ -59,19 +58,14 @@ func (s *VersionService) Create(ctx context.Context, version *Version) (*Version
 	if err != nil {
 		return nil, resp, err
 	}
+	defer resp.Body.Close()
 
 	responseVersion := new(Version)
-	defer resp.Body.Close()
-	data, err := io.ReadAll(resp.Body)
+	err = json.NewDecoder(resp.Body).Decode(&responseVersion)
 	if err != nil {
-		e := fmt.Errorf("could not read the returned data")
-		return nil, resp, NewJiraError(resp, e)
+		return nil, resp, err
 	}
-	err = json.Unmarshal(data, responseVersion)
-	if err != nil {
-		e := fmt.Errorf("could not unmarshall the data into struct")
-		return nil, resp, NewJiraError(resp, e)
-	}
+
 	return responseVersion, resp, nil
 }
 

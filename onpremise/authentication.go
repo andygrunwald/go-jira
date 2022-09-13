@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 )
 
@@ -172,16 +171,11 @@ func (s *AuthenticationService) GetCurrentUser(ctx context.Context) (*Session, e
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("getting user info failed with status : %d", resp.StatusCode)
 	}
+
 	ret := new(Session)
-	data, err := io.ReadAll(resp.Body)
+	err = json.NewDecoder(resp.Body).Decode(&ret)
 	if err != nil {
-		return nil, fmt.Errorf("couldn't read body from the response : %s", err)
-	}
-
-	err = json.Unmarshal(data, &ret)
-
-	if err != nil {
-		return nil, fmt.Errorf("could not unmarshall received user info : %s", err)
+		return nil, err
 	}
 
 	return ret, nil
