@@ -19,3 +19,18 @@ type ObjectTypeAttributeOptions struct {
 	IncludeChildren         bool   `url:"includeChildren,omitempty"`
 	OrderByRequired         bool   `url:"orderByRequired,omitempty"`
 }
+
+type PostObjectTypePosition struct {
+	ToObjectTypeID string `json:"toObjectTypeId,omitempty"`
+	Position       int    `json:"position"`
+}
+
+type CreateObjectType struct {
+	Name               string `json:"name" validate:"required"`
+	Description        string `json:"description"`
+	IconID             string `json:"iconId" validate:"required"`
+	ObjectSchemaID     string `json:"objectSchemaId" validate:"required"`
+	ParentObjectTypeID string `json:"parentObjectTypeId"`
+	Inherited          bool   `json:"inherited"`
+	AbstractObjectType bool   `json:"abstractObjectType"`
+}

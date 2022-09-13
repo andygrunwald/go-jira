@@ -154,6 +154,42 @@ func (i *InsightObjectService) GetAttributes(ctx context.Context, workspaceID, i
 	return attributes, err
 }
 
+// GetHistory list history for the given object
+// Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-object/#api-object-id-history-get
+func (i *InsightObjectService) GetHistory(ctx context.Context, workspaceID, id string, options insight.ObjectHistoryOptions) ([]insight.ObjectHistory, error) {
+	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/object/%s/history`, insightURL, workspaceID, id)
+	url, err := addOptions(apiEndPoint, options)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := i.client.NewRequest(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Accept", "application/json")
+
+	res, err := i.client.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	switch res.StatusCode {
+	case http.StatusUnauthorized:
+		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
+	case http.StatusNotFound:
+		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
+	case http.StatusInternalServerError:
+		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	}
+
+	var history []insight.ObjectHistory
+	err = json.NewDecoder(res.Body).Decode(&history)
+
+	return history, err
+}
+
 // GetReferenceInfo find all references for an object
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-object/#api-object-id-referenceinfo-get
 func (i *InsightObjectService) GetReferenceInfo(ctx context.Context, workspaceID, id string) ([]insight.ObjectReferenceTypeInfo, error) {
