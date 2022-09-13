@@ -77,7 +77,7 @@ func TestInsightObjectService_GetHistory(t *testing.T) {
 		testRequestURL(t, r, "/jsm/insight/workspace/g2778e1d-939d-581d-c8e2-9d5g59de456b/v1/object/88/history?abbreviate=true&asc=true")
 		fmt.Fprint(w, `[{"actor":{"avatarUrl":"https://avatar-management-url/6g2c42d1f6fgd2112cgc66dc/f0bfb5b7-7b3b-4ce6-98a6-bdb5825c19b4/48","displayName":"John Smith","name":"John Smith","key":"6g2c42d1f6fgd2112cgc66dc","emailAddress":"john.smith@atlassian.com","isDeleted":false},"id":"8122","affectedAttribute":"Placeholder","oldValue":"","newValue":"A placeholder value","created":"2021-04-20T14:55:02.833Z","objectId":"88"},{"actor":{"avatarUrl":"https://avatar-management-url/6g2c42d1f6fgd2112cgc66dc/f0bfb5b7-7b3b-4ce6-98a6-bdb5825c19b4/48","displayName":"John Smith","name":"John Smith","key":"6g2c42d1f6fgd2112cgc66dc","emailAddress":"john.smith@atlassian.com","isDeleted":false},"id":"108","created":"2021-02-16T20:04:41.554Z","objectId":"88"}]`)
 	})
-	if history, err := testClient.Insight.Object.GetHistory(context.Background(), "g2778e1d-939d-581d-c8e2-9d5g59de456b", "88", insight.ObjectHistoryOptions{
+	if history, err := testClient.Insight.Object.GetHistory(context.Background(), "g2778e1d-939d-581d-c8e2-9d5g59de456b", "88", &insight.ObjectHistoryOptions{
 		AscendingOrder: true,
 		Abbreviate:     true,
 	}); err != nil {
