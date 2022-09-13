@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/http"
 	"net/url"
 	"strings"
 )
@@ -87,6 +88,11 @@ func (e *Error) LongError() string {
 	return msg.String()
 }
 
+var ErrValidation = ResponseError{statusCode: http.StatusBadRequest}
+var ErrUnauthorized = ResponseError{statusCode: http.StatusUnauthorized}
+var ErrNotFound = ResponseError{statusCode: http.StatusNotFound}
+var ErrUnknown = ResponseError{statusCode: http.StatusInternalServerError}
+
 type ResponseError struct {
 	status     string
 	statusCode int
@@ -99,7 +105,12 @@ func (r *ResponseError) Error() string {
 	return fmt.Sprintf("%s: %d %s", r.url.String(), r.statusCode, r.status)
 }
 
-// Is checks the error with a different
+// Body returns the response body if present
+func (r *ResponseError) Body() []byte {
+	return r.body
+}
+
+// Is checks if the error status code is equal
 func (r *ResponseError) Is(tgt error) bool {
 	target, ok := tgt.(*ResponseError)
 	if !ok {

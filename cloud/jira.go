@@ -290,9 +290,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 
 	err = CheckResponse(req, httpResp)
 	if err != nil {
-		// Even though there was an error, we still return the response
-		// in case the caller wants to inspect it further
-		return newResponse(httpResp, nil), err
+		return nil, err
 	}
 
 	if v != nil {
@@ -308,7 +306,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 // CheckResponse checks the API response for errors, and returns them if present.
 // A response is considered an error if it has a status code outside the 200 range.
 // The caller is responsible to analyze the response body.
-// The body can contain JSON (if the error is intended) or xml (sometimes Jira just failes).
+// The body can contain JSON (if the error is intended) or xml (sometimes Jira just fails).
 func CheckResponse(req *http.Request, res *http.Response) error {
 	switch res.StatusCode {
 	case http.StatusBadRequest:
