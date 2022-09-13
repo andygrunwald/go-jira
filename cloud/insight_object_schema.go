@@ -44,10 +44,14 @@ func (i *InsightObjectSchemaService) List(ctx context.Context, workspaceID strin
 
 // GetAttributes find all object type attributes for this object schema
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-objectschema/#api-objectschema-id-attributes-get
-func (i *InsightObjectSchemaService) GetAttributes(ctx context.Context, workspaceID, id string) ([]insight.ObjectTypeAttribute, error) {
+func (i *InsightObjectSchemaService) GetAttributes(ctx context.Context, workspaceID, id string, options insight.ObjectSchemaAttributeOptions) ([]insight.ObjectTypeAttribute, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objectschema/%s/attributes`, insightURL, workspaceID, id)
+	url, err := addOptions(apiEndPoint, options)
+	if err != nil {
+		return nil, err
+	}
 
-	req, err := i.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
+	req, err := i.client.NewRequest(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
