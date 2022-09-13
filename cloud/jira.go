@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -289,7 +288,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 		return nil, err
 	}
 
-	err = CheckResponse(httpResp)
+	err = CheckResponse(req, httpResp)
 	if err != nil {
 		// Even though there was an error, we still return the response
 		// in case the caller wants to inspect it further
@@ -310,13 +309,33 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 // A response is considered an error if it has a status code outside the 200 range.
 // The caller is responsible to analyze the response body.
 // The body can contain JSON (if the error is intended) or xml (sometimes Jira just failes).
-func CheckResponse(r *http.Response) error {
-	if c := r.StatusCode; 200 <= c && c <= 299 {
+func CheckResponse(req *http.Request, res *http.Response) error {
+	switch res.StatusCode {
+	case http.StatusBadRequest:
+		responseBody, err := io.ReadAll(res.Body)
+		if err != nil {
+			return err
+		}
+
+		return &ResponseError{
+			status:     res.Status,
+			statusCode: res.StatusCode,
+			url:        req.URL,
+			body:       responseBody,
+		}
+	case http.StatusUnauthorized:
+		fallthrough
+	case http.StatusNotFound:
+		fallthrough
+	case http.StatusInternalServerError:
+		return &ResponseError{
+			status:     res.Status,
+			statusCode: res.StatusCode,
+			url:        req.URL,
+		}
+	default:
 		return nil
 	}
-
-	err := fmt.Errorf("request failed. Please analyze the request body for more details. Status code: %d", r.StatusCode)
-	return err
 }
 
 // Response represents Jira API response. It wraps http.Response returned from

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/url"
 	"strings"
 )
 
@@ -84,4 +85,26 @@ func (e *Error) LongError() string {
 		}
 	}
 	return msg.String()
+}
+
+type ResponseError struct {
+	status     string
+	statusCode int
+	url        *url.URL
+	body       []byte
+}
+
+// Error is a short string representing the error
+func (r *ResponseError) Error() string {
+	return fmt.Sprintf("%s: %d %s", r.url.String(), r.statusCode, r.status)
+}
+
+// Is checks the error with a different
+func (r *ResponseError) Is(tgt error) bool {
+	target, ok := tgt.(*ResponseError)
+	if !ok {
+		return false
+	}
+
+	return r.statusCode == target.statusCode
 }
