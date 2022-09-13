@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/google/go-querystring/query"
+	"github.com/mcl-de/go-jira/v2/cloud/model/servicedesk"
 	"github.com/mcl-de/go-jira/v2/cloud/models"
-	"github.com/mcl-de/go-jira/v2/cloud/models/servicedesk"
 )
 
 // GetRequestTypes returns all

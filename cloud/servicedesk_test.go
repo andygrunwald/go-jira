@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/mcl-de/go-jira/v2/cloud/models/servicedesk"
+	"github.com/mcl-de/go-jira/v2/cloud/model/servicedesk"
 )
 
 func TestServiceDeskService_GetOrganizations(t *testing.T) {

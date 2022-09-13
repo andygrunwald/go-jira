@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/mcl-de/go-jira/v2/cloud/models/servicedesk"
+	"github.com/mcl-de/go-jira/v2/cloud/model/servicedesk"
 )
 
 func TestRequestService_Create(t *testing.T) {
