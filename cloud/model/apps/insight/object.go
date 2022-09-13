@@ -135,7 +135,7 @@ type DefaultType struct {
 }
 
 type PutObject struct {
-	ObjectTypeID string              `json:"objectType" validate:"required"`
+	ObjectTypeID string              `json:"objectTypeId" validate:"required"`
 	Attributes   []ObjectAttributeIn `json:"attributes" validate:"dive"`
 	HasAvatar    bool                `json:"hasAvatar,omitempty"`
 	AvatarUUID   string              `json:"avatarUUID,omitempty"`
