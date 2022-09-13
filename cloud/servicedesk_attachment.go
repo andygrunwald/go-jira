@@ -8,7 +8,7 @@ import (
 	"mime/multipart"
 	"net/http"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/models/servicedesk"
+	"github.com/andygrunwald/go-jira/v2/cloud/model/servicedesk"
 	"golang.org/x/sync/errgroup"
 )
 

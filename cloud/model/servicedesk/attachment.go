@@ -3,7 +3,7 @@ package servicedesk
 import (
 	"io"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/models"
+	"github.com/andygrunwald/go-jira/v2/cloud/model"
 )
 
 type TemporaryFile struct {
@@ -23,7 +23,7 @@ type TemporaryAttachment struct {
 type AttachmentDTO struct {
 	Filename string            `json:"filename,omitempty" structs:"filename,omitempty"`
 	Author   UserDTO           `json:"author,omitempty" structs:"author,omitempty"`
-	Created  models.DateDTO    `json:"created,omitempty" structs:"created,omitempty"`
+	Created  model.DateDTO     `json:"created,omitempty" structs:"created,omitempty"`
 	Size     int64             `json:"size,omitempty" structs:"size,omitempty"`
 	MIMEType string            `json:"mimeType,omitempty" structs:"mimeType,omitempty"`
 	Links    AttachmentLinkDTO `json:"_links,omitempty" structs:"_links,omitempty"`
@@ -37,8 +37,8 @@ type AttachmentLinkDTO struct {
 }
 
 type AttachmentCreateResultDTO struct {
-	Comment     CommentDTO                      `json:"comment,omitempty" structs:"comment,omitempty"`
-	Attachments models.PagedDTOT[AttachmentDTO] `json:"attachments,omitempty" structs:"attachments,omitempty"`
+	Comment     CommentDTO                     `json:"comment,omitempty" structs:"comment,omitempty"`
+	Attachments model.PagedDTOT[AttachmentDTO] `json:"attachments,omitempty" structs:"attachments,omitempty"`
 }
 
 type CreateRequestAttachment struct {
@@ -53,12 +53,12 @@ type AdditionalCommentDTO struct {
 
 type CommentDTO struct {
 	ID           string
-	Body         string                          `json:"body,omitempty" structs:"body,omitempty"`
-	RenderedBody *RenderedValueDTO               `json:"renderedBody,omitempty" structs:"renderedBody,omitempty"`
-	Author       UserDTO                         `json:"author,omitempty" structs:"author,omitempty"`
-	Created      models.DateDTO                  `json:"created,omitempty" structs:"created,omitempty"`
-	Attachments  models.PagedDTOT[AttachmentDTO] `json:"attachments,omitempty" structs:"attachments,omitempty"`
-	Public       bool                            `json:"public,omitempty" structs:"public,omitempty"`
-	Expands      []string                        `json:"_expands,omitempty" structs:"_expands,omitempty"`
-	Links        *models.SelfLink                `json:"_links,omitempty" structs:"_links,omitempty"`
+	Body         string                         `json:"body,omitempty" structs:"body,omitempty"`
+	RenderedBody *RenderedValueDTO              `json:"renderedBody,omitempty" structs:"renderedBody,omitempty"`
+	Author       UserDTO                        `json:"author,omitempty" structs:"author,omitempty"`
+	Created      model.DateDTO                  `json:"created,omitempty" structs:"created,omitempty"`
+	Attachments  model.PagedDTOT[AttachmentDTO] `json:"attachments,omitempty" structs:"attachments,omitempty"`
+	Public       bool                           `json:"public,omitempty" structs:"public,omitempty"`
+	Expands      []string                       `json:"_expands,omitempty" structs:"_expands,omitempty"`
+	Links        *model.SelfLink                `json:"_links,omitempty" structs:"_links,omitempty"`
 }

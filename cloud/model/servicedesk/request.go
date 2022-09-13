@@ -1,7 +1,7 @@
 package servicedesk
 
 import (
-	"github.com/andygrunwald/go-jira/v2/cloud/models"
+	"github.com/andygrunwald/go-jira/v2/cloud/model"
 )
 
 type CreateRequest struct {
@@ -21,7 +21,7 @@ type Request struct {
 	Reporter      *Customer           `json:"reporter,omitempty" structs:"reporter,omitempty"`
 	FieldValues   []RequestFieldValue `json:"requestFieldValues,omitempty" structs:"requestFieldValues,omitempty"`
 	Status        *RequestStatus      `json:"currentStatus,omitempty" structs:"currentStatus,omitempty"`
-	Links         *models.SelfLink    `json:"_links,omitempty" structs:"_links,omitempty"`
+	Links         *model.SelfLink     `json:"_links,omitempty" structs:"_links,omitempty"`
 	Expands       []string            `json:"_expands,omitempty" structs:"_expands,omitempty"`
 }
 
@@ -49,13 +49,13 @@ type RequestStatus struct {
 
 // RequestComment is a comment for a request.
 type RequestComment struct {
-	ID      string           `json:"id,omitempty" structs:"id,omitempty"`
-	Body    string           `json:"body,omitempty" structs:"body,omitempty"`
-	Public  bool             `json:"public" structs:"public"`
-	Author  *Customer        `json:"author,omitempty" structs:"author,omitempty"`
-	Created *RequestDate     `json:"created,omitempty" structs:"created,omitempty"`
-	Links   *models.SelfLink `json:"_links,omitempty" structs:"_links,omitempty"`
-	Expands []string         `json:"_expands,omitempty" structs:"_expands,omitempty"`
+	ID      string          `json:"id,omitempty" structs:"id,omitempty"`
+	Body    string          `json:"body,omitempty" structs:"body,omitempty"`
+	Public  bool            `json:"public" structs:"public"`
+	Author  *Customer       `json:"author,omitempty" structs:"author,omitempty"`
+	Created *RequestDate    `json:"created,omitempty" structs:"created,omitempty"`
+	Links   *model.SelfLink `json:"_links,omitempty" structs:"_links,omitempty"`
+	Expands []string        `json:"_expands,omitempty" structs:"_expands,omitempty"`
 }
 
 // RequestCommentListOptions is the query options for listing comments for a ServiceDesk request.

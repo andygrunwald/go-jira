@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/models"
-	"github.com/andygrunwald/go-jira/v2/cloud/models/servicedesk"
+	"github.com/andygrunwald/go-jira/v2/cloud/model"
+	"github.com/andygrunwald/go-jira/v2/cloud/model/servicedesk"
 	"github.com/google/go-querystring/query"
 )
 
@@ -80,7 +80,7 @@ func (r *RequestService) CreateAttachment(ctx context.Context, idOrKey string, r
 // GetRequestParticipants returns all request participants
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-issueidorkey-participant-get
-func (r *RequestService) GetRequestParticipants(ctx context.Context, idOrKey string) (*models.PagedDTOT[servicedesk.UserDTO], *Response, error) {
+func (r *RequestService) GetRequestParticipants(ctx context.Context, idOrKey string) (*model.PagedDTOT[servicedesk.UserDTO], *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%s/participant", idOrKey)
 
 	req, err := r.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -88,7 +88,7 @@ func (r *RequestService) GetRequestParticipants(ctx context.Context, idOrKey str
 		return nil, nil, err
 	}
 
-	responseRequest := new(models.PagedDTOT[servicedesk.UserDTO])
+	responseRequest := new(model.PagedDTOT[servicedesk.UserDTO])
 	resp, err := r.client.Do(req, responseRequest)
 	if err != nil {
 		return nil, resp, err
@@ -104,7 +104,7 @@ type ChangeRequestParticipants struct {
 // AddRequestParticipants adds a request participants to a request
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-issueidorkey-participant-post
-func (r *RequestService) AddRequestParticipants(ctx context.Context, idOrKey string, participants ChangeRequestParticipants) (*models.PagedDTOT[servicedesk.UserDTO], *Response, error) {
+func (r *RequestService) AddRequestParticipants(ctx context.Context, idOrKey string, participants ChangeRequestParticipants) (*model.PagedDTOT[servicedesk.UserDTO], *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%s/participant", idOrKey)
 
 	req, err := r.client.NewRequest(ctx, http.MethodPost, apiEndpoint, participants)
@@ -112,7 +112,7 @@ func (r *RequestService) AddRequestParticipants(ctx context.Context, idOrKey str
 		return nil, nil, err
 	}
 
-	responseRequest := new(models.PagedDTOT[servicedesk.UserDTO])
+	responseRequest := new(model.PagedDTOT[servicedesk.UserDTO])
 	resp, err := r.client.Do(req, responseRequest)
 	if err != nil {
 		return nil, resp, err
@@ -124,7 +124,7 @@ func (r *RequestService) AddRequestParticipants(ctx context.Context, idOrKey str
 // RemoveRequestParticipants removes a request participants from a request
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-issueidorkey-participant-delete
-func (r *RequestService) RemoveRequestParticipants(ctx context.Context, idOrKey string, participants ChangeRequestParticipants) (*models.PagedDTOT[servicedesk.UserDTO], *Response, error) {
+func (r *RequestService) RemoveRequestParticipants(ctx context.Context, idOrKey string, participants ChangeRequestParticipants) (*model.PagedDTOT[servicedesk.UserDTO], *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%s/participant", idOrKey)
 
 	req, err := r.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, participants)
@@ -132,7 +132,7 @@ func (r *RequestService) RemoveRequestParticipants(ctx context.Context, idOrKey 
 		return nil, nil, err
 	}
 
-	responseRequest := new(models.PagedDTOT[servicedesk.UserDTO])
+	responseRequest := new(model.PagedDTOT[servicedesk.UserDTO])
 	resp, err := r.client.Do(req, responseRequest)
 	if err != nil {
 		return nil, resp, err
@@ -171,7 +171,7 @@ func (s *ServiceDeskService) CreateRequestComments(ctx context.Context, idOrKey 
 // ListRequestComments lists comments for a ServiceDesk request.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-issueidorkey-comment-get
-func (s *ServiceDeskService) ListRequestComments(ctx context.Context, idOrKey string, options *servicedesk.RequestCommentListOptions) (*models.PagedDTOT[servicedesk.CommentDTO], *Response, error) {
+func (s *ServiceDeskService) ListRequestComments(ctx context.Context, idOrKey string, options *servicedesk.RequestCommentListOptions) (*model.PagedDTOT[servicedesk.CommentDTO], *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%s/comment", idOrKey)
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -193,7 +193,7 @@ func (s *ServiceDeskService) ListRequestComments(ctx context.Context, idOrKey st
 	}
 	defer resp.Body.Close()
 
-	commentList := new(models.PagedDTOT[servicedesk.CommentDTO])
+	commentList := new(model.PagedDTOT[servicedesk.CommentDTO])
 	if err := json.NewDecoder(resp.Body).Decode(commentList); err != nil {
 		return nil, resp, err
 	}
