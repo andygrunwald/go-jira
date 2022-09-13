@@ -85,7 +85,7 @@ func (r *RequestService) Create(ctx context.Context, requester string, participa
 	responseRequest := new(Request)
 	resp, err := r.client.Do(req, responseRequest)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
 
 	return responseRequest, resp, nil
@@ -105,7 +105,7 @@ func (r *RequestService) CreateComment(ctx context.Context, issueIDOrKey string,
 	responseComment := new(RequestComment)
 	resp, err := r.client.Do(req, responseComment)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
 
 	return responseComment, resp, nil

@@ -121,7 +121,6 @@ type FilterSearchOptions struct {
 
 // GetList retrieves all filters from Jira
 func (fs *FilterService) GetList(ctx context.Context) ([]*Filter, *Response, error) {
-
 	options := &GetQueryOptions{}
 	apiEndpoint := "rest/api/2/filter"
 	req, err := fs.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -138,9 +137,9 @@ func (fs *FilterService) GetList(ctx context.Context) ([]*Filter, *Response, err
 	filters := []*Filter{}
 	resp, err := fs.client.Do(req, &filters)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
+
 	return filters, resp, err
 }
 
@@ -151,12 +150,13 @@ func (fs *FilterService) GetFavouriteList(ctx context.Context) ([]*Filter, *Resp
 	if err != nil {
 		return nil, nil, err
 	}
+
 	filters := []*Filter{}
 	resp, err := fs.client.Do(req, &filters)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
+
 	return filters, resp, err
 }
 
@@ -167,11 +167,11 @@ func (fs *FilterService) Get(ctx context.Context, filterID int) (*Filter, *Respo
 	if err != nil {
 		return nil, nil, err
 	}
+
 	filter := new(Filter)
 	resp, err := fs.client.Do(req, filter)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return filter, resp, err
@@ -186,6 +186,7 @@ func (fs *FilterService) GetMyFilters(ctx context.Context, opts *GetMyFiltersQue
 	if err != nil {
 		return nil, nil, err
 	}
+
 	req, err := fs.client.NewRequest(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, nil, err
@@ -194,9 +195,9 @@ func (fs *FilterService) GetMyFilters(ctx context.Context, opts *GetMyFiltersQue
 	filters := []*Filter{}
 	resp, err := fs.client.Do(req, &filters)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
+
 	return filters, resp, nil
 }
 
@@ -209,6 +210,7 @@ func (fs *FilterService) Search(ctx context.Context, opt *FilterSearchOptions) (
 	if err != nil {
 		return nil, nil, err
 	}
+
 	req, err := fs.client.NewRequest(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, nil, err
@@ -217,8 +219,7 @@ func (fs *FilterService) Search(ctx context.Context, opt *FilterSearchOptions) (
 	filters := new(FiltersList)
 	resp, err := fs.client.Do(req, filters)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return filters, resp, err

@@ -58,7 +58,7 @@ func (c *CustomerService) Create(ctx context.Context, email, displayName string)
 	responseCustomer := new(Customer)
 	resp, err := c.client.Do(req, responseCustomer)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
 
 	return responseCustomer, resp, nil
