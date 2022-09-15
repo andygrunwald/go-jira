@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/google/go-querystring/query"
@@ -31,17 +30,15 @@ func (s *ServiceDeskService) GetOrganizations(ctx context.Context, serviceDeskID
 	}
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
-	req.Header.Set("Accept", "application/json")
-
 	if err != nil {
 		return nil, nil, err
 	}
+	req.Header.Set("Accept", "application/json")
 
 	orgs := new(PagedDTO)
 	resp, err := s.client.Do(req, &orgs)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return orgs, resp, nil
@@ -62,15 +59,13 @@ func (s *ServiceDeskService) AddOrganization(ctx context.Context, serviceDeskID 
 	}
 
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndPoint, organization)
-
 	if err != nil {
 		return nil, err
 	}
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return resp, jerr
+		return resp, err
 	}
 
 	return resp, nil
@@ -91,15 +86,13 @@ func (s *ServiceDeskService) RemoveOrganization(ctx context.Context, serviceDesk
 	}
 
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndPoint, organization)
-
 	if err != nil {
 		return nil, err
 	}
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return resp, jerr
+		return resp, err
 	}
 
 	return resp, nil
@@ -123,11 +116,9 @@ func (s *ServiceDeskService) AddCustomers(ctx context.Context, serviceDeskID int
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return resp, NewJiraError(resp, err)
+		return resp, err
 	}
-
 	defer resp.Body.Close()
-	_, _ = io.Copy(io.Discard, resp.Body)
 
 	return resp, nil
 }
@@ -150,11 +141,9 @@ func (s *ServiceDeskService) RemoveCustomers(ctx context.Context, serviceDeskID 
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return resp, NewJiraError(resp, err)
+		return resp, err
 	}
-
 	defer resp.Body.Close()
-	_, _ = io.Copy(io.Discard, resp.Body)
 
 	return resp, nil
 }
@@ -182,13 +171,13 @@ func (s *ServiceDeskService) ListCustomers(ctx context.Context, serviceDeskID in
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
 	defer resp.Body.Close()
 
 	customerList := new(model.PagedDTOT[servicedesk.Customer])
 	if err := json.NewDecoder(resp.Body).Decode(customerList); err != nil {
-		return nil, resp, fmt.Errorf("could not unmarshall the data into struct")
+		return nil, resp, fmt.Errorf("could not unmarshall the data into struct: %w", err)
 	}
 
 	return customerList, resp, nil

@@ -57,8 +57,9 @@ func (s *UserService) Get(ctx context.Context, accountId string) (*User, *Respon
 	user := new(User)
 	resp, err := s.client.Do(req, user)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	return user, resp, nil
 }
 
@@ -76,8 +77,9 @@ func (s *UserService) GetByAccountID(ctx context.Context, accountID string) (*Us
 	user := new(User)
 	resp, err := s.client.Do(req, user)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	return user, resp, nil
 }
 
@@ -120,8 +122,9 @@ func (s *UserService) Delete(ctx context.Context, accountId string) (*Response, 
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return resp, NewJiraError(resp, err)
+		return resp, err
 	}
+
 	return resp, nil
 }
 
@@ -138,8 +141,9 @@ func (s *UserService) GetGroups(ctx context.Context, accountId string) (*[]UserG
 	userGroups := new([]UserGroup)
 	resp, err := s.client.Do(req, userGroups)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	return userGroups, resp, nil
 }
 
@@ -152,11 +156,13 @@ func (s *UserService) GetSelf(ctx context.Context) (*User, *Response, error) {
 	if err != nil {
 		return nil, nil, err
 	}
+
 	var user User
 	resp, err := s.client.Do(req, &user)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	return &user, resp, nil
 }
 
@@ -245,7 +251,8 @@ func (s *UserService) Find(ctx context.Context, property string, tweaks ...userS
 	users := []User{}
 	resp, err := s.client.Do(req, &users)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	return users, resp, nil
 }

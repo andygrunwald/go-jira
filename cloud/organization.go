@@ -77,8 +77,7 @@ func (s *OrganizationService) GetAllOrganizations(ctx context.Context, start int
 	v := new(PagedDTO)
 	resp, err := s.client.Do(req, v)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return v, resp, nil
@@ -105,8 +104,7 @@ func (s *OrganizationService) CreateOrganization(ctx context.Context, name strin
 	o := new(Organization)
 	resp, err := s.client.Do(req, &o)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return o, resp, nil
@@ -123,17 +121,15 @@ func (s *OrganizationService) GetOrganization(ctx context.Context, organizationI
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d", organizationID)
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
-	req.Header.Set("Accept", "application/json")
-
 	if err != nil {
 		return nil, nil, err
 	}
+	req.Header.Set("Accept", "application/json")
 
 	o := new(Organization)
 	resp, err := s.client.Do(req, &o)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return o, resp, nil
@@ -150,15 +146,13 @@ func (s *OrganizationService) DeleteOrganization(ctx context.Context, organizati
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d", organizationID)
 
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndPoint, nil)
-
 	if err != nil {
 		return nil, err
 	}
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return resp, jerr
+		return resp, err
 	}
 
 	return resp, nil
@@ -174,17 +168,15 @@ func (s *OrganizationService) GetPropertiesKeys(ctx context.Context, organizatio
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property", organizationID)
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
-	req.Header.Set("Accept", "application/json")
-
 	if err != nil {
 		return nil, nil, err
 	}
+	req.Header.Set("Accept", "application/json")
 
 	pk := new(PropertyKeys)
 	resp, err := s.client.Do(req, &pk)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return pk, resp, nil
@@ -199,17 +191,15 @@ func (s *OrganizationService) GetProperty(ctx context.Context, organizationID in
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property/%s", organizationID, propertyKey)
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
-	req.Header.Set("Accept", "application/json")
-
 	if err != nil {
 		return nil, nil, err
 	}
+	req.Header.Set("Accept", "application/json")
 
 	ep := new(EntityProperty)
 	resp, err := s.client.Do(req, &ep)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return ep, resp, nil
@@ -225,16 +215,14 @@ func (s *OrganizationService) SetProperty(ctx context.Context, organizationID in
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property/%s", organizationID, propertyKey)
 
 	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndPoint, nil)
-	req.Header.Set("Accept", "application/json")
-
 	if err != nil {
 		return nil, err
 	}
+	req.Header.Set("Accept", "application/json")
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return resp, jerr
+		return resp, err
 	}
 
 	return resp, nil
@@ -248,16 +236,14 @@ func (s *OrganizationService) DeleteProperty(ctx context.Context, organizationID
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property/%s", organizationID, propertyKey)
 
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndPoint, nil)
-	req.Header.Set("Accept", "application/json")
-
 	if err != nil {
 		return nil, err
 	}
+	req.Header.Set("Accept", "application/json")
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return resp, jerr
+		return resp, err
 	}
 
 	return resp, nil
@@ -274,17 +260,15 @@ func (s *OrganizationService) GetUsers(ctx context.Context, organizationID int, 
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/user?start=%d&limit=%d", organizationID, start, limit)
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
-	req.Header.Set("Accept", "application/json")
-
 	if err != nil {
 		return nil, nil, err
 	}
+	req.Header.Set("Accept", "application/json")
 
 	users := new(PagedDTO)
 	resp, err := s.client.Do(req, &users)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return users, resp, nil
@@ -298,15 +282,13 @@ func (s *OrganizationService) AddUsers(ctx context.Context, organizationID int, 
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/user", organizationID)
 
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndPoint, users)
-
 	if err != nil {
 		return nil, err
 	}
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return resp, jerr
+		return resp, err
 	}
 
 	return resp, nil
@@ -320,16 +302,14 @@ func (s *OrganizationService) RemoveUsers(ctx context.Context, organizationID in
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/user", organizationID)
 
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndPoint, nil)
-	req.Header.Set("Accept", "application/json")
-
 	if err != nil {
 		return nil, err
 	}
+	req.Header.Set("Accept", "application/json")
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return resp, jerr
+		return resp, err
 	}
 
 	return resp, nil

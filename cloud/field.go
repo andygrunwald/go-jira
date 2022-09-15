@@ -45,7 +45,8 @@ func (s *FieldService) GetList(ctx context.Context) ([]Field, *Response, error) 
 	fieldList := []Field{}
 	resp, err := s.client.Do(req, &fieldList)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	return fieldList, resp, nil
 }

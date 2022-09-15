@@ -34,16 +34,11 @@ func (s *SprintService) MoveIssuesToSprint(ctx context.Context, sprintID int, is
 	payload := IssuesWrapper{Issues: issueIDs}
 
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, payload)
-
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
-	if err != nil {
-		err = NewJiraError(resp, err)
-	}
-	return resp, err
+	return s.client.Do(req, nil)
 }
 
 // GetIssuesForSprint returns all issues in a sprint, for a given sprint Id.
@@ -55,17 +50,12 @@ func (s *SprintService) GetIssuesForSprint(ctx context.Context, sprintID int) ([
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/sprint/%d/issue", sprintID)
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
-
 	if err != nil {
 		return nil, nil, err
 	}
 
 	result := new(IssuesInSprintResult)
 	resp, err := s.client.Do(req, result)
-	if err != nil {
-		err = NewJiraError(resp, err)
-	}
-
 	return result.Issues, resp, err
 }
 
@@ -83,7 +73,6 @@ func (s *SprintService) GetIssue(ctx context.Context, issueID string, options *G
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/issue/%s", issueID)
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
-
 	if err != nil {
 		return nil, nil, err
 	}
@@ -98,10 +87,8 @@ func (s *SprintService) GetIssue(ctx context.Context, issueID string, options *G
 
 	issue := new(Issue)
 	resp, err := s.client.Do(req, issue)
-
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return issue, resp, nil

@@ -28,7 +28,7 @@ func (r *RequestService) Create(ctx context.Context, request *servicedesk.Create
 	responseRequest := new(servicedesk.Request)
 	resp, err := r.client.Do(req, responseRequest)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
 
 	return responseRequest, resp, nil
@@ -48,7 +48,7 @@ func (r *RequestService) CreateComment(ctx context.Context, issueIDOrKey string,
 	responseComment := new(servicedesk.RequestComment)
 	resp, err := r.client.Do(req, responseComment)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
 
 	return responseComment, resp, nil
@@ -65,7 +65,7 @@ func (r *RequestService) CreateAttachment(ctx context.Context, idOrKey string, r
 
 	resp, err := r.client.Do(req, nil)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
 	defer resp.Body.Close()
 
@@ -156,7 +156,7 @@ func (s *ServiceDeskService) CreateRequestComments(ctx context.Context, idOrKey 
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
 	defer resp.Body.Close()
 
@@ -189,7 +189,7 @@ func (s *ServiceDeskService) ListRequestComments(ctx context.Context, idOrKey st
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
 	defer resp.Body.Close()
 

@@ -39,8 +39,9 @@ func (s *VersionService) Get(ctx context.Context, versionID int) (*Version, *Res
 	version := new(Version)
 	resp, err := s.client.Do(req, version)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	return version, resp, nil
 }
 
@@ -79,10 +80,10 @@ func (s *VersionService) Update(ctx context.Context, version *Version) (*Version
 	if err != nil {
 		return nil, nil, err
 	}
+
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	// This is just to follow the rest of the API's convention of returning a version.

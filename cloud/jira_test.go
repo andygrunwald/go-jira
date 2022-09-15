@@ -149,10 +149,13 @@ func TestCheckResponse(t *testing.T) {
 	}
 
 	for _, c := range codes {
-		r := &http.Response{
+		req := &http.Request{
+			URL: &url.URL{},
+		}
+		res := &http.Response{
 			StatusCode: c,
 		}
-		if err := CheckResponse(r); err != nil {
+		if err := CheckResponse(req, res); err != nil {
 			t.Errorf("CheckResponse throws an error: %s", err)
 		}
 	}

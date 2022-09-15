@@ -631,8 +631,7 @@ func (s *IssueService) Get(ctx context.Context, issueID string, options *GetQuer
 	issue := new(Issue)
 	resp, err := s.client.Do(req, issue)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return issue, resp, nil
@@ -651,8 +650,7 @@ func (s *IssueService) DownloadAttachment(ctx context.Context, attachmentID stri
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return resp, jerr
+		return resp, err
 	}
 
 	return resp, nil
@@ -689,8 +687,7 @@ func (s *IssueService) PostAttachment(ctx context.Context, issueID string, r io.
 	attachment := new([]Attachment)
 	resp, err := s.client.Do(req, attachment)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return attachment, resp, nil
@@ -708,8 +705,7 @@ func (s *IssueService) DeleteAttachment(ctx context.Context, attachmentID string
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return resp, jerr
+		return resp, err
 	}
 
 	return resp, nil
@@ -727,8 +723,7 @@ func (s *IssueService) DeleteLink(ctx context.Context, linkID string) (*Response
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return resp, jerr
+		return resp, err
 	}
 
 	return resp, nil
@@ -813,14 +808,15 @@ func (s *IssueService) Update(ctx context.Context, issue *Issue, opts *UpdateQue
 	if err != nil {
 		return nil, nil, err
 	}
+
 	req, err := s.client.NewRequest(ctx, http.MethodPut, url, issue)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	// This is just to follow the rest of the API's convention of returning an issue.
@@ -839,6 +835,7 @@ func (s *IssueService) UpdateIssue(ctx context.Context, jiraID string, data map[
 	if err != nil {
 		return nil, err
 	}
+
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
 		return resp, err
@@ -862,8 +859,7 @@ func (s *IssueService) AddComment(ctx context.Context, issueID string, comment *
 	responseComment := new(Comment)
 	resp, err := s.client.Do(req, responseComment)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return responseComment, resp, nil
@@ -905,8 +901,7 @@ func (s *IssueService) DeleteComment(ctx context.Context, issueID, commentID str
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return jerr
+		return err
 	}
 	defer resp.Body.Close()
 
@@ -933,8 +928,7 @@ func (s *IssueService) AddWorklogRecord(ctx context.Context, issueID string, rec
 	responseRecord := new(WorklogRecord)
 	resp, err := s.client.Do(req, responseRecord)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return responseRecord, resp, nil
@@ -960,8 +954,7 @@ func (s *IssueService) UpdateWorklogRecord(ctx context.Context, issueID, worklog
 	responseRecord := new(WorklogRecord)
 	resp, err := s.client.Do(req, responseRecord)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return responseRecord, resp, nil
@@ -978,12 +971,7 @@ func (s *IssueService) AddLink(ctx context.Context, issueLink *IssueLink) (*Resp
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
-	if err != nil {
-		err = NewJiraError(resp, err)
-	}
-
-	return resp, err
+	return s.client.Do(req, nil)
 }
 
 // Search will search for tickets according to the jql
@@ -1025,9 +1013,6 @@ func (s *IssueService) Search(ctx context.Context, jql string, options *SearchOp
 
 	v := new(searchResult)
 	resp, err := s.client.Do(req, v)
-	if err != nil {
-		err = NewJiraError(resp, err)
-	}
 	return v.Issues, resp, err
 }
 
@@ -1086,8 +1071,7 @@ func (s *IssueService) GetCustomFields(ctx context.Context, issueID string) (Cus
 	issue := new(map[string]interface{})
 	resp, err := s.client.Do(req, issue)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	m := *issue
@@ -1125,9 +1109,6 @@ func (s *IssueService) GetTransitions(ctx context.Context, id string) ([]Transit
 
 	result := new(transitionResult)
 	resp, err := s.client.Do(req, result)
-	if err != nil {
-		err = NewJiraError(resp, err)
-	}
 	return result.Transitions, resp, err
 }
 
@@ -1158,10 +1139,6 @@ func (s *IssueService) DoTransitionWithPayload(ctx context.Context, ticketID, pa
 	}
 
 	resp, err := s.client.Do(req, nil)
-	if err != nil {
-		err = NewJiraError(resp, err)
-	}
-
 	return resp, err
 }
 
@@ -1261,8 +1238,7 @@ func (s *IssueService) Delete(ctx context.Context, issueID string) (*Response, e
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
-	return resp, err
+	return s.client.Do(req, nil)
 }
 
 // GetWatchers wil return all the users watching/observing the given issue
@@ -1279,7 +1255,7 @@ func (s *IssueService) GetWatchers(ctx context.Context, issueID string) (*[]User
 	watches := new(Watches)
 	resp, err := s.client.Do(req, watches)
 	if err != nil {
-		return nil, nil, NewJiraError(resp, err)
+		return nil, nil, err
 	}
 
 	result := []User{}
@@ -1288,7 +1264,7 @@ func (s *IssueService) GetWatchers(ctx context.Context, issueID string) (*[]User
 		if watcher.AccountID != "" {
 			user, resp, err = s.client.User.GetByAccountID(context.Background(), watcher.AccountID)
 			if err != nil {
-				return nil, resp, NewJiraError(resp, err)
+				return nil, resp, err
 			}
 		}
 		result = append(result, *user)
@@ -1309,12 +1285,7 @@ func (s *IssueService) AddWatcher(ctx context.Context, issueID string, userName 
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
-	if err != nil {
-		err = NewJiraError(resp, err)
-	}
-
-	return resp, err
+	return s.client.Do(req, nil)
 }
 
 // RemoveWatcher removes given user from given issue
@@ -1329,12 +1300,7 @@ func (s *IssueService) RemoveWatcher(ctx context.Context, issueID string, userNa
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
-	if err != nil {
-		err = NewJiraError(resp, err)
-	}
-
-	return resp, err
+	return s.client.Do(req, nil)
 }
 
 // UpdateAssignee updates the user assigned to work on the given issue
@@ -1349,12 +1315,7 @@ func (s *IssueService) UpdateAssignee(ctx context.Context, issueID string, assig
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
-	if err != nil {
-		err = NewJiraError(resp, err)
-	}
-
-	return resp, err
+	return s.client.Do(req, nil)
 }
 
 func (c ChangelogHistory) CreatedTime() (time.Time, error) {
@@ -1379,9 +1340,6 @@ func (s *IssueService) GetRemoteLinks(ctx context.Context, id string) (*[]Remote
 
 	result := new([]RemoteLink)
 	resp, err := s.client.Do(req, result)
-	if err != nil {
-		err = NewJiraError(resp, err)
-	}
 	return result, resp, err
 }
 
@@ -1398,8 +1356,7 @@ func (s *IssueService) AddRemoteLink(ctx context.Context, issueID string, remote
 	responseRemotelink := new(RemoteLink)
 	resp, err := s.client.Do(req, responseRemotelink)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return responseRemotelink, resp, nil
@@ -1417,8 +1374,7 @@ func (s *IssueService) UpdateRemoteLink(ctx context.Context, issueID string, lin
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return resp, jerr
+		return resp, err
 	}
 
 	return resp, nil

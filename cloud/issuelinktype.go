@@ -25,8 +25,9 @@ func (s *IssueLinkTypeService) GetList(ctx context.Context) ([]IssueLinkType, *R
 	linkTypeList := []IssueLinkType{}
 	resp, err := s.client.Do(req, &linkTypeList)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	return linkTypeList, resp, nil
 }
 
@@ -43,8 +44,9 @@ func (s *IssueLinkTypeService) Get(ctx context.Context, ID string) (*IssueLinkTy
 	linkType := new(IssueLinkType)
 	resp, err := s.client.Do(req, linkType)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	return linkType, resp, nil
 }
 
@@ -83,10 +85,12 @@ func (s *IssueLinkTypeService) Update(ctx context.Context, linkType *IssueLinkTy
 	if err != nil {
 		return nil, nil, err
 	}
+
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	ret := *linkType
 	return &ret, resp, nil
 }
@@ -102,6 +106,5 @@ func (s *IssueLinkTypeService) Delete(ctx context.Context, ID string) (*Response
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
-	return resp, err
+	return s.client.Do(req, nil)
 }
