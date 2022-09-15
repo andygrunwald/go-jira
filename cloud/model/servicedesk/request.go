@@ -29,7 +29,7 @@ type Request struct {
 type RequestFieldValue struct {
 	FieldID string `json:"fieldId,omitempty" structs:"fieldId,omitempty"`
 	Label   string `json:"label,omitempty" structs:"label,omitempty"`
-	Value   string `json:"value,omitempty" structs:"value,omitempty"`
+	Value   any    `json:"value,omitempty" structs:"value,omitempty"`
 }
 
 // RequestDate is the date format used in requests.
