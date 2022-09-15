@@ -1,13 +1,13 @@
 package insight
 
 type IQLGetObjectsOptions struct {
-	OnlyValueEditable       bool   `url:"onlyValueEditable,omitempty"`
-	OrderByName             bool   `url:"orderByName,omitempty"`
-	Query                   string `url:"query,omitempty"`
-	IncludeValuesExist      bool   `url:"includeValuesExist,omitempty"`
-	ExcludeParentAttributes bool   `url:"excludeParentAttributes,omitempty"`
-	IncludeChildren         bool   `url:"includeChildren,omitempty"`
-	OrderByRequired         bool   `url:"orderByRequired,omitempty"`
+	IQL                   string `url:"iql,omitempty"`
+	Page                  *int   `url:"page,omitempty"`
+	ResultPerPage         *int   `url:"resultPerPage,omitempty"`
+	IncludeAttributes     *bool  `url:"includeAttributes,omitempty"`
+	IncludeAttributesDeep *int   `url:"includeAttributesDeep,omitempty"`
+	IncludeTypeAttributes bool   `url:"includeTypeAttributes,omitempty"`
+	IncludeExtendedInfo   bool   `url:"includeExtendedInfo,omitempty"`
 }
 
 type ObjectListResult struct {
