@@ -17,8 +17,12 @@ type InsightIQLService service
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-iql/#api-iql-objects-get
 func (i *InsightIQLService) GetObjects(ctx context.Context, workspaceID string, options insight.IQLGetObjectsOptions) (*insight.ObjectListResult, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/iql/objects`, insightURL, workspaceID)
+	url, err := addOptions(apiEndPoint, options)
+	if err != nil {
+		return nil, err
+	}
 
-	req, err := i.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
+	req, err := i.client.NewRequest(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
