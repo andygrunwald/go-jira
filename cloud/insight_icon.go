@@ -66,8 +66,6 @@ func (i *InsightIconService) GetGlobal(ctx context.Context, workspaceID string) 
 	switch res.StatusCode {
 	case http.StatusUnauthorized:
 		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusNotFound:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
 	case http.StatusInternalServerError:
 		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
 	}
