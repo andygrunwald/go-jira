@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 )
 
@@ -96,19 +95,14 @@ func (s *UserService) Create(ctx context.Context, user *User) (*User, *Response,
 	if err != nil {
 		return nil, resp, err
 	}
+	defer resp.Body.Close()
 
 	responseUser := new(User)
-	defer resp.Body.Close()
-	data, err := io.ReadAll(resp.Body)
+	err = json.NewDecoder(resp.Body).Decode(&responseUser)
 	if err != nil {
-		e := fmt.Errorf("could not read the returned data")
-		return nil, resp, NewJiraError(resp, e)
+		return nil, resp, err
 	}
-	err = json.Unmarshal(data, responseUser)
-	if err != nil {
-		e := fmt.Errorf("could not unmarshall the data into struct")
-		return nil, resp, NewJiraError(resp, e)
-	}
+
 	return responseUser, resp, nil
 }
 

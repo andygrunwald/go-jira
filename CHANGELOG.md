@@ -166,6 +166,166 @@ the new call would be
 client.Issue.Create(ctx, ...)
 ```
 
+#### `BoardService.GetAllSprints` removed, `BoardService.GetAllSprintsWithOptions` renamed
+
+The function `client.BoardService.GetAllSprintsWithOptions()` has been renamed to `client.BoardService.GetAllSprints()`.
+
+##### If you used `client.BoardService.GetAllSprints()`:
+
+Before:
+
+```go
+client.Board.GetAllSprints(context.Background(), "123")
+```
+
+After:
+
+```go
+client.Board.GetAllSprints(context.Background(), "123", nil)
+```
+
+##### If you used `client.BoardService.GetAllSprintsWithOptions()`:
+
+Before:
+
+```go
+client.Board.GetAllSprintsWithOptions(context.Background(), 123, &GetAllSprintsOptions{State: "active,future"})
+```
+
+After:
+
+```go
+client.Board.GetAllSprints(context.Background(), 123, &GetAllSprintsOptions{State: "active,future"})
+```
+
+#### `GroupService.Get` removed, `GroupService.GetWithOptions` renamed
+
+The function `client.GroupService.GetWithOptions()` has been renamed to `client.GroupService.Get()`.
+
+##### If you used `client.GroupService.Get()`:
+
+Before:
+
+```go
+client.Group.Get(context.Background(), "default")
+```
+
+After:
+
+```go
+client.Group.Get(context.Background(), "default", nil)
+```
+
+##### If you used `client.GroupService.GetWithOptions()`:
+
+Before:
+
+```go
+client.Group.GetWithOptions(context.Background(), "default", &GroupSearchOptions{StartAt: 0, MaxResults: 2})
+```
+
+After:
+
+```go
+client.Group.Get(context.Background(), "default", &GroupSearchOptions{StartAt: 0, MaxResults: 2})
+```
+
+#### `Issue.Update` removed, `Issue.UpdateWithOptions` renamed
+
+The function `client.Issue.UpdateWithOptions()` has been renamed to `client.Issue.Update()`.
+
+##### If you used `client.Issue.Update()`:
+
+Before:
+
+```go
+client.Issue.Update(context.Background(), issue)
+```
+
+After:
+
+```go
+client.Issue.Update(context.Background(), issue, nil)
+```
+
+##### If you used `client.Issue.UpdateWithOptions()`:
+
+Before:
+
+```go
+client.Issue.UpdateWithOptions(context.Background(), issue, nil)
+```
+
+After:
+
+```go
+client.Issue.Update(context.Background(), issue, nil)
+```
+
+#### `Issue.GetCreateMeta` removed, `Issue.GetCreateMetaWithOptions` renamed
+
+The function `client.Issue.GetCreateMetaWithOptions()` has been renamed to `client.Issue.GetCreateMeta()`.
+
+##### If you used `client.Issue.GetCreateMeta()`:
+
+Before:
+
+```go
+client.Issue.GetCreateMeta(context.Background(), "SPN")
+```
+
+After:
+
+```go
+client.Issue.GetCreateMetaWithOptions(ctx, &GetQueryOptions{ProjectKeys: "SPN", Expand: "projects.issuetypes.fields"})
+```
+
+##### If you used `client.Issue.GetCreateMetaWithOptions()`:
+
+Before:
+
+```go
+client.Issue.GetCreateMetaWithOptions(ctx, &GetQueryOptions{ProjectKeys: "SPN", Expand: "projects.issuetypes.fields"})
+```
+
+After:
+
+```go
+client.Issue.GetCreateMeta(ctx, &GetQueryOptions{ProjectKeys: "SPN", Expand: "projects.issuetypes.fields"})
+```
+
+#### `Project.GetList` removed, `Project.ListWithOptions` renamed
+
+The function `client.Project.ListWithOptions()` has been renamed to `client.Project.GetAll()`.
+
+##### If you used `client.Project.GetList()`:
+
+Before:
+
+```go
+client.Project.GetList(context.Background())
+```
+
+After:
+
+```go
+client.Project.GetAll(context.Background(), nil)
+```
+
+##### If you used `client.Project.ListWithOptions()`:
+
+Before:
+
+```go
+client.Project.ListWithOptions(ctx, &GetQueryOptions{})
+```
+
+After:
+
+```go
+client.Project.GetAll(ctx, &GetQueryOptions{})
+```
+
 ### Breaking changes
 
 * Jira On-Premise and Jira Cloud have now different clients, because the API differs
@@ -173,6 +333,11 @@ client.Issue.Create(ctx, ...)
 * `client.NewRequestWithContext()` has been removed in favor of `client.NewRequest()`, which requires now a context as first argument
 * `client.NewMultiPartRequestWithContext()` has been removed in favor of `client.NewMultiPartRequest()`, which requires now a context as first argument
 * `context` is now a first class citizen in all API calls. Functions that had a suffix like `...WithContext` have been removed entirely. The API methods support the context now as first argument.
+* `BoardService.GetAllSprints` has been removed and `BoardService.GetAllSprintsWithOptions` has been renamed to `BoardService.GetAllSprints`
+* `GroupService.Get` has been removed and `GroupService.GetWithOptions` has been renamed to `GroupService.Get`
+* `Issue.Update` has been removed and `Issue.UpdateWithOptions` has been renamed to `Issue.Update`
+* `Issue.GetCreateMeta` has been removed and `Issue.GetCreateMetaWithOptions` has been renamed to `Issue.GetCreateMeta`
+* `Project.GetList` has been removed and `Project.ListWithOptions` has been renamed to `Project.GetAll`
 
 ### Features
 

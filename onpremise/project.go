@@ -80,18 +80,11 @@ type PermissionScheme struct {
 	Permissions []Permission `json:"permissions" structs:"permissions,omitempty"`
 }
 
-// GetList gets all projects form Jira
+// GetAll returns all projects form Jira with optional query params, like &GetQueryOptions{Expand: "issueTypes"} to get
+// a list of all projects and their supported issuetypes.
 //
-// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
-func (s *ProjectService) GetList(ctx context.Context) (*ProjectList, *Response, error) {
-	return s.ListWithOptions(ctx, &GetQueryOptions{})
-}
-
-// ListWithOptions gets all projects form Jira with optional query params, like &GetQueryOptions{Expand: "issueTypes"} to get
-// a list of all projects and their supported issuetypes
-//
-// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getAllProjects
-func (s *ProjectService) ListWithOptions(ctx context.Context, options *GetQueryOptions) (*ProjectList, *Response, error) {
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-projects/#api-rest-api-2-project-get
+func (s *ProjectService) GetAll(ctx context.Context, options *GetQueryOptions) (*ProjectList, *Response, error) {
 	apiEndpoint := "rest/api/2/project"
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
