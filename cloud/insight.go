@@ -14,6 +14,7 @@ var insightURL = "https://api.atlassian.com"
 type InsightService struct {
 	common service
 
+	IQL          *InsightIQLService
 	Object       *InsightObjectService
 	ObjectSchema *InsightObjectSchemaService
 	ObjectType   *InsightObjectTypeService

@@ -29,6 +29,7 @@ func (i *InsightObjectService) Get(ctx context.Context, workspaceID, id string) 
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusUnauthorized:
@@ -61,6 +62,7 @@ func (i *InsightObjectService) Update(ctx context.Context, workspaceID, id strin
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusBadRequest:
@@ -98,6 +100,7 @@ func (i *InsightObjectService) Delete(ctx context.Context, workspaceID, id strin
 	if err != nil {
 		return err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusBadRequest:
@@ -134,6 +137,7 @@ func (i *InsightObjectService) GetAttributes(ctx context.Context, workspaceID, i
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusUnauthorized:
@@ -170,6 +174,7 @@ func (i *InsightObjectService) GetHistory(ctx context.Context, workspaceID, id s
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusUnauthorized:
@@ -202,6 +207,7 @@ func (i *InsightObjectService) GetReferenceInfo(ctx context.Context, workspaceID
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusUnauthorized:
@@ -234,6 +240,7 @@ func (i *InsightObjectService) Create(ctx context.Context, workspaceID string, b
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusBadRequest:

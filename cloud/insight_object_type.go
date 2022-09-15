@@ -29,6 +29,7 @@ func (i *InsightObjectTypeService) Get(ctx context.Context, workspaceID, id stri
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusUnauthorized:
@@ -61,6 +62,7 @@ func (i *InsightObjectTypeService) Update(ctx context.Context, workspaceID, id s
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusBadRequest:
@@ -98,6 +100,7 @@ func (i *InsightObjectTypeService) Delete(ctx context.Context, workspaceID, id s
 	if err != nil {
 		return err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusBadRequest:
@@ -138,6 +141,7 @@ func (i *InsightObjectTypeService) GetAttributes(ctx context.Context, workspaceI
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusUnauthorized:
@@ -170,6 +174,7 @@ func (i *InsightObjectTypeService) UpdatePosition(ctx context.Context, workspace
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusBadRequest:
@@ -209,6 +214,7 @@ func (i *InsightObjectTypeService) Create(ctx context.Context, workspaceID strin
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusBadRequest:
