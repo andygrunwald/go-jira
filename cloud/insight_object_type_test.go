@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/andygrunwald/go-jira/v2/cloud/model/apps/insight"
+	"github.com/mcl-de/go-jira/v2/cloud/model/apps/insight"
 )
 
 func TestInsightObjectTypeService_Get(t *testing.T) {
