@@ -28,6 +28,7 @@ func (i *InsightObjectSchemaService) List(ctx context.Context, workspaceID strin
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusUnauthorized:
@@ -62,6 +63,7 @@ func (i *InsightObjectSchemaService) GetAttributes(ctx context.Context, workspac
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	switch res.StatusCode {
 	case http.StatusUnauthorized:
