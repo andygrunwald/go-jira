@@ -68,7 +68,7 @@ func (s *ServiceDeskService) AttachTemporaryFile(ctx context.Context, serviceDes
 
 		resp, err = s.client.Do(req, nil)
 		if err != nil {
-			return NewJiraError(resp, err)
+			return err
 		}
 
 		return nil
@@ -99,7 +99,7 @@ func (s *ServiceDeskService) CreateAttachment(ctx context.Context, idOrKey strin
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
 	defer resp.Body.Close()
 

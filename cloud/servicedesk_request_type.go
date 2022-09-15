@@ -36,7 +36,7 @@ func (s *ServiceDeskService) GetRequestTypes(ctx context.Context, serviceDeskID 
 	o := new(model.PagedDTOT[servicedesk.RequestType])
 	resp, err := s.client.Do(req, &o)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
 
 	return o, resp, nil
@@ -59,7 +59,7 @@ func (s *ServiceDeskService) GetRequestTypeFields(ctx context.Context, serviceDe
 	o := new(servicedesk.CustomerRequestCreateMeta)
 	resp, err := s.client.Do(req, &o)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
 
 	return o, resp, nil
@@ -82,7 +82,7 @@ func (s *ServiceDeskService) GetRequestTypeGroups(ctx context.Context, serviceDe
 	o := new(model.PagedDTOT[servicedesk.RequestTypeGroup])
 	resp, err := s.client.Do(req, &o)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
 
 	return o, resp, nil
