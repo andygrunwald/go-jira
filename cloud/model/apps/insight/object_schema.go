@@ -33,3 +33,7 @@ type CreateOrUpdateObjectSchema struct {
 	ObjectSchemaKey string `json:"objectSchemaKey" validate:"required"`
 	Description     string `json:"description,omitempty"`
 }
+
+type ObjectSchemaObjectTypeOptions struct {
+	IncludeObjectCounts bool `json:"includeObjectCounts,omitempty"`
+}

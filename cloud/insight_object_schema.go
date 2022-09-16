@@ -231,3 +231,40 @@ func (i *InsightObjectSchemaService) GetAttributes(ctx context.Context, workspac
 
 	return attributes, err
 }
+
+// GetObjectTypes find all object types for this object schema
+// Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-objectschema/#api-objectschema-id-attributes-get
+func (i *InsightObjectSchemaService) GetObjectTypes(ctx context.Context, workspaceID, id string, options *insight.ObjectSchemaObjectTypeOptions) ([]insight.ObjectType, error) {
+	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/objectschema/%s/objecttypes/flat`, insightURL, workspaceID, id)
+	url, err := addOptions(apiEndPoint, options)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := i.client.NewRequest(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Accept", "application/json")
+
+	res, err := i.client.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	switch res.StatusCode {
+	case http.StatusUnauthorized:
+		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
+	case http.StatusNotFound:
+		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
+	case http.StatusInternalServerError:
+		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	}
+
+	var objectTypes []insight.ObjectType
+	err = json.NewDecoder(res.Body).Decode(&objectTypes)
+
+	return objectTypes, err
+}
