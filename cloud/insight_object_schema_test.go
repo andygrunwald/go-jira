@@ -24,6 +24,66 @@ func TestInsightObjectSchemaService_List(t *testing.T) {
 	}
 }
 
+func TestInsightObjectSchemaService_Create(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/jsm/insight/workspace/g2778e1d-939d-581d-c8e2-9d5g59de456b/v1/objectschema/create", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, http.MethodPost)
+		testRequestURL(t, r, "/jsm/insight/workspace/g2778e1d-939d-581d-c8e2-9d5g59de456b/v1/objectschema/create")
+		fmt.Fprint(w, `{"workspaceId":"g2778e1d-939d-581d-c8e2-9d5g59de456b","globalId":"g2778e1d-939d-581d-c8e2-9d5g59de456b:39","id":"39","name":"Computers","objectSchemaKey":"COMP","status":"Ok","description":"The IT department schema","created":"2021-04-20T16:21:18.908Z","updated":"2021-04-20T16:21:18.912Z","objectCount":0,"objectTypeCount":0,"idAsInt":39}`)
+	})
+	if objectSchema, err := testClient.Insight.ObjectSchema.Create(context.Background(), "g2778e1d-939d-581d-c8e2-9d5g59de456b", insight.CreateOrUpdateObjectSchema{}); err != nil {
+		t.Errorf("Error given: %s", err)
+	} else if objectSchema == nil {
+		t.Error("Expected objectSchema. Object is nil")
+	}
+}
+
+func TestInsightObjectSchemaService_Get(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/jsm/insight/workspace/g2778e1d-939d-581d-c8e2-9d5g59de456b/v1/objectschema/39", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, http.MethodGet)
+		testRequestURL(t, r, "/jsm/insight/workspace/g2778e1d-939d-581d-c8e2-9d5g59de456b/v1/objectschema/39")
+		fmt.Fprint(w, `{"workspaceId":"g2778e1d-939d-581d-c8e2-9d5g59de456b","globalId":"g2778e1d-939d-581d-c8e2-9d5g59de456b:39","id":"39","name":"Computers","objectSchemaKey":"COMP","status":"Ok","description":"The IT department schema","created":"2021-04-20T16:21:18.908Z","updated":"2021-04-20T16:21:18.912Z","objectCount":0,"objectTypeCount":0,"idAsInt":39}`)
+	})
+	if objectSchema, err := testClient.Insight.ObjectSchema.Get(context.Background(), "g2778e1d-939d-581d-c8e2-9d5g59de456b", "39"); err != nil {
+		t.Errorf("Error given: %s", err)
+	} else if objectSchema == nil {
+		t.Error("Expected objectSchema. Object is nil")
+	}
+}
+
+func TestInsightObjectSchemaService_Update(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/jsm/insight/workspace/g2778e1d-939d-581d-c8e2-9d5g59de456b/v1/objectschema/39", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, http.MethodPut)
+		testRequestURL(t, r, "/jsm/insight/workspace/g2778e1d-939d-581d-c8e2-9d5g59de456b/v1/objectschema/39")
+		fmt.Fprint(w, `{"workspaceId":"g2778e1d-939d-581d-c8e2-9d5g59de456b","globalId":"g2778e1d-939d-581d-c8e2-9d5g59de456b:39","id":"39","name":"Computers","objectSchemaKey":"COMP","status":"Ok","description":"The IT department schema","created":"2021-04-20T16:21:18.908Z","updated":"2021-04-20T16:21:18.912Z","objectCount":0,"objectTypeCount":0,"idAsInt":39}`)
+	})
+	if objectSchema, err := testClient.Insight.ObjectSchema.Update(context.Background(), "g2778e1d-939d-581d-c8e2-9d5g59de456b", "39", insight.CreateOrUpdateObjectSchema{}); err != nil {
+		t.Errorf("Error given: %s", err)
+	} else if objectSchema == nil {
+		t.Error("Expected objectSchema. Object is nil")
+	}
+}
+
+func TestInsightObjectSchemaService_Delete(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/jsm/insight/workspace/g2778e1d-939d-581d-c8e2-9d5g59de456b/v1/objectschema/39", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, http.MethodDelete)
+		testRequestURL(t, r, "/jsm/insight/workspace/g2778e1d-939d-581d-c8e2-9d5g59de456b/v1/objectschema/39")
+		fmt.Fprint(w, `{"workspaceId":"g2778e1d-939d-581d-c8e2-9d5g59de456b","globalId":"g2778e1d-939d-581d-c8e2-9d5g59de456b:39","id":"39","name":"Computers","objectSchemaKey":"COMP","status":"Ok","description":"The IT department schema","created":"2021-04-20T16:21:18.908Z","updated":"2021-04-20T16:21:18.912Z","objectCount":0,"objectTypeCount":0,"idAsInt":39}`)
+	})
+	if objectSchema, err := testClient.Insight.ObjectSchema.Delete(context.Background(), "g2778e1d-939d-581d-c8e2-9d5g59de456b", "39"); err != nil {
+		t.Errorf("Error given: %s", err)
+	} else if objectSchema == nil {
+		t.Error("Expected objectSchema. Object is nil")
+	}
+}
+
 func TestInsightObjectSchemaService_GetAttributes(t *testing.T) {
 	setup()
 	defer teardown()

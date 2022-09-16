@@ -48,7 +48,7 @@ func (i *InsightObjectService) Get(ctx context.Context, workspaceID, id string) 
 
 // Update updates an object and returns it
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-object/#api-object-id-put
-func (i *InsightObjectService) Update(ctx context.Context, workspaceID, id string, body insight.CreateAndUpdateObject) (*insight.Object, error) {
+func (i *InsightObjectService) Update(ctx context.Context, workspaceID, id string, body insight.CreateOrUpdateObject) (*insight.Object, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/object/%s`, insightURL, workspaceID, id)
 
 	req, err := i.client.NewRequest(ctx, http.MethodPut, apiEndPoint, body)
@@ -226,7 +226,7 @@ func (i *InsightObjectService) GetReferenceInfo(ctx context.Context, workspaceID
 
 // Create creates a new object
 // Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-object/#api-object-create-post
-func (i *InsightObjectService) Create(ctx context.Context, workspaceID string, body insight.CreateAndUpdateObject) (*insight.Object, error) {
+func (i *InsightObjectService) Create(ctx context.Context, workspaceID string, body insight.CreateOrUpdateObject) (*insight.Object, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/object/create`, insightURL, workspaceID)
 
 	req, err := i.client.NewRequest(ctx, http.MethodPost, apiEndPoint, body)
@@ -263,7 +263,7 @@ func (i *InsightObjectService) Create(ctx context.Context, workspaceID string, b
 }
 
 // NavlistIQL returns a list of objects based on an IQL. Note that the preferred endpoint is IQL from the InsightIQLService
-// Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-object/#api-object-create-post
+// Reference: https://developer.atlassian.com/cloud/insight/rest/api-group-object/#api-object-navlist-iql-post
 func (i *InsightObjectService) NavlistIQL(ctx context.Context, workspaceID string, body insight.ObjectNavlistIQL) (*insight.ObjectListResult, error) {
 	apiEndPoint := fmt.Sprintf(`%s/jsm/insight/workspace/%s/v1/object/navlist/iql`, insightURL, workspaceID)
 

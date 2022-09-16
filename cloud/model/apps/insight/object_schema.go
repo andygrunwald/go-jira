@@ -27,3 +27,9 @@ type ObjectSchemaAttributeOptions struct {
 	Extended          bool   `url:"extended,omitempty"`
 	Query             string `url:"query,omitempty"`
 }
+
+type CreateOrUpdateObjectSchema struct {
+	Name            string `json:"name" validate:"required"`
+	ObjectSchemaKey string `json:"objectSchemaKey" validate:"required"`
+	Description     string `json:"description,omitempty"`
+}

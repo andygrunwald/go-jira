@@ -134,7 +134,7 @@ type DefaultType struct {
 	Name string                         `json:"name"`
 }
 
-type CreateAndUpdateObject struct {
+type CreateOrUpdateObject struct {
 	ObjectTypeID string              `json:"objectTypeId" validate:"required"`
 	Attributes   []ObjectAttributeIn `json:"attributes" validate:"required,dive,required"`
 	HasAvatar    bool                `json:"hasAvatar,omitempty"`
