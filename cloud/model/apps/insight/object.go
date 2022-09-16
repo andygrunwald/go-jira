@@ -134,9 +134,9 @@ type DefaultType struct {
 	Name string                         `json:"name"`
 }
 
-type PutObject struct {
+type CreateOrUpdateObject struct {
 	ObjectTypeID string              `json:"objectTypeId" validate:"required"`
-	Attributes   []ObjectAttributeIn `json:"attributes" validate:"dive"`
+	Attributes   []ObjectAttributeIn `json:"attributes" validate:"required,dive,required"`
 	HasAvatar    bool                `json:"hasAvatar,omitempty"`
 	AvatarUUID   string              `json:"avatarUUID,omitempty"`
 }
@@ -169,4 +169,21 @@ type ObjectHistory struct {
 	Type              string `json:"type" validate:"required"`
 	Created           string `json:"created" validate:"required"`
 	ObjectID          string `json:"objectId" validate:"required"`
+}
+
+type ObjectNavlistIQL struct {
+	IQL                 string                        `json:"iql" validate:"required"`
+	ObjectTypeID        string                        `json:"objectTypeId" validate:"required"`
+	Page                int                           `json:"page,omitempty"`
+	ResultsPerPage      int                           `json:"resultsPerPage" validate:"required"`
+	OrderByTypeAttrID   int                           `json:"orderByTypeAttrId,omitempty"`
+	Ascending           int                           `json:"asc,omitempty"`
+	ObjectID            int                           `json:"objectId,omitempty"`
+	ObjectSchemaID      int                           `json:"objectSchemaId,omitempty"`
+	IncludeAttributes   int                           `json:"includeAttributes"`
+	AttributesToDisplay ObjectTypeAttributesToDisplay `json:"attributesToDisplay"`
+}
+
+type ObjectTypeAttributesToDisplay struct {
+	AttributesToDisplayIDs []int `json:"attributesToDisplayIds" validate:"required,dive,required"`
 }
