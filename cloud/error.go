@@ -15,10 +15,10 @@ type JiraRestError struct {
 	Errors        map[string]string `json:"errors"`
 }
 
-var ErrValidation = ResponseError{statusCode: http.StatusBadRequest}
-var ErrUnauthorized = ResponseError{statusCode: http.StatusUnauthorized}
-var ErrNotFound = ResponseError{statusCode: http.StatusNotFound}
-var ErrUnknown = ResponseError{statusCode: http.StatusInternalServerError}
+var ErrValidation = &ResponseError{statusCode: http.StatusBadRequest}
+var ErrUnauthorized = &ResponseError{statusCode: http.StatusUnauthorized}
+var ErrNotFound = &ResponseError{statusCode: http.StatusNotFound}
+var ErrUnknown = &ResponseError{statusCode: http.StatusInternalServerError}
 var ErrNoBody = errors.New("no body in response error")
 
 type ResponseError struct {
