@@ -118,7 +118,7 @@ For convenience, capability for basic and cookie-based authentication is include
 
 Token-based authentication uses the basic authentication scheme, with a user-generated API token in place of a user's password. You can generate a token for your user [here](https://id.atlassian.com/manage-profile/security/api-tokens). Additional information about Atlassian Cloud API tokens can be found [here](https://confluence.atlassian.com/cloud/api-tokens-938839638.html).
 
-A more thorough, [runnable example](examples/basicauth/main.go) is provided in the examples directory.
+A more thorough, [runnable example](cloud/examples/basicauth/main.go) is provided in the examples directory.
 
 ```go
 func main() {
@@ -244,10 +244,7 @@ func main() {
 Jira API has limit on maxResults it can return. You may have a usecase where you need to get all issues for given JQL.
 This example shows reference implementation of GetAllIssues function which does pagination on Jira API to get all the issues for given JQL
 
-please look at [Pagination Example](https://github.com/andygrunwald/go-jira/blob/master/examples/pagination/main.go)
-
-
-
+please look at [Pagination Example](https://github.com/andygrunwald/go-jira/blob/master/cloud/examples/pagination/main.go)
 
 ### Call a not implemented API endpoint
 
