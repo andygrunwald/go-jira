@@ -30,13 +30,9 @@ func (i *InsightIconService) Get(ctx context.Context, workspaceID, id string) (*
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusNotFound:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
-	case http.StatusInternalServerError:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return nil, err
 	}
 
 	icon := new(insight.Icon)
@@ -63,11 +59,9 @@ func (i *InsightIconService) GetGlobal(ctx context.Context, workspaceID string) 
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusInternalServerError:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return nil, err
 	}
 
 	icons := []insight.Icon{}

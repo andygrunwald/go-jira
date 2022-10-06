@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/mcl-de/go-jira/v2/cloud/model/apps/insight"
@@ -31,11 +30,9 @@ func (i *InsightObjectSchemaService) List(ctx context.Context, workspaceID strin
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusInternalServerError:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return nil, err
 	}
 
 	list := new(insight.GenericList[insight.ObjectSchema])
@@ -62,18 +59,9 @@ func (i *InsightObjectSchemaService) Create(ctx context.Context, workspaceID str
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusBadRequest:
-		responseBody, err := io.ReadAll(res.Body)
-		if err != nil {
-			return nil, err
-		}
-
-		return nil, fmt.Errorf("%s: %w\n%s", req.URL.String(), ErrValidation, responseBody)
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusInternalServerError:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return nil, err
 	}
 
 	schema := new(insight.ObjectSchema)
@@ -100,13 +88,9 @@ func (i *InsightObjectSchemaService) Get(ctx context.Context, workspaceID, id st
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusNotFound:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
-	case http.StatusInternalServerError:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return nil, err
 	}
 
 	schema := new(insight.ObjectSchema)
@@ -133,20 +117,9 @@ func (i *InsightObjectSchemaService) Update(ctx context.Context, workspaceID, id
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusBadRequest:
-		responseBody, err := io.ReadAll(res.Body)
-		if err != nil {
-			return nil, err
-		}
-
-		return nil, fmt.Errorf("%s: %w\n%s", req.URL.String(), ErrValidation, responseBody)
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusNotFound:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
-	case http.StatusInternalServerError:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return nil, err
 	}
 
 	schema := new(insight.ObjectSchema)
@@ -173,20 +146,9 @@ func (i *InsightObjectSchemaService) Delete(ctx context.Context, workspaceID, id
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusBadRequest:
-		responseBody, err := io.ReadAll(res.Body)
-		if err != nil {
-			return nil, err
-		}
-
-		return nil, fmt.Errorf("%s: %w\n%s", req.URL.String(), ErrValidation, responseBody)
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusNotFound:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
-	case http.StatusInternalServerError:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return nil, err
 	}
 
 	schema := new(insight.ObjectSchema)
@@ -217,13 +179,9 @@ func (i *InsightObjectSchemaService) GetAttributes(ctx context.Context, workspac
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusNotFound:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
-	case http.StatusInternalServerError:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return nil, err
 	}
 
 	var attributes []insight.ObjectTypeAttribute
@@ -254,13 +212,9 @@ func (i *InsightObjectSchemaService) GetObjectTypes(ctx context.Context, workspa
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusNotFound:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
-	case http.StatusInternalServerError:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return nil, err
 	}
 
 	var objectTypes []insight.ObjectType

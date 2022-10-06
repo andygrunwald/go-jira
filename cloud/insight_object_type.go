@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/mcl-de/go-jira/v2/cloud/model/apps/insight"
@@ -31,13 +30,9 @@ func (i *InsightObjectTypeService) Get(ctx context.Context, workspaceID, id stri
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusNotFound:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
-	case http.StatusInternalServerError:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return nil, err
 	}
 
 	object := new(insight.ObjectType)
@@ -64,20 +59,9 @@ func (i *InsightObjectTypeService) Update(ctx context.Context, workspaceID, id s
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusBadRequest:
-		responseBody, err := io.ReadAll(res.Body)
-		if err != nil {
-			return nil, err
-		}
-
-		return nil, fmt.Errorf("%s: %w\n%s", req.URL.String(), ErrValidation, responseBody)
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusNotFound:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
-	case http.StatusInternalServerError:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return nil, err
 	}
 
 	object := new(insight.ObjectType)
@@ -102,23 +86,12 @@ func (i *InsightObjectTypeService) Delete(ctx context.Context, workspaceID, id s
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusBadRequest:
-		responseBody, err := io.ReadAll(res.Body)
-		if err != nil {
-			return err
-		}
-
-		return fmt.Errorf("%s: %w\n%s", req.URL.String(), ErrValidation, responseBody)
-	case http.StatusUnauthorized:
-		return fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusNotFound:
-		return fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
-	case http.StatusInternalServerError:
-		return fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return err
 	}
 
-	return err
+	return nil
 }
 
 // GetAttributes list all attributes for the given object type
@@ -143,13 +116,9 @@ func (i *InsightObjectTypeService) GetAttributes(ctx context.Context, workspaceI
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusNotFound:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
-	case http.StatusInternalServerError:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return nil, err
 	}
 
 	var attributes []insight.ObjectTypeAttribute
@@ -176,20 +145,9 @@ func (i *InsightObjectTypeService) UpdatePosition(ctx context.Context, workspace
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusBadRequest:
-		responseBody, err := io.ReadAll(res.Body)
-		if err != nil {
-			return nil, err
-		}
-
-		return nil, fmt.Errorf("%s: %w\n%s", req.URL.String(), ErrValidation, responseBody)
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusNotFound:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
-	case http.StatusInternalServerError:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return nil, err
 	}
 
 	object := new(insight.ObjectType)
@@ -216,20 +174,9 @@ func (i *InsightObjectTypeService) Create(ctx context.Context, workspaceID strin
 	}
 	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusBadRequest:
-		responseBody, err := io.ReadAll(res.Body)
-		if err != nil {
-			return nil, err
-		}
-
-		return nil, fmt.Errorf("%s: %w\n%s", req.URL.String(), ErrValidation, responseBody)
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnauthorized)
-	case http.StatusNotFound:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrNotFound)
-	case http.StatusInternalServerError:
-		return nil, fmt.Errorf("%s: %w", req.URL.String(), ErrUnknown)
+	err = CheckResponse(req, res)
+	if err != nil {
+		return nil, err
 	}
 
 	object := new(insight.ObjectType)
