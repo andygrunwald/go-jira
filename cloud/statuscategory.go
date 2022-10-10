@@ -2,12 +2,18 @@ package cloud
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 )
 
 // StatusCategoryService handles status categories for the Jira instance / API.
 //
-// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-Statuscategory
+// Use it to obtain a list of all status categories and the details of a category.
+//
+// Status categories provided a mechanism for categorizing statuses.
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-workflow-status-categories/#api-group-workflow-status-categories
 type StatusCategoryService service
 
 // StatusCategory represents the category a status belongs to.
@@ -30,18 +36,44 @@ const (
 
 // GetList gets all status categories from Jira
 //
-// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-statuscategory-get
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-workflow-status-categories/#api-rest-api-3-statuscategory-get
 func (s *StatusCategoryService) GetList(ctx context.Context) ([]StatusCategory, *Response, error) {
-	apiEndpoint := "rest/api/2/statuscategory"
+	apiEndpoint := "/rest/api/3/statuscategory"
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	statusCategoryList := []StatusCategory{}
-	resp, err := s.client.Do(req, &statusCategoryList)
+	var statusCategories []StatusCategory
+	resp, err := s.client.Do(req, &statusCategories)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
 	}
-	return statusCategoryList, resp, nil
+	return statusCategories, resp, nil
+}
+
+// Get returns a status category.
+//
+// Status categories provided a mechanism for categorizing statuses.
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-workflow-status-categories/#api-rest-api-3-statuscategory-idorkey-get
+func (s *StatusCategoryService) Get(ctx context.Context, statusCategoryID string) (*StatusCategory, *Response, error) {
+
+	if statusCategoryID == "" {
+		return nil, nil, errors.New("jira: not status category set")
+	}
+
+	apiEndpoint := fmt.Sprintf("/rest/api/3/statuscategory/%v", statusCategoryID)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	statusCategory := new(StatusCategory)
+	resp, err := s.client.Do(req, statusCategory)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+
+	return statusCategory, resp, nil
 }
