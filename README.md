@@ -52,17 +52,6 @@ It is go gettable
 go get github.com/andygrunwald/go-jira
 ```
 
-For stable versions you can use one of our tags with [gopkg.in](http://labix.org/gopkg.in). E.g.
-
-```go
-package main
-
-import (
-	jira "gopkg.in/andygrunwald/go-jira.v1"
-)
-...
-```
-
 (optional) to run unit / example tests:
 
 ```bash
