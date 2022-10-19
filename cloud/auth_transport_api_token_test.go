@@ -6,13 +6,13 @@ import (
 	"testing"
 )
 
-func TestPATAuthTransport_HeaderContainsAuth(t *testing.T) {
+func TestAPITokenAuthTransport_HeaderContainsAuth(t *testing.T) {
 	setup()
 	defer teardown()
 
-	token := "shhh, it's a token"
+	token := "shhh, it's an API token"
 
-	patTransport := &PATAuthTransport{
+	patTransport := &APITokenAuthTransport{
 		Token: token,
 	}
 
@@ -26,5 +26,4 @@ func TestPATAuthTransport_HeaderContainsAuth(t *testing.T) {
 
 	client, _ := NewClient(testServer.URL, patTransport.Client())
 	client.User.GetSelf(context.Background())
-
 }
