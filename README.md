@@ -100,20 +100,21 @@ For convenience, capability for basic and cookie-based authentication is include
 
 Token-based authentication uses the basic authentication scheme, with a user-generated API token in place of a user's password. You can generate a token for your user [here](https://id.atlassian.com/manage-profile/security/api-tokens). Additional information about Atlassian Cloud API tokens can be found [here](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/).
 
-A more thorough, [runnable example](cloud/examples/basicauth/main.go) is provided in the examples directory.
+A more thorough, [runnable example](cloud/examples/basic_auth/main.go) is provided in the examples directory.
 
 ```go
 func main() {
 	tp := jira.BasicAuthTransport{
-		Username: "username",
-		Password: "token",
+		Username: "<username>",
+		APIToken: "<api-token>",
 	}
 
-	client, err := jira.NewClient(tp.Client(), "https://my.jira.com")
+	client, err := jira.NewClient("https://my.jira.com", tp.Client())
 
-	u, _, err := client.User.Get("some_user")
+	u, _, err = client.User.GetCurrentUser(context.Background())
 
-	fmt.Printf("\nEmail: %v\nSuccess!\n", u.EmailAddress)
+	fmt.Printf("Email: %v\n", u.EmailAddress)
+	fmt.Println("Success!")
 }
 ```
 

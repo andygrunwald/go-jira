@@ -326,9 +326,9 @@ After:
 client.Project.GetAll(ctx, &GetQueryOptions{})
 ```
 
-#### Cloud/Authentication: `BearerAuthTransport` removed, `PATAuthTransport` renamed
+#### Cloud/Authentication: `BearerAuthTransport` removed, `PATAuthTransport` removed
 
-If you used `BearerAuthTransport` or `PATAuthTransport` for authentication, please replace it with `APITokenAuthTransport`.
+If you used `BearerAuthTransport` or `PATAuthTransport` for authentication, please replace it with `BasicAuthTransport`.
 
 Before:
 
@@ -351,8 +351,31 @@ client, err := jira.NewClient("https://...", tp.Client())
 After:
 
 ```go
-tp := jira.APITokenAuthTransport{
-	Token: "token",
+tp := jira.BasicAuthTransport{
+	Username: "username",
+	APIToken: "token",
+}
+client, err := jira.NewClient("https://...", tp.Client())
+```
+
+#### Cloud/Authentication: `BasicAuthTransport.Password` was renamed to `BasicAuthTransport.APIToken`
+
+Before:
+
+```go
+tp := jira.BasicAuthTransport{
+	Username: "username",
+	Password: "token",
+}
+client, err := jira.NewClient("https://...", tp.Client())
+```
+
+After:
+
+```go
+tp := jira.BasicAuthTransport{
+	Username: "username",
+	APIToken: "token",
 }
 client, err := jira.NewClient("https://...", tp.Client())
 ```
@@ -369,8 +392,9 @@ client, err := jira.NewClient("https://...", tp.Client())
 * `Issue.Update` has been removed and `Issue.UpdateWithOptions` has been renamed to `Issue.Update`
 * `Issue.GetCreateMeta` has been removed and `Issue.GetCreateMetaWithOptions` has been renamed to `Issue.GetCreateMeta`
 * `Project.GetList` has been removed and `Project.ListWithOptions` has been renamed to `Project.GetAll`
-* Cloud/Authentication: Removed `BearerAuthTransport`, because it was a 100% duplicate of `PATAuthTransport`
-* Cloud/Authentication: `PATAuthTransport` was renamed to `APITokenAuthTransport`
+* Cloud/Authentication: Removed `BearerAuthTransport`, because it was a (kind of) duplicate of `BasicAuthTransport`
+* Cloud/Authentication: Removed `PATAuthTransport`, because it was a (kind of) duplicate of `BasicAuthTransport`
+* Cloud/Authentication: `BasicAuthTransport.Password` was renamed to `BasicAuthTransport.APIToken`
 
 ### Features
 

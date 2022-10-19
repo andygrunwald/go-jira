@@ -3,10 +3,13 @@ package cloud
 import "net/http"
 
 // BasicAuthTransport is an http.RoundTripper that authenticates all requests
-// using HTTP Basic Authentication with the provided username and password.
+// using HTTP Basic Authentication with the provided username and a Personal API Token.
+//
+// Jira docs: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
+// Create a token: https://id.atlassian.com/manage-profile/security/api-tokens
 type BasicAuthTransport struct {
 	Username string
-	Password string
+	APIToken string
 
 	// Transport is the underlying HTTP transport to use when making requests.
 	// It will default to http.DefaultTransport if nil.
@@ -14,11 +17,11 @@ type BasicAuthTransport struct {
 }
 
 // RoundTrip implements the RoundTripper interface.  We just add the
-// basic auth and return the RoundTripper for this transport type.
+// basic auth information and return the RoundTripper for this transport type.
 func (t *BasicAuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req2 := cloneRequest(req) // per RoundTripper contract
 
-	req2.SetBasicAuth(t.Username, t.Password)
+	req2.SetBasicAuth(t.Username, t.APIToken)
 	return t.transport().RoundTrip(req2)
 }
 
