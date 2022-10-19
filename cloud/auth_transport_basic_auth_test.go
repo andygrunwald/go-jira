@@ -10,7 +10,7 @@ func TestBasicAuthTransport(t *testing.T) {
 	setup()
 	defer teardown()
 
-	username, password := "username", "password"
+	username, apiToken := "username", "api_token"
 
 	testMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		u, p, ok := r.BasicAuth()
@@ -20,14 +20,14 @@ func TestBasicAuthTransport(t *testing.T) {
 		if u != username {
 			t.Errorf("request contained basic auth username %q, want %q", u, username)
 		}
-		if p != password {
-			t.Errorf("request contained basic auth password %q, want %q", p, password)
+		if p != apiToken {
+			t.Errorf("request contained basic auth password %q, want %q", p, apiToken)
 		}
 	})
 
 	tp := &BasicAuthTransport{
 		Username: username,
-		Password: password,
+		APIToken: apiToken,
 	}
 
 	basicAuthClient, _ := NewClient(testServer.URL, tp.Client())
