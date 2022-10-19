@@ -14,25 +14,57 @@ type UserService service
 
 // User represents a Jira user.
 type User struct {
-	Self            string     `json:"self,omitempty" structs:"self,omitempty"`
-	AccountID       string     `json:"accountId,omitempty" structs:"accountId,omitempty"`
-	AccountType     string     `json:"accountType,omitempty" structs:"accountType,omitempty"`
-	Name            string     `json:"name,omitempty" structs:"name,omitempty"`
-	Key             string     `json:"key,omitempty" structs:"key,omitempty"`
-	Password        string     `json:"-"`
-	EmailAddress    string     `json:"emailAddress,omitempty" structs:"emailAddress,omitempty"`
-	AvatarUrls      AvatarUrls `json:"avatarUrls,omitempty" structs:"avatarUrls,omitempty"`
-	DisplayName     string     `json:"displayName,omitempty" structs:"displayName,omitempty"`
-	Active          bool       `json:"active,omitempty" structs:"active,omitempty"`
-	TimeZone        string     `json:"timeZone,omitempty" structs:"timeZone,omitempty"`
-	Locale          string     `json:"locale,omitempty" structs:"locale,omitempty"`
-	ApplicationKeys []string   `json:"applicationKeys,omitempty" structs:"applicationKeys,omitempty"`
+	Self             string           `json:"self,omitempty" structs:"self,omitempty"`
+	AccountID        string           `json:"accountId,omitempty" structs:"accountId,omitempty"`
+	AccountType      string           `json:"accountType,omitempty" structs:"accountType,omitempty"`
+	Name             string           `json:"name,omitempty" structs:"name,omitempty"`
+	Key              string           `json:"key,omitempty" structs:"key,omitempty"`
+	Password         string           `json:"-"`
+	EmailAddress     string           `json:"emailAddress,omitempty" structs:"emailAddress,omitempty"`
+	AvatarUrls       AvatarUrls       `json:"avatarUrls,omitempty" structs:"avatarUrls,omitempty"`
+	DisplayName      string           `json:"displayName,omitempty" structs:"displayName,omitempty"`
+	Active           bool             `json:"active,omitempty" structs:"active,omitempty"`
+	TimeZone         string           `json:"timeZone,omitempty" structs:"timeZone,omitempty"`
+	Locale           string           `json:"locale,omitempty" structs:"locale,omitempty"`
+	Groups           UserGroups       `json:"groups,omitempty" structs:"groups,omitempty"`
+	ApplicationRoles ApplicationRoles `json:"applicationRoles,omitempty" structs:"applicationRoles,omitempty"`
 }
 
 // UserGroup represents the group list
 type UserGroup struct {
 	Self string `json:"self,omitempty" structs:"self,omitempty"`
 	Name string `json:"name,omitempty" structs:"name,omitempty"`
+}
+
+// Groups is a wrapper for UserGroup
+type UserGroups struct {
+	Size  int         `json:"size,omitempty" structs:"size,omitempty"`
+	Items []UserGroup `json:"items,omitempty" structs:"items,omitempty"`
+}
+
+// ApplicationRoles is a wrapper for ApplicationRole
+type ApplicationRoles struct {
+	Size  int               `json:"size,omitempty" structs:"size,omitempty"`
+	Items []ApplicationRole `json:"items,omitempty" structs:"items,omitempty"`
+}
+
+// ApplicationRole represents a role assigned to a user
+type ApplicationRole struct {
+	Key                  string   `json:"key"`
+	Groups               []string `json:"groups"`
+	Name                 string   `json:"name"`
+	DefaultGroups        []string `json:"defaultGroups"`
+	SelectedByDefault    bool     `json:"selectedByDefault"`
+	Defined              bool     `json:"defined"`
+	NumberOfSeats        int      `json:"numberOfSeats"`
+	RemainingSeats       int      `json:"remainingSeats"`
+	UserCount            int      `json:"userCount"`
+	UserCountDescription string   `json:"userCountDescription"`
+	HasUnlimitedSeats    bool     `json:"hasUnlimitedSeats"`
+	Platform             bool     `json:"platform"`
+
+	// Key `groupDetails` missing - https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-application-roles/#api-rest-api-3-applicationrole-key-get
+	// Key `defaultGroupsDetails` missing - https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-application-roles/#api-rest-api-3-applicationrole-key-get
 }
 
 type userSearchParam struct {
@@ -158,23 +190,22 @@ func (s *UserService) GetGroups(ctx context.Context, accountId string) (*[]UserG
 	return userGroups, resp, nil
 }
 
-// GetSelf information about the current logged-in user
+// GetCurrentUser returns details for the current user.
 //
-// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-myself-get
-//
-// TODO Double check this method if this works as expected, is using the latest API and the response is complete
-// This double check effort is done for v2 - Remove this two lines if this is completed.
-func (s *UserService) GetSelf(ctx context.Context) (*User, *Response, error) {
-	const apiEndpoint = "rest/api/2/myself"
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-myself/#api-rest-api-3-myself-get
+func (s *UserService) GetCurrentUser(ctx context.Context) (*User, *Response, error) {
+	const apiEndpoint = "rest/api/3/myself"
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	var user User
 	resp, err := s.client.Do(req, &user)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
 	}
+
 	return &user, resp, nil
 }
 
