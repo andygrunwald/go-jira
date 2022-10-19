@@ -21,7 +21,7 @@ func main() {
 		panic(err)
 	}
 
-	u, _, err := client.User.GetSelf(context.Background())
+	u, _, err := client.User.GetCurrentUser(context.Background())
 	if err != nil {
 		panic(err)
 	}
