@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	jira "github.com/andygrunwald/go-jira/onpremise"
+	jira "github.com/andygrunwald/go-jira/v2/onpremise"
 )
 
 func main() {
@@ -20,7 +20,7 @@ func main() {
 		panic(err)
 	}
 
-	u, _, err := client.User.GetCurrentUser(context.Background())
+	u, _, err := client.User.GetSelf(context.Background())
 	if err != nil {
 		panic(err)
 	}
