@@ -357,6 +357,7 @@ client.Project.GetAll(ctx, &GetQueryOptions{})
 
 * Replace all "GET", "POST", ... with http.MethodGet (and related) constants
 * Development: Added `make` commands to collect (unit) test coverage
+* Internal: Replaced `io.ReadAll` and `json.Unmarshal` with `json.NewDecoder`
 
 ### Changes
 
