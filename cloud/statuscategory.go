@@ -10,7 +10,6 @@ import (
 // StatusCategoryService handles status categories for the Jira instance / API.
 //
 // Use it to obtain a list of all status categories and the details of a category.
-//
 // Status categories provided a mechanism for categorizing statuses.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-workflow-status-categories/#api-group-workflow-status-categories
@@ -34,7 +33,7 @@ const (
 	StatusCategoryUndefined  = "undefined"
 )
 
-// GetList gets all status categories from Jira
+// GetList returns a list of all status categories.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-workflow-status-categories/#api-rest-api-3-statuscategory-get
 func (s *StatusCategoryService) GetList(ctx context.Context) ([]StatusCategory, *Response, error) {
@@ -49,16 +48,17 @@ func (s *StatusCategoryService) GetList(ctx context.Context) ([]StatusCategory, 
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
 	}
+
 	return statusCategories, resp, nil
 }
 
 // Get returns a status category.
-//
 // Status categories provided a mechanism for categorizing statuses.
+//
+// statusCategoryID represents the ID or key of the status category.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-workflow-status-categories/#api-rest-api-3-statuscategory-idorkey-get
 func (s *StatusCategoryService) Get(ctx context.Context, statusCategoryID string) (*StatusCategory, *Response, error) {
-
 	if statusCategoryID == "" {
 		return nil, nil, errors.New("jira: not status category set")
 	}
