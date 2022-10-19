@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 )
 
@@ -63,19 +62,14 @@ func (s *IssueLinkTypeService) Create(ctx context.Context, linkType *IssueLinkTy
 	if err != nil {
 		return nil, resp, err
 	}
+	defer resp.Body.Close()
 
 	responseLinkType := new(IssueLinkType)
-	defer resp.Body.Close()
-	data, err := io.ReadAll(resp.Body)
+	err = json.NewDecoder(resp.Body).Decode(&responseLinkType)
 	if err != nil {
-		e := fmt.Errorf("could not read the returned data")
-		return nil, resp, NewJiraError(resp, e)
+		return nil, resp, err
 	}
-	err = json.Unmarshal(data, responseLinkType)
-	if err != nil {
-		e := fmt.Errorf("could no unmarshal the data into struct")
-		return nil, resp, NewJiraError(resp, e)
-	}
+
 	return linkType, resp, nil
 }
 

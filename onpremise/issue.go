@@ -785,22 +785,20 @@ func (s *IssueService) Create(ctx context.Context, issue *Issue) (*Issue, *Respo
 	if err != nil {
 		return nil, nil, err
 	}
+
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
 		// incase of error return the resp for further inspection
 		return nil, resp, err
 	}
+	defer resp.Body.Close()
 
 	responseIssue := new(Issue)
-	defer resp.Body.Close()
-	data, err := io.ReadAll(resp.Body)
+	err = json.NewDecoder(resp.Body).Decode(&responseIssue)
 	if err != nil {
-		return nil, resp, fmt.Errorf("could not read the returned data")
+		return nil, resp, err
 	}
-	err = json.Unmarshal(data, responseIssue)
-	if err != nil {
-		return nil, resp, fmt.Errorf("could not unmarshall the data into struct")
-	}
+
 	return responseIssue, resp, nil
 }
 
