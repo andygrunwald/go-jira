@@ -107,9 +107,6 @@ func TestNewClient_WithServices(t *testing.T) {
 	if err != nil {
 		t.Errorf("Got an error: %s", err)
 	}
-	if c.Authentication == nil {
-		t.Error("No AuthenticationService provided")
-	}
 	if c.Issue == nil {
 		t.Error("No IssueService provided")
 	}
@@ -221,57 +218,6 @@ func TestClient_NewRequest_BadURL(t *testing.T) {
 	testURLParseError(t, err)
 }
 
-func TestClient_NewRequest_SessionCookies(t *testing.T) {
-	c, err := NewClient(testJiraInstanceURL, nil)
-	if err != nil {
-		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
-	}
-
-	cookie := &http.Cookie{Name: "testcookie", Value: "testvalue"}
-	c.session = &Session{Cookies: []*http.Cookie{cookie}}
-	c.Authentication.authType = authTypeSession
-
-	inURL := "rest/api/2/issue/"
-	inBody := &Issue{Key: "MESOS"}
-	req, err := c.NewRequest(context.Background(), http.MethodGet, inURL, inBody)
-
-	if err != nil {
-		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
-	}
-
-	if len(req.Cookies()) != len(c.session.Cookies) {
-		t.Errorf("An error occurred. Expected %d cookie(s). Got %d.", len(c.session.Cookies), len(req.Cookies()))
-	}
-
-	for i, v := range req.Cookies() {
-		if v.String() != c.session.Cookies[i].String() {
-			t.Errorf("An error occurred. Unexpected cookie. Expected %s, actual %s.", v.String(), c.session.Cookies[i].String())
-		}
-	}
-}
-
-func TestClient_NewRequest_BasicAuth(t *testing.T) {
-	c, err := NewClient(testJiraInstanceURL, nil)
-	if err != nil {
-		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
-	}
-
-	c.Authentication.SetBasicAuth("test-user", "test-password")
-
-	inURL := "rest/api/2/issue/"
-	inBody := &Issue{Key: "MESOS"}
-	req, err := c.NewRequest(context.Background(), http.MethodGet, inURL, inBody)
-
-	if err != nil {
-		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
-	}
-
-	username, password, ok := req.BasicAuth()
-	if !ok || username != "test-user" || password != "test-password" {
-		t.Errorf("An error occurred. Expected basic auth username %s and password %s. Got username %s and password %s.", "test-user", "test-password", username, password)
-	}
-}
-
 // If a nil body is passed to jira.NewRequest, make sure that nil is also passed to http.NewRequest.
 // In most cases, passing an io.Reader that returns no content is fine,
 // since there is no difference between an HTTP request body that is an empty string versus one that is not set at all.
@@ -296,52 +242,12 @@ func TestClient_NewMultiPartRequest(t *testing.T) {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
 	}
 
-	cookie := &http.Cookie{Name: "testcookie", Value: "testvalue"}
-	c.session = &Session{Cookies: []*http.Cookie{cookie}}
-	c.Authentication.authType = authTypeSession
-
 	inURL := "rest/api/2/issue/"
 	inBuf := bytes.NewBufferString("teststring")
 	req, err := c.NewMultiPartRequest(context.Background(), http.MethodGet, inURL, inBuf)
 
 	if err != nil {
 		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
-	}
-
-	if len(req.Cookies()) != len(c.session.Cookies) {
-		t.Errorf("An error occurred. Expected %d cookie(s). Got %d.", len(c.session.Cookies), len(req.Cookies()))
-	}
-
-	for i, v := range req.Cookies() {
-		if v.String() != c.session.Cookies[i].String() {
-			t.Errorf("An error occurred. Unexpected cookie. Expected %s, actual %s.", v.String(), c.session.Cookies[i].String())
-		}
-	}
-
-	if req.Header.Get("X-Atlassian-Token") != "nocheck" {
-		t.Errorf("An error occurred. Unexpected X-Atlassian-Token header value. Expected nocheck, actual %s.", req.Header.Get("X-Atlassian-Token"))
-	}
-}
-
-func TestClient_NewMultiPartRequest_BasicAuth(t *testing.T) {
-	c, err := NewClient(testJiraInstanceURL, nil)
-	if err != nil {
-		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
-	}
-
-	c.Authentication.SetBasicAuth("test-user", "test-password")
-
-	inURL := "rest/api/2/issue/"
-	inBuf := bytes.NewBufferString("teststring")
-	req, err := c.NewMultiPartRequest(context.Background(), http.MethodGet, inURL, inBuf)
-
-	if err != nil {
-		t.Errorf("An error occurred. Expected nil. Got %+v.", err)
-	}
-
-	username, password, ok := req.BasicAuth()
-	if !ok || username != "test-user" || password != "test-password" {
-		t.Errorf("An error occurred. Expected basic auth username %s and password %s. Got username %s and password %s.", "test-user", "test-password", username, password)
 	}
 
 	if req.Header.Get("X-Atlassian-Token") != "nocheck" {

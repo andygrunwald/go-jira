@@ -34,15 +34,10 @@ type Client struct {
 	// User agent used when communicating with the Jira API.
 	UserAgent string
 
-	// Session storage if the user authenticates with a Session cookie
-	// TODO Needed in Cloud and/or onpremise?
-	session *Session
-
 	// Reuse a single struct instead of allocating one for each service on the heap.
 	common service
 
 	// Services used for talking to different parts of the Jira API.
-	Authentication   *AuthenticationService
 	Issue            *IssueService
 	Project          *ProjectService
 	Board            *BoardService
@@ -105,8 +100,6 @@ func NewClient(baseURL string, httpClient *http.Client) (*Client, error) {
 	}
 	c.common.client = c
 
-	// TODO Check if the authentication service is still needed (because of the transports)
-	c.Authentication = &AuthenticationService{client: c}
 	c.Issue = (*IssueService)(&c.common)
 	c.Project = (*ProjectService)(&c.common)
 	c.Board = (*BoardService)(&c.common)
@@ -153,21 +146,6 @@ func (c *Client) NewRawRequest(ctx context.Context, method, urlStr string, body 
 
 	req.Header.Set("Content-Type", "application/json")
 
-	// Set authentication information
-	if c.Authentication.authType == authTypeSession {
-		// Set session cookie if there is one
-		if c.session != nil {
-			for _, cookie := range c.session.Cookies {
-				req.AddCookie(cookie)
-			}
-		}
-	} else if c.Authentication.authType == authTypeBasic {
-		// Set basic auth information
-		if c.Authentication.username != "" {
-			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
-		}
-	}
-
 	return req, nil
 }
 
@@ -201,21 +179,6 @@ func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body int
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-
-	// Set authentication information
-	if c.Authentication.authType == authTypeSession {
-		// Set session cookie if there is one
-		if c.session != nil {
-			for _, cookie := range c.session.Cookies {
-				req.AddCookie(cookie)
-			}
-		}
-	} else if c.Authentication.authType == authTypeBasic {
-		// Set basic auth information
-		if c.Authentication.username != "" {
-			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
-		}
-	}
 
 	return req, nil
 }
@@ -262,21 +225,6 @@ func (c *Client) NewMultiPartRequest(ctx context.Context, method, urlStr string,
 
 	// Set required headers
 	req.Header.Set("X-Atlassian-Token", "nocheck")
-
-	// Set authentication information
-	if c.Authentication.authType == authTypeSession {
-		// Set session cookie if there is one
-		if c.session != nil {
-			for _, cookie := range c.session.Cookies {
-				req.AddCookie(cookie)
-			}
-		}
-	} else if c.Authentication.authType == authTypeBasic {
-		// Set basic auth information
-		if c.Authentication.username != "" {
-			req.SetBasicAuth(c.Authentication.username, c.Authentication.password)
-		}
-	}
 
 	return req, nil
 }
