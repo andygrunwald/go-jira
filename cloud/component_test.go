@@ -3,6 +3,7 @@ package cloud
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"testing"
 )
@@ -26,5 +27,53 @@ func TestComponentService_Create_Success(t *testing.T) {
 	}
 	if err != nil {
 		t.Errorf("Error given: %s", err)
+	}
+}
+
+func TestComponentService_Get(t *testing.T) {
+	setup()
+	defer teardown()
+	testAPIEndpoint := "/rest/api/3/component/42102"
+
+	raw, err := ioutil.ReadFile("../testing/mock-data/component_get.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, testAPIEndpoint)
+		fmt.Fprint(w, string(raw))
+	})
+
+	component, _, err := testClient.Component.Get(context.Background(), "42102")
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+	if component == nil {
+		t.Error("Expected component. Component is nil")
+	}
+}
+
+func TestComponentService_Get_NoComponent(t *testing.T) {
+	setup()
+	defer teardown()
+	testAPIEndpoint := "/rest/api/3/component/99999999"
+
+	testMux.HandleFunc(testAPIEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testRequestURL(t, r, testAPIEndpoint)
+		fmt.Fprint(w, nil)
+	})
+
+	component, resp, err := testClient.Component.Get(context.Background(), "99999999")
+
+	if component != nil {
+		t.Errorf("Expected nil. Got %+v", component)
+	}
+	if resp.Status == "404" {
+		t.Errorf("Expected status 404. Got %s", resp.Status)
+	}
+	if err == nil {
+		t.Error("No error given. Expected one")
 	}
 }
