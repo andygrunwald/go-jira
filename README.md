@@ -331,9 +331,11 @@ We follow the [Atlassian Support End of Life Policy](https://confluence.atlassia
 
 #### Jira Cloud
 
-* Jira Cloud API in [version 2](https://developer.atlassian.com/cloud/jira/platform/rest/v2/intro/)
+We support Jira Cloud API in [version 3](https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/).
+Even if this API version is _currently_ in beta (by Atlassian):
 
-Jira Cloud API in [version 3](https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/) is _currently_ not officially supported, because it is still in beta.
+[Version 2](https://developer.atlassian.com/cloud/jira/platform/rest/v2/) and version 3 of the API offer the same collection of operations.
+However, version 3 provides support for the [Atlassian Document Format (ADF)](https://developer.atlassian.com/cloud/jira/platform/apis/document/structure/) in a subset of the API.
 
 ### Official Jira API documentation
 
