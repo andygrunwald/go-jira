@@ -1,10 +1,10 @@
 # go-jira
 
-[![GoDoc](https://godoc.org/github.com/andygrunwald/go-jira?status.svg)](https://godoc.org/github.com/andygrunwald/go-jira)
+[![GoDoc](https://pkg.go.dev/badge/github.com/andygrunwald/go-jira?utm_source=godoc)](https://pkg.go.dev/github.com/andygrunwald/go-jira)
 [![Build Status](https://github.com/andygrunwald/go-jira/actions/workflows/testing.yml/badge.svg)](https://github.com/andygrunwald/go-jira/actions/workflows/testing.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/andygrunwald/go-jira)](https://goreportcard.com/report/github.com/andygrunwald/go-jira)
+[![Go Report Card](https://img.shields.io/badge/go%20report-A+-brightgreen.svg?style=flat)](https://goreportcard.com/report/github.com/andygrunwald/go-jira)
 
-[Go](https://golang.org/) client library for [Atlassian Jira](https://www.atlassian.com/software/jira).
+[Go](https://go.dev/) client library for [Atlassian Jira](https://www.atlassian.com/software/jira).
 
 ![Go client library for Atlassian Jira](./img/logo_small.png "Go client library for Atlassian Jira.")
 
@@ -34,7 +34,7 @@ Latest stable release: [v1.16.0](https://github.com/andygrunwald/go-jira/release
 * Create and retrieve issue transitions (status updates)
 * Call every API endpoint of the Jira, even if it is not directly implemented in this library
 
-This package is not Jira API complete (yet), but you can call every API endpoint you want. See [Call a not implemented API endpoint](#call-a-not-implemented-api-endpoint) how to do this. For all possible API endpoints of Jira have a look at [latest Jira REST API documentation](https://docs.atlassian.com/jira/REST/latest/).
+This package is not Jira API complete (yet), but you can call every API endpoint you want. See [Call a not implemented API endpoint](#call-a-not-implemented-api-endpoint) how to do this. For all possible API endpoints of Jira have a look at [latest Jira REST API documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/).
 
 ## Requirements
 
@@ -72,14 +72,14 @@ go test -v ./...
 
 ## API
 
-Please have a look at the [GoDoc documentation](https://godoc.org/github.com/andygrunwald/go-jira) for a detailed API description.
+Please have a look at the [GoDoc documentation](https://pkg.go.dev/github.com/andygrunwald/go-jira) for a detailed API description.
 
-The [latest Jira REST API documentation](https://docs.atlassian.com/jira/REST/latest/) was the base document for this package.
+The [latest Jira REST API documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/) was the base document for this package.
 
 ## Examples
 
 Further a few examples how the API can be used.
-A few more examples are available in the [GoDoc examples section](https://godoc.org/github.com/andygrunwald/go-jira#pkg-examples).
+A few more examples are available in the [GoDoc examples section](https://pkg.go.dev/github.com/andygrunwald/go-jira#section-directories).
 
 ### Get a single issue
 
@@ -116,7 +116,7 @@ For convenience, capability for basic and cookie-based authentication is include
 
 #### Token (Jira on Atlassian Cloud)
 
-Token-based authentication uses the basic authentication scheme, with a user-generated API token in place of a user's password. You can generate a token for your user [here](https://id.atlassian.com/manage-profile/security/api-tokens). Additional information about Atlassian Cloud API tokens can be found [here](https://confluence.atlassian.com/cloud/api-tokens-938839638.html).
+Token-based authentication uses the basic authentication scheme, with a user-generated API token in place of a user's password. You can generate a token for your user [here](https://id.atlassian.com/manage-profile/security/api-tokens). Additional information about Atlassian Cloud API tokens can be found [here](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/).
 
 A more thorough, [runnable example](cloud/examples/basicauth/main.go) is provided in the examples directory.
 
@@ -244,7 +244,7 @@ func main() {
 Jira API has limit on maxResults it can return. You may have a usecase where you need to get all issues for given JQL.
 This example shows reference implementation of GetAllIssues function which does pagination on Jira API to get all the issues for given JQL
 
-please look at [Pagination Example](https://github.com/andygrunwald/go-jira/blob/master/cloud/examples/pagination/main.go)
+please look at [Pagination Example](https://github.com/andygrunwald/go-jira/blob/main/cloud/examples/pagination/main.go)
 
 ### Call a not implemented API endpoint
 
@@ -315,13 +315,13 @@ A few examples:
 * Implement a new feature or endpoint
 * Sharing the love of [go-jira](https://github.com/andygrunwald/go-jira) and help people to get use to it
 
-If you are new to pull requests, checkout [Collaborating on projects using issues and pull requests / Creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
+If you are new to pull requests, checkout [Collaborating on projects using issues and pull requests / Creating a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request).
 
 ### Supported Go versions
 
 We follow the [Go Release Policy](https://go.dev/doc/devel/release#policy):
 
-> Each major Go release is supported until there are two newer major releases. For example, Go 1.5 was supported until the Go 1.7 release, and Go 1.6 was supported until the Go 1.8 release. We fix critical problems, including [critical security problems](https://go.dev/security), in supported releases as needed by issuing minor revisions (for example, Go 1.6.1, Go 1.6.2, and so on).
+> Each major Go release is supported until there are two newer major releases. For example, Go 1.5 was supported until the Go 1.7 release, and Go 1.6 was supported until the Go 1.8 release. We fix critical problems, including [critical security problems](https://go.dev/security/), in supported releases as needed by issuing minor revisions (for example, Go 1.6.1, Go 1.6.2, and so on).
 
 ### Supported Jira versions
 
@@ -333,21 +333,21 @@ We follow the [Atlassian Support End of Life Policy](https://confluence.atlassia
 
 #### Jira Cloud
 
-* Jira Cloud API in [version 2](https://developer.atlassian.com/cloud/jira/platform/rest/v2/)
+* Jira Cloud API in [version 2](https://developer.atlassian.com/cloud/jira/platform/rest/v2/intro/)
 
 Jira Cloud API in [version 3](https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/) is _currently_ not officially supported, because it is still in beta.
 
 ### Official Jira API documentation
 
 * [Jira Server (On-Premise solution)](https://developer.atlassian.com/server/jira/platform/rest-apis/)
-* Jira Cloud API in [version 2](https://developer.atlassian.com/cloud/jira/platform/rest/v2/)
+* Jira Cloud API in [version 2](https://developer.atlassian.com/cloud/jira/platform/rest/v2/intro/)
 * Jira Cloud API in [version 3](https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/)
 
 ### Sandbox environment for testing
 
 Jira offers sandbox test environments at http://go.atlassian.com/cloud-dev.
 
-You can read more about them at https://developer.atlassian.com/blog/2016/04/cloud-ecosystem-dev-env/.
+You can read more about them at https://blog.developer.atlassian.com/cloud-ecosystem-dev-env/.
 
 ## Releasing
 
