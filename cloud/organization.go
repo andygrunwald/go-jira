@@ -61,6 +61,9 @@ type PropertyKeys struct {
 // by name.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-group-organization
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *OrganizationService) GetAllOrganizations(ctx context.Context, start int, limit int, accountID string) (*PagedDTO, *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization?start=%d&limit=%d", start, limit)
 	if accountID != "" {
@@ -88,6 +91,9 @@ func (s *OrganizationService) GetAllOrganizations(ctx context.Context, start int
 // passing the name of the organization.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-post
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *OrganizationService) CreateOrganization(ctx context.Context, name string) (*Organization, *Response, error) {
 	apiEndPoint := "rest/servicedeskapi/organization"
 
@@ -119,6 +125,9 @@ func (s *OrganizationService) CreateOrganization(ctx context.Context, name strin
 // other organization details.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-organizationid-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *OrganizationService) GetOrganization(ctx context.Context, organizationID int) (*Organization, *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d", organizationID)
 
@@ -146,6 +155,9 @@ func (s *OrganizationService) GetOrganization(ctx context.Context, organizationI
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-organizationid-delete
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *OrganizationService) DeleteOrganization(ctx context.Context, organizationID int) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d", organizationID)
 
@@ -170,6 +182,9 @@ func (s *OrganizationService) DeleteOrganization(ctx context.Context, organizati
 // items have been added to an organization.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-organizationid-property-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *OrganizationService) GetPropertiesKeys(ctx context.Context, organizationID int) (*PropertyKeys, *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property", organizationID)
 
@@ -195,6 +210,9 @@ func (s *OrganizationService) GetPropertiesKeys(ctx context.Context, organizatio
 // content for an organization's property.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-organizationid-property-propertykey-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *OrganizationService) GetProperty(ctx context.Context, organizationID int, propertyKey string) (*EntityProperty, *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property/%s", organizationID, propertyKey)
 
@@ -220,6 +238,9 @@ func (s *OrganizationService) GetProperty(ctx context.Context, organizationID in
 // resource to store custom data against an organization.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-organizationid-property-propertykey-put
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 // Caller must close resp.Body
 func (s *OrganizationService) SetProperty(ctx context.Context, organizationID int, propertyKey string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property/%s", organizationID, propertyKey)
@@ -244,6 +265,9 @@ func (s *OrganizationService) SetProperty(ctx context.Context, organizationID in
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-organizationid-property-propertykey-delete
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *OrganizationService) DeleteProperty(ctx context.Context, organizationID int, propertyKey string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/property/%s", organizationID, propertyKey)
 
@@ -270,6 +294,9 @@ func (s *OrganizationService) DeleteProperty(ctx context.Context, organizationID
 // a user is associated with an organization.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-organizationid-user-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *OrganizationService) GetUsers(ctx context.Context, organizationID int, start int, limit int) (*PagedDTO, *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/user?start=%d&limit=%d", organizationID, start, limit)
 
@@ -294,6 +321,9 @@ func (s *OrganizationService) GetUsers(ctx context.Context, organizationID int, 
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-organizationid-user-post
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *OrganizationService) AddUsers(ctx context.Context, organizationID int, users OrganizationUsersDTO) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/user", organizationID)
 
@@ -316,6 +346,9 @@ func (s *OrganizationService) AddUsers(ctx context.Context, organizationID int, 
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-organization/#api-rest-servicedeskapi-organization-organizationid-user-delete
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *OrganizationService) RemoveUsers(ctx context.Context, organizationID int, users OrganizationUsersDTO) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/servicedeskapi/organization/%d/user", organizationID)
 

@@ -65,6 +65,9 @@ type GroupSearchOptions struct {
 // Jira API docs: https://docs.atlassian.com/jira/REST/server/#api/2/group-getUsersFromGroup
 //
 // WARNING: This API only returns the first page of group members
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *GroupService) Get(ctx context.Context, name string, options *GroupSearchOptions) ([]GroupMember, *Response, error) {
 	var apiEndpoint string
 	if options == nil {
@@ -95,6 +98,9 @@ func (s *GroupService) Get(ctx context.Context, name string, options *GroupSearc
 // Add adds user to group
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-addUserToGroup
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *GroupService) Add(ctx context.Context, groupname string, username string) (*Group, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s", groupname)
 	var user struct {
@@ -120,6 +126,9 @@ func (s *GroupService) Add(ctx context.Context, groupname string, username strin
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-removeUserFromGroup
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *GroupService) Remove(ctx context.Context, groupname string, username string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s&username=%s", groupname, username)
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)

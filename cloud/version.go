@@ -29,6 +29,9 @@ type Version struct {
 // Get gets version info from Jira
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-version-id-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *VersionService) Get(ctx context.Context, versionID int) (*Version, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/version/%v", versionID)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -47,6 +50,9 @@ func (s *VersionService) Get(ctx context.Context, versionID int) (*Version, *Res
 // Create creates a version in Jira.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-version-post
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *VersionService) Create(ctx context.Context, version *Version) (*Version, *Response, error) {
 	apiEndpoint := "/rest/api/2/version"
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, version)
@@ -73,6 +79,9 @@ func (s *VersionService) Create(ctx context.Context, version *Version) (*Version
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-version-id-put
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *VersionService) Update(ctx context.Context, version *Version) (*Version, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/version/%v", version.ID)
 	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndpoint, version)

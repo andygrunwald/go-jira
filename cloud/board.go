@@ -128,6 +128,9 @@ type BoardConfigurationColumnStatus struct {
 // GetAllBoards will returns all boards. This only includes boards that the user has permission to view.
 //
 // Jira API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-getAllBoards
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *BoardService) GetAllBoards(ctx context.Context, opt *BoardListOptions) (*BoardsList, *Response, error) {
 	apiEndpoint := "rest/agile/1.0/board"
 	url, err := addOptions(apiEndpoint, opt)
@@ -153,6 +156,9 @@ func (s *BoardService) GetAllBoards(ctx context.Context, opt *BoardListOptions) 
 // This board will only be returned if the user has permission to view it.
 //
 // Jira API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-getBoard
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *BoardService) GetBoard(ctx context.Context, boardID int) (*Board, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%v", boardID)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -178,6 +184,9 @@ func (s *BoardService) GetBoard(ctx context.Context, boardID int) (*Board, *Resp
 // board will be created instead (remember that board sharing depends on the filter sharing).
 //
 // Jira API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-createBoard
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *BoardService) CreateBoard(ctx context.Context, board *Board) (*Board, *Response, error) {
 	apiEndpoint := "rest/agile/1.0/board"
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, board)
@@ -199,6 +208,9 @@ func (s *BoardService) CreateBoard(ctx context.Context, board *Board) (*Board, *
 //
 // Jira API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-deleteBoard
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *BoardService) DeleteBoard(ctx context.Context, boardID int) (*Board, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%v", boardID)
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
@@ -217,6 +229,9 @@ func (s *BoardService) DeleteBoard(ctx context.Context, boardID int) (*Board, *R
 // This only includes sprints that the user has permission to view.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/software/rest/api-group-board/#api-rest-agile-1-0-board-boardid-sprint-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *BoardService) GetAllSprints(ctx context.Context, boardID int, options *GetAllSprintsOptions) (*SprintsList, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%d/sprint", boardID)
 	url, err := addOptions(apiEndpoint, options)
@@ -239,6 +254,9 @@ func (s *BoardService) GetAllSprints(ctx context.Context, boardID int, options *
 
 // GetBoardConfiguration will return a board configuration for a given board Id
 // Jira API docs:https://developer.atlassian.com/cloud/jira/software/rest/#api-rest-agile-1-0-board-boardId-configuration-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *BoardService) GetBoardConfiguration(ctx context.Context, boardID int) (*BoardConfiguration, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%d/configuration", boardID)
 
