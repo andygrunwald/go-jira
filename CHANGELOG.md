@@ -348,6 +348,13 @@ client.Project.GetAll(ctx, &GetQueryOptions{})
 ### Bug Fixes
 
 * README: Fixed all (broken) links
+<<<<<<< HEAD
+=======
+
+### API-Endpoints
+
+* Workflow status categories: Revisited and fully implemented for Cloud and On Premise (incl. examples)
+>>>>>>> ctreminiom-feature/552
 
 ### Other
 
