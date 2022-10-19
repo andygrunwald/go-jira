@@ -1,6 +1,9 @@
 package cloud
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 // PATAuthTransport is an http.RoundTripper that authenticates all requests
 // using the Personal Access Token specified.
@@ -18,7 +21,8 @@ type PATAuthTransport struct {
 // basic auth and return the RoundTripper for this transport type.
 func (t *PATAuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req2 := cloneRequest(req) // per RoundTripper contract
-	req2.Header.Set("Authorization", "Bearer "+t.Token)
+
+	req2.Header.Set("Authorization", fmt.Sprintf("Bearer %s", t.Token))
 	return t.transport().RoundTrip(req2)
 }
 
