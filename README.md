@@ -29,7 +29,7 @@ Latest stable release: [v1.16.0](https://github.com/andygrunwald/go-jira/release
 
 ## Features
 
-* Authentication (HTTP Basic, OAuth, Session Cookie)
+* Authentication (HTTP Basic, OAuth, Session Cookie, Bearer (for PATs))
 * Create and retrieve issues
 * Create and retrieve issue transitions (status updates)
 * Call every API endpoint of the Jira, even if it is not directly implemented in this library
@@ -92,7 +92,7 @@ func main() {
 ### Authentication
 
 The `go-jira` library does not handle most authentication directly.  Instead, authentication should be handled within
-an `http.Client`.  That client can then be passed into the `NewClient` function when creating a jira client.
+an `http.Client`. That client can then be passed into the `NewClient` function when creating a jira client.
 
 For convenience, capability for basic and cookie-based authentication is included in the main library.
 
@@ -118,11 +118,20 @@ func main() {
 }
 ```
 
+#### Bearer - Personal Access Tokens (self-hosted Jira)
+
+For **self-hosted Jira** (v8.14 and later), Personal Access Tokens (PATs) were introduced.
+Similar to the API tokens, PATs are a safe alternative to using username and password for authentication with scripts and integrations.
+PATs use the Bearer authentication scheme.
+Read more about Jira PATs [here](https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html).
+
+See [examples/bearerauth](onpremise/examples/bearerauth/main.go) for how to use the Bearer authentication scheme with Jira in Go.
+
 #### Basic (self-hosted Jira)
 
 Password-based API authentication works for self-hosted Jira **only**, and has been [deprecated for users of Atlassian Cloud](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-basic-auth-and-cookie-based-auth/).
 
-The above token authentication example may be used, substituting a user's password for a generated token.
+Depending on your version of Jira, either of the above token authentication examples may be used, substituting a user's password for a generated token.
 
 #### Authenticate with OAuth
 
@@ -223,6 +232,7 @@ func main() {
 	fmt.Printf("Status after transition: %+v\n", issue.Fields.Status.Name)
 }
 ```
+
 ### Get all the issues for JQL with Pagination
 
 Jira API has limit on maxResults it can return. You may have a usecase where you need to get all issues for given JQL.
@@ -354,6 +364,7 @@ You can read more about them at https://blog.developer.atlassian.com/cloud-ecosy
 ## Releasing
 
 Install [standard-version](https://github.com/conventional-changelog/standard-version)
+
 ```bash
 npm i -g standard-version
 ```
