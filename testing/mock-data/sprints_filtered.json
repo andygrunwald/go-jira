@@ -10,7 +10,8 @@
             "originBoardId": 734,
             "self": "https://jira.com/rest/agile/1.0/sprint/832",
             "startDate": "2016-06-20T13:24:39.161-07:00",
-            "state": "active"
+            "state": "active",
+            "goal": "My Goal"
         }
     ]
 }

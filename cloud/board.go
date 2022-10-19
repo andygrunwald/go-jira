@@ -84,6 +84,7 @@ type Sprint struct {
 	OriginBoardID int        `json:"originBoardId" structs:"originBoardId"`
 	Self          string     `json:"self" structs:"self"`
 	State         string     `json:"state" structs:"state"`
+	Goal          string     `json:"goal,omitempty" structs:"goal"`
 }
 
 // BoardConfiguration represents a boardConfiguration of a jira board
@@ -240,10 +241,7 @@ func (s *BoardService) DeleteBoard(ctx context.Context, boardID int) (*Board, *R
 // This only includes sprints that the user has permission to view.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/software/rest/api-group-board/#api-rest-agile-1-0-board-boardid-sprint-get
-//
-// TODO Double check this method if this works as expected, is using the latest API and the response is complete
-// This double check effort is done for v2 - Remove this two lines if this is completed.
-func (s *BoardService) GetAllSprints(ctx context.Context, boardID int, options *GetAllSprintsOptions) (*SprintsList, *Response, error) {
+func (s *BoardService) GetAllSprints(ctx context.Context, boardID int64, options *GetAllSprintsOptions) (*SprintsList, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%d/sprint", boardID)
 	url, err := addOptions(apiEndpoint, options)
 	if err != nil {
