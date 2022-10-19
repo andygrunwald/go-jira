@@ -349,6 +349,10 @@ client.Project.GetAll(ctx, &GetQueryOptions{})
 
 * README: Fixed all (broken) links
 
+### API-Endpoints
+
+* Workflow status categories: Revisited and fully implemented for Cloud and On Premise (incl. examples)
+
 ### Other
 
 * Replace all "GET", "POST", ... with http.MethodGet (and related) constants
