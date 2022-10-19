@@ -398,6 +398,8 @@ client, err := jira.NewClient("https://...", tp.Client())
 * Cloud/Authentication: Removes `CookieAuthTransport` and `AuthenticationService`, because this type of auth is not supported by the Jira cloud offering
 * Cloud/Component: The type `CreateComponentOptions` was renamed to `ComponentCreateOptions`
 * Cloud/User: Renamed `User.GetSelf` to `User.GetCurrentUser`
+* Cloud/Group: Renamed `Group.Add` to `Group.AddUserByGroupName`
+* Cloud/Group: Renamed `Group.Remove` to `Group.RemoveUserByGroupName`
 
 ### Features
 
