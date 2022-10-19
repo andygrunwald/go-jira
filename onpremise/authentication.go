@@ -73,16 +73,15 @@ func (s *AuthenticationService) AcquireSessionCookie(ctx context.Context, userna
 
 	session := new(Session)
 	resp, err := s.client.Do(req, session)
-
-	if resp != nil {
-		session.Cookies = resp.Cookies()
-	}
-
 	if err != nil {
-		return false, fmt.Errorf("auth at Jira instance failed (HTTP(S) request). %s", err)
+		return false, fmt.Errorf("auth at Jira instance failed (HTTP(S) request). %w", err)
 	}
+
 	if resp != nil && resp.StatusCode != 200 {
 		return false, fmt.Errorf("auth at Jira instance failed (HTTP(S) request). Status code: %d", resp.StatusCode)
+	}
+	if resp != nil {
+		session.Cookies = resp.Cookies()
 	}
 
 	s.client.session = session
@@ -127,12 +126,12 @@ func (s *AuthenticationService) Logout(ctx context.Context) error {
 	apiEndpoint := "rest/auth/1/session"
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
 	if err != nil {
-		return fmt.Errorf("creating the request to log the user out failed : %s", err)
+		return fmt.Errorf("creating the request to log the user out failed : %w", err)
 	}
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return fmt.Errorf("error sending the logout request: %s", err)
+		return fmt.Errorf("error sending the logout request: %w", err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 204 {
@@ -160,12 +159,12 @@ func (s *AuthenticationService) GetCurrentUser(ctx context.Context) (*Session, e
 	apiEndpoint := "rest/auth/1/session"
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
-		return nil, fmt.Errorf("could not create request for getting user info : %s", err)
+		return nil, fmt.Errorf("could not create request for getting user info: %w", err)
 	}
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error sending request to get user info : %s", err)
+		return nil, fmt.Errorf("error sending request to get user info: %w", err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
