@@ -11,15 +11,15 @@ import (
 func TestBoardService_GetAllBoards(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/rest/agile/1.0/board"
+	testapiEndpoint := "/rest/agile/1.0/board"
 
 	raw, err := os.ReadFile("../testing/mock-data/all_boards.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testapiEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEdpoint)
+		testRequestURL(t, r, testapiEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
@@ -36,15 +36,15 @@ func TestBoardService_GetAllBoards(t *testing.T) {
 func TestBoardService_GetAllBoards_WithFilter(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/rest/agile/1.0/board"
+	testapiEndpoint := "/rest/agile/1.0/board"
 
 	raw, err := os.ReadFile("../testing/mock-data/all_boards_filtered.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testapiEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEdpoint)
+		testRequestURL(t, r, testapiEndpoint)
 		testRequestParams(t, r, map[string]string{"type": "scrum", "name": "Test", "startAt": "1", "maxResults": "10", "projectKeyOrId": "TE"})
 		fmt.Fprint(w, string(raw))
 	})
@@ -69,11 +69,11 @@ func TestBoardService_GetAllBoards_WithFilter(t *testing.T) {
 func TestBoardService_GetBoard(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/rest/agile/1.0/board/1"
+	testapiEndpoint := "/rest/agile/1.0/board/1"
 
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testapiEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEdpoint)
+		testRequestURL(t, r, testapiEndpoint)
 		fmt.Fprint(w, `{"id":4,"self":"https://test.jira.org/rest/agile/1.0/board/1","name":"Test Weekly","type":"scrum"}`)
 	})
 

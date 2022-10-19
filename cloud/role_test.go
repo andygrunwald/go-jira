@@ -64,14 +64,14 @@ func TestRoleService_GetList(t *testing.T) {
 func TestRoleService_Get_NoRole(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/rest/api/3/role/99999"
+	testapiEndpoint := "/rest/api/3/role/99999"
 	raw, err := os.ReadFile("../testing/mock-data/no_role.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEdpoint, func(writer http.ResponseWriter, request *http.Request) {
+	testMux.HandleFunc(testapiEndpoint, func(writer http.ResponseWriter, request *http.Request) {
 		testMethod(t, request, http.MethodGet)
-		testRequestURL(t, request, testAPIEdpoint)
+		testRequestURL(t, request, testapiEndpoint)
 		fmt.Fprint(writer, string(raw))
 	})
 
@@ -87,14 +87,14 @@ func TestRoleService_Get_NoRole(t *testing.T) {
 func TestRoleService_Get(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/rest/api/3/role/10002"
+	testapiEndpoint := "/rest/api/3/role/10002"
 	raw, err := os.ReadFile("../testing/mock-data/role.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEdpoint, func(writer http.ResponseWriter, request *http.Request) {
+	testMux.HandleFunc(testapiEndpoint, func(writer http.ResponseWriter, request *http.Request) {
 		testMethod(t, request, http.MethodGet)
-		testRequestURL(t, request, testAPIEdpoint)
+		testRequestURL(t, request, testapiEndpoint)
 		fmt.Fprint(writer, string(raw))
 	})
 

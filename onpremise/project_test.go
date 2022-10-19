@@ -11,13 +11,13 @@ import (
 func TestProjectService_GetAll(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/rest/api/2/project"
+	testapiEndpoint := "/rest/api/2/project"
 
 	raw, err := os.ReadFile("../testing/mock-data/all_projects.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testapiEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/rest/api/2/project?expand=issueTypes")
 		fmt.Fprint(w, string(raw))
@@ -35,15 +35,15 @@ func TestProjectService_GetAll(t *testing.T) {
 func TestProjectService_Get(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/rest/api/2/project/12310505"
+	testapiEndpoint := "/rest/api/2/project/12310505"
 
 	raw, err := os.ReadFile("../testing/mock-data/project.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testapiEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEdpoint)
+		testRequestURL(t, r, testapiEndpoint)
 		fmt.Fprint(w, string(raw))
 	})
 
@@ -63,11 +63,11 @@ func TestProjectService_Get(t *testing.T) {
 func TestProjectService_Get_NoProject(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/rest/api/2/project/99999999"
+	testapiEndpoint := "/rest/api/2/project/99999999"
 
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testapiEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEdpoint)
+		testRequestURL(t, r, testapiEndpoint)
 		fmt.Fprint(w, nil)
 	})
 
@@ -87,11 +87,11 @@ func TestProjectService_Get_NoProject(t *testing.T) {
 func TestProjectService_GetPermissionScheme_Failure(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/rest/api/2/project/99999999/permissionscheme"
+	testapiEndpoint := "/rest/api/2/project/99999999/permissionscheme"
 
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testapiEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEdpoint)
+		testRequestURL(t, r, testapiEndpoint)
 		fmt.Fprint(w, nil)
 	})
 
@@ -111,11 +111,11 @@ func TestProjectService_GetPermissionScheme_Failure(t *testing.T) {
 func TestProjectService_GetPermissionScheme_Success(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/rest/api/2/project/99999999/permissionscheme"
+	testapiEndpoint := "/rest/api/2/project/99999999/permissionscheme"
 
-	testMux.HandleFunc(testAPIEdpoint, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(testapiEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, testAPIEdpoint)
+		testRequestURL(t, r, testapiEndpoint)
 		fmt.Fprint(w, `{
 			"expand": "permissions,user,group,projectRole,field,all",
 			"id": 10201,
