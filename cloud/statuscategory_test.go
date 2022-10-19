@@ -55,6 +55,7 @@ func TestStatusCategoryService_Get(t *testing.T) {
 	statusCategory, _, err := testClient.StatusCategory.Get(context.Background(), "1")
 	if err != nil {
 		t.Errorf("Error given: %s", err)
+
 	} else if statusCategory == nil {
 		t.Error("Expected status category. StatusCategory is nil")
 
