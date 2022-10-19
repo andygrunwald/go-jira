@@ -3,8 +3,8 @@ package cloud
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -35,7 +35,7 @@ func TestComponentService_Get(t *testing.T) {
 	defer teardown()
 	testAPIEndpoint := "/rest/api/3/component/42102"
 
-	raw, err := ioutil.ReadFile("../testing/mock-data/component_get.json")
+	raw, err := os.ReadFile("../testing/mock-data/component_get.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
