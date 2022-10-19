@@ -47,6 +47,9 @@ type userSearchF func(userSearch) userSearch
 // Get gets user info from Jira using its Account Id
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-user-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *UserService) Get(ctx context.Context, accountId string) (*User, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user?accountId=%s", accountId)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -66,6 +69,9 @@ func (s *UserService) Get(ctx context.Context, accountId string) (*User, *Respon
 // Searching by another parameter that is not accountId is deprecated,
 // but this method is kept for backwards compatibility
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-getUser
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *UserService) GetByAccountID(ctx context.Context, accountID string) (*User, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user?accountId=%s", accountID)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -84,6 +90,9 @@ func (s *UserService) GetByAccountID(ctx context.Context, accountID string) (*Us
 // Create creates an user in Jira.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/user-createUser
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *UserService) Create(ctx context.Context, user *User) (*User, *Response, error) {
 	apiEndpoint := "/rest/api/2/user"
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, user)
@@ -111,6 +120,9 @@ func (s *UserService) Create(ctx context.Context, user *User) (*User, *Response,
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-user-delete
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *UserService) Delete(ctx context.Context, accountId string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user?accountId=%s", accountId)
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
@@ -128,6 +140,9 @@ func (s *UserService) Delete(ctx context.Context, accountId string) (*Response, 
 // GetGroups returns the groups which the user belongs to
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-user-groups-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *UserService) GetGroups(ctx context.Context, accountId string) (*[]UserGroup, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/user/groups?accountId=%s", accountId)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -146,6 +161,9 @@ func (s *UserService) GetGroups(ctx context.Context, accountId string) (*[]UserG
 // GetSelf information about the current logged-in user
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-myself-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *UserService) GetSelf(ctx context.Context) (*User, *Response, error) {
 	const apiEndpoint = "rest/api/2/myself"
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -161,6 +179,9 @@ func (s *UserService) GetSelf(ctx context.Context) (*User, *Response, error) {
 }
 
 // WithMaxResults sets the max results to return
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func WithMaxResults(maxResults int) userSearchF {
 	return func(s userSearch) userSearch {
 		s = append(s, userSearchParam{name: "maxResults", value: fmt.Sprintf("%d", maxResults)})
@@ -169,6 +190,9 @@ func WithMaxResults(maxResults int) userSearchF {
 }
 
 // WithStartAt set the start pager
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func WithStartAt(startAt int) userSearchF {
 	return func(s userSearch) userSearch {
 		s = append(s, userSearchParam{name: "startAt", value: fmt.Sprintf("%d", startAt)})
@@ -177,6 +201,9 @@ func WithStartAt(startAt int) userSearchF {
 }
 
 // WithActive sets the active users lookup
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func WithActive(active bool) userSearchF {
 	return func(s userSearch) userSearch {
 		s = append(s, userSearchParam{name: "includeActive", value: fmt.Sprintf("%t", active)})
@@ -185,6 +212,9 @@ func WithActive(active bool) userSearchF {
 }
 
 // WithInactive sets the inactive users lookup
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func WithInactive(inactive bool) userSearchF {
 	return func(s userSearch) userSearch {
 		s = append(s, userSearchParam{name: "includeInactive", value: fmt.Sprintf("%t", inactive)})
@@ -193,6 +223,9 @@ func WithInactive(inactive bool) userSearchF {
 }
 
 // WithUsername sets the username to search
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func WithUsername(username string) userSearchF {
 	return func(s userSearch) userSearch {
 		s = append(s, userSearchParam{name: "username", value: username})
@@ -201,6 +234,9 @@ func WithUsername(username string) userSearchF {
 }
 
 // WithAccountId sets the account id to search
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func WithAccountId(accountId string) userSearchF {
 	return func(s userSearch) userSearch {
 		s = append(s, userSearchParam{name: "accountId", value: accountId})
@@ -209,6 +245,9 @@ func WithAccountId(accountId string) userSearchF {
 }
 
 // WithProperty sets the property (Property keys are specified by path) to search
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func WithProperty(property string) userSearchF {
 	return func(s userSearch) userSearch {
 		s = append(s, userSearchParam{name: "property", value: property})
@@ -220,6 +259,9 @@ func WithProperty(property string) userSearchF {
 // It can find users by email or display name using the query parameter
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-user-search-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *UserService) Find(ctx context.Context, property string, tweaks ...userSearchF) ([]User, *Response, error) {
 	search := []userSearchParam{
 		{

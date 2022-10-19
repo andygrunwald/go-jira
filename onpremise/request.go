@@ -58,6 +58,9 @@ type RequestComment struct {
 // Create creates a new request.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-post
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (r *RequestService) Create(ctx context.Context, requester string, participants []string, request *Request) (*Request, *Response, error) {
 	apiEndpoint := "rest/servicedeskapi/request"
 
@@ -94,6 +97,9 @@ func (r *RequestService) Create(ctx context.Context, requester string, participa
 // CreateComment creates a comment on a request.
 //
 // https://developer.atlassian.com/cloud/jira/service-desk/rest/api-group-request/#api-rest-servicedeskapi-request-issueidorkey-comment-post
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (r *RequestService) CreateComment(ctx context.Context, issueIDOrKey string, comment *RequestComment) (*RequestComment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/servicedeskapi/request/%v/comment", issueIDOrKey)
 

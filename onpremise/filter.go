@@ -120,6 +120,9 @@ type FilterSearchOptions struct {
 }
 
 // GetList retrieves all filters from Jira
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (fs *FilterService) GetList(ctx context.Context) ([]*Filter, *Response, error) {
 
 	options := &GetQueryOptions{}
@@ -145,6 +148,9 @@ func (fs *FilterService) GetList(ctx context.Context) ([]*Filter, *Response, err
 }
 
 // GetFavouriteList retrieves the user's favourited filters from Jira
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (fs *FilterService) GetFavouriteList(ctx context.Context) ([]*Filter, *Response, error) {
 	apiEndpoint := "rest/api/2/filter/favourite"
 	req, err := fs.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -161,6 +167,9 @@ func (fs *FilterService) GetFavouriteList(ctx context.Context) ([]*Filter, *Resp
 }
 
 // Get retrieves a single Filter from Jira
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (fs *FilterService) Get(ctx context.Context, filterID int) (*Filter, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/filter/%d", filterID)
 	req, err := fs.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -180,6 +189,9 @@ func (fs *FilterService) Get(ctx context.Context, filterID int) (*Filter, *Respo
 // GetMyFilters retrieves the my Filters.
 //
 // https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-rest-api-3-filter-my-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (fs *FilterService) GetMyFilters(ctx context.Context, opts *GetMyFiltersQueryOptions) ([]*Filter, *Response, error) {
 	apiEndpoint := "rest/api/3/filter/my"
 	url, err := addOptions(apiEndpoint, opts)
@@ -203,6 +215,9 @@ func (fs *FilterService) GetMyFilters(ctx context.Context, opts *GetMyFiltersQue
 // Search will search for filter according to the search options
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-rest-api-3-filter-search-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (fs *FilterService) Search(ctx context.Context, opt *FilterSearchOptions) (*FiltersList, *Response, error) {
 	apiEndpoint := "rest/api/3/filter/search"
 	url, err := addOptions(apiEndpoint, opt)
