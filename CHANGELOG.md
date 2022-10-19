@@ -343,6 +343,7 @@ client.Project.GetAll(ctx, &GetQueryOptions{})
 
 * UserAgent: Client HTTP calls are now identifable via a User Agent. This user agent can be configured (default: `go-jira/2.0.0`)
 * The underlying used HTTP client for API calls can be retrieved via `client.Client()`
+* API-Version: Official support for Jira Cloud API in [version 3](https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/)
 
 ### Bug Fixes
 
