@@ -344,9 +344,14 @@ client.Project.GetAll(ctx, &GetQueryOptions{})
 * UserAgent: Client HTTP calls are now identifable via a User Agent. This user agent can be configured (default: `go-jira/2.0.0`)
 * The underlying used HTTP client for API calls can be retrieved via `client.Client()`
 
+### Bug Fixes
+
+* README: Fixed all (broken) links
+
 ### Other
 
 * Replace all "GET", "POST", ... with http.MethodGet (and related) constants
+* Development: Added `make` commands to collect (unit) test coverage
 
 ### Changes
 
