@@ -102,8 +102,7 @@ func (s *ProjectService) GetAll(ctx context.Context, options *GetQueryOptions) (
 	projectList := new(ProjectList)
 	resp, err := s.client.Do(req, projectList)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return projectList, resp, nil
@@ -124,8 +123,7 @@ func (s *ProjectService) Get(ctx context.Context, projectID string) (*Project, *
 	project := new(Project)
 	resp, err := s.client.Do(req, project)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return project, resp, nil
@@ -146,8 +144,7 @@ func (s *ProjectService) GetPermissionScheme(ctx context.Context, projectID stri
 	ps := new(PermissionScheme)
 	resp, err := s.client.Do(req, ps)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return ps, resp, nil

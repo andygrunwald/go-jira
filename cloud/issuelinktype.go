@@ -26,8 +26,9 @@ func (s *IssueLinkTypeService) GetList(ctx context.Context) ([]IssueLinkType, *R
 	linkTypeList := []IssueLinkType{}
 	resp, err := s.client.Do(req, &linkTypeList)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	return linkTypeList, resp, nil
 }
 
@@ -44,8 +45,9 @@ func (s *IssueLinkTypeService) Get(ctx context.Context, ID string) (*IssueLinkTy
 	linkType := new(IssueLinkType)
 	resp, err := s.client.Do(req, linkType)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	return linkType, resp, nil
 }
 
@@ -68,14 +70,14 @@ func (s *IssueLinkTypeService) Create(ctx context.Context, linkType *IssueLinkTy
 	defer resp.Body.Close()
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
-		e := fmt.Errorf("could not read the returned data")
-		return nil, resp, NewJiraError(resp, e)
+		return nil, resp, fmt.Errorf("could not read the returned data: %w", err)
 	}
+
 	err = json.Unmarshal(data, responseLinkType)
 	if err != nil {
-		e := fmt.Errorf("could no unmarshal the data into struct")
-		return nil, resp, NewJiraError(resp, e)
+		return nil, resp, fmt.Errorf("could no unmarshal the data into struct: %w", err)
 	}
+
 	return linkType, resp, nil
 }
 
@@ -89,10 +91,12 @@ func (s *IssueLinkTypeService) Update(ctx context.Context, linkType *IssueLinkTy
 	if err != nil {
 		return nil, nil, err
 	}
+
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	ret := *linkType
 	return &ret, resp, nil
 }
@@ -108,6 +112,5 @@ func (s *IssueLinkTypeService) Delete(ctx context.Context, ID string) (*Response
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
-	return resp, err
+	return s.client.Do(req, nil)
 }

@@ -109,8 +109,7 @@ func (s *GroupService) Add(ctx context.Context, groupname string, username strin
 	responseGroup := new(Group)
 	resp, err := s.client.Do(req, responseGroup)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	return responseGroup, resp, nil
@@ -129,8 +128,7 @@ func (s *GroupService) Remove(ctx context.Context, groupname string, username st
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return resp, jerr
+		return resp, err
 	}
 
 	return resp, nil

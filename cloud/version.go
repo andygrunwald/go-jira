@@ -40,8 +40,9 @@ func (s *VersionService) Get(ctx context.Context, versionID int) (*Version, *Res
 	version := new(Version)
 	resp, err := s.client.Do(req, version)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	return version, resp, nil
 }
 
@@ -64,14 +65,14 @@ func (s *VersionService) Create(ctx context.Context, version *Version) (*Version
 	defer resp.Body.Close()
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
-		e := fmt.Errorf("could not read the returned data")
-		return nil, resp, NewJiraError(resp, e)
+		return nil, resp, fmt.Errorf("could not read the returned data: %w", err)
 	}
+
 	err = json.Unmarshal(data, responseVersion)
 	if err != nil {
-		e := fmt.Errorf("could not unmarshall the data into struct")
-		return nil, resp, NewJiraError(resp, e)
+		return nil, resp, fmt.Errorf("could not unmarshall the data into struct: %w", err)
 	}
+
 	return responseVersion, resp, nil
 }
 
@@ -85,10 +86,10 @@ func (s *VersionService) Update(ctx context.Context, version *Version) (*Version
 	if err != nil {
 		return nil, nil, err
 	}
+
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		jerr := NewJiraError(resp, err)
-		return nil, resp, jerr
+		return nil, resp, err
 	}
 
 	// This is just to follow the rest of the API's convention of returning a version.

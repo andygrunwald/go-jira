@@ -32,7 +32,8 @@ func (s *ResolutionService) GetList(ctx context.Context) ([]Resolution, *Respons
 	resolutionList := []Resolution{}
 	resp, err := s.client.Do(req, &resolutionList)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
+
 	return resolutionList, resp, nil
 }

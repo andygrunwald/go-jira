@@ -28,7 +28,6 @@ type Status struct {
 func (s *StatusService) GetAllStatuses(ctx context.Context) ([]Status, *Response, error) {
 	apiEndpoint := "rest/api/2/status"
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
-
 	if err != nil {
 		return nil, nil, err
 	}
@@ -36,7 +35,7 @@ func (s *StatusService) GetAllStatuses(ctx context.Context) ([]Status, *Response
 	statusList := []Status{}
 	resp, err := s.client.Do(req, &statusList)
 	if err != nil {
-		return nil, resp, NewJiraError(resp, err)
+		return nil, resp, err
 	}
 
 	return statusList, resp, nil
