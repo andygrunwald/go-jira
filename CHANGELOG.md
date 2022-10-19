@@ -349,6 +349,10 @@ client.Project.GetAll(ctx, &GetQueryOptions{})
 
 * README: Fixed all (broken) links
 
+### Bug Fixes
+
+* README: Fixed all (broken) links
+
 ### Other
 
 * Replace all "GET", "POST", ... with http.MethodGet (and related) constants
