@@ -48,15 +48,8 @@ of Go are officially supported.
 
 It is go gettable
 
-```bash
+```sh
 go get github.com/andygrunwald/go-jira
-```
-
-(optional) to run unit / example tests:
-
-```bash
-cd $GOPATH/src/github.com/andygrunwald/go-jira
-go test -v ./...
 ```
 
 ## API
@@ -282,13 +275,29 @@ func main() {
 
 * [andygrunwald/jitic](https://github.com/andygrunwald/jitic) - The Jira Ticket Checker
 
-## Code structure
+## Development
+
+### Code structure
 
 The code structure of this package was inspired by [google/go-github](https://github.com/google/go-github).
 
 There is one main part (the client).
 Based on this main client the other endpoints, like Issues or Authentication are extracted in services. E.g. `IssueService` or `AuthenticationService`.
 These services own a responsibility of the single endpoints / usecases of Jira.
+
+### Unit testing
+
+To run the local unit tests, execute
+
+```sh
+$ make test
+```
+
+To run the local unit tests and view the unit test code coverage in your local web browser, execute
+
+```sh
+$ make test-coverage-html
+```
 
 ## Contribution
 
