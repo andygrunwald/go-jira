@@ -60,7 +60,7 @@ func (s *StatusCategoryService) GetList(ctx context.Context) ([]StatusCategory, 
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-workflow-status-categories/#api-rest-api-3-statuscategory-idorkey-get
 func (s *StatusCategoryService) Get(ctx context.Context, statusCategoryID string) (*StatusCategory, *Response, error) {
 	if statusCategoryID == "" {
-		return nil, nil, errors.New("jira: not status category set")
+		return nil, nil, errors.New("no status category id set")
 	}
 
 	apiEndpoint := fmt.Sprintf("/rest/api/3/statuscategory/%v", statusCategoryID)
