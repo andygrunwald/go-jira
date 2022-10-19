@@ -395,6 +395,7 @@ client, err := jira.NewClient("https://...", tp.Client())
 * Cloud/Authentication: Removed `BearerAuthTransport`, because it was a (kind of) duplicate of `BasicAuthTransport`
 * Cloud/Authentication: Removed `PATAuthTransport`, because it was a (kind of) duplicate of `BasicAuthTransport`
 * Cloud/Authentication: `BasicAuthTransport.Password` was renamed to `BasicAuthTransport.APIToken`
+* Cloud/Authentication: Removes `CookieAuthTransport` and `AuthenticationService`, because this type of auth is not supported by the Jira cloud offering
 
 ### Features
 
