@@ -326,6 +326,37 @@ After:
 client.Project.GetAll(ctx, &GetQueryOptions{})
 ```
 
+#### Cloud/Authentication: `BearerAuthTransport` removed, `PATAuthTransport` renamed
+
+If you used `BearerAuthTransport` or `PATAuthTransport` for authentication, please replace it with `APITokenAuthTransport`.
+
+Before:
+
+```go
+tp := jira.BearerAuthTransport{
+	Token: "token",
+}
+client, err := jira.NewClient("https://...", tp.Client())
+```
+
+or
+
+```go
+tp := jira.PATAuthTransport{
+	Token: "token",
+}
+client, err := jira.NewClient("https://...", tp.Client())
+```
+
+After:
+
+```go
+tp := jira.APITokenAuthTransport{
+	Token: "token",
+}
+client, err := jira.NewClient("https://...", tp.Client())
+```
+
 ### Breaking changes
 
 * Jira On-Premise and Jira Cloud have now different clients, because the API differs
@@ -338,6 +369,8 @@ client.Project.GetAll(ctx, &GetQueryOptions{})
 * `Issue.Update` has been removed and `Issue.UpdateWithOptions` has been renamed to `Issue.Update`
 * `Issue.GetCreateMeta` has been removed and `Issue.GetCreateMetaWithOptions` has been renamed to `Issue.GetCreateMeta`
 * `Project.GetList` has been removed and `Project.ListWithOptions` has been renamed to `Project.GetAll`
+* Cloud/Authentication: Removed `BearerAuthTransport`, because it was a 100% duplicate of `PATAuthTransport`
+* Cloud/Authentication: `PATAuthTransport` was renamed to `APITokenAuthTransport`
 
 ### Features
 
