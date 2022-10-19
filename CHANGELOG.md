@@ -349,9 +349,9 @@ client.Project.GetAll(ctx, &GetQueryOptions{})
 
 * README: Fixed all (broken) links
 
-### Bug Fixes
+### API-Endpoints
 
-* README: Fixed all (broken) links
+* Workflow status categories: Revisited and fully implemented for Cloud and On Premise (incl. examples)
 
 ### Other
 
