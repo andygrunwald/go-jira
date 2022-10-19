@@ -2,14 +2,19 @@ package main
 
 import (
 	"context"
-	jira "github.com/andygrunwald/go-jira/v2/cloud"
 	"log"
+
+	jira "github.com/andygrunwald/go-jira/v2/cloud"
 )
 
 func main() {
+	jiraClient, err := jira.NewClient("https://mattermost.atlassian.net/", nil)
+	if err != nil {
+		panic(err)
+	}
 
-	jiraClient, _ := jira.NewClient("https://mattermost.atlassian.net/", nil)
-
+	// Showcase of StatusCategory.GetList:
+	// Getting all status categories
 	categories, resp, err := jiraClient.StatusCategory.GetList(context.TODO())
 	if err != nil {
 		log.Println(resp.StatusCode)
@@ -20,6 +25,8 @@ func main() {
 		log.Println(statusCategory)
 	}
 
+	// Showcase of StatusCategory.Get
+	// Getting a single status category
 	category, resp, err := jiraClient.StatusCategory.Get(context.TODO(), "1")
 	if err != nil {
 		log.Println(resp.StatusCode)
