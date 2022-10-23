@@ -1195,6 +1195,7 @@ func (s *IssueService) GetTransitions(ctx context.Context, id string) ([]Transit
 // When performing the transition you can update or set other issue fields.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
+// Caller must close Response.Body
 //
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
 // This double check effort is done for v2 - Remove this two lines if this is completed.
@@ -1500,6 +1501,7 @@ func (s *IssueService) AddRemoteLink(ctx context.Context, issueID string, remote
 // UpdateRemoteLink updates a remote issue link by linkID.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-remote-links/#api-rest-api-2-issue-issueidorkey-remotelink-linkid-put
+// Caller must close Response.Body
 //
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
 // This double check effort is done for v2 - Remove this two lines if this is completed.
