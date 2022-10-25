@@ -23,12 +23,26 @@ import (
 )
 
 const (
-	retryIntervalDefault = 30 * time.Second
-	retryStepSeconds     = 1
+	retryIntervalDefault = 3 * time.Minute
+	retryStepSeconds     = 5
 )
 
 var retryStatusCodes = map[int]struct{}{
 	http.StatusTooManyRequests: {},
+}
+
+type retryIntervalKey struct{}
+
+func WithRetryInterval(ctx context.Context, total time.Duration) context.Context {
+	return context.WithValue(ctx, retryIntervalKey{}, total)
+}
+
+func retryInterval(ctx context.Context) time.Duration {
+	d, ok := ctx.Value(retryIntervalKey{}).(time.Duration)
+	if !ok {
+		return retryIntervalDefault
+	}
+	return d
 }
 
 type failFastKey struct{}
@@ -302,7 +316,7 @@ func (c *Client) doWithDeadline(req *http.Request, v interface{}) (*Response, er
 
 	deadline, deadlineIsSet := ctx.Deadline()
 	if !deadlineIsSet {
-		deadline = time.Now().Add(retryIntervalDefault)
+		deadline = time.Now().Add(retryInterval(ctx))
 		dctx, cancel := context.WithDeadline(ctx, deadline)
 		defer cancel()
 		ctx = dctx
@@ -335,7 +349,9 @@ func (c *Client) doWithDeadline(req *http.Request, v interface{}) (*Response, er
 					retrySeconds = retryAfterSeconds
 				}
 			}
-			retryAfterStep := time.Duration(retrySeconds) * time.Second
+			fmt.Println("retrySeconds:", retrySeconds)
+			// https://developer.atlassian.com/cloud/jira/platform/rate-limiting/
+			retryAfterStep := time.Duration(retrySeconds)*time.Second + retryStepSeconds
 			t := time.NewTimer(retryAfterStep)
 			select {
 			case <-ctx.Done():
@@ -566,8 +582,9 @@ func (t *CookieAuthTransport) transport() http.RoundTripper {
 //
 // Jira docs: https://developer.atlassian.com/cloud/jira/platform/understanding-jwt
 // Examples in other languages:
-//    https://bitbucket.org/atlassian/atlassian-jwt-ruby/src/d44a8e7a4649e4f23edaa784402655fda7c816ea/lib/atlassian/jwt.rb
-//    https://bitbucket.org/atlassian/atlassian-jwt-py/src/master/atlassian_jwt/url_utils.py
+//
+//	https://bitbucket.org/atlassian/atlassian-jwt-ruby/src/d44a8e7a4649e4f23edaa784402655fda7c816ea/lib/atlassian/jwt.rb
+//	https://bitbucket.org/atlassian/atlassian-jwt-py/src/master/atlassian_jwt/url_utils.py
 type JWTAuthTransport struct {
 	Secret []byte
 	Issuer string
