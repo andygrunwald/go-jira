@@ -14,6 +14,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mcl-de/go-jira/v2/cloud/model"
+
 	"github.com/fatih/structs"
 	"github.com/google/go-querystring/query"
 	"github.com/trivago/tgo/tcontainer"
@@ -1244,7 +1246,7 @@ func (s *IssueService) Delete(ctx context.Context, issueID string) (*Response, e
 // GetWatchers wil return all the users watching/observing the given issue
 //
 // Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-getIssueWatchers
-func (s *IssueService) GetWatchers(ctx context.Context, issueID string) (*[]User, *Response, error) {
+func (s *IssueService) GetWatchers(ctx context.Context, issueID string) ([]model.SearchUsersQueryResult, *Response, error) {
 	watchesAPIEndpoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, watchesAPIEndpoint, nil)
@@ -1258,19 +1260,19 @@ func (s *IssueService) GetWatchers(ctx context.Context, issueID string) (*[]User
 		return nil, nil, err
 	}
 
-	result := []User{}
+	var result []model.SearchUsersQueryResult
 	for _, watcher := range watches.Watchers {
-		var user *User
+		var users []model.SearchUsersQueryResult
 		if watcher.AccountID != "" {
-			user, resp, err = s.client.User.GetByAccountID(context.Background(), watcher.AccountID)
+			users, resp, err = s.client.User.FindUsers(context.Background(), model.SearchUsersQueryOptions{AccountID: watcher.AccountID})
 			if err != nil {
 				return nil, resp, err
 			}
 		}
-		result = append(result, *user)
+		result = append(result, users[0])
 	}
 
-	return &result, resp, nil
+	return result, resp, nil
 }
 
 // AddWatcher adds watcher to the given issue
