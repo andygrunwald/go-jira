@@ -63,14 +63,14 @@ func TestPermissionSchemeService_GetList_NoList(t *testing.T) {
 func TestPermissionSchemeService_Get(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/rest/api/3/permissionscheme/10100"
+	testapiEndpoint := "/rest/api/3/permissionscheme/10100"
 	raw, err := os.ReadFile("../testing/mock-data/permissionscheme.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEdpoint, func(writer http.ResponseWriter, request *http.Request) {
+	testMux.HandleFunc(testapiEndpoint, func(writer http.ResponseWriter, request *http.Request) {
 		testMethod(t, request, http.MethodGet)
-		testRequestURL(t, request, testAPIEdpoint)
+		testRequestURL(t, request, testapiEndpoint)
 		fmt.Fprint(writer, string(raw))
 	})
 
@@ -86,14 +86,14 @@ func TestPermissionSchemeService_Get(t *testing.T) {
 func TestPermissionSchemeService_Get_NoScheme(t *testing.T) {
 	setup()
 	defer teardown()
-	testAPIEdpoint := "/rest/api/3/permissionscheme/99999"
+	testapiEndpoint := "/rest/api/3/permissionscheme/99999"
 	raw, err := os.ReadFile("../testing/mock-data/no_permissionscheme.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	testMux.HandleFunc(testAPIEdpoint, func(writer http.ResponseWriter, request *http.Request) {
+	testMux.HandleFunc(testapiEndpoint, func(writer http.ResponseWriter, request *http.Request) {
 		testMethod(t, request, http.MethodGet)
-		testRequestURL(t, request, testAPIEdpoint)
+		testRequestURL(t, request, testapiEndpoint)
 		fmt.Fprint(writer, string(raw))
 	})
 

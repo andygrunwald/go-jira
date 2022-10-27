@@ -15,6 +15,9 @@ type IssueLinkTypeService service
 // GetList gets all of the issue link types from Jira.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueLinkTypeService) GetList(ctx context.Context) ([]IssueLinkType, *Response, error) {
 	apiEndpoint := "rest/api/2/issueLinkType"
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -34,6 +37,9 @@ func (s *IssueLinkTypeService) GetList(ctx context.Context) ([]IssueLinkType, *R
 // Get gets info of a specific issue link type from Jira.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueLinkTypeService) Get(ctx context.Context, ID string) (*IssueLinkType, *Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", ID)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndPoint, nil)
@@ -53,6 +59,9 @@ func (s *IssueLinkTypeService) Get(ctx context.Context, ID string) (*IssueLinkTy
 // Create creates an issue link type in Jira.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-post
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueLinkTypeService) Create(ctx context.Context, linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
 	apiEndpoint := "/rest/api/2/issueLinkType"
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, linkType)
@@ -79,6 +88,9 @@ func (s *IssueLinkTypeService) Create(ctx context.Context, linkType *IssueLinkTy
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-put
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueLinkTypeService) Update(ctx context.Context, linkType *IssueLinkType) (*IssueLinkType, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", linkType.ID)
 	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndpoint, linkType)
@@ -99,6 +111,9 @@ func (s *IssueLinkTypeService) Update(ctx context.Context, linkType *IssueLinkTy
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-issueLinkTypeId-delete
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueLinkTypeService) Delete(ctx context.Context, ID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLinkType/%s", ID)
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)

@@ -22,6 +22,9 @@ type CreateComponentOptions struct {
 }
 
 // Create creates a new Jira component based on the given options.
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *ComponentService) Create(ctx context.Context, options *CreateComponentOptions) (*ProjectComponent, *Response, error) {
 	apiEndpoint := "rest/api/2/component"
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, options)

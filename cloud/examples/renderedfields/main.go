@@ -39,7 +39,7 @@ func main() {
 
 		ba := jira.BasicAuthTransport{
 			Username: strings.TrimSpace(username),
-			Password: strings.TrimSpace(password),
+			APIToken: strings.TrimSpace(password),
 		}
 		tp = ba.Client()
 	}

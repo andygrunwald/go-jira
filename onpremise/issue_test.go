@@ -945,70 +945,69 @@ func TestIssueService_DoTransitionWithPayload(t *testing.T) {
 
 func TestIssueFields_TestMarshalJSON_PopulateUnknownsSuccess(t *testing.T) {
 	data := `{
-			"customfield_123":"test",
-			"description":"example bug report",
-			"project":{
-				"self":"http://www.example.com/jira/rest/api/2/project/EX",
+		"customfield_123":"test",
+		"description":"example bug report",
+		"project":{
+			"self":"http://www.example.com/jira/rest/api/2/project/EX",
+			"id":"10000",
+			"key":"EX",
+			"name":"Example",
+			"avatarUrls":{
+				"48x48":"http://www.example.com/jira/secure/projectavatar?size=large&pid=10000",
+				"24x24":"http://www.example.com/jira/secure/projectavatar?size=small&pid=10000",
+				"16x16":"http://www.example.com/jira/secure/projectavatar?size=xsmall&pid=10000",
+				"32x32":"http://www.example.com/jira/secure/projectavatar?size=medium&pid=10000"
+			},
+			"projectCategory":{
+				"self":"http://www.example.com/jira/rest/api/2/projectCategory/10000",
 				"id":"10000",
-				"key":"EX",
-				"name":"Example",
-				"avatarUrls":{
-					"48x48":"http://www.example.com/jira/secure/projectavatar?size=large&pid=10000",
-					"24x24":"http://www.example.com/jira/secure/projectavatar?size=small&pid=10000",
-					"16x16":"http://www.example.com/jira/secure/projectavatar?size=xsmall&pid=10000",
-					"32x32":"http://www.example.com/jira/secure/projectavatar?size=medium&pid=10000"
+				"name":"FIRST",
+				"description":"First Project Category"
+			}
+		},
+		"issuelinks":[
+			{
+				"id":"10001",
+				"type":{
+				"id":"10000",
+				"name":"Dependent",
+				"inward":"depends on",
+				"outward":"is depended by"
 				},
-				"projectCategory":{
-					"self":"http://www.example.com/jira/rest/api/2/projectCategory/10000",
-					"id":"10000",
-					"name":"FIRST",
-					"description":"First Project Category"
+				"outwardIssue":{
+				"id":"10004L",
+				"key":"PRJ-2",
+				"self":"http://www.example.com/jira/rest/api/2/issue/PRJ-2",
+				"fields":{
+					"status":{
+						"iconUrl":"http://www.example.com/jira//images/icons/statuses/open.png",
+						"name":"Open"
+					}
+				}
 				}
 			},
-			"issuelinks":[
-				{
-					"id":"10001",
-					"type":{
-					"id":"10000",
-					"name":"Dependent",
-					"inward":"depends on",
-					"outward":"is depended by"
-					},
-					"outwardIssue":{
-					"id":"10004L",
-					"key":"PRJ-2",
-					"self":"http://www.example.com/jira/rest/api/2/issue/PRJ-2",
-					"fields":{
-						"status":{
-							"iconUrl":"http://www.example.com/jira//images/icons/statuses/open.png",
-							"name":"Open"
-						}
-					}
-					}
+			{
+				"id":"10002",
+				"type":{
+				"id":"10000",
+				"name":"Dependent",
+				"inward":"depends on",
+				"outward":"is depended by"
 				},
-				{
-					"id":"10002",
-					"type":{
-					"id":"10000",
-					"name":"Dependent",
-					"inward":"depends on",
-					"outward":"is depended by"
-					},
-					"inwardIssue":{
-					"id":"10004",
-					"key":"PRJ-3",
-					"self":"http://www.example.com/jira/rest/api/2/issue/PRJ-3",
-					"fields":{
-						"status":{
-							"iconUrl":"http://www.example.com/jira//images/icons/statuses/open.png",
-							"name":"Open"
-						}
-					}
+				"inwardIssue":{
+				"id":"10004",
+				"key":"PRJ-3",
+				"self":"http://www.example.com/jira/rest/api/2/issue/PRJ-3",
+				"fields":{
+					"status":{
+						"iconUrl":"http://www.example.com/jira//images/icons/statuses/open.png",
+						"name":"Open"
 					}
 				}
-			]
-
-   }`
+				}
+			}
+		]
+	}`
 
 	i := new(IssueFields)
 	err := json.Unmarshal([]byte(data), i)

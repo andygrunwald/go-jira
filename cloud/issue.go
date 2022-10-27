@@ -655,6 +655,9 @@ type RemoteLinkStatus struct {
 // # The given options will be appended to the query string
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getIssue
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) Get(ctx context.Context, issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -683,6 +686,9 @@ func (s *IssueService) Get(ctx context.Context, issueID string, options *GetQuer
 // The attachment is in the Response.Body of the response.
 // This is an io.ReadCloser.
 // Caller must close resp.Body.
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) DownloadAttachment(ctx context.Context, attachmentID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("secure/attachment/%s/", attachmentID)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -699,6 +705,9 @@ func (s *IssueService) DownloadAttachment(ctx context.Context, attachmentID stri
 }
 
 // PostAttachment uploads r (io.Reader) as an attachment to a given issueID
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) PostAttachment(ctx context.Context, issueID string, r io.Reader, attachmentName string) (*[]Attachment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/attachments", issueID)
 
@@ -737,6 +746,9 @@ func (s *IssueService) PostAttachment(ctx context.Context, issueID string, r io.
 
 // DeleteAttachment deletes an attachment of a given attachmentID
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) DeleteAttachment(ctx context.Context, attachmentID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/attachment/%s", attachmentID)
 
@@ -755,6 +767,9 @@ func (s *IssueService) DeleteAttachment(ctx context.Context, attachmentID string
 
 // DeleteLink deletes a link of a given linkID
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) DeleteLink(ctx context.Context, linkID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issueLink/%s", linkID)
 
@@ -775,6 +790,9 @@ func (s *IssueService) DeleteLink(ctx context.Context, linkID string) (*Response
 // This method is especially important if you need to read all the worklogs, not just the first page.
 //
 // https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/worklog-getIssueWorklog
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) GetWorklogs(ctx context.Context, issueID string, options ...func(*http.Request) error) (*Worklog, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
 
@@ -797,6 +815,9 @@ func (s *IssueService) GetWorklogs(ctx context.Context, issueID string, options 
 
 // Applies query options to http request.
 // This helper is meant to be used with all "QueryOptions" structs.
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func WithQueryOptions(options interface{}) func(*http.Request) error {
 	q, err := query.Values(options)
 	if err != nil {
@@ -815,7 +836,10 @@ func WithQueryOptions(options interface{}) func(*http.Request) error {
 // Creating a sub-task is similar to creating a regular issue, with two important differences:
 // The issueType field must correspond to a sub-task issue type and you must provide a parent field in the issue create request containing the id or key of the parent issue.
 //
-// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-rest-api-3-issue-post
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) Create(ctx context.Context, issue *CreateIssue) (*Issue, *Response, error) {
 	apiEndpoint := "rest/api/2/issue"
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, issue)
@@ -844,6 +868,9 @@ func (s *IssueService) Create(ctx context.Context, issue *CreateIssue) (*Issue, 
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-issueidorkey-put
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) Update(ctx context.Context, issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", issue.Key)
 	url, err := addOptions(apiEndpoint, opts)
@@ -871,6 +898,9 @@ func (s *IssueService) Update(ctx context.Context, issue *Issue, opts *UpdateQue
 //
 // https://docs.atlassian.com/jira/REST/7.4.0/#api/2/issue-editIssue
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) UpdateIssue(ctx context.Context, jiraID string, data map[string]interface{}) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", jiraID)
 	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndpoint, data)
@@ -891,6 +921,9 @@ func (s *IssueService) UpdateIssue(ctx context.Context, jiraID string, data map[
 // AddComment adds a new comment to issueID.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-addComment
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) AddComment(ctx context.Context, issueID string, comment *Comment) (*Comment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment", issueID)
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, comment)
@@ -910,6 +943,9 @@ func (s *IssueService) AddComment(ctx context.Context, issueID string, comment *
 // UpdateComment updates the body of a comment, identified by comment.ID, on the issueID.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/comment-updateComment
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) UpdateComment(ctx context.Context, issueID string, comment *Comment) (*Comment, *Response, error) {
 	reqBody := struct {
 		Body string `json:"body"`
@@ -934,6 +970,9 @@ func (s *IssueService) UpdateComment(ctx context.Context, issueID string, commen
 // DeleteComment Deletes a comment from an issueID.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-issue-issueIdOrKey-comment-id-delete
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) DeleteComment(ctx context.Context, issueID, commentID string) error {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, commentID)
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
@@ -953,6 +992,9 @@ func (s *IssueService) DeleteComment(ctx context.Context, issueID, commentID str
 // AddWorklogRecord adds a new worklog record to issueID.
 //
 // https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-issue-issueIdOrKey-worklog-post
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) AddWorklogRecord(ctx context.Context, issueID string, record *WorklogRecord, options ...func(*http.Request) error) (*WorklogRecord, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, record)
@@ -979,6 +1021,9 @@ func (s *IssueService) AddWorklogRecord(ctx context.Context, issueID string, rec
 // UpdateWorklogRecord updates a worklog record.
 //
 // https://docs.atlassian.com/software/jira/docs/api/REST/7.1.2/#api/2/issue-updateWorklog
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) UpdateWorklogRecord(ctx context.Context, issueID, worklogID string, record *WorklogRecord, options ...func(*http.Request) error) (*WorklogRecord, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog/%s", issueID, worklogID)
 	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndpoint, record)
@@ -1006,6 +1051,9 @@ func (s *IssueService) UpdateWorklogRecord(ctx context.Context, issueID, worklog
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issueLink
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) AddLink(ctx context.Context, issueLink *IssueLink) (*Response, error) {
 	apiEndpoint := "rest/api/2/issueLink"
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, issueLink)
@@ -1019,6 +1067,9 @@ func (s *IssueService) AddLink(ctx context.Context, issueLink *IssueLink) (*Resp
 // Search will search for tickets according to the jql
 //
 // Jira API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) Search(ctx context.Context, jql string, options *SearchOptions) ([]Issue, *Response, error) {
 	u := url.URL{
 		Path: "rest/api/2/search",
@@ -1061,6 +1112,9 @@ func (s *IssueService) Search(ctx context.Context, jql string, options *SearchOp
 // SearchPages will get issues from all pages in a search
 //
 // Jira API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) SearchPages(ctx context.Context, jql string, options *SearchOptions, f func(Issue) error) error {
 	if options == nil {
 		options = &SearchOptions{
@@ -1103,6 +1157,9 @@ func (s *IssueService) SearchPages(ctx context.Context, jql string, options *Sea
 }
 
 // GetCustomFields returns a map of customfield_* keys with string values
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) GetCustomFields(ctx context.Context, issueID string) (CustomFields, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -1142,6 +1199,9 @@ func (s *IssueService) GetCustomFields(ctx context.Context, issueID string) (Cus
 // along with fields that are required and their types.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getTransitions
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) GetTransitions(ctx context.Context, id string) ([]Transition, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/transitions?expand=transitions.fields", id)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -1158,6 +1218,10 @@ func (s *IssueService) GetTransitions(ctx context.Context, id string) ([]Transit
 // When performing the transition you can update or set other issue fields.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
+// Caller must close Response.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) DoTransition(ctx context.Context, ticketID, transitionID string) (*Response, error) {
 	payload := CreateTransitionPayload{
 		Transition: TransitionPayload{
@@ -1172,6 +1236,9 @@ func (s *IssueService) DoTransition(ctx context.Context, ticketID, transitionID 
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-doTransition
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) DoTransitionWithPayload(ctx context.Context, ticketID, payload interface{}) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/transitions", ticketID)
 
@@ -1196,6 +1263,9 @@ func (s *IssueService) DoTransitionWithPayload(ctx context.Context, ticketID, pa
 //	error if the key is not found.
 //	All values will be packed into Unknowns. This is much convenient. If the struct fields needs to be
 //	configured as well, marshalling and unmarshalling will set the proper fields.
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIssueType, fieldsConfig map[string]string) (*Issue, error) {
 	issue := new(Issue)
 	issueFields := new(IssueFields)
@@ -1267,6 +1337,9 @@ func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIss
 
 // Delete will delete a specified issue.
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) Delete(ctx context.Context, issueID string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s", issueID)
 
@@ -1286,6 +1359,9 @@ func (s *IssueService) Delete(ctx context.Context, issueID string) (*Response, e
 // GetWatchers wil return all the users watching/observing the given issue
 //
 // Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-getIssueWatchers
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) GetWatchers(ctx context.Context, issueID string) ([]model.SearchUsersQueryResult, *Response, error) {
 	watchesAPIEndpoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
@@ -1319,6 +1395,9 @@ func (s *IssueService) GetWatchers(ctx context.Context, issueID string) ([]model
 //
 // Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-addWatcher
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) AddWatcher(ctx context.Context, issueID string, userName string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
@@ -1334,6 +1413,9 @@ func (s *IssueService) AddWatcher(ctx context.Context, issueID string, userName 
 //
 // Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-removeWatcher
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) RemoveWatcher(ctx context.Context, issueID string, userName string) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
 
@@ -1349,6 +1431,9 @@ func (s *IssueService) RemoveWatcher(ctx context.Context, issueID string, userNa
 //
 // Jira API docs: https://docs.atlassian.com/software/jira/docs/api/REST/7.10.2/#api/2/issue-assign
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) UpdateAssignee(ctx context.Context, issueID string, assignee *User) (*Response, error) {
 	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/assignee", issueID)
 
@@ -1360,6 +1445,8 @@ func (s *IssueService) UpdateAssignee(ctx context.Context, issueID string, assig
 	return s.client.Do(req, nil)
 }
 
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (c ChangelogHistory) CreatedTime() (time.Time, error) {
 	var t time.Time
 	// Ignore null
@@ -1373,6 +1460,9 @@ func (c ChangelogHistory) CreatedTime() (time.Time, error) {
 // GetRemoteLinks gets remote issue links on the issue.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-getRemoteIssueLinks
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) GetRemoteLinks(ctx context.Context, id string) (*[]RemoteLink, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/remotelink", id)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -1388,6 +1478,9 @@ func (s *IssueService) GetRemoteLinks(ctx context.Context, id string) (*[]Remote
 // AddRemoteLink adds a remote link to issueID.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issue-issueIdOrKey-remotelink-post
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) AddRemoteLink(ctx context.Context, issueID string, remotelink *RemoteLink) (*RemoteLink, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/remotelink", issueID)
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, remotelink)
@@ -1407,6 +1500,10 @@ func (s *IssueService) AddRemoteLink(ctx context.Context, issueID string, remote
 // UpdateRemoteLink updates a remote issue link by linkID.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-remote-links/#api-rest-api-2-issue-issueidorkey-remotelink-linkid-put
+// Caller must close Response.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) UpdateRemoteLink(ctx context.Context, issueID string, linkID int, remotelink *RemoteLink) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/remotelink/%d", issueID, linkID)
 	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndpoint, remotelink)

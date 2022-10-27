@@ -24,6 +24,9 @@ type Priority struct {
 // GetList gets all priorities from Jira
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-priority-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *PriorityService) GetList(ctx context.Context) ([]Priority, *Response, error) {
 	apiEndpoint := "rest/api/2/priority"
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)

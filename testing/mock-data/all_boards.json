@@ -38,7 +38,15 @@
       "id": 1,
       "self": "https://test.jira.org/rest/agile/1.0/board/1",
       "name": "Test Mobile",
-      "type": "scrum"
+      "type": "scrum",
+      "location": {
+        "projectId": 10000,
+        "displayName": "aproject (AP)",
+        "projectName": "aproject",
+        "projectKey": "AP",
+        "projectTypeKey": "software",
+        "name": "aproject (AP)"
+      }
     }
   ]
 }

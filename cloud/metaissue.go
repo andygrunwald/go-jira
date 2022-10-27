@@ -50,6 +50,9 @@ type MetaIssueType struct {
 }
 
 // GetCreateMeta makes the api call to get the meta information without requiring to have a projectKey
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) GetCreateMeta(ctx context.Context, options *GetQueryOptions) (*CreateMetaInfo, *Response, error) {
 	apiEndpoint := "rest/api/2/issue/createmeta"
 
@@ -76,6 +79,9 @@ func (s *IssueService) GetCreateMeta(ctx context.Context, options *GetQueryOptio
 }
 
 // GetEditMeta makes the api call to get the edit meta information for an issue
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) GetEditMeta(ctx context.Context, issue *Issue) (*EditMetaInfo, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/issue/%s/editmeta", issue.Key)
 
@@ -96,6 +102,9 @@ func (s *IssueService) GetEditMeta(ctx context.Context, issue *Issue) (*EditMeta
 
 // GetProjectWithName returns a project with "name" from the meta information received. If not found, this returns nil.
 // The comparison of the name is case insensitive.
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {
 	for _, m := range m.Projects {
 		if strings.EqualFold(m.Name, name) {
@@ -107,6 +116,9 @@ func (m *CreateMetaInfo) GetProjectWithName(name string) *MetaProject {
 
 // GetProjectWithKey returns a project with "name" from the meta information received. If not found, this returns nil.
 // The comparison of the name is case insensitive.
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (m *CreateMetaInfo) GetProjectWithKey(key string) *MetaProject {
 	for _, m := range m.Projects {
 		if strings.EqualFold(m.Key, key) {
@@ -118,6 +130,9 @@ func (m *CreateMetaInfo) GetProjectWithKey(key string) *MetaProject {
 
 // GetIssueTypeWithName returns an IssueType with name from a given MetaProject. If not found, this returns nil.
 // The comparison of the name is case insensitive
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (p *MetaProject) GetIssueTypeWithName(name string) *MetaIssueType {
 	for _, m := range p.IssueTypes {
 		if strings.EqualFold(m.Name, name) {
@@ -146,6 +161,9 @@ func (p *MetaProject) GetIssueTypeWithName(name string) *MetaIssueType {
 //
 // the returned map would have "Epic Link" as the key and "customfield_10806" as value.
 // This choice has been made so that the it is easier to generate the create api request later.
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (t *MetaIssueType) GetMandatoryFields() (map[string]string, error) {
 	ret := make(map[string]string)
 	for key := range t.Fields {
@@ -166,6 +184,9 @@ func (t *MetaIssueType) GetMandatoryFields() (map[string]string, error) {
 
 // GetAllFields returns a map of all the fields for an IssueType. This includes all required and not required.
 // The key of the returned map is what you see in the form and the value is how it is representated in the jira schema.
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (t *MetaIssueType) GetAllFields() (map[string]string, error) {
 	ret := make(map[string]string)
 	for key := range t.Fields {
@@ -181,6 +202,9 @@ func (t *MetaIssueType) GetAllFields() (map[string]string, error) {
 
 // CheckCompleteAndAvailable checks if the given fields satisfies the mandatory field required to create a issue for the given type
 // And also if the given fields are available.
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (t *MetaIssueType) CheckCompleteAndAvailable(config map[string]string) (bool, error) {
 	mandatory, err := t.GetMandatoryFields()
 	if err != nil {

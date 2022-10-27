@@ -28,6 +28,9 @@ type IssuesInSprintResult struct {
 //
 // Jira API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/sprint-moveIssuesToSprint
 // Caller must close resp.Body
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *SprintService) MoveIssuesToSprint(ctx context.Context, sprintID int, issueIDs []string) (*Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/sprint/%d/issue", sprintID)
 
@@ -46,6 +49,9 @@ func (s *SprintService) MoveIssuesToSprint(ctx context.Context, sprintID int, is
 // By default, the returned issues are ordered by rank.
 //
 // Jira API Docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/sprint-getIssuesForSprint
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *SprintService) GetIssuesForSprint(ctx context.Context, sprintID int) ([]Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/sprint/%d/issue", sprintID)
 
@@ -69,6 +75,9 @@ func (s *SprintService) GetIssuesForSprint(ctx context.Context, sprintID int) ([
 // Jira API docs: https://docs.atlassian.com/jira-software/REST/7.3.1/#agile/1.0/issue-getIssue
 //
 // TODO: create agile service for holding all agile apis' implementation
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *SprintService) GetIssue(ctx context.Context, issueID string, options *GetQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/agile/1.0/issue/%s", issueID)
 

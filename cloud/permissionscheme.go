@@ -31,6 +31,9 @@ type Holder struct {
 // GetList returns a list of all permission schemes
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-permissionscheme-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *PermissionSchemeService) GetList(ctx context.Context) (*PermissionSchemes, *Response, error) {
 	apiEndpoint := "/rest/api/3/permissionscheme"
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -50,6 +53,9 @@ func (s *PermissionSchemeService) GetList(ctx context.Context) (*PermissionSchem
 // Get returns a full representation of the permission scheme for the schemeID
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-permissionscheme-schemeId-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *PermissionSchemeService) Get(ctx context.Context, schemeID int) (*PermissionScheme, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/3/permissionscheme/%d", schemeID)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)

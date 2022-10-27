@@ -84,6 +84,9 @@ type PermissionScheme struct {
 // a list of all projects and their supported issuetypes.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-projects/#api-rest-api-2-project-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *ProjectService) GetAll(ctx context.Context, options *GetQueryOptions) (*ProjectList, *Response, error) {
 	apiEndpoint := "rest/api/2/project"
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -113,6 +116,9 @@ func (s *ProjectService) GetAll(ctx context.Context, options *GetQueryOptions) (
 // This can be an project id, or an project key.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *ProjectService) Get(ctx context.Context, projectID string) (*Project, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/project/%s", projectID)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -134,6 +140,9 @@ func (s *ProjectService) Get(ctx context.Context, projectID string) (*Project, *
 // This can be an project id, or an project key.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/project-getProject
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *ProjectService) GetPermissionScheme(ctx context.Context, projectID string) (*PermissionScheme, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/api/2/project/%s/permissionscheme", projectID)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)

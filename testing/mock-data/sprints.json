@@ -41,6 +41,21 @@
             "self": "https://jira.com/rest/agile/1.0/sprint/832",
             "startDate": "2016-06-20T13:24:39.161-07:00",
             "state": "active"
+        },
+        {
+            "id": 845,
+            "self":"https://jira.com/rest/agile/1.0/sprint/845",
+            "state": "future",
+            "name": "Minimal Example Sprint",
+            "originBoardId": 734
+        },
+        {
+            "id": 846,
+            "self": "https://jira.com/rest/agile/1.0/sprint/846",
+            "state": "future",
+            "name": "Sprint with a Goal",
+            "originBoardId": 734,
+            "goal": "My Goal"
         }
     ]
 }

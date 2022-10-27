@@ -23,19 +23,19 @@ type groupMembersResult struct {
 
 // Group represents a Jira group
 type Group struct {
-	ID                   string          `json:"id"`
-	Title                string          `json:"title"`
-	Type                 string          `json:"type"`
-	Properties           groupProperties `json:"properties"`
-	AdditionalProperties bool            `json:"additionalProperties"`
+	Name   string       `json:"name,omitempty" structs:"name,omitempty"`
+	Self   string       `json:"self,omitempty" structs:"self,omitempty"`
+	Users  GroupMembers `json:"users,omitempty" structs:"users,omitempty"`
+	Expand string       `json:"expand,omitempty" structs:"expand,omitempty"`
 }
 
-type groupProperties struct {
-	Name groupPropertiesName `json:"name"`
-}
-
-type groupPropertiesName struct {
-	Type string `json:"type"`
+// GroupMembers represent members in a Jira group
+type GroupMembers struct {
+	Size       int           `json:"size,omitempty" structs:"size,omitempty"`
+	Items      []GroupMember `json:"items,omitempty" structs:"items,omitempty"`
+	MaxResults int           `json:"max-results,omitempty" structs:"max-results.omitempty"`
+	StartIndex int           `json:"start-index,omitempty" structs:"start-index,omitempty"`
+	EndIndex   int           `json:"end-index,omitempty" structs:"end-index,omitempty"`
 }
 
 // GroupMember reflects a single member of a group
@@ -65,6 +65,9 @@ type GroupSearchOptions struct {
 // Jira API docs: https://docs.atlassian.com/jira/REST/server/#api/2/group-getUsersFromGroup
 //
 // WARNING: This API only returns the first page of group members
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *GroupService) Get(ctx context.Context, name string, options *GroupSearchOptions) ([]GroupMember, *Response, error) {
 	var apiEndpoint string
 	if options == nil {
@@ -92,15 +95,18 @@ func (s *GroupService) Get(ctx context.Context, name string, options *GroupSearc
 	return group.Members, resp, nil
 }
 
-// Add adds user to group
+// Add adds a user to a group.
 //
-// Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-addUserToGroup
-func (s *GroupService) Add(ctx context.Context, groupname string, username string) (*Group, *Response, error) {
-	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s", groupname)
+// The account ID of the user, which uniquely identifies the user across all Atlassian products.
+// For example, 5b10ac8d82e05b22cc7d4ef5.
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-groups/#api-rest-api-3-group-user-post
+func (s *GroupService) AddUserByGroupName(ctx context.Context, groupName string, accountID string) (*Group, *Response, error) {
+	apiEndpoint := fmt.Sprintf("/rest/api/3/group/user?groupname=%s", groupName)
 	var user struct {
-		Name string `json:"name"`
+		AccountID string `json:"accountId"`
 	}
-	user.Name = username
+	user.AccountID = accountID
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, &user)
 	if err != nil {
 		return nil, nil, err
@@ -115,12 +121,15 @@ func (s *GroupService) Add(ctx context.Context, groupname string, username strin
 	return responseGroup, resp, nil
 }
 
-// Remove removes user from group
+// Remove removes a user from a group.
 //
-// Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/group-removeUserFromGroup
+// The account ID of the user, which uniquely identifies the user across all Atlassian products.
+// For example, 5b10ac8d82e05b22cc7d4ef5.
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-groups/#api-rest-api-3-group-user-delete
 // Caller must close resp.Body
-func (s *GroupService) Remove(ctx context.Context, groupname string, username string) (*Response, error) {
-	apiEndpoint := fmt.Sprintf("/rest/api/2/group/user?groupname=%s&username=%s", groupname, username)
+func (s *GroupService) RemoveUserByGroupName(ctx context.Context, groupName string, accountID string) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("/rest/api/3/group/user?groupname=%s&accountId=%s", groupName, accountID)
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, apiEndpoint, nil)
 	if err != nil {
 		return nil, err

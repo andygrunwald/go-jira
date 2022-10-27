@@ -6,7 +6,15 @@ help: ## Outputs the help.
 
 .PHONY: test
 test: ## Runs all unit, integration and example tests.
-	go test -race -v ./...
+	go test -v -race ./...
+
+.PHONY: test-coverage
+test-coverage: ## Runs all unit tests + gathers code coverage
+	go test -v -race -coverprofile coverage.txt ./...
+
+.PHONY: test-coverage-html
+test-coverage-html: test-coverage ## Runs all unit tests + gathers code coverage + displays them in your default browser
+	go tool cover -html=coverage.txt
 
 .PHONY: vet
 vet: ## Runs go vet (to detect suspicious constructs).
@@ -18,7 +26,7 @@ fmt: ## Runs go fmt (to check for go coding guidelines).
 
 .PHONY: staticcheck
 staticcheck: ## Runs static analysis to prevend bugs, foster code simplicity, performance and editor integration.
-	go install honnef.co/go/tools/cmd/staticcheck@2022.1
+	go install honnef.co/go/tools/cmd/staticcheck@latest
 	staticcheck ./...
 
 .PHONY: all
