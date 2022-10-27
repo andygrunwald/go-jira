@@ -210,6 +210,46 @@ func (i *IssueFields) UnmarshalJSON(data []byte) error {
 
 }
 
+type CreateIssue struct {
+	Transition      IssueTransition  `json:"transition"`
+	Fields          any              `json:"fields"`
+	Update          any              `json:"update"`
+	HistoryMetadata HistoryMetadata  `json:"historyMetadata"`
+	Properties      []EntityProperty `json:"properties"`
+	// Additional Properties
+}
+
+type IssueTransition struct {
+	ID     string `json:"id"`
+	Looped bool   `json:"looped"`
+	// Additional Properties
+}
+
+type HistoryMetadata struct {
+	Type                   string                     `json:"type"`
+	Description            string                     `json:"description"`
+	DescriptionKey         string                     `json:"descriptionKey"`
+	ActivityDescription    string                     `json:"activityDescription"`
+	ActivityDescriptionKey string                     `json:"activityDescriptionKey"`
+	EmailDescription       string                     `json:"emailDescription"`
+	EmailDescriptionKey    string                     `json:"emailDescriptionKey"`
+	Actor                  HistoryMetadataParticipant `json:"actor"`
+	Generator              HistoryMetadataParticipant `json:"generator"`
+	Cause                  HistoryMetadataParticipant `json:"cause"`
+	ExtraData              any                        `json:"extraData"`
+	// Additional Properties
+}
+
+type HistoryMetadataParticipant struct {
+	ID             string `json:"id"`
+	DisplayName    string `json:"displayName"`
+	DisplayNameKey string `json:"displayNameKey"`
+	Type           string `json:"type"`
+	AvatarURL      string `json:"avatarUrl"`
+	URL            string `json:"url"`
+	// Additional Properties
+}
+
 // IssueRenderedFields represents rendered fields of a Jira issue.
 // Not all IssueFields are rendered.
 type IssueRenderedFields struct {
@@ -776,7 +816,7 @@ func WithQueryOptions(options interface{}) func(*http.Request) error {
 // The issueType field must correspond to a sub-task issue type and you must provide a parent field in the issue create request containing the id or key of the parent issue.
 //
 // Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-createIssues
-func (s *IssueService) Create(ctx context.Context, issue *Issue) (*Issue, *Response, error) {
+func (s *IssueService) Create(ctx context.Context, issue *CreateIssue) (*Issue, *Response, error) {
 	apiEndpoint := "rest/api/2/issue"
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, issue)
 	if err != nil {
