@@ -15,7 +15,7 @@ type CreateLink struct {
 	Type         IssueLinkType `json:"type"`
 	InwardIssue  LinkedIssue   `json:"inwardIssue"`
 	OutwardIssue LinkedIssue   `json:"outwardIssue"`
-	Comment      Commentv3     `json:"comment"`
+	Comment      *Commentv3    `json:"comment,omitempty"`
 }
 
 type LinkedIssue struct {
