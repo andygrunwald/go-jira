@@ -1,4 +1,4 @@
-package insight
+package assets
 
 type PutObjectType struct {
 	Name               string `json:"name" validate:"required"`

@@ -60,7 +60,7 @@ type Client struct {
 	Customer         *CustomerService
 	Request          *RequestService
 	GroupUserPicker  *GroupUserPickerService
-	Insight          *InsightService
+	Assets           *AssetsService
 }
 
 // service is the base structure to bundle API services
@@ -125,14 +125,14 @@ func NewClient(baseURL string, httpClient *http.Client) (*Client, error) {
 	c.Customer = (*CustomerService)(&c.common)
 	c.Request = (*RequestService)(&c.common)
 	c.GroupUserPicker = (*GroupUserPickerService)(&c.common)
-	c.Insight = &InsightService{
+	c.Assets = &AssetsService{
 		common: c.common,
 
-		Icon:         (*InsightIconService)(&c.common),
-		IQL:          (*InsightIQLService)(&c.common),
-		Object:       (*InsightObjectService)(&c.common),
-		ObjectSchema: (*InsightObjectSchemaService)(&c.common),
-		ObjectType:   (*InsightObjectTypeService)(&c.common),
+		Icon:         (*AssetsIconService)(&c.common),
+		IQL:          (*AssetsIQLService)(&c.common),
+		Object:       (*AssetsObjectService)(&c.common),
+		ObjectSchema: (*AssetsObjectSchemaService)(&c.common),
+		ObjectType:   (*AssetsObjectTypeService)(&c.common),
 	}
 
 	return c, nil

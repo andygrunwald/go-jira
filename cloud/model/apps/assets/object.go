@@ -1,4 +1,4 @@
-package insight
+package assets
 
 import "encoding/json"
 

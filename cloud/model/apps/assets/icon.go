@@ -1,4 +1,4 @@
-package insight
+package assets
 
 type Icon struct {
 	ID    string `json:"id" validate:"required"`

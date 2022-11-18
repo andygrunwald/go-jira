@@ -1,4 +1,4 @@
-package insight
+package assets
 
 type IQLGetObjectsOptions struct {
 	IQL                   string `url:"iql,omitempty"`
