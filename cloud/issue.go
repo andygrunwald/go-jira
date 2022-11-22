@@ -480,6 +480,9 @@ type Comment struct {
 	Updated      string            `json:"updated,omitempty" structs:"updated,omitempty"`
 	Created      string            `json:"created,omitempty" structs:"created,omitempty"`
 	Visibility   CommentVisibility `json:"visibility,omitempty" structs:"visibility,omitempty"`
+
+	// A list of comment properties. Optional on create and update.
+	Properties []EntityProperty `json:"properties,omitempty" structs:"properties,omitempty"`
 }
 
 // FixVersion represents a software release in which an issue is fixed.
