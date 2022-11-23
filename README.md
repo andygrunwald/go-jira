@@ -203,6 +203,7 @@ import (
 )
 
 func main() {
+        testIssueID := "FART-1"
 	base := "https://my.jira.com"
 	tp := jira.BasicAuthTransport{
 		Username: "username",
@@ -214,12 +215,12 @@ func main() {
 		panic(err)
 	}
 
-	issue, _, _ := jiraClient.Issue.Get("FART-1", nil)
+	issue, _, _ := jiraClient.Issue.Get(testIssueID, nil)
 	currentStatus := issue.Fields.Status.Name
 	fmt.Printf("Current status: %s\n", currentStatus)
 
 	var transitionID string
-	possibleTransitions, _, _ := jiraClient.Issue.GetTransitions("FART-1")
+	possibleTransitions, _, _ := jiraClient.Issue.GetTransitions(testIssueID)
 	for _, v := range possibleTransitions {
 		if v.Name == "In Progress" {
 			transitionID = v.ID
@@ -227,7 +228,7 @@ func main() {
 		}
 	}
 
-	jiraClient.Issue.DoTransition("FART-1", transitionID)
+	jiraClient.Issue.DoTransition(testIssueID, transitionID)
 	issue, _, _ = jiraClient.Issue.Get(testIssueID, nil)
 	fmt.Printf("Status after transition: %+v\n", issue.Fields.Status.Name)
 }
