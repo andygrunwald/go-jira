@@ -815,8 +815,8 @@ func (s *IssueService) Create(ctx context.Context, issue *Issue) (*Issue, *Respo
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		// incase of error return the resp for further inspection
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
 	defer resp.Body.Close()
 
