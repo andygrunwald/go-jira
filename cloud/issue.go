@@ -1123,29 +1123,22 @@ func (s *IssueService) SearchPOST(ctx context.Context, options *SearchOptions) (
 //
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
 // This double check effort is done for v2 - Remove this two lines if this is completed.
-func (s *IssueService) SearchPages(ctx context.Context, jql string, options *SearchOptions, f func(Issue) error) error {
-	if options == nil {
-		options = &SearchOptions{
-			StartAt:    0,
-			MaxResults: 50,
-		}
-	}
-
+func (s *IssueService) SearchPages(ctx context.Context, options *SearchOptions, f func(Issue) error) error {
 	if options.MaxResults == 0 {
 		options.MaxResults = 50
 	}
 
-	issues, resp, err := s.Search(ctx, jql, options)
+	search, resp, err := s.SearchPOST(ctx, options)
 	if err != nil {
 		return err
 	}
 
-	if len(issues) == 0 {
+	if len(search.Issues) == 0 {
 		return nil
 	}
 
 	for {
-		for _, issue := range issues {
+		for _, issue := range search.Issues {
 			err = f(issue)
 			if err != nil {
 				return err
@@ -1157,7 +1150,7 @@ func (s *IssueService) SearchPages(ctx context.Context, jql string, options *Sea
 		}
 
 		options.StartAt += resp.MaxResults
-		issues, resp, err = s.Search(ctx, jql, options)
+		search, resp, err = s.SearchPOST(ctx, options)
 		if err != nil {
 			return err
 		}
