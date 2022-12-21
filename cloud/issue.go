@@ -541,10 +541,70 @@ type SearchResult struct {
 	StartAt         int               `json:"startAt" structs:"startAt"`
 	MaxResults      int               `json:"maxResults" structs:"maxResults"`
 	Total           int               `json:"total" structs:"total"`
-	Issues          []Issue           `json:"issues" structs:"issues"` // TODO use type: Array<IssueBean>
+	Issues          []IssueBean       `json:"issues" structs:"issues"`
 	WarningMessages []string          `json:"warningMessages" structs:"warningMessages"`
 	Names           map[string]string `json:"names" structs:"names"`
 	Schema          map[string]string `json:"schema" structs:"schema"`
+}
+
+// IssueBean are details about an issue.
+type IssueBean struct {
+	Expand         string            `json:"expand" structs:"expand"`
+	ID             string            `json:"id" structs:"id"`
+	Self           string            `json:"self" structs:"self"`
+	Key            string            `json:"key" structs:"key"`
+	RenderedFields map[string]string `json:"renderedFields" structs:"renderedFields"`
+	Properties     map[string]string `json:"properties" structs:"properties"`
+	Names          map[string]string `json:"names" structs:"names"`
+	Schema         map[string]string `json:"schema" structs:"schema"`
+	//Transitions          []IssueTransition            `json:"transitions" structs:"transitions"`
+	Operations               Operations          `json:"operations" structs:"operations"`
+	EditMetadata             IssueUpdateMetadata `json:"editmeta" structs:"editmeta"`
+	Changelog                PageOfChangelogs    `json:"changelog" structs:"changelog"`
+	VersionedRepresentations map[string]string   `json:"versionedRepresentations" structs:"versionedRepresentations"`
+	FieldsToInclude          IncludedFields      `json:"fieldsToInclude" structs:"fieldsToInclude"`
+	Fields                   map[string]string   `json:"fields" structs:"fields"`
+}
+
+type Operations struct {
+	linkGroups []LinkGroup
+	// TODO: Additional Properties
+}
+
+type LinkGroup struct {
+	ID         string       `json:"id" structs:"id"`
+	StyleClass string       `json:"styleClass" structs:"styleClass"`
+	Header     SimpleLink   `json:"header" structs:"header"`
+	Weight     int          `json:"weight" structs:"weight"`
+	Links      []SimpleLink `json:"links" structs:"links"`
+	Groups     []LinkGroup  `json:"groups" structs:"groups"`
+}
+
+type SimpleLink struct {
+	ID         string `json:"id" structs:"id"`
+	StyleClass string `json:"styleClass" structs:"styleClass"`
+	IconClass  string `json:"iconClass" structs:"iconClass"`
+	Label      string `json:"label" structs:"label"`
+	Title      string `json:"title" structs:"title"`
+	Href       string `json:"href" structs:"href"`
+	Weight     int    `json:"weight" structs:"weight"`
+}
+
+type IssueUpdateMetadata struct {
+	Fields map[string]string `json:"fields" structs:"fields"`
+}
+
+type PageOfChangelogs struct {
+	StartAt    int         `json:"startAt" structs:"startAt"`
+	MaxResults int         `json:"maxResults" structs:"maxResults"`
+	Total      int         `json:"total" structs:"total"`
+	Histories  []Changelog `json:"histories" structs:"histories"`
+}
+
+type IncludedFields struct {
+	Expand           string `json:"expand" structs:"expand"`
+	ActuallyIncluded string `json:"actuallyIncluded" structs:"actuallyIncluded"`
+	Included         string `json:"included" structs:"included"`
 }
 
 // GetQueryOptions specifies the optional parameters for the Get Issue methods
@@ -1120,10 +1180,7 @@ func (s *IssueService) SearchPOST(ctx context.Context, options *SearchOptions) (
 // SearchPages will get issues from all pages in a search
 //
 // Jira API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
-//
-// TODO Double check this method if this works as expected, is using the latest API and the response is complete
-// This double check effort is done for v2 - Remove this two lines if this is completed.
-func (s *IssueService) SearchPages(ctx context.Context, options *SearchOptions, f func(Issue) error) error {
+func (s *IssueService) SearchPages(ctx context.Context, options *SearchOptions, f func(bean IssueBean) error) error {
 	if options.MaxResults == 0 {
 		options.MaxResults = 50
 	}
