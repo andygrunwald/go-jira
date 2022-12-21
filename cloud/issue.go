@@ -563,7 +563,7 @@ type IssueBean struct {
 	Changelog                PageOfChangelogs    `json:"changelog" structs:"changelog"`
 	VersionedRepresentations map[string]string   `json:"versionedRepresentations" structs:"versionedRepresentations"`
 	FieldsToInclude          IncludedFields      `json:"fieldsToInclude" structs:"fieldsToInclude"`
-	Fields                   map[string]string   `json:"fields" structs:"fields"`
+	Fields                   IssueFields         `json:"fields" structs:"fields"`
 }
 
 type Operations struct {
