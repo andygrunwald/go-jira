@@ -323,7 +323,14 @@ func (c *Client) doWithDeadline(req *http.Request, v interface{}) (*Response, er
 		req = req.WithContext(ctx)
 	}
 	errDeadlineWrapped := func(resp *Response, err error) error {
-		return errors.Wrapf(context.DeadlineExceeded, "path: %s, err: %+v, code: %d", req.URL.String(), err, resp.StatusCode)
+		u := *req.URL
+		values := u.Query()
+		if values.Has("jwt") {
+			values.Del("jwt")
+			values.Add("jwt", "HIDDEN")
+			u.RawQuery = values.Encode()
+		}
+		return errors.Wrapf(context.DeadlineExceeded, "path: %s, err: %+v, code: %d", u.String(), err, resp.StatusCode)
 	}
 
 	for {
