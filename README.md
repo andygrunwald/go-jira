@@ -109,7 +109,7 @@ func main() {
 		APIToken: "<api-token>",
 	}
 
-	client, err := jira.NewClient("https://my.jira.com", tp.Client())
+	client, err := jira.NewClient(tp.Client(), "https://my.jira.com")
 
 	u, _, err = client.User.GetCurrentUser(context.Background())
 
