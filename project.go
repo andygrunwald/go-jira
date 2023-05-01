@@ -25,6 +25,7 @@ type ProjectList []struct {
 	ProjectTypeKey  string          `json:"projectTypeKey" structs:"projectTypeKey"`
 	ProjectCategory ProjectCategory `json:"projectCategory,omitempty" structs:"projectsCategory,omitempty"`
 	IssueTypes      []IssueType     `json:"issueTypes,omitempty" structs:"issueTypes,omitempty"`
+	Archived        bool            `json:"archived,omitempty" structs:"archived,omitempty"`
 }
 
 // ProjectCategory represents a single project category
