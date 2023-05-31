@@ -17,7 +17,7 @@ type IssueLinkTypeService service
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issueLinkType-get
 func (s *IssueLinkTypeService) GetList(ctx context.Context) ([]IssueLinkType, *Response, error) {
 	apiEndpoint := "rest/api/2/issueLinkType"
-	req, err := s.client.NewRequest(ctx, "GET", apiEndpoint, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
