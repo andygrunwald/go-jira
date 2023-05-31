@@ -1,0 +1,1464 @@
+{
+  "permissionSchemes": [
+    {
+      "expand": "permissions,user,group,projectRole,field,all",
+      "id": 10100,
+      "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100",
+      "name": "Default Permission Scheme",
+      "description": "This is the default Permission Scheme. Any new projects that are created will be assigned this scheme.",
+      "permissions": [
+        {
+          "id": 10520,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10520",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "MANAGE_WATCHERS"
+        },
+        {
+          "id": 10521,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10521",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_ALL_COMMENTS"
+        },
+        {
+          "id": 10522,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10522",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ALL_COMMENTS"
+        },
+        {
+          "id": 10523,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10523",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ALL_ATTACHMENTS"
+        },
+        {
+          "id": 10524,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10524",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "ADMINISTER_PROJECTS"
+        },
+        {
+          "id": 10525,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10525",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ISSUES"
+        },
+        {
+          "id": 10526,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10526",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "MODIFY_REPORTER"
+        },
+        {
+          "id": 10527,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10527",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ALL_WORKLOGS"
+        },
+        {
+          "id": 10528,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10528",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_ALL_WORKLOGS"
+        },
+        {
+          "id": 10529,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10529",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "MANAGE_SPRINTS_PERMISSION"
+        },
+        {
+          "id": 10600,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10600",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10201",
+            "expand": "projectRole"
+          },
+          "permission": "TRANSITION_ISSUES"
+        },
+        {
+          "id": 12436,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12436",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "WORK_ON_ISSUES"
+        },
+        {
+          "id": 12435,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12435",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "VIEW_VOTERS_AND_WATCHERS"
+        },
+        {
+          "id": 12434,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12434",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "VIEW_READONLY_WORKFLOW"
+        },
+        {
+          "id": 12433,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12433",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "VIEW_DEV_TOOLS"
+        },
+        {
+          "id": 12432,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12432",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "TRANSITION_ISSUES"
+        },
+        {
+          "id": 12431,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12431",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "SET_ISSUE_SECURITY"
+        },
+        {
+          "id": 12430,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12430",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "SCHEDULE_ISSUES"
+        },
+        {
+          "id": 12429,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12429",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "RESOLVE_ISSUES"
+        },
+        {
+          "id": 12428,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12428",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "MOVE_ISSUES"
+        },
+        {
+          "id": 12427,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12427",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "MODIFY_REPORTER"
+        },
+        {
+          "id": 12426,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12426",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "MANAGE_WATCHERS"
+        },
+        {
+          "id": 12425,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12425",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "MANAGE_SPRINTS_PERMISSION"
+        },
+        {
+          "id": 12424,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12424",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "LINK_ISSUES"
+        },
+        {
+          "id": 12423,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12423",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_OWN_WORKLOGS"
+        },
+        {
+          "id": 12422,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12422",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_OWN_COMMENTS"
+        },
+        {
+          "id": 12421,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12421",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_ISSUES"
+        },
+        {
+          "id": 12420,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12420",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_ALL_WORKLOGS"
+        },
+        {
+          "id": 12419,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12419",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_ALL_COMMENTS"
+        },
+        {
+          "id": 12418,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12418",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_OWN_WORKLOGS"
+        },
+        {
+          "id": 12417,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12417",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_OWN_COMMENTS"
+        },
+        {
+          "id": 12416,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12416",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_OWN_ATTACHMENTS"
+        },
+        {
+          "id": 12415,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12415",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ISSUES"
+        },
+        {
+          "id": 12414,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12414",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ALL_WORKLOGS"
+        },
+        {
+          "id": 12413,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12413",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ALL_COMMENTS"
+        },
+        {
+          "id": 12412,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12412",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ALL_ATTACHMENTS"
+        },
+        {
+          "id": 12411,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12411",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "CREATE_ISSUES"
+        },
+        {
+          "id": 12410,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12410",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "CREATE_ATTACHMENTS"
+        },
+        {
+          "id": 12409,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12409",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "CLOSE_ISSUES"
+        },
+        {
+          "id": 12408,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12408",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "BROWSE_PROJECTS"
+        },
+        {
+          "id": 12407,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12407",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "ASSIGN_ISSUES"
+        },
+        {
+          "id": 12406,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12406",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "ASSIGNABLE_USER"
+        },
+        {
+          "id": 12405,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12405",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "ADMINISTER_PROJECTS"
+        },
+        {
+          "id": 12404,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/12404",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "ADD_COMMENTS"
+        },
+        {
+          "id": 10552,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10552",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "ASSIGNABLE_USER"
+        },
+        {
+          "id": 10553,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10553",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "BROWSE_PROJECTS"
+        },
+        {
+          "id": 10554,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10554",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "CLOSE_ISSUES"
+        },
+        {
+          "id": 10555,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10555",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "CREATE_ISSUES"
+        },
+        {
+          "id": 10556,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10556",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "EDIT_ISSUES"
+        },
+        {
+          "id": 10557,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10557",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "LINK_ISSUES"
+        },
+        {
+          "id": 10558,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10558",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "MOVE_ISSUES"
+        },
+        {
+          "id": 10559,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10559",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "RESOLVE_ISSUES"
+        },
+        {
+          "id": 10560,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10560",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "VIEW_READONLY_WORKFLOW"
+        },
+        {
+          "id": 10561,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10561",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "VIEW_DEV_TOOLS"
+        },
+        {
+          "id": 10562,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10562",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "ASSIGN_ISSUES"
+        },
+        {
+          "id": 10563,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10563",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "SCHEDULE_ISSUES"
+        },
+        {
+          "id": 10564,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10564",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "TRANSITION_ISSUES"
+        },
+        {
+          "id": 10565,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10565",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "VIEW_VOTERS_AND_WATCHERS"
+        },
+        {
+          "id": 10566,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10566",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "ADD_COMMENTS"
+        },
+        {
+          "id": 10567,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10567",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "CREATE_ATTACHMENTS"
+        },
+        {
+          "id": 10568,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10568",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "WORK_ON_ISSUES"
+        },
+        {
+          "id": 10530,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10530",
+          "holder": {
+            "type": "applicationRole"
+          },
+          "permission": "EDIT_OWN_COMMENTS"
+        },
+        {
+          "id": 10531,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10531",
+          "holder": {
+            "type": "applicationRole"
+          },
+          "permission": "DELETE_OWN_COMMENTS"
+        },
+        {
+          "id": 10532,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10532",
+          "holder": {
+            "type": "applicationRole"
+          },
+          "permission": "DELETE_OWN_ATTACHMENTS"
+        },
+        {
+          "id": 10533,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10533",
+          "holder": {
+            "type": "applicationRole"
+          },
+          "permission": "DELETE_OWN_WORKLOGS"
+        },
+        {
+          "id": 10534,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10100/permission/10534",
+          "holder": {
+            "type": "applicationRole"
+          },
+          "permission": "EDIT_OWN_WORKLOGS"
+        }
+      ]
+    },
+    {
+      "expand": "permissions,user,group,projectRole,field,all",
+      "id": 10000,
+      "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000",
+      "name": "Default software scheme",
+      "description": "Default scheme for Software projects.",
+      "permissions": [
+        {
+          "id": 12764,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12764",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_OWN_ATTACHMENTS"
+        },
+        {
+          "id": 12759,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12759",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "CREATE_ATTACHMENTS"
+        },
+        {
+          "id": 12756,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12756",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "VIEW_VOTERS_AND_WATCHERS"
+        },
+        {
+          "id": 12753,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12753",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "TRANSITION_ISSUES"
+        },
+        {
+          "id": 12752,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12752",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "SET_ISSUE_SECURITY"
+        },
+        {
+          "id": 12750,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12750",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "SCHEDULE_ISSUES"
+        },
+        {
+          "id": 12748,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12748",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "RESOLVE_ISSUES"
+        },
+        {
+          "id": 12747,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12747",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "MOVE_ISSUES"
+        },
+        {
+          "id": 12745,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12745",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "LINK_ISSUES"
+        },
+        {
+          "id": 12743,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12743",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_ISSUES"
+        },
+        {
+          "id": 12741,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12741",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "CLOSE_ISSUES"
+        },
+        {
+          "id": 12738,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12738",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "ASSIGN_ISSUES"
+        },
+        {
+          "id": 12735,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12735",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "ASSIGNABLE_USER"
+        },
+        {
+          "id": 10408,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10408",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ISSUES"
+        },
+        {
+          "id": 10414,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10414",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "ADMINISTER_PROJECTS"
+        },
+        {
+          "id": 10417,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10417",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "MODIFY_REPORTER"
+        },
+        {
+          "id": 10419,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10419",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "MANAGE_WATCHERS"
+        },
+        {
+          "id": 10420,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10420",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_ALL_COMMENTS"
+        },
+        {
+          "id": 10422,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10422",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ALL_COMMENTS"
+        },
+        {
+          "id": 10424,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10424",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ALL_ATTACHMENTS"
+        },
+        {
+          "id": 10427,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10427",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_ALL_WORKLOGS"
+        },
+        {
+          "id": 10429,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10429",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10002",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ALL_WORKLOGS"
+        },
+        {
+          "id": 12469,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12469",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "WORK_ON_ISSUES"
+        },
+        {
+          "id": 12468,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12468",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "VIEW_VOTERS_AND_WATCHERS"
+        },
+        {
+          "id": 12467,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12467",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "VIEW_READONLY_WORKFLOW"
+        },
+        {
+          "id": 12466,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12466",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "VIEW_DEV_TOOLS"
+        },
+        {
+          "id": 12465,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12465",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "TRANSITION_ISSUES"
+        },
+        {
+          "id": 12464,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12464",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "SET_ISSUE_SECURITY"
+        },
+        {
+          "id": 12463,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12463",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "SCHEDULE_ISSUES"
+        },
+        {
+          "id": 12462,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12462",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "RESOLVE_ISSUES"
+        },
+        {
+          "id": 12461,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12461",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "MOVE_ISSUES"
+        },
+        {
+          "id": 12460,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12460",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "MODIFY_REPORTER"
+        },
+        {
+          "id": 12459,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12459",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "MANAGE_WATCHERS"
+        },
+        {
+          "id": 12458,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12458",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "MANAGE_SPRINTS_PERMISSION"
+        },
+        {
+          "id": 12457,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12457",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "LINK_ISSUES"
+        },
+        {
+          "id": 12456,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12456",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_OWN_WORKLOGS"
+        },
+        {
+          "id": 12455,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12455",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_OWN_COMMENTS"
+        },
+        {
+          "id": 12454,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12454",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_ISSUES"
+        },
+        {
+          "id": 12453,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12453",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_ALL_WORKLOGS"
+        },
+        {
+          "id": 12452,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12452",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_ALL_COMMENTS"
+        },
+        {
+          "id": 12451,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12451",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_OWN_WORKLOGS"
+        },
+        {
+          "id": 12450,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12450",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_OWN_COMMENTS"
+        },
+        {
+          "id": 12449,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12449",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_OWN_ATTACHMENTS"
+        },
+        {
+          "id": 12448,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12448",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ISSUES"
+        },
+        {
+          "id": 12447,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12447",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ALL_WORKLOGS"
+        },
+        {
+          "id": 12446,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12446",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ALL_COMMENTS"
+        },
+        {
+          "id": 12445,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12445",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "DELETE_ALL_ATTACHMENTS"
+        },
+        {
+          "id": 12444,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12444",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "CREATE_ISSUES"
+        },
+        {
+          "id": 12443,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12443",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "CREATE_ATTACHMENTS"
+        },
+        {
+          "id": 12442,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12442",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "CLOSE_ISSUES"
+        },
+        {
+          "id": 12441,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12441",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "BROWSE_PROJECTS"
+        },
+        {
+          "id": 12440,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12440",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "ASSIGN_ISSUES"
+        },
+        {
+          "id": 12439,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12439",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "ASSIGNABLE_USER"
+        },
+        {
+          "id": 12438,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12438",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "ADMINISTER_PROJECTS"
+        },
+        {
+          "id": 12437,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12437",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10302",
+            "expand": "projectRole"
+          },
+          "permission": "ADD_COMMENTS"
+        },
+        {
+          "id": 12761,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12761",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10303",
+            "expand": "projectRole"
+          },
+          "permission": "CREATE_ATTACHMENTS"
+        },
+        {
+          "id": 12751,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12751",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10303",
+            "expand": "projectRole"
+          },
+          "permission": "SCHEDULE_ISSUES"
+        },
+        {
+          "id": 12749,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12749",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10303",
+            "expand": "projectRole"
+          },
+          "permission": "RESOLVE_ISSUES"
+        },
+        {
+          "id": 12746,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12746",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10303",
+            "expand": "projectRole"
+          },
+          "permission": "LINK_ISSUES"
+        },
+        {
+          "id": 12744,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12744",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10303",
+            "expand": "projectRole"
+          },
+          "permission": "EDIT_ISSUES"
+        },
+        {
+          "id": 12742,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12742",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10303",
+            "expand": "projectRole"
+          },
+          "permission": "CLOSE_ISSUES"
+        },
+        {
+          "id": 12740,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12740",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10303",
+            "expand": "projectRole"
+          },
+          "permission": "ASSIGN_ISSUES"
+        },
+        {
+          "id": 12737,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12737",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10303",
+            "expand": "projectRole"
+          },
+          "permission": "ASSIGNABLE_USER"
+        },
+        {
+          "id": 12760,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12760",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10304",
+            "expand": "projectRole"
+          },
+          "permission": "CREATE_ATTACHMENTS"
+        },
+        {
+          "id": 12739,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12739",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10304",
+            "expand": "projectRole"
+          },
+          "permission": "ASSIGN_ISSUES"
+        },
+        {
+          "id": 12736,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12736",
+          "holder": {
+            "type": "projectRole",
+            "parameter": "10304",
+            "expand": "projectRole"
+          },
+          "permission": "ASSIGNABLE_USER"
+        },
+        {
+          "id": 12758,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12758",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "EDIT_OWN_COMMENTS"
+        },
+        {
+          "id": 12757,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12757",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "ADD_COMMENTS"
+        },
+        {
+          "id": 10500,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10500",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "BROWSE_PROJECTS"
+        },
+        {
+          "id": 10501,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10501",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "MANAGE_SPRINTS_PERMISSION"
+        },
+        {
+          "id": 10502,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10502",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "VIEW_DEV_TOOLS"
+        },
+        {
+          "id": 10503,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10503",
+          "holder": {
+            "type": "group",
+            "parameter": "FooBarGroup",
+            "expand": "group"
+          },
+          "permission": "VIEW_READONLY_WORKFLOW"
+        },
+        {
+          "id": 12765,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12765",
+          "holder": {
+            "type": "assignee"
+          },
+          "permission": "DELETE_OWN_ATTACHMENTS"
+        },
+        {
+          "id": 12763,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12763",
+          "holder": {
+            "type": "assignee"
+          },
+          "permission": "LINK_ISSUES"
+        },
+        {
+          "id": 12762,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/12762",
+          "holder": {
+            "type": "assignee"
+          },
+          "permission": "TRANSITION_ISSUES"
+        },
+        {
+          "id": 10407,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10407",
+          "holder": {
+            "type": "applicationRole"
+          },
+          "permission": "ADD_COMMENTS"
+        },
+        {
+          "id": 10412,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10412",
+          "holder": {
+            "type": "applicationRole"
+          },
+          "permission": "WORK_ON_ISSUES"
+        },
+        {
+          "id": 10421,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10421",
+          "holder": {
+            "type": "applicationRole"
+          },
+          "permission": "EDIT_OWN_COMMENTS"
+        },
+        {
+          "id": 10423,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10423",
+          "holder": {
+            "type": "applicationRole"
+          },
+          "permission": "DELETE_OWN_COMMENTS"
+        },
+        {
+          "id": 10426,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10426",
+          "holder": {
+            "type": "applicationRole"
+          },
+          "permission": "EDIT_OWN_WORKLOGS"
+        },
+        {
+          "id": 10428,
+          "self": "https://sample.instance.org/rest/api/3/permissionscheme/10000/permission/10428",
+          "holder": {
+            "type": "applicationRole"
+          },
+          "permission": "DELETE_OWN_WORKLOGS"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "self": "http://your-domain.atlassian.net/rest/api/2/filter/10000",
+  "id": "10000",
+  "name": "All Open Bugs",
+  "description": "Lists all open bugs",
+  "owner": {
+    "self": "http://your-domain.atlassian.net/rest/api/2/user?username=mia",
+    "key": "mia",
+    "accountId": "99:27935d01-92a7-4687-8272-a9b8d3b2ae2e",
+    "name": "mia",
+    "avatarUrls": {
+      "48x48": "http://your-domain.atlassian.net/secure/useravatar?size=large&ownerId=mia",
+      "24x24": "http://your-domain.atlassian.net/secure/useravatar?size=small&ownerId=mia",
+      "16x16": "http://your-domain.atlassian.net/secure/useravatar?size=xsmall&ownerId=mia",
+      "32x32": "http://your-domain.atlassian.net/secure/useravatar?size=medium&ownerId=mia"
+    },
+    "displayName": "Mia Krystof",
+    "active": false
+  },
+  "jql": "type = Bug and resolution is empty",
+  "viewUrl": "http://your-domain.atlassian.net/issues/?filter=10000",
+  "searchUrl": "http://your-domain.atlassian.net/rest/api/2/search?jql=type%20%3D%20Bug%20and%20resolutino%20is%20empty",
+  "favourite": true,
+  "favouritedCount": 0,
+  "sharePermissions": [],
+  "subscriptions": {
+    "size": 0,
+    "items": [],
+    "max-results": 0,
+    "start-index": 0,
+    "end-index": 0
+  }
+}

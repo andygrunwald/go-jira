@@ -1,0 +1,102 @@
+{
+  "id": 35,
+  "name": "Test board",
+  "type": "kanban",
+  "self": "https://test.jira.org/rest/agile/1.0/board/35/configuration",
+  "location": {
+    "type": "project",
+    "key": "IT",
+    "id": "10002",
+    "self": "https://test.jira.org/rest/api/2/project/10002",
+    "name": "Test org"
+  },
+  "filter": {
+    "id": "12116",
+    "self": "https://test.jira.org/rest/api/2/filter/12116"
+  },
+  "subQuery": {
+    "query": "fixVersion in unreleasedVersions() OR fixVersion is EMPTY"
+  },
+  "columnConfig": {
+    "columns": [
+      {
+        "name": "Backlog",
+        "statuses": [
+          {
+            "id": "10005",
+            "self": "https://test.jira.org/rest/api/2/status/10005"
+          }
+        ],
+        "min": 5,
+        "max": 30
+      },
+      {
+        "name": "Selected for development",
+        "statuses": [
+          {
+            "id": "10603",
+            "self": "https://test.jira.org/rest/api/2/status/10603"
+          }
+        ],
+        "max": 20
+      },
+      {
+        "name": "In Progress",
+        "statuses": [
+          {
+            "id": "10602",
+            "self": "https://test.jira.org/rest/api/2/status/10602"
+          }
+        ]
+      },
+      {
+        "name": "Blocked",
+        "statuses": [
+          {
+            "id": "10100",
+            "self": "https://test.jira.org/rest/api/2/status/10100"
+          }
+        ]
+      },
+      {
+        "name": "QA",
+        "statuses": [
+          {
+            "id": "10838",
+            "self": "https://test.jira.org/rest/api/2/status/10838"
+          },
+          {
+            "id": "10004",
+            "self": "https://test.jira.org/rest/api/2/status/10004"
+          },
+          {
+            "id": "10801",
+            "self": "https://test.jira.org/rest/api/2/status/10801"
+          },
+          {
+            "id": "10839",
+            "self": "https://test.jira.org/rest/api/2/status/10839"
+          },
+          {
+            "id": "10837",
+            "self": "https://test.jira.org/rest/api/2/status/10837"
+          }
+        ],
+        "max": 10
+      },
+      {
+        "name": "Done",
+        "statuses": [
+          {
+            "id": "10601",
+            "self": "https://test.jira.org/rest/api/2/status/10601"
+          }
+        ]
+      }
+    ],
+    "constraintType": "issueCount"
+  },
+  "ranking": {
+    "rankCustomFieldId": 10002
+  }
+}

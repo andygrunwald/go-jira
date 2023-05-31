@@ -1,0 +1,520 @@
+[
+    {
+        "self": "https://test.jira.org/rest/api/2/status/1",
+        "description": "The issue is open and ready for the assignee to start work on it.",
+        "iconUrl": "https://test.jira.org/images/icons/statuses/open.png",
+        "name": "Idea",
+        "id": "1",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/2",
+            "id": 2,
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "To Do"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10000",
+        "description": "",
+        "iconUrl": "https://test.jira.org/images/icons/statuses/generic.png",
+        "name": "Archived",
+        "id": "10000",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/1",
+            "id": 1,
+            "key": "undefined",
+            "colorName": "medium-gray",
+            "name": "No Category"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10001",
+        "description": "",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Input",
+        "id": "10001",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/2",
+            "id": 2,
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "To Do"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10002",
+        "description": "",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Triage",
+        "id": "10002",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/2",
+            "id": 2,
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "To Do"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10003",
+        "description": "",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Specs",
+        "id": "10003",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/2",
+            "id": 2,
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "To Do"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10004",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "QA",
+        "id": "10004",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/4",
+            "id": 4,
+            "key": "indeterminate",
+            "colorName": "yellow",
+            "name": "In Progress"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10005",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Icebox",
+        "id": "10005",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/2",
+            "id": 2,
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "To Do"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10006",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "To Be Specced",
+        "id": "10006",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/2",
+            "id": 2,
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "To Do"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10100",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Blocked",
+        "id": "10100",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/4",
+            "id": 4,
+            "key": "indeterminate",
+            "colorName": "yellow",
+            "name": "In Progress"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10203",
+        "description": "",
+        "iconUrl": "https://test.jira.org/images/icons/status_generic.gif",
+        "name": "Rejected",
+        "id": "10203",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/3",
+            "id": 3,
+            "key": "done",
+            "colorName": "green",
+            "name": "Done"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10205",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Validation",
+        "id": "10205",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/2",
+            "id": 2,
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "To Do"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10300",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Graveyard",
+        "id": "10300",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/3",
+            "id": 3,
+            "key": "done",
+            "colorName": "green",
+            "name": "Done"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10400",
+        "description": "",
+        "iconUrl": "https://test.jira.org/images/icons/status_generic.gif",
+        "name": "To Do",
+        "id": "10400",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/2",
+            "id": 2,
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "To Do"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10502",
+        "description": "",
+        "iconUrl": "https://test.jira.org/images/icons/statuses/generic.png",
+        "name": "Sales (Jan)",
+        "id": "10502",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/1",
+            "id": 1,
+            "key": "undefined",
+            "colorName": "medium-gray",
+            "name": "No Category"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10503",
+        "description": "",
+        "iconUrl": "https://test.jira.org/images/icons/statuses/generic.png",
+        "name": "Being addressed",
+        "id": "10503",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/1",
+            "id": 1,
+            "key": "undefined",
+            "colorName": "medium-gray",
+            "name": "No Category"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10504",
+        "description": "",
+        "iconUrl": "https://test.jira.org/images/icons/statuses/generic.png",
+        "name": "Raw feedback",
+        "id": "10504",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/1",
+            "id": 1,
+            "key": "undefined",
+            "colorName": "medium-gray",
+            "name": "No Category"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10505",
+        "description": "",
+        "iconUrl": "https://test.jira.org/images/icons/statuses/generic.png",
+        "name": "Templates",
+        "id": "10505",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/1",
+            "id": 1,
+            "key": "undefined",
+            "colorName": "medium-gray",
+            "name": "No Category"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10506",
+        "description": "",
+        "iconUrl": "https://test.jira.org/images/icons/statuses/generic.png",
+        "name": "Persona: Traveler (owner TBD)",
+        "id": "10506",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/1",
+            "id": 1,
+            "key": "undefined",
+            "colorName": "medium-gray",
+            "name": "No Category"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10507",
+        "description": "",
+        "iconUrl": "https://test.jira.org/images/icons/statuses/generic.png",
+        "name": "Persona: Booker (owner: Sumit)",
+        "id": "10507",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/1",
+            "id": 1,
+            "key": "undefined",
+            "colorName": "medium-gray",
+            "name": "No Category"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10508",
+        "description": "",
+        "iconUrl": "https://test.jira.org/images/icons/statuses/generic.png",
+        "name": "Bugs",
+        "id": "10508",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/1",
+            "id": 1,
+            "key": "undefined",
+            "colorName": "medium-gray",
+            "name": "No Category"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10510",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "cannot reproduce",
+        "id": "10510",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/3",
+            "id": 3,
+            "key": "done",
+            "colorName": "green",
+            "name": "Done"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10601",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Done",
+        "id": "10601",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/3",
+            "id": 3,
+            "key": "done",
+            "colorName": "green",
+            "name": "Done"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10602",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "In Progress",
+        "id": "10602",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/4",
+            "id": 4,
+            "key": "indeterminate",
+            "colorName": "yellow",
+            "name": "In Progress"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10603",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Backlog",
+        "id": "10603",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/2",
+            "id": 2,
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "To Do"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10700",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Specs Complete",
+        "id": "10700",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/3",
+            "id": 3,
+            "key": "done",
+            "colorName": "green",
+            "name": "Done"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10801",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Delivered",
+        "id": "10801",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/4",
+            "id": 4,
+            "key": "indeterminate",
+            "colorName": "yellow",
+            "name": "In Progress"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10803",
+        "description": "",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Selected for Development",
+        "id": "10803",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/2",
+            "id": 2,
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "To Do"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10831",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Evaluated",
+        "id": "10831",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/2",
+            "id": 2,
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "To Do"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10832",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Speccing",
+        "id": "10832",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/4",
+            "id": 4,
+            "key": "indeterminate",
+            "colorName": "yellow",
+            "name": "In Progress"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10833",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "In development",
+        "id": "10833",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/4",
+            "id": 4,
+            "key": "indeterminate",
+            "colorName": "yellow",
+            "name": "In Progress"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10834",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Ready for development",
+        "id": "10834",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/2",
+            "id": 2,
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "To Do"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10835",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Evaluating",
+        "id": "10835",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/4",
+            "id": 4,
+            "key": "indeterminate",
+            "colorName": "yellow",
+            "name": "In Progress"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10836",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Needs Product Decision",
+        "id": "10836",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/2",
+            "id": 2,
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "To Do"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10837",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Test failed",
+        "id": "10837",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/4",
+            "id": 4,
+            "key": "indeterminate",
+            "colorName": "yellow",
+            "name": "In Progress"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10838",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "In Review",
+        "id": "10838",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/4",
+            "id": 4,
+            "key": "indeterminate",
+            "colorName": "yellow",
+            "name": "In Progress"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10839",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Reviewed",
+        "id": "10839",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/4",
+            "id": 4,
+            "key": "indeterminate",
+            "colorName": "yellow",
+            "name": "In Progress"
+        }
+    },
+    {
+        "self": "https://test.jira.org/rest/api/2/status/10840",
+        "description": "This status is managed internally by Jira Software",
+        "iconUrl": "https://test.jira.org/",
+        "name": "Designing",
+        "id": "10840",
+        "statusCategory": {
+            "self": "https://test.jira.org/rest/api/2/statuscategory/4",
+            "id": 4,
+            "key": "indeterminate",
+            "colorName": "yellow",
+            "name": "In Progress"
+        }
+    }
+]
