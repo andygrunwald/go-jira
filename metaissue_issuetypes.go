@@ -36,3 +36,41 @@ func (s *IssueService) GetIssueTypesForProject(ctx context.Context, projectKey s
 
 	return meta, resp, nil
 }
+
+type FieldMeta struct {
+	Name            string   `json:"name"`
+	FieldID         string   `json:"fieldId"`
+	AutoCompleteURL string   `json:"autoCompleteUrl"`
+	HasDefaultValue bool     `json:"hasDefaultValue"`
+	Operations      []string `json:"operations"`
+}
+
+type GetFieldsResponse struct {
+	Values []*FieldMeta `json:"values,omitempty"`
+	Total  int          `json:"total,omitempty"`
+}
+
+func (s *IssueService) GetFieldsForIssueType(ctx context.Context, projectKey string, issueTypeID string) (*GetFieldsResponse, *Response, error) {
+	if projectKey == "" {
+		return nil, nil, errors.New("project key cannot be empty")
+	}
+	if issueTypeID == "" {
+		return nil, nil, errors.New("Issue Type ID cannot be empty")
+	}
+
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/createmeta/%s/issuetypes/%s", projectKey, issueTypeID)
+
+	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	meta := new(GetFieldsResponse)
+	resp, err := s.client.Do(req, meta)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return meta, resp, nil
+}
