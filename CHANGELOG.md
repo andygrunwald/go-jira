@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.15.5](https://github.com/incident-io/go-jira/compare/v1.15.4...v1.15.5) (2023-07-07)
+
 ### [1.15.4](https://github.com/incident-io/go-jira/compare/v1.15.3...v1.15.4) (2023-07-07)
 
 ### [1.15.3](https://github.com/incident-io/go-jira/compare/v1.15.2...v1.15.3) (2023-07-04)
