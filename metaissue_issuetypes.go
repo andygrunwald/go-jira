@@ -37,25 +37,29 @@ func (s *IssueService) GetIssueTypesForProject(ctx context.Context, projectKey s
 	return meta, resp, nil
 }
 
+type FieldMetaSchema struct {
+	Type   string
+	Items  string
+	Custom string
+	System string
+}
+
+type FieldMetaAllowedValue struct {
+	ID      string
+	Name    string
+	Value   string
+	IconURL string
+}
+
 type FieldMeta struct {
-	FieldID         string `json:"fieldId"`
-	Name            string `json:"name"`
-	Required        bool   `json:"required"`
-	AutoCompleteURL string `json:"autoCompleteUrl"`
-	Schema          struct {
-		Type   string
-		Items  string
-		Custom string
-		System string
-	} `json:"schema"`
-	HasDefaultValue bool `json:"hasDefaultValue"`
-	AllowedValues   []*struct {
-		ID      string
-		Name    string
-		Value   string
-		IconURL string
-	} `json:"allowedValues"`
-	Operations []string `json:"operations"`
+	FieldID         string                   `json:"fieldId"`
+	Name            string                   `json:"name"`
+	Required        bool                     `json:"required"`
+	AutoCompleteURL string                   `json:"autoCompleteUrl"`
+	Schema          FieldMetaSchema          `json:"schema"`
+	HasDefaultValue bool                     `json:"hasDefaultValue"`
+	AllowedValues   []*FieldMetaAllowedValue `json:"allowedValues"`
+	Operations      []string                 `json:"operations"`
 }
 
 type GetFieldsResponse struct {
