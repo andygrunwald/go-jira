@@ -72,7 +72,7 @@ func (s *IssueService) GetFieldsForIssueType(ctx context.Context, projectKey str
 		return nil, nil, errors.New("project key cannot be empty")
 	}
 	if issueTypeID == "" {
-		return nil, nil, errors.New("Issue Type ID cannot be empty")
+		return nil, nil, errors.New("issue type ID cannot be empty")
 	}
 
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/createmeta/%s/issuetypes/%s", projectKey, issueTypeID)
