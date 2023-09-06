@@ -2,6 +2,7 @@ package onpremise
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 )
 
@@ -10,7 +11,8 @@ import (
 type ComponentService service
 
 // CreateComponentOptions are passed to the ComponentService.Create function to create a new Jira component
-type CreateComponentOptions struct {
+type ComponentOptions struct {
+	Self         string `json:"self,omitempty" structs:"self,omitempty"`
 	Name         string `json:"name,omitempty" structs:"name,omitempty"`
 	Description  string `json:"description,omitempty" structs:"description,omitempty"`
 	Lead         *User  `json:"lead,omitempty" structs:"lead,omitempty"`
@@ -25,7 +27,7 @@ type CreateComponentOptions struct {
 //
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
 // This double check effort is done for v2 - Remove this two lines if this is completed.
-func (s *ComponentService) Create(ctx context.Context, options *CreateComponentOptions) (*ProjectComponent, *Response, error) {
+func (s *ComponentService) Create(ctx context.Context, options *ComponentOptions) (*ProjectComponent, *Response, error) {
 	apiEndpoint := "rest/api/2/component"
 	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, options)
 	if err != nil {
@@ -40,4 +42,25 @@ func (s *ComponentService) Create(ctx context.Context, options *CreateComponentO
 	}
 
 	return component, resp, nil
+}
+
+// GetListByProject gets all component from Jira project
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-project-components/#api-rest-api-2-project-projectidorkey-components-get
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+// This double check effort is done for v2 - Remove this two lines if this is completed.
+func (s *ComponentService) GetListByProject(ctx context.Context, projectID string) ([]ComponentOptions, *Response, error) {
+	apiEndpoint := fmt.Sprintf("/rest/api/2/project/%s/components", projectID)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	componentList := []ComponentOptions{}
+	resp, err := s.client.Do(req, &componentList)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+	return componentList, resp, nil
 }
