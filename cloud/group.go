@@ -58,6 +58,12 @@ type GroupSearchOptions struct {
 	IncludeInactiveUsers bool
 }
 
+type Groups struct {
+	Groups []Group `json:"groups,omitempty"`
+	Header string  `json:"header,omitempty"`
+	Total  int     `json:"total,omitempty"`
+}
+
 // Get returns a paginated list of members of the specified group and its subgroups.
 // Users in the page are ordered by user names.
 // User of this resource is required to have sysadmin or admin permissions.
@@ -143,4 +149,78 @@ func (s *GroupService) RemoveUserByGroupName(ctx context.Context, groupName stri
 	}
 
 	return resp, nil
+}
+
+// Sets case insensitive search
+func WithCaseInsensitive() searchF {
+	return func(s search) search {
+		s = append(s, searchParam{name: "caseInsensitive", value: "true"})
+		return s
+	}
+}
+
+// Sets query string for filtering group names.
+func WithGroupNameContains(contains string) searchF {
+	return func(s search) search {
+		s = append(s, searchParam{name: "query", value: contains})
+		return s
+	}
+}
+
+// Sets excluded group names.
+func WithExcludedGroupNames(excluded []string) searchF {
+	return func(s search) search {
+		for _, name := range excluded {
+			s = append(s, searchParam{name: "exclude", value: name})
+		}
+
+		return s
+	}
+}
+
+// Sets excluded group ids.
+func WithExcludedGroupsIds(excluded []string) searchF {
+	return func(s search) search {
+		for _, id := range excluded {
+			s = append(s, searchParam{name: "excludeId", value: id})
+		}
+
+		return s
+	}
+}
+
+// Search for the groups
+// It can search by groupId, accountId or userName
+// Apart from returning groups it also returns total number of groups
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-groups/#api-rest-api-2-groups-picker-get
+func (s *GroupService) Find(ctx context.Context, tweaks ...searchF) ([]Group, int, *Response, error) {
+	search := []searchParam{}
+	for _, f := range tweaks {
+		search = f(search)
+	}
+
+	apiEndpoint := "/rest/api/2/groups/picker"
+
+	queryString := ""
+	for _, param := range search {
+		queryString += fmt.Sprintf("%s=%s&", param.name, param.value)
+	}
+
+	if queryString != "" {
+		apiEndpoint += "?" + queryString
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
+	if err != nil {
+		return nil, 0, nil, err
+	}
+
+	groups := Groups{}
+	resp, err := s.client.Do(req, &groups)
+	if err != nil {
+		return nil, 0, resp, NewJiraError(resp, err)
+	}
+
+	return groups.Groups, groups.Total, resp, nil
 }
