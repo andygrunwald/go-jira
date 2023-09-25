@@ -22,17 +22,24 @@ type Role struct {
 
 // Actor represents a Jira actor
 type Actor struct {
-	ID          int        `json:"id" structs:"id"`
-	DisplayName string     `json:"displayName" structs:"displayName"`
-	Type        string     `json:"type" structs:"type"`
-	Name        string     `json:"name" structs:"name"`
-	AvatarURL   string     `json:"avatarUrl" structs:"avatarUrl"`
-	ActorUser   *ActorUser `json:"actorUser" structs:"actoruser"`
+	ID          int         `json:"id" structs:"id"`
+	DisplayName string      `json:"displayName" structs:"displayName"`
+	Type        string      `json:"type" structs:"type"`
+	Name        string      `json:"name" structs:"name"`
+	AvatarURL   string      `json:"avatarUrl" structs:"avatarUrl"`
+	ActorUser   *ActorUser  `json:"actorUser" structs:"actoruser"`
+	ActorGroup  *ActorGroup `json:"actorGroup" structs:"actorGroup"`
 }
 
 // ActorUser contains the account id of the actor/user
 type ActorUser struct {
 	AccountID string `json:"accountId" structs:"accountId"`
+}
+
+type ActorGroup struct {
+	DisplayName string `json:"displayName" structs:"displayName"`
+	GroupID     string `json:"groupId" structs:"groupId"`
+	Name        string `json:"name" structs:"name"`
 }
 
 // GetList returns a list of all available project roles
