@@ -52,6 +52,7 @@ type Project struct {
 	Roles           map[string]string  `json:"roles,omitempty" structs:"roles,omitempty"`
 	AvatarUrls      AvatarUrls         `json:"avatarUrls,omitempty" structs:"avatarUrls,omitempty"`
 	ProjectCategory ProjectCategory    `json:"projectCategory,omitempty" structs:"projectCategory,omitempty"`
+	IsPrivate       bool               `json:"isPrivate,omitempty" structs:"isPrivate,omitempty"`
 }
 
 // ProjectComponent represents a single component of a project
