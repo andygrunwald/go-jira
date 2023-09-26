@@ -117,11 +117,11 @@ func TestGroupService_Find_Success(t *testing.T) {
 										}]}`)
 	})
 
-	if group, total, _, err := testClient.Group.Find(context.Background()); err != nil {
+	if group, _, err := testClient.Group.Find(context.Background()); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if group == nil {
 		t.Error("Expected group. Group is nil")
-	} else if len(group) != 2 || total != 2 {
+	} else if len(group) != 2 {
 		t.Errorf("Expected 2 groups. Group is %d", len(group))
 	}
 }
@@ -147,7 +147,7 @@ func TestGroupService_Find_SuccessParams(t *testing.T) {
 										}]}`)
 	})
 
-	if group, total, _, err := testClient.Group.Find(
+	if group, _, err := testClient.Group.Find(
 		context.Background(),
 		WithMaxResults(2),
 		WithCaseInsensitive(),
@@ -159,7 +159,7 @@ func TestGroupService_Find_SuccessParams(t *testing.T) {
 		t.Errorf("Error given: %s", err)
 	} else if group == nil {
 		t.Error("Expected group. Group is nil")
-	} else if len(group) != 2 || total != 2 {
+	} else if len(group) != 2 {
 		t.Errorf("Expected 2 groups. Group is %d", len(group))
 	}
 }

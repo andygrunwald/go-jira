@@ -194,7 +194,7 @@ func WithExcludedGroupsIds(excluded []string) searchF {
 // Apart from returning groups it also returns total number of groups
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-groups/#api-rest-api-2-groups-picker-get
-func (s *GroupService) Find(ctx context.Context, tweaks ...searchF) ([]Group, int, *Response, error) {
+func (s *GroupService) Find(ctx context.Context, tweaks ...searchF) ([]Group, *Response, error) {
 	search := []searchParam{}
 	for _, f := range tweaks {
 		search = f(search)
@@ -213,14 +213,14 @@ func (s *GroupService) Find(ctx context.Context, tweaks ...searchF) ([]Group, in
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
-		return nil, 0, nil, err
+		return nil, nil, err
 	}
 
 	groups := Groups{}
 	resp, err := s.client.Do(req, &groups)
 	if err != nil {
-		return nil, 0, resp, NewJiraError(resp, err)
+		return nil, resp, NewJiraError(resp, err)
 	}
 
-	return groups.Groups, groups.Total, resp, nil
+	return groups.Groups, resp, nil
 }
