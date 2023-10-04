@@ -87,3 +87,21 @@ func (s *RoleService) Get(ctx context.Context, roleID int) (*Role, *Response, er
 
 	return role, resp, err
 }
+
+// Get role actors for project
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-project-roles/#api-rest-api-3-project-projectidorkey-role-id-get
+func (s *RoleService) GetRoleActorsForProject(ctx context.Context, projectID string, roleID int) ([]*Actor, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/3/project/%s/role/%d", projectID, roleID)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	role := new(Role)
+	resp, err := s.client.Do(req, role)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
+	}
+	return role.Actors, resp, err
+}
