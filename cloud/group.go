@@ -23,6 +23,7 @@ type groupMembersResult struct {
 
 // Group represents a Jira group
 type Group struct {
+	ID     string       `json:"groupId,omitempty" structs:"groupId,omitempty"`
 	Name   string       `json:"name,omitempty" structs:"name,omitempty"`
 	Self   string       `json:"self,omitempty" structs:"self,omitempty"`
 	Users  GroupMembers `json:"users,omitempty" structs:"users,omitempty"`
@@ -193,14 +194,14 @@ func WithExcludedGroupsIds(excluded []string) searchF {
 // It can search by groupId, accountId or userName
 // Apart from returning groups it also returns total number of groups
 //
-// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-groups/#api-rest-api-2-groups-picker-get
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-groups/#api-rest-api-3-groups-picker-get
 func (s *GroupService) Find(ctx context.Context, tweaks ...searchF) ([]Group, *Response, error) {
 	search := []searchParam{}
 	for _, f := range tweaks {
 		search = f(search)
 	}
 
-	apiEndpoint := "/rest/api/2/groups/picker"
+	apiEndpoint := "/rest/api/3/groups/picker"
 
 	queryString := ""
 	for _, param := range search {

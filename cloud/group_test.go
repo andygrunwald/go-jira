@@ -99,9 +99,9 @@ func TestGroupService_Remove(t *testing.T) {
 func TestGroupService_Find_Success(t *testing.T) {
 	setup()
 	defer teardown()
-	testMux.HandleFunc("/rest/api/2/groups/picker", func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc("/rest/api/3/groups/picker", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, "/rest/api/2/groups/picker")
+		testRequestURL(t, r, "/rest/api/3/groups/picker")
 
 		fmt.Fprint(w, `{"header": "Showing 2 of 2 matching groups",
 										"total": 2,
@@ -129,9 +129,9 @@ func TestGroupService_Find_Success(t *testing.T) {
 func TestGroupService_Find_SuccessParams(t *testing.T) {
 	setup()
 	defer teardown()
-	testMux.HandleFunc("/rest/api/2/groups/picker", func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc("/rest/api/3/groups/picker", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, "/rest/api/2/groups/picker?maxResults=2&caseInsensitive=true&excludeId=1&excludeId=2&exclude=test&query=test&accountId=123")
+		testRequestURL(t, r, "/rest/api/3/groups/picker?maxResults=2&caseInsensitive=true&excludeId=1&excludeId=2&exclude=test&query=test&accountId=123")
 
 		fmt.Fprint(w, `{"header": "Showing 2 of 2 matching groups",
 										"total": 2,
