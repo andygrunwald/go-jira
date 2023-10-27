@@ -26,6 +26,17 @@ type ProjectList []struct {
 	IssueTypes      []IssueType     `json:"issueTypes,omitempty" structs:"issueTypes,omitempty"`
 }
 
+// Response body of https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-projects/#api-rest-api-2-project-search-get
+type searchProjectsResponse struct {
+	Self       string    `json:"self,omitempty" structs:"self,omitempty"`
+	NextPage   string    `json:"nextPage,omitempty" structs:"nextPage,omitempty"`
+	MaxResults int       `json:"maxResult,omitempty" structs:"maxResults,omitempty"`
+	StartAt    int       `json:"startAt,omitempty" structs:"startAt,omitempty"`
+	Total      int       `json:"total,omitempty" structs:"total,omitempty"`
+	IsLast     bool      `json:"isLast,omitempty" structs:"isLast,omitempty"`
+	Values     []Project `json:"values,omitempty" structs:"values,omitempty"`
+}
+
 // ProjectCategory represents a single project category
 type ProjectCategory struct {
 	Self        string `json:"self" structs:"self,omitempty"`
@@ -161,4 +172,36 @@ func (s *ProjectService) GetPermissionScheme(ctx context.Context, projectID stri
 	}
 
 	return ps, resp, nil
+}
+
+func (s *ProjectService) Find(ctx context.Context, tweaks ...searchF) ([]Project, *Response, error) {
+	apiEndpoint := "rest/api/2/project/search"
+
+	search := []searchParam{}
+	for _, f := range tweaks {
+		search = f(search)
+	}
+
+	queryString := ""
+	for _, param := range search {
+		queryString += fmt.Sprintf("%s=%s&", param.name, param.value)
+	}
+
+	if queryString != "" {
+		apiEndpoint += "?" + queryString
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	response := new(searchProjectsResponse)
+	resp, err := s.client.Do(req, response)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
+	}
+
+	return response.Values, resp, nil
 }
