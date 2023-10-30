@@ -99,6 +99,7 @@ type PermissionScheme struct {
 //
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
 // This double check effort is done for v2 - Remove this two lines if this is completed.
+// DEPRECATED: use Find instead
 func (s *ProjectService) GetAll(ctx context.Context, options *GetQueryOptions) (*ProjectList, *Response, error) {
 	apiEndpoint := "rest/api/2/project"
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -174,6 +175,9 @@ func (s *ProjectService) GetPermissionScheme(ctx context.Context, projectID stri
 	return ps, resp, nil
 }
 
+// Find searches for project paginated info from Jira
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-projects/#api-rest-api-2-project-search-get
 func (s *ProjectService) Find(ctx context.Context, tweaks ...searchF) ([]Project, *Response, error) {
 	apiEndpoint := "rest/api/2/project/search"
 
