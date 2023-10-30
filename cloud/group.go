@@ -249,13 +249,13 @@ func WithInactiveUsers() searchF {
 // Apart from returning group members it also returns total number of group members
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-groups/#api-rest-api-3-group-member-get
-func (s *GroupService) GetGroupMembers(ctx context.Context, groupId string, tweaks ...searchF) ([]GroupMember, *Response, error) {
+func (s *GroupService) GetGroupMembers(ctx context.Context, groupId, groupName string, tweaks ...searchF) ([]GroupMember, *Response, error) {
 	search := []searchParam{}
 	for _, f := range tweaks {
 		search = f(search)
 	}
 
-	apiEndpoint := fmt.Sprintf("/rest/api/3/group/member?groupid=%s", groupId)
+	apiEndpoint := fmt.Sprintf("/rest/api/3/group/member?groupid=%s&groupname=%s", groupId, groupName)
 
 	queryString := ""
 	for _, param := range search {

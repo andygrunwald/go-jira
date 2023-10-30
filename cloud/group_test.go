@@ -169,7 +169,7 @@ func TestGroupService_GetGroupMembers_Success(t *testing.T) {
 	defer teardown()
 	testMux.HandleFunc("/rest/api/3/group/member", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, "/rest/api/3/group/member?groupid=1&startAt=0&maxResults=2&includeInactiveUsers=true")
+		testRequestURL(t, r, "/rest/api/3/group/member?groupid=1&groupname=my-group&startAt=0&maxResults=2&includeInactiveUsers=true")
 
 		fmt.Fprint(w, `{
 			"self": "https://your-domain.atlassian.net/rest/api/3/group/member?groupname=jira-administrators&includeInactiveUsers=false&startAt=2&maxResults=2",
@@ -207,7 +207,7 @@ func TestGroupService_GetGroupMembers_Success(t *testing.T) {
 		}`)
 	})
 
-	if members, _, err := testClient.Group.GetGroupMembers(context.Background(), "1", WithStartAt(0), WithMaxResults(2), WithInactiveUsers()); err != nil {
+	if members, _, err := testClient.Group.GetGroupMembers(context.Background(), "1", "my-group", WithStartAt(0), WithMaxResults(2), WithInactiveUsers()); err != nil {
 		t.Errorf("Error given: %s", err)
 	} else if len(members) != 2 {
 		t.Errorf("Expected 2 members. Members is %d", len(members))
