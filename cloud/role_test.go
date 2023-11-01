@@ -106,3 +106,32 @@ func TestRoleService_Get(t *testing.T) {
 		t.Errorf("Error given: %s", err)
 	}
 }
+
+func TestRoleService_GetRoleActorsForProject(t *testing.T) {
+	setup()
+	defer teardown()
+	rawResponseBody, err := os.ReadFile("../testing/mock-data/role_actors.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	testapiEndpoint := "/rest/api/3/project/10002/role/10006"
+	testMux.HandleFunc(testapiEndpoint, func(writer http.ResponseWriter, request *http.Request) {
+		testMethod(t, request, http.MethodGet)
+		testRequestURL(t, request, testapiEndpoint)
+		fmt.Fprint(writer, string(rawResponseBody))
+	})
+
+	actors, _, err := testClient.Role.GetRoleActorsForProject(context.Background(), "10002", 10006)
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+	if len(actors) != 2 {
+		t.Errorf("Expected 2 actors, got %d", len(actors))
+	}
+	if actors[0].DisplayName != "jira-developers" {
+		t.Errorf("Expected jira-developers, got %s", actors[0].DisplayName)
+	}
+	if actors[1].DisplayName != "Mia Krystof" {
+		t.Errorf("Expected Mia Krystof, got %s", actors[1].DisplayName)
+	}
+}

@@ -1,0 +1,35 @@
+{
+  "self": "https://your-domain.atlassian.net/rest/api/3/project/MKY/role/10360",
+  "name": "Developers",
+  "id": 10360,
+  "description": "A project role that represents developers in a project",
+  "actors": [
+    {
+      "id": 10240,
+      "displayName": "jira-developers",
+      "type": "atlassian-group-role-actor",
+      "name": "jira-developers",
+      "actorGroup": {
+        "name": "jira-developers",
+        "displayName": "jira-developers",
+        "groupId": "952d12c3-5b5b-4d04-bb32-44d383afc4b2"
+      }
+    },
+    {
+      "id": 10241,
+      "displayName": "Mia Krystof",
+      "type": "atlassian-user-role-actor",
+      "actorUser": {
+        "accountId": "5b10a2844c20165700ede21g"
+      }
+    }
+  ],
+  "scope": {
+    "type": "PROJECT",
+    "project": {
+      "id": "10000",
+      "key": "KEY",
+      "name": "Next Gen Project"
+    }
+  }
+}

@@ -137,3 +137,80 @@ func TestProjectService_GetPermissionScheme_Success(t *testing.T) {
 		t.Errorf("Error given: %s", err)
 	}
 }
+
+func TestProjectService_Find_Success(t *testing.T) {
+	setup()
+	defer teardown()
+	testapiEndpoint := "/rest/api/2/project/search"
+
+	testMux.HandleFunc(testapiEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, http.MethodGet)
+		testRequestURL(t, r, testapiEndpoint+"?startAt=0&maxResults=2")
+		fmt.Fprint(w, `{
+			"self": "https://your-domain.atlassian.net/rest/api/2/project/search?startAt=0&maxResults=2",
+			"nextPage": "https://your-domain.atlassian.net/rest/api/2/project/search?startAt=2&maxResults=2",
+			"maxResults": 2,
+			"startAt": 0,
+			"total": 7,
+			"isLast": false,
+			"values": [
+				{
+					"self": "https://your-domain.atlassian.net/rest/api/2/project/EX",
+					"id": "10000",
+					"key": "EX",
+					"name": "Example",
+					"avatarUrls": {
+						"48x48": "https://your-domain.atlassian.net/secure/projectavatar?size=large&pid=10000",
+						"24x24": "https://your-domain.atlassian.net/secure/projectavatar?size=small&pid=10000",
+						"16x16": "https://your-domain.atlassian.net/secure/projectavatar?size=xsmall&pid=10000",
+						"32x32": "https://your-domain.atlassian.net/secure/projectavatar?size=medium&pid=10000"
+					},
+					"projectCategory": {
+						"self": "https://your-domain.atlassian.net/rest/api/2/projectCategory/10000",
+						"id": "10000",
+						"name": "FIRST",
+						"description": "First Project Category"
+					},
+					"simplified": false,
+					"style": "classic",
+					"insight": {
+						"totalIssueCount": 100,
+						"lastIssueUpdateTime": "2023-10-27T00:46:39.889+0000"
+					}
+				},
+				{
+					"self": "https://your-domain.atlassian.net/rest/api/2/project/ABC",
+					"id": "10001",
+					"key": "ABC",
+					"name": "Alphabetical",
+					"avatarUrls": {
+						"48x48": "https://your-domain.atlassian.net/secure/projectavatar?size=large&pid=10001",
+						"24x24": "https://your-domain.atlassian.net/secure/projectavatar?size=small&pid=10001",
+						"16x16": "https://your-domain.atlassian.net/secure/projectavatar?size=xsmall&pid=10001",
+						"32x32": "https://your-domain.atlassian.net/secure/projectavatar?size=medium&pid=10001"
+					},
+					"projectCategory": {
+						"self": "https://your-domain.atlassian.net/rest/api/2/projectCategory/10000",
+						"id": "10000",
+						"name": "FIRST",
+						"description": "First Project Category"
+					},
+					"simplified": false,
+					"style": "classic",
+					"insight": {
+						"totalIssueCount": 100,
+						"lastIssueUpdateTime": "2023-10-27T00:46:39.889+0000"
+					}
+				}
+			]
+		}`)
+	})
+
+	if projects, _, err := testClient.Project.Find(context.Background(), WithStartAt(0), WithMaxResults(2)); err != nil {
+		t.Errorf("Error given: %s", err)
+	} else if len(projects) != 2 {
+		t.Errorf("Expected 2 projects. Projects is %d", len(projects))
+	} else if projects[0].ID != "10000" {
+		t.Errorf("Expected 10000. Projects[0].ID is %s", projects[0].ID)
+	}
+}

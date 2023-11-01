@@ -95,3 +95,123 @@ func TestGroupService_Remove(t *testing.T) {
 		t.Errorf("Error given: %s", err)
 	}
 }
+
+func TestGroupService_Find_Success(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/3/groups/picker", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, http.MethodGet)
+		testRequestURL(t, r, "/rest/api/3/groups/picker")
+
+		fmt.Fprint(w, `{"header": "Showing 2 of 2 matching groups",
+										"total": 2,
+		                "groups": [{
+											"name": "jdog-developers",
+											"html": "<b>j</b>dog-developers",
+											"groupId": "276f955c-63d7-42c8-9520-92d01dca0625"
+										},
+										{
+											"name": "juvenal-bot",
+											"html": "<b>j</b>uvenal-bot",
+											"groupId": "6e87dc72-4f1f-421f-9382-2fee8b652487"
+										}]}`)
+	})
+
+	if group, _, err := testClient.Group.Find(context.Background()); err != nil {
+		t.Errorf("Error given: %s", err)
+	} else if group == nil {
+		t.Error("Expected group. Group is nil")
+	} else if len(group) != 2 {
+		t.Errorf("Expected 2 groups. Group is %d", len(group))
+	}
+}
+
+func TestGroupService_Find_SuccessParams(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/3/groups/picker", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, http.MethodGet)
+		testRequestURL(t, r, "/rest/api/3/groups/picker?maxResults=2&caseInsensitive=true&excludeId=1&excludeId=2&exclude=test&query=test&accountId=123")
+
+		fmt.Fprint(w, `{"header": "Showing 2 of 2 matching groups",
+										"total": 2,
+		                "groups": [{
+											"name": "jdog-developers",
+											"html": "<b>j</b>dog-developers",
+											"groupId": "276f955c-63d7-42c8-9520-92d01dca0625"
+										},
+										{
+											"name": "juvenal-bot",
+											"html": "<b>j</b>uvenal-bot",
+											"groupId": "6e87dc72-4f1f-421f-9382-2fee8b652487"
+										}]}`)
+	})
+
+	if group, _, err := testClient.Group.Find(
+		context.Background(),
+		WithMaxResults(2),
+		WithCaseInsensitive(),
+		WithExcludedGroupsIds([]string{"1", "2"}),
+		WithExcludedGroupNames([]string{"test"}),
+		WithGroupNameContains("test"),
+		WithAccountId("123"),
+	); err != nil {
+		t.Errorf("Error given: %s", err)
+	} else if group == nil {
+		t.Error("Expected group. Group is nil")
+	} else if len(group) != 2 {
+		t.Errorf("Expected 2 groups. Group is %d", len(group))
+	}
+}
+
+func TestGroupService_GetGroupMembers_Success(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/3/group/member", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, http.MethodGet)
+		testRequestURL(t, r, "/rest/api/3/group/member?groupId=1&startAt=0&maxResults=2&includeInactiveUsers=true")
+
+		fmt.Fprint(w, `{
+			"self": "https://your-domain.atlassian.net/rest/api/3/group/member?groupname=jira-administrators&includeInactiveUsers=false&startAt=2&maxResults=2",
+			"nextPage": "https://your-domain.atlassian.net/rest/api/3/group/member?groupname=jira-administrators&includeInactiveUsers=false&startAt=4&maxResults=2",
+			"maxResults": 2,
+			"startAt": 3,
+			"total": 5,
+			"isLast": false,
+			"values": [
+				{
+					"self": "https://your-domain.atlassian.net/rest/api/3/user?accountId=5b10a2844c20165700ede21g",
+					"name": "",
+					"key": "",
+					"accountId": "5b10a2844c20165700ede21g",
+					"emailAddress": "mia@example.com",
+					"avatarUrls": {},
+					"displayName": "Mia",
+					"active": true,
+					"timeZone": "Australia/Sydney",
+					"accountType": "atlassian"
+				},
+				{
+					"self": "https://your-domain.atlassian.net/rest/api/3/user?accountId=5b10a0effa615349cb016cd8",
+					"name": "",
+					"key": "",
+					"accountId": "5b10a0effa615349cb016cd8",
+					"emailAddress": "will@example.com",
+					"avatarUrls": {},
+					"displayName": "Will",
+					"active": false,
+					"timeZone": "Australia/Sydney",
+					"accountType": "atlassian"
+				}
+			]
+		}`)
+	})
+
+	if members, _, err := testClient.Group.GetGroupMembers(context.Background(), "1", WithStartAt(0), WithMaxResults(2), WithInactiveUsers()); err != nil {
+		t.Errorf("Error given: %s", err)
+	} else if len(members) != 2 {
+		t.Errorf("Expected 2 members. Members is %d", len(members))
+	} else if members[0].AccountID != "5b10a2844c20165700ede21g" {
+		t.Errorf("Expected 5b10a2844c20165700ede21g. Members[0].AccountId is %s", members[0].AccountID)
+	}
+}
