@@ -67,14 +67,14 @@ type ApplicationRole struct {
 	// Key `defaultGroupsDetails` missing - https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-application-roles/#api-rest-api-3-applicationrole-key-get
 }
 
-type userSearchParam struct {
+type UserSearchParam struct {
 	name  string
 	value string
 }
 
-type userSearch []userSearchParam
+type UserSearch []UserSearchParam
 
-type userSearchF func(userSearch) userSearch
+type UserSearchF func(UserSearch) UserSearch
 
 // Get gets user info from Jira using its Account Id
 //
@@ -210,57 +210,57 @@ func (s *UserService) GetCurrentUser(ctx context.Context) (*User, *Response, err
 }
 
 // WithMaxResults sets the max results to return
-func WithMaxResults(maxResults int) userSearchF {
-	return func(s userSearch) userSearch {
-		s = append(s, userSearchParam{name: "maxResults", value: fmt.Sprintf("%d", maxResults)})
+func WithMaxResults(maxResults int) UserSearchF {
+	return func(s UserSearch) UserSearch {
+		s = append(s, UserSearchParam{name: "maxResults", value: fmt.Sprintf("%d", maxResults)})
 		return s
 	}
 }
 
 // WithStartAt set the start pager
-func WithStartAt(startAt int) userSearchF {
-	return func(s userSearch) userSearch {
-		s = append(s, userSearchParam{name: "startAt", value: fmt.Sprintf("%d", startAt)})
+func WithStartAt(startAt int) UserSearchF {
+	return func(s UserSearch) UserSearch {
+		s = append(s, UserSearchParam{name: "startAt", value: fmt.Sprintf("%d", startAt)})
 		return s
 	}
 }
 
 // WithActive sets the active users lookup
-func WithActive(active bool) userSearchF {
-	return func(s userSearch) userSearch {
-		s = append(s, userSearchParam{name: "includeActive", value: fmt.Sprintf("%t", active)})
+func WithActive(active bool) UserSearchF {
+	return func(s UserSearch) UserSearch {
+		s = append(s, UserSearchParam{name: "includeActive", value: fmt.Sprintf("%t", active)})
 		return s
 	}
 }
 
 // WithInactive sets the inactive users lookup
-func WithInactive(inactive bool) userSearchF {
-	return func(s userSearch) userSearch {
-		s = append(s, userSearchParam{name: "includeInactive", value: fmt.Sprintf("%t", inactive)})
+func WithInactive(inactive bool) UserSearchF {
+	return func(s UserSearch) UserSearch {
+		s = append(s, UserSearchParam{name: "includeInactive", value: fmt.Sprintf("%t", inactive)})
 		return s
 	}
 }
 
 // WithUsername sets the username to search
-func WithUsername(username string) userSearchF {
-	return func(s userSearch) userSearch {
-		s = append(s, userSearchParam{name: "username", value: username})
+func WithUsername(username string) UserSearchF {
+	return func(s UserSearch) UserSearch {
+		s = append(s, UserSearchParam{name: "username", value: username})
 		return s
 	}
 }
 
 // WithAccountId sets the account id to search
-func WithAccountId(accountId string) userSearchF {
-	return func(s userSearch) userSearch {
-		s = append(s, userSearchParam{name: "accountId", value: accountId})
+func WithAccountId(accountId string) UserSearchF {
+	return func(s UserSearch) UserSearch {
+		s = append(s, UserSearchParam{name: "accountId", value: accountId})
 		return s
 	}
 }
 
 // WithProperty sets the property (Property keys are specified by path) to search
-func WithProperty(property string) userSearchF {
-	return func(s userSearch) userSearch {
-		s = append(s, userSearchParam{name: "property", value: property})
+func WithProperty(property string) UserSearchF {
+	return func(s UserSearch) UserSearch {
+		s = append(s, UserSearchParam{name: "property", value: property})
 		return s
 	}
 }
@@ -272,8 +272,8 @@ func WithProperty(property string) userSearchF {
 //
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
 // This double check effort is done for v2 - Remove this two lines if this is completed.
-func (s *UserService) Find(ctx context.Context, property string, tweaks ...userSearchF) ([]User, *Response, error) {
-	search := []userSearchParam{
+func (s *UserService) Find(ctx context.Context, property string, tweaks ...UserSearchF) ([]User, *Response, error) {
+	search := []UserSearchParam{
 		{
 			name:  "query",
 			value: property,

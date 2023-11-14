@@ -12,7 +12,7 @@
 
 **v2 of this library is in development.**
 **v2 will contain breaking changes :warning:**
-**The current main branch can contains the development version of v2.**
+**The current main branch contains the development version of v2.**
 
 The goals of v2 are:
 
