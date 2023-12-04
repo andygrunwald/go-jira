@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	jira "github.com/andygrunwald/go-jira/v2/onpremise"
+	jira "github.com/daveoy/go-jira/v2/onpremise"
 )
 
 func main() {
