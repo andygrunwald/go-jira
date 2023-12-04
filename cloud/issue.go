@@ -121,6 +121,7 @@ type IssueFields struct {
 	Reporter                      *User             `json:"reporter,omitempty" structs:"reporter,omitempty"`
 	Components                    []*Component      `json:"components,omitempty" structs:"components,omitempty"`
 	Status                        *Status           `json:"status,omitempty" structs:"status,omitempty"`
+	StatusCategoryChangeDate      Time              `json:"statuscategorychangedate,omitempty" structs:"statuscategorychangedate,omitempty"`
 	Progress                      *Progress         `json:"progress,omitempty" structs:"progress,omitempty"`
 	AggregateProgress             *Progress         `json:"aggregateprogress,omitempty" structs:"aggregateprogress,omitempty"`
 	TimeTracking                  *TimeTracking     `json:"timetracking,omitempty" structs:"timetracking,omitempty"`
