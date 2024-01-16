@@ -287,7 +287,7 @@ func newResponse(r *http.Response, v interface{}) *Response {
 // (can be extended with other types if they also need paging info)
 func (r *Response) populatePageValues(v interface{}) {
 	switch value := v.(type) {
-	case *searchResult:
+	case *SearchResult:
 		r.StartAt = value.StartAt
 		r.MaxResults = value.MaxResults
 		r.Total = value.Total
