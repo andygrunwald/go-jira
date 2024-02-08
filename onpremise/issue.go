@@ -31,7 +31,7 @@ type IssueService service
 
 // UpdateQueryOptions specifies the optional parameters to the Edit issue
 type UpdateQueryOptions struct {
-	NotifyUsers            bool `url:"notifyUsers,omitempty"`
+	NotifyUsers            bool `url:"notifyUsers"` // can't be omitted as this means it's omitted when false which isn't desired as this defaults to true
 	OverrideScreenSecurity bool `url:"overrideScreenSecurity,omitempty"`
 	OverrideEditableFlag   bool `url:"overrideEditableFlag,omitempty"`
 }
@@ -839,7 +839,7 @@ func (s *IssueService) Create(ctx context.Context, issue *Issue) (*Issue, *Respo
 // This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) Update(ctx context.Context, issue *Issue, opts *UpdateQueryOptions) (*Issue, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", issue.Key)
-	url, err := addOptions(apiEndpoint, opts)
+	url, err := addOptions(apiEndpoint, *opts)
 	if err != nil {
 		return nil, nil, err
 	}
