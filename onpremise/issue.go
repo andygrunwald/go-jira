@@ -527,6 +527,20 @@ type SearchOptions struct {
 	ValidateQuery string `url:"validateQuery,omitempty"`
 }
 
+type SearchWithPostOptions struct {
+	// StartAt: The starting index of the returned projects. Base index: 0.
+	StartAt int `json:"startAt,omitempty" url:"startAt,omitempty"`
+	// MaxResults: The maximum number of projects to return per page. Default: 50.
+	MaxResults int `json:"maxResults,omitempty" url:"maxResults,omitempty"`
+	// Expand: Expand specific sections in the returned issues
+	Expand       []string `json:"expand,omitempty" url:"expand,omitempty"`
+	Fields       []string `json:"fields"`
+	FieldsByKeys bool     `json:"fieldsByKeys"`
+	JQL          string   `json:"JQL"`
+	// ValidateQuery: The validateQuery param offers control over whether to validate and how strictly to treat the validation. Default: strict.
+	ValidateQuery string `json:"validateQuery,omitempty" url:"validateQuery,omitempty"`
+}
+
 // searchResult is only a small wrapper around the Search (with JQL) method
 // to be able to parse the results
 type searchResult struct {
@@ -1078,6 +1092,31 @@ func (s *IssueService) Search(ctx context.Context, jql string, options *SearchOp
 	}
 
 	v := new(searchResult)
+	resp, err := s.client.Do(req, v)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+	return v.Issues, resp, err
+}
+
+// SearchWithPost will search for tickets according to the options, suitable for JQL queries >2000 characters long.
+//
+// Jira API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
+//
+// TODO Double check this method if this works as expected, is using the latest API and the response is complete
+func (s *IssueService) SearchWithPost(ctx context.Context, options *SearchWithPostOptions) ([]Issue, *Response, error) {
+	u := url.URL{
+		Path: "rest/api/3/search",
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, u.String(), options)
+	if err != nil {
+		return []Issue{}, nil, err
+	}
+
+	v := new(searchResult)
+	var p []byte
+	fmt.Println(req.Body.Read(p))
 	resp, err := s.client.Do(req, v)
 	if err != nil {
 		err = NewJiraError(resp, err)
