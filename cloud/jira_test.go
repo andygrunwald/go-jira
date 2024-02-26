@@ -74,7 +74,7 @@ func testRequestParams(t *testing.T, r *http.Request, want map[string]string) {
 }
 
 func Test_addOptions(t *testing.T) {
-	v, err := addOptions("rest/api/2/issue/123", &UpdateQueryOptions{NotifyUsers: false})
+	v, err := addOptions("rest/api/2/issue/123", &UpdateQueryOptions{NotifyUsers: Bool(false)})
 	if err != nil {
 		t.Errorf("Expected no error. Got: %+v", err)
 	}

@@ -192,7 +192,8 @@ func TestIssueService_UpdateIssueWithOptions(t *testing.T) {
 	i := make(map[string]interface{})
 	fields := make(map[string]interface{})
 	i["fields"] = fields
-	resp, err := testClient.Issue.client.Issue.UpdateIssueWithOptions(context.Background(), jID, i, &UpdateQueryOptions{NotifyUsers: false})
+
+	resp, err := testClient.Issue.client.Issue.UpdateIssueWithOptions(context.Background(), jID, i, &UpdateQueryOptions{NotifyUsers: Bool(true)})
 	if resp == nil {
 		t.Error("Expected resp. resp is nil")
 	}

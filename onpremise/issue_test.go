@@ -172,7 +172,7 @@ func TestIssueService_Update_with_false_opts(t *testing.T) {
 			Description: "example bug report",
 		},
 	}
-	issue, _, err := testClient.Issue.Update(context.Background(), i, &UpdateQueryOptions{NotifyUsers: false})
+	issue, _, err := testClient.Issue.Update(context.Background(), i, &UpdateQueryOptions{NotifyUsers: Bool(false)})
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
 	}
@@ -199,7 +199,7 @@ func TestIssueService_Update_with_multiple_opts(t *testing.T) {
 			Description: "example bug report",
 		},
 	}
-	issue, _, err := testClient.Issue.Update(context.Background(), i, &UpdateQueryOptions{NotifyUsers: false, OverrideScreenSecurity: true})
+	issue, _, err := testClient.Issue.Update(context.Background(), i, &UpdateQueryOptions{NotifyUsers: Bool(false), OverrideScreenSecurity: Bool(true)})
 	if issue == nil {
 		t.Error("Expected issue. Issue is nil")
 	}
