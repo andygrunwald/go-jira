@@ -648,6 +648,37 @@ func TestIssueService_Search(t *testing.T) {
 	}
 }
 
+func TestIssueService_SearchWithPost(t *testing.T) {
+	setup()
+	defer teardown()
+	testMux.HandleFunc("/rest/api/3/search", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, http.MethodPost)
+		testRequestURL(t, r, "/rest/api/3/search")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, `{"expand": "schema,names","startAt": 1,"maxResults": 40,"total": 6,"issues": [{"expand": "html","id": "10230","self": "http://kelpie9:8081/rest/api/3/issue/BULK-62","key": "BULK-62","fields": {"summary": "testing","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/3/issuetype/5","id": "5","description": "The sub-task of the issue","iconUrl": "http://kelpie9:8081/images/icons/issue_subtask.gif","name": "Sub-task","subtask": true},"customfield_10071": null}},{"expand": "html","id": "10004","self": "http://kelpie9:8081/rest/api/3/issue/BULK-47","key": "BULK-47","fields": {"summary": "Cheese v1 2.0 issue","timetracking": null,"issuetype": {"self": "http://kelpie9:8081/rest/api/3/issuetype/3","id": "3","description": "A task that needs to be done.","iconUrl": "http://kelpie9:8081/images/icons/task.gif","name": "Task","subtask": false}}}]}`)
+	})
+
+	opt := &SearchWithPostOptions{StartAt: 1, MaxResults: 40, Expand: []string{"foo"}, JQL: "type = Bug and Status NOT IN (Resolved)"}
+	_, resp, err := testClient.Issue.SearchWithPost(context.Background(), opt)
+
+	if resp == nil {
+		t.Errorf("Response given: %+v", resp)
+	}
+	if err != nil {
+		t.Errorf("Error given: %s", err)
+	}
+
+	if resp.StartAt != 1 {
+		t.Errorf("StartAt should populate with 1, %v given", resp.StartAt)
+	}
+	if resp.MaxResults != 40 {
+		t.Errorf("MaxResults should populate with 40, %v given", resp.MaxResults)
+	}
+	if resp.Total != 6 {
+		t.Errorf("Total should populate with 6, %v given", resp.Total)
+	}
+}
+
 func TestIssueService_SearchEmptyJQL(t *testing.T) {
 	setup()
 	defer teardown()
