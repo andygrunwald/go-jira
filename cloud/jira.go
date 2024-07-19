@@ -54,6 +54,7 @@ type Client struct {
 	Role             *RoleService
 	PermissionScheme *PermissionSchemeService
 	Status           *StatusService
+	IssueLink        *IssueLinkService
 	IssueLinkType    *IssueLinkTypeService
 	Organization     *OrganizationService
 	ServiceDesk      *ServiceDeskService
@@ -116,6 +117,7 @@ func NewClient(baseURL string, httpClient *http.Client) (*Client, error) {
 	c.Role = (*RoleService)(&c.common)
 	c.PermissionScheme = (*PermissionSchemeService)(&c.common)
 	c.Status = (*StatusService)(&c.common)
+	c.IssueLink = (*IssueLinkService)(&c.common)
 	c.IssueLinkType = (*IssueLinkTypeService)(&c.common)
 	c.Organization = (*OrganizationService)(&c.common)
 	c.ServiceDesk = (*ServiceDeskService)(&c.common)

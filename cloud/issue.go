@@ -460,9 +460,9 @@ type IssueLink struct {
 type IssueLinkType struct {
 	ID      string `json:"id,omitempty" structs:"id,omitempty"`
 	Self    string `json:"self,omitempty" structs:"self,omitempty"`
-	Name    string `json:"name" structs:"name"`
-	Inward  string `json:"inward" structs:"inward"`
-	Outward string `json:"outward" structs:"outward"`
+	Name    string `json:"name,omitempty" structs:"name,omitempty"`
+	Inward  string `json:"inward,omitempty" structs:"inward,omitempty"`
+	Outward string `json:"outward,omitempty" structs:"outward,omitempty"`
 }
 
 // Comments represents a list of Comment.
