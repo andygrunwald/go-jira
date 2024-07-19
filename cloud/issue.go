@@ -517,24 +517,95 @@ type CommentVisibility struct {
 // A request to a pages API will result in a values array wrapped in a JSON object with some paging metadata
 // Default Pagination options
 type SearchOptions struct {
-	// StartAt: The starting index of the returned projects. Base index: 0.
-	StartAt int `url:"startAt,omitempty"`
-	// MaxResults: The maximum number of projects to return per page. Default: 50.
-	MaxResults int `url:"maxResults,omitempty"`
-	// Expand: Expand specific sections in the returned issues
-	Expand string `url:"expand,omitempty"`
-	Fields []string
-	// ValidateQuery: The validateQuery param offers control over whether to validate and how strictly to treat the validation. Default: strict.
-	ValidateQuery string `url:"validateQuery,omitempty"`
+	// JQL search string
+	JQL string `json:"jql,omitempty"`
+	// The starting index of the returned projects. Base index: 0.
+	StartAt int `url:"startAt,omitempty" json:"startAt,omitempty"`
+	// The maximum number of projects to return per page. Default: 50.
+	MaxResults int `url:"maxResults,omitempty" json:"maxResults,omitempty"`
+	// The validateQuery param offers control over whether to validate and how strictly to treat the validation. Default: strict.
+	ValidateQuery string `url:"validateQuery,omitempty" json:"validateQuery,omitempty"`
+	// A list of fields to return for each issue, use it to retrieve a subset of fields.
+	Fields []string `url:"fields,omitempty" json:"fields,omitempty"`
+	// Expand specific sections in the returned issues.
+	Expand string `url:"expand,omitempty" json:"expand,omitempty"`
+	// A list of issue property keys for issue properties to include in the results.
+	Properties []string `url:"properties,omitempty" json:"properties,omitempty"`
+	// Reference fields by their key (rather than ID).
+	FieldsByKeys bool `url:"fieldsByKeys,omitempty" json:"fieldsByKeys,omitempty"`
 }
 
-// searchResult is only a small wrapper around the Search (with JQL) method
+// SearchResult is only a small wrapper around the Search (with JQL) method
 // to be able to parse the results
-type searchResult struct {
-	Issues     []Issue `json:"issues" structs:"issues"`
-	StartAt    int     `json:"startAt" structs:"startAt"`
-	MaxResults int     `json:"maxResults" structs:"maxResults"`
-	Total      int     `json:"total" structs:"total"`
+type SearchResult struct {
+	Expand          string            `json:"expand" structs:"expand"`
+	StartAt         int               `json:"startAt" structs:"startAt"`
+	MaxResults      int               `json:"maxResults" structs:"maxResults"`
+	Total           int               `json:"total" structs:"total"`
+	Issues          []IssueBean       `json:"issues" structs:"issues"`
+	WarningMessages []string          `json:"warningMessages" structs:"warningMessages"`
+	Names           map[string]string `json:"names" structs:"names"`
+	Schema          map[string]string `json:"schema" structs:"schema"`
+}
+
+// IssueBean are details about an issue.
+type IssueBean struct {
+	Expand         string            `json:"expand" structs:"expand"`
+	ID             string            `json:"id" structs:"id"`
+	Self           string            `json:"self" structs:"self"`
+	Key            string            `json:"key" structs:"key"`
+	RenderedFields map[string]string `json:"renderedFields" structs:"renderedFields"`
+	Properties     map[string]string `json:"properties" structs:"properties"`
+	Names          map[string]string `json:"names" structs:"names"`
+	Schema         map[string]string `json:"schema" structs:"schema"`
+	//Transitions          []IssueTransition            `json:"transitions" structs:"transitions"`
+	Operations               Operations          `json:"operations" structs:"operations"`
+	EditMetadata             IssueUpdateMetadata `json:"editmeta" structs:"editmeta"`
+	Changelog                PageOfChangelogs    `json:"changelog" structs:"changelog"`
+	VersionedRepresentations map[string]string   `json:"versionedRepresentations" structs:"versionedRepresentations"`
+	FieldsToInclude          IncludedFields      `json:"fieldsToInclude" structs:"fieldsToInclude"`
+	Fields                   IssueFields         `json:"fields" structs:"fields"`
+}
+
+type Operations struct {
+	linkGroups []LinkGroup
+	// TODO: Additional Properties
+}
+
+type LinkGroup struct {
+	ID         string       `json:"id" structs:"id"`
+	StyleClass string       `json:"styleClass" structs:"styleClass"`
+	Header     SimpleLink   `json:"header" structs:"header"`
+	Weight     int          `json:"weight" structs:"weight"`
+	Links      []SimpleLink `json:"links" structs:"links"`
+	Groups     []LinkGroup  `json:"groups" structs:"groups"`
+}
+
+type SimpleLink struct {
+	ID         string `json:"id" structs:"id"`
+	StyleClass string `json:"styleClass" structs:"styleClass"`
+	IconClass  string `json:"iconClass" structs:"iconClass"`
+	Label      string `json:"label" structs:"label"`
+	Title      string `json:"title" structs:"title"`
+	Href       string `json:"href" structs:"href"`
+	Weight     int    `json:"weight" structs:"weight"`
+}
+
+type IssueUpdateMetadata struct {
+	Fields map[string]string `json:"fields" structs:"fields"`
+}
+
+type PageOfChangelogs struct {
+	StartAt    int         `json:"startAt" structs:"startAt"`
+	MaxResults int         `json:"maxResults" structs:"maxResults"`
+	Total      int         `json:"total" structs:"total"`
+	Histories  []Changelog `json:"histories" structs:"histories"`
+}
+
+type IncludedFields struct {
+	Expand           string `json:"expand" structs:"expand"`
+	ActuallyIncluded string `json:"actuallyIncluded" structs:"actuallyIncluded"`
+	Included         string `json:"included" structs:"included"`
 }
 
 // GetQueryOptions specifies the optional parameters for the Get Issue methods
@@ -1038,83 +1109,94 @@ func (s *IssueService) AddLink(ctx context.Context, issueLink *IssueLink) (*Resp
 	return resp, err
 }
 
-// Search will search for tickets according to the jql
+// SearchGET will search for tickets according to the jql using http method GET
 //
-// Jira API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
-//
-// TODO Double check this method if this works as expected, is using the latest API and the response is complete
-// This double check effort is done for v2 - Remove this two lines if this is completed.
-func (s *IssueService) Search(ctx context.Context, jql string, options *SearchOptions) ([]Issue, *Response, error) {
-	u := url.URL{
-		Path: "rest/api/2/search",
-	}
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/#api-rest-api-3-search-get
+func (s *IssueService) SearchGET(ctx context.Context, options SearchOptions) (*SearchResult, *Response, error) {
+	apiEndpoint := "rest/api/3/search"
+
 	uv := url.Values{}
-	if jql != "" {
-		uv.Add("jql", jql)
+	if options.JQL != "" {
+		uv.Add("jql", options.JQL)
+	}
+	if options.StartAt != 0 {
+		uv.Add("startAt", strconv.Itoa(options.StartAt))
+	}
+	if options.MaxResults != 0 {
+		uv.Add("maxResults", strconv.Itoa(options.MaxResults))
+	}
+	if options.Expand != "" {
+		uv.Add("expand", options.Expand)
+	}
+	if strings.Join(options.Fields, ",") != "" {
+		uv.Add("fields", strings.Join(options.Fields, ","))
+	}
+	if options.ValidateQuery != "" {
+		uv.Add("validateQuery", options.ValidateQuery)
+	}
+	if len(options.Properties) > 0 {
+		uv.Add("properties", strings.Join(options.Properties, ","))
+	}
+	if options.FieldsByKeys {
+		uv.Add("fieldsByKeys", "true")
 	}
 
-	if options != nil {
-		if options.StartAt != 0 {
-			uv.Add("startAt", strconv.Itoa(options.StartAt))
-		}
-		if options.MaxResults != 0 {
-			uv.Add("maxResults", strconv.Itoa(options.MaxResults))
-		}
-		if options.Expand != "" {
-			uv.Add("expand", options.Expand)
-		}
-		if strings.Join(options.Fields, ",") != "" {
-			uv.Add("fields", strings.Join(options.Fields, ","))
-		}
-		if options.ValidateQuery != "" {
-			uv.Add("validateQuery", options.ValidateQuery)
-		}
+	u := url.URL{
+		Path:     apiEndpoint,
+		RawQuery: uv.Encode(),
 	}
-
-	u.RawQuery = uv.Encode()
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, u.String(), nil)
 	if err != nil {
-		return []Issue{}, nil, err
+		return nil, nil, err
 	}
 
-	v := new(searchResult)
+	v := new(SearchResult)
 	resp, err := s.client.Do(req, v)
 	if err != nil {
 		err = NewJiraError(resp, err)
 	}
-	return v.Issues, resp, err
+	return v, resp, err
+}
+
+// SearchPOST will search for tickets according to the jql using http method POST
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/#api-rest-api-3-search-post
+func (s *IssueService) SearchPOST(ctx context.Context, options *SearchOptions) (*SearchResult, *Response, error) {
+	apiEndpoint := "rest/api/3/search"
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, apiEndpoint, options)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	v := new(SearchResult)
+	resp, err := s.client.Do(req, v)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+	return v, resp, err
 }
 
 // SearchPages will get issues from all pages in a search
 //
 // Jira API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
-//
-// TODO Double check this method if this works as expected, is using the latest API and the response is complete
-// This double check effort is done for v2 - Remove this two lines if this is completed.
-func (s *IssueService) SearchPages(ctx context.Context, jql string, options *SearchOptions, f func(Issue) error) error {
-	if options == nil {
-		options = &SearchOptions{
-			StartAt:    0,
-			MaxResults: 50,
-		}
-	}
-
+func (s *IssueService) SearchPages(ctx context.Context, options *SearchOptions, f func(bean IssueBean) error) error {
 	if options.MaxResults == 0 {
 		options.MaxResults = 50
 	}
 
-	issues, resp, err := s.Search(ctx, jql, options)
+	search, resp, err := s.SearchPOST(ctx, options)
 	if err != nil {
 		return err
 	}
 
-	if len(issues) == 0 {
+	if len(search.Issues) == 0 {
 		return nil
 	}
 
 	for {
-		for _, issue := range issues {
+		for _, issue := range search.Issues {
 			err = f(issue)
 			if err != nil {
 				return err
@@ -1126,7 +1208,7 @@ func (s *IssueService) SearchPages(ctx context.Context, jql string, options *Sea
 		}
 
 		options.StartAt += resp.MaxResults
-		issues, resp, err = s.Search(ctx, jql, options)
+		search, resp, err = s.SearchPOST(ctx, options)
 		if err != nil {
 			return err
 		}
