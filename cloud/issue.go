@@ -653,7 +653,7 @@ func (s *IssueService) Get(ctx context.Context, issueID string, options *GetQuer
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
 // This double check effort is done for v2 - Remove this two lines if this is completed.
 func (s *IssueService) DownloadAttachment(ctx context.Context, attachmentID string) (*Response, error) {
-	apiEndpoint := fmt.Sprintf("secure/attachment/%s/", attachmentID)
+	apiEndpoint := fmt.Sprintf("rest/api/2/attachment/content/%s/", attachmentID)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, err
