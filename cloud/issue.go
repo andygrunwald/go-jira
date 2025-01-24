@@ -117,7 +117,7 @@ type IssueFields struct {
 	Updated                       Time              `json:"updated,omitempty" structs:"updated,omitempty"`
 	Description                   string            `json:"description,omitempty" structs:"description,omitempty"`
 	Summary                       string            `json:"summary,omitempty" structs:"summary,omitempty"`
-	Creator                       *User             `json:"Creator,omitempty" structs:"Creator,omitempty"`
+	Creator                       *User             `json:"creator,omitempty" structs:"creator,omitempty"`
 	Reporter                      *User             `json:"reporter,omitempty" structs:"reporter,omitempty"`
 	Components                    []*Component      `json:"components,omitempty" structs:"components,omitempty"`
 	Status                        *Status           `json:"status,omitempty" structs:"status,omitempty"`
