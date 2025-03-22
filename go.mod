@@ -2,7 +2,7 @@ module github.com/andygrunwald/go-jira/v2
 
 go 1.21
 
-toolchain go1.24.1
+toolchain go1.23
 
 require (
 	github.com/fatih/structs v1.1.0
