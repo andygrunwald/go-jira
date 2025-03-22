@@ -18,7 +18,7 @@ jobs:
     steps:
       # Get all Pull Request numbers
       - run: |
-          listOpenIssues="$(gh pr list --repo andygrunwald/go-jira --state open --limit 100 --json number --jq ".[].number")
+          listOpenIssues="$(gh pr list --repo andygrunwald/go-jira --state open --limit 100 --json number --jq ''.[].number')"
         
           echo 'LIST_OPEN_ISSUES='$listOpenIssues >> $GITHUB_ENV
         env:
