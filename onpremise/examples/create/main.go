@@ -1,29 +1,17 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"fmt"
-	"os"
 	"strings"
-	"syscall"
 
 	jira "github.com/andygrunwald/go-jira/v2/onpremise"
-	"golang.org/x/term"
 )
 
 func main() {
-	r := bufio.NewReader(os.Stdin)
-
-	fmt.Print("Jira URL: ")
-	jiraURL, _ := r.ReadString('\n')
-
-	fmt.Print("Jira Username: ")
-	username, _ := r.ReadString('\n')
-
-	fmt.Print("Jira Password: ")
-	bytePassword, _ := term.ReadPassword(int(syscall.Stdin))
-	password := string(bytePassword)
+	jiraURL := "https://issues.apache.org/jira/"
+	username := "my.username"
+	password := "my.secret.password"
 
 	tp := jira.BasicAuthTransport{
 		Username: strings.TrimSpace(username),
