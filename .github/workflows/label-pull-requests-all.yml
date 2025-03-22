@@ -16,22 +16,35 @@ jobs:
     runs-on: ubuntu-latest
     if: (github.actor != 'dependabot[bot]')
     steps:
-      # Get all Pull Request numbers
-      - run: |
-          listOpenIssues="$(gh pr list --repo andygrunwald/go-jira --state open --limit 100 --json number --jq '.[].number')"
-        
-          echo 'LIST_OPEN_ISSUES<<EOF' >> $GITHUB_OUTPUT
-          echo $listOpenIssues >> $GITHUB_OUTPUT
-          echo 'EOF' >> $GITHUB_OUTPUT
-        id: find_all_open_prs
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Check Pull Requests
-        run: echo ${{ steps.find_all_open_prs.outputs.LIST_OPEN_ISSUES }}
-
       - uses: actions/labeler@v5
         with:
           sync-labels: false
+          # Output of gh pr list --repo andygrunwald/go-jira --state open --limit 100 --json number --jq ".[].number"
           pr-number: |
-            ${{ steps.find_all_open_prs.outputs.LIST_OPEN_ISSUES }}
+            695
+            683
+            682
+            679
+            676
+            670
+            658
+            655
+            648
+            646
+            640
+            637
+            635
+            630
+            626
+            611
+            595
+            499
+            471
+            465
+            461
+            431
+            425
+            398
+            372
+            369
+            300
