@@ -1,34 +1,20 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"strings"
-	"syscall"
 	"time"
 
 	jira "github.com/andygrunwald/go-jira/v2/onpremise"
-	"golang.org/x/term"
 )
 
 func main() {
-	r := bufio.NewReader(os.Stdin)
-
-	fmt.Print("Jira URL: ")
-	jiraURL, _ := r.ReadString('\n')
-
-	fmt.Print("Jira Username: ")
-	username, _ := r.ReadString('\n')
-
-	fmt.Print("Jira Password: ")
-	bytePassword, _ := term.ReadPassword(int(syscall.Stdin))
-	password := string(bytePassword)
-
-	fmt.Print("\nJira Project Key: ") // e.g. TES or WOW
-	jiraPK, _ := r.ReadString('\n')
+	jiraURL := "https://issues.apache.org/jira/"
+	username := "my.username"
+	password := "my.secret.password"
+	jiraProjectKey := "TES"
 
 	tp := jira.BasicAuthTransport{
 		Username: strings.TrimSpace(username),
@@ -50,7 +36,7 @@ func main() {
 
 	// SearchPages will page through results and pass each issue to appendFunc
 	// In this example, we'll search for all the issues in the target project
-	err = client.Issue.SearchPages(context.Background(), fmt.Sprintf(`project=%s`, strings.TrimSpace(jiraPK)), nil, appendFunc)
+	err = client.Issue.SearchPages(context.Background(), fmt.Sprintf(`project=%s`, strings.TrimSpace(jiraProjectKey)), nil, appendFunc)
 	if err != nil {
 		log.Fatal(err)
 	}

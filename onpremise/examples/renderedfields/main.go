@@ -1,35 +1,19 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
-	"syscall"
-
-	"golang.org/x/term"
 
 	jira "github.com/andygrunwald/go-jira/v2/onpremise"
 )
 
 func main() {
-	r := bufio.NewReader(os.Stdin)
-
-	fmt.Print("Jira URL: ")
-	jiraURL, _ := r.ReadString('\n')
-
-	fmt.Print("Jira Issue key: ")
-	key, _ := r.ReadString('\n')
-	key = strings.TrimSpace(key)
-
-	fmt.Print("Jira Username: ")
-	username, _ := r.ReadString('\n')
-
-	fmt.Print("Jira Password: ")
-	bytePassword, _ := term.ReadPassword(int(syscall.Stdin))
-	password := string(bytePassword)
+	jiraURL := "https://issues.apache.org/jira/"
+	username := "my.username"
+	password := "my.secret.password"
+	issueId := "MESOS-3325"
 
 	var tp *http.Client
 
@@ -50,10 +34,10 @@ func main() {
 		return
 	}
 
-	fmt.Printf("Targeting %s for issue %s\n", strings.TrimSpace(jiraURL), key)
+	fmt.Printf("Targeting %s for issue %s\n", strings.TrimSpace(jiraURL), issueId)
 
 	options := &jira.GetQueryOptions{Expand: "renderedFields"}
-	u, _, err := client.Issue.Get(context.Background(), key, options)
+	u, _, err := client.Issue.Get(context.Background(), issueId, options)
 
 	if err != nil {
 		fmt.Printf("\n==> error: %v\n", err)
