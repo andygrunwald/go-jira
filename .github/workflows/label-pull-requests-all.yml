@@ -25,7 +25,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check Pull Requests
+        run: echo ${{ steps.find_all_open_prs.outputs.LIST_OPEN_ISSUES }}
+
       - uses: actions/labeler@v5
         with:
           sync-labels: false
-          pr-number: ${{ steps.find_all_open_prs.outputs.LIST_OPEN_ISSUES }}
+          pr-number: |
+            ${{ steps.find_all_open_prs.outputs.LIST_OPEN_ISSUES }}
