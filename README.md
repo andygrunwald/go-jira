@@ -106,7 +106,7 @@ A more thorough, [runnable example](cloud/examples/basic_auth/main.go) is provid
 func main() {
 	tp := jira.BasicAuthTransport{
 		Username: "<username>",
-		APIToken: "<api-token>",
+		Password: "<api-token>",
 	}
 
 	client, err := jira.NewClient(tp.Client(), "https://my.jira.com")
