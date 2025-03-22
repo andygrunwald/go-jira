@@ -86,6 +86,6 @@ jobs:
       - name: Run staticcheck (Go ${{ matrix.go }})
         uses: dominikh/staticcheck-action@v1.3.1
         with:
-          version: "2022.1"
+          version: "2025.1.1"
           install-go: false
-          cache-key: staticcheck-cache
+          cache-key: ${{ matrix.go-version }}-${{ matrix.os }}
