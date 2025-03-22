@@ -1,6 +1,7 @@
 name: Auto-label merge conflicts
 
 on:
+  pull_request:
   workflow_dispatch:
   schedule:
     - cron: "*/15 * * * *"
