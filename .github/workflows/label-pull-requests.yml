@@ -1,8 +1,7 @@
 name: Label pull requests
 
 on:
-  pull_request:
-  workflow_dispatch:
+  pull_request_target:
 
 # limit permissions
 permissions:
@@ -10,8 +9,10 @@ permissions:
   pull-requests: write
 
 jobs:
-  build:
+  labeler:
     runs-on: ubuntu-latest
     if: (github.actor != 'dependabot[bot]')
     steps:
     - uses: actions/labeler@v5
+      with:
+        sync-labels: true

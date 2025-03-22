@@ -1,0 +1,30 @@
+# This workflow is a "one off" workflow.
+# It re-iterates over all pull requests and labels them.
+# This is useful if you have added new labels and want to apply them to all existing pull requests.
+name: Label pull requests (all)
+
+on:
+  workflow_dispatch:
+
+# limit permissions
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  labeler:
+    runs-on: ubuntu-latest
+    if: (github.actor != 'dependabot[bot]')
+    steps:
+      # Get all Pull Request numbers
+      - run: |
+          listOpenIssues="$(gh pr list --repo andygrunwald/go-jira --state open --limit 100 --json number --jq ".[].number"
+        
+          echo 'LIST_OPEN_ISSUES='$listOpenIssues >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/labeler@v5
+        with:
+          sync-labels: true     
+          pr-number: "$LIST_OPEN_ISSUES"
