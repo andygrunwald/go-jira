@@ -20,11 +20,12 @@ jobs:
       - run: |
           listOpenIssues="$(gh pr list --repo andygrunwald/go-jira --state open --limit 100 --json number --jq 'map(.number | tostring)')"
         
-          echo 'LIST_OPEN_ISSUES='$listOpenIssues >> $GITHUB_ENV
+          echo "LIST_OPEN_ISSUES=$listOpenIssues\n" >> $GITHUB_OUTPUT
+        id: find_all_open_prs
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/labeler@v5
         with:
-          sync-labels: true     
-          pr-number: "$LIST_OPEN_ISSUES"
+          sync-labels: false
+          pr-number: ${{ steps.find_all_open_prs.outputs.LIST_OPEN_ISSUES }}
