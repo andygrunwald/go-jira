@@ -15,5 +15,3 @@ jobs:
     if: (github.actor != 'dependabot[bot]')
     steps:
     - uses: actions/labeler@v5
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
