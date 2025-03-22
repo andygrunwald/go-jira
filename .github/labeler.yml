@@ -1,3 +1,15 @@
-jira-onpremise: onpremise/**/*
-jira-cloud: cloud/**/*
-documentation: docs/**/*
+jira-onpremise:
+- changed-files:
+  - any-glob-to-any-file: onpremise/**
+
+jira-cloud:
+- changed-files:
+  - any-glob-to-any-file: cloud/**
+
+documentation:
+- changed-files:
+  - any-glob-to-any-file: docs/**
+
+examples:
+- changed-files:
+  - any-glob-to-any-file: ['onpremise/examples/**', 'cloud/examples/**']
