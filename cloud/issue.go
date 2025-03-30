@@ -225,6 +225,70 @@ type IssueRenderedFields struct {
 	Updated        string    `json:"updated,omitempty" structs:"updated,omitempty"`
 	Comments       *Comments `json:"comment,omitempty" structs:"comment,omitempty"`
 	Description    string    `json:"description,omitempty" structs:"description,omitempty"`
+	Unknowns       tcontainer.MarshalMap
+}
+
+// MarshalJSON is a custom JSON marshal function for the IssueRenderedFields structs.
+// It handles Jira custom fields and maps those from / to "Unknowns" key.
+func (i *IssueRenderedFields) MarshalJSON() ([]byte, error) {
+	m := structs.Map(i)
+	unknowns, okay := m["Unknowns"]
+	if okay {
+		// if unknowns present, shift all key value from unknown to a level up
+		for key, value := range unknowns.(tcontainer.MarshalMap) {
+			m[key] = value
+		}
+		delete(m, "Unknowns")
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON is a custom JSON marshal function for the IssueRenderedFields structs.
+// It handles Jira custom fields and maps those from / to "Unknowns" key.
+func (i *IssueRenderedFields) UnmarshalJSON(data []byte) error {
+
+	// Do the normal unmarshalling first
+	// Details for this way: http://choly.ca/post/go-json-marshalling/
+	type Alias IssueRenderedFields
+	aux := &struct {
+		*Alias
+	}{
+		Alias: (*Alias)(i),
+	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	totalMap := tcontainer.NewMarshalMap()
+	err := json.Unmarshal(data, &totalMap)
+	if err != nil {
+		return err
+	}
+
+	t := reflect.TypeOf(*i)
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+		tagDetail := field.Tag.Get("json")
+		if tagDetail == "" {
+			// ignore if there are no tags
+			continue
+		}
+		options := strings.Split(tagDetail, ",")
+
+		if len(options) == 0 {
+			return fmt.Errorf("no tags options found for %s", field.Name)
+		}
+		// the first one is the json tag
+		key := options[0]
+		if _, okay := totalMap.Value(key); okay {
+			delete(totalMap, key)
+		}
+
+	}
+	i = (*IssueRenderedFields)(aux.Alias)
+	// all the tags found in the struct were removed. Whatever is left are unknowns to struct
+	i.Unknowns = totalMap
+	return nil
 }
 
 // IssueType represents a type of a Jira issue.
