@@ -26,7 +26,7 @@ type Request struct {
 type RequestFieldValue struct {
 	FieldID string `json:"fieldId,omitempty" structs:"fieldId,omitempty"`
 	Label   string `json:"label,omitempty" structs:"label,omitempty"`
-	Value   string `json:"value,omitempty" structs:"value,omitempty"`
+	Value   interface{} `json:"value,omitempty" structs:"value,omitempty"`
 }
 
 // RequestDate is the date format used in requests.
@@ -66,12 +66,12 @@ func (r *RequestService) Create(ctx context.Context, requester string, participa
 
 	payload := struct {
 		*Request
-		FieldValues  map[string]string `json:"requestFieldValues,omitempty"`
+		FieldValues  map[string]interface{} `json:"requestFieldValues,omitempty"`
 		Requester    string            `json:"raiseOnBehalfOf,omitempty"`
 		Participants []string          `json:"requestParticipants,omitempty"`
 	}{
 		Request:      request,
-		FieldValues:  make(map[string]string),
+		FieldValues:  make(map[string]interface{}),
 		Requester:    requester,
 		Participants: participants,
 	}
