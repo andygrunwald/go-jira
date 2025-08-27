@@ -54,6 +54,9 @@ type BoardListOptions struct {
 	// Relevance meaning that the JQL filter defined in board contains a reference to a project.
 	ProjectKeyOrID string `url:"projectKeyOrId,omitempty"`
 
+	// StartAt: The starting index of the returned projects. Base index: 0.
+	StartAt int `url:"startAt,omitempty"`
+
 	SearchOptions
 }
 

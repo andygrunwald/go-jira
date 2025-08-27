@@ -17,7 +17,6 @@ func GetAllIssues(client *jira.Client, searchString string) ([]jira.Issue, error
 	for {
 		opt := &jira.SearchOptions{
 			MaxResults: 1000, // Max results can go up to 1000
-			StartAt:    last,
 		}
 
 		chunk, resp, err := client.Issue.Search(context.Background(), searchString, opt)

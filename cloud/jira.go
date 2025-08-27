@@ -275,6 +275,10 @@ type Response struct {
 	StartAt    int
 	MaxResults int
 	Total      int
+
+	// *searchResult
+	IsLast        bool
+	NextPageToken string
 }
 
 func newResponse(r *http.Response, v interface{}) *Response {
@@ -288,9 +292,8 @@ func newResponse(r *http.Response, v interface{}) *Response {
 func (r *Response) populatePageValues(v interface{}) {
 	switch value := v.(type) {
 	case *searchResult:
-		r.StartAt = value.StartAt
-		r.MaxResults = value.MaxResults
-		r.Total = value.Total
+		r.IsLast = value.IsLast
+		r.NextPageToken = value.NextPageToken
 	case *groupMembersResult:
 		r.StartAt = value.StartAt
 		r.MaxResults = value.MaxResults
