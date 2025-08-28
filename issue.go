@@ -527,6 +527,63 @@ type SearchOptions struct {
 	ValidateQuery string `url:"validateQuery,omitempty"`
 }
 
+// SearchOptionsV2 specifies the parameters for the Jira Cloud-specific
+// paramaters to List methods that support pagination
+//
+// Docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-search/#api-rest-api-2-search-jql-get
+type SearchOptionsV2 struct {
+	// NextPageToken: The token for a page to fetch that is not the first page.
+	// The first page has a nextPageToken of null.
+	// Use the nextPageToken to fetch the next page of issues.
+	// Note: The nextPageToken field is not included in the response for the last page,
+	// indicating there is no next page.
+	NextPageToken string `url:"nextPageToken,omitempty"`
+
+	// MaxResults: The maximum number of items to return per page.
+	// To manage page size, API may return fewer items per page where a large number of fields or properties are requested.
+	// The greatest number of items returned per page is achieved when requesting id or key only.
+	// It returns max 5000 issues.
+	// Default: 50
+	MaxResults int `url:"maxResults,omitempty"`
+
+	// Fields: A list of fields to return for each issue
+
+	// Fields: A list of fields to return for each issue, use it to retrieve a subset of fields.
+	// This parameter accepts a comma-separated list. Expand options include:
+	//
+	// 	`*all` Returns all fields.
+	// 	`*navigable` Returns navigable fields.
+	// 	`id` Returns only issue IDs.
+	// 	Any issue field, prefixed with a minus to exclude.
+	//
+	// The default is id.
+	//
+	// Examples:
+	//
+	// 	`summary,comment` Returns only the summary and comments fields only.
+	// 	`-description` Returns all navigable (default) fields except description.
+	// 	`*all,-comment` Returns all fields except comments.
+	//
+	// Multiple `fields` parameters can be included in a request.
+	//
+	// Note: By default, this resource returns IDs only. This differs from GET issue where the default is all fields.
+	Fields []string
+
+	// Expand: Use expand to include additional information about issues in the response.
+	// TODO add proper docs, see https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-search/#api-rest-api-2-search-jql-get
+	Expand string `url:"expand,omitempty"`
+	// A list of up to 5 issue properties to include in the results
+	Properties []string `url:"properties,omitempty"`
+	// FieldsByKeys: Reference fields by their key (rather than ID).
+	// The default is false.
+	FieldsByKeys bool `url:"fieldsByKeys,omitempty"`
+	// FailFast: Fail this request early if we can't retrieve all field data.
+	// Default false.
+	FailFast bool `url:"failFast,omitempty"`
+	// ReconcileIssues: Strong consistency issue ids to be reconciled with search results. Accepts max 50 ids
+	ReconcileIssues []int `url:"reconcileIssues,omitempty"`
+}
+
 // searchResult is only a small wrapper around the Search (with JQL) method
 // to be able to parse the results
 type searchResult struct {
@@ -534,6 +591,24 @@ type searchResult struct {
 	StartAt    int     `json:"startAt" structs:"startAt"`
 	MaxResults int     `json:"maxResults" structs:"maxResults"`
 	Total      int     `json:"total" structs:"total"`
+}
+
+// searchResultV2 is only a small wrapper around the Jira Cloud-specific SearchV2 (with JQL) method
+// to be able to parse the results
+type searchResultV2 struct {
+	// IsLast: Indicates whether this is the last page of the paginated response.
+	IsLast bool `json:"isLast" structs:"isLast"`
+	// Issues: The list of issues found by the search or reconsiliation.
+	Issues []Issue `json:"issues" structs:"issues"`
+
+	// TODO Missing
+	// Field	names object
+	// Field   schema object
+
+	// NextPageToken: Continuation token to fetch the next page.
+	// If this result represents the last or the only page this token will be null.
+	// This token will expire in 7 days.
+	NextPageToken string `json:"nextPageToken" structs:"nextPageToken"`
 }
 
 // GetQueryOptions specifies the optional parameters for the Get Issue methods
@@ -1133,6 +1208,79 @@ func (s *IssueService) SearchWithContext(ctx context.Context, jql string, option
 func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Response, error) {
 	return s.SearchWithContext(context.Background(), jql, options)
 }
+
+// SearchV2JQL will search for tickets according to the jql for Jira Cloud
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-search/#api-rest-api-2-search-jql-get
+func (s *IssueService) SearchV2JQL(jql string, options *SearchOptionsV2) ([]Issue, *Response, error) {
+	return s.SearchV2JQLWithContext(context.Background(), jql, options)
+}
+
+func (s *IssueService) SearchV2JQLWithContext(ctx context.Context, jql string, options *SearchOptionsV2) ([]Issue, *Response, error) {
+	u := url.URL{
+		Path: "rest/api/2/search/jql",
+	}
+	uv := url.Values{}
+	if jql != "" {
+		uv.Add("jql", jql)
+	}
+
+	// TODO Check this out if this works with addOptions as well
+	if options != nil {
+		if options.NextPageToken != "" {
+			uv.Add("nextPageToken", options.NextPageToken)
+		}
+		if options.MaxResults != 0 {
+			uv.Add("maxResults", strconv.Itoa(options.MaxResults))
+		}
+		if strings.Join(options.Fields, ",") != "" {
+			uv.Add("fields", strings.Join(options.Fields, ","))
+		}
+		if options.Expand != "" {
+			uv.Add("expand", options.Expand)
+		}
+		if len(options.Properties) > 5 {
+			return nil, nil, fmt.Errorf("Search option Properties accepts maximum five entries")
+		}
+		if strings.Join(options.Properties, ",") != "" {
+			uv.Add("properties", strings.Join(options.Properties, ","))
+		}
+		if options.FieldsByKeys {
+			uv.Add("fieldsByKeys", "true")
+		}
+		if options.FailFast {
+			uv.Add("failFast", "true")
+		}
+		if len(options.ReconcileIssues) > 50 {
+			return nil, nil, fmt.Errorf("Search option ReconcileIssue accepts maximum 50 entries")
+		}
+		if len(options.ReconcileIssues) > 0 {
+			// TODO Extract this
+			// Convert []int to []string for strings.Join
+			reconcileIssuesStr := make([]string, len(options.ReconcileIssues))
+			for i, v := range options.ReconcileIssues {
+				reconcileIssuesStr[i] = strconv.Itoa(v)
+			}
+			uv.Add("reconcileIssues", strings.Join(reconcileIssuesStr, ","))
+		}
+	}
+
+	u.RawQuery = uv.Encode()
+
+	req, err := s.client.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
+	if err != nil {
+		return []Issue{}, nil, err
+	}
+
+	v := new(searchResultV2)
+	resp, err := s.client.Do(req, v)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+
+	return v.Issues, resp, err
+}
+
 
 // SearchPagesWithContext will get issues from all pages in a search
 //
