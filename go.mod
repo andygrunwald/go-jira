@@ -1,4 +1,4 @@
-module github.com/andygrunwald/go-jira/v2
+module github.com/andygrunwald/go-jira-search-v3/v1
 
 go 1.21
 
