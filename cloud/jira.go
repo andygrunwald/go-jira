@@ -272,9 +272,8 @@ func CheckResponse(r *http.Response) error {
 type Response struct {
 	*http.Response
 
-	StartAt    int
-	MaxResults int
-	Total      int
+	IsLast bool
+	NextPageToken    string
 }
 
 func newResponse(r *http.Response, v interface{}) *Response {
@@ -288,12 +287,10 @@ func newResponse(r *http.Response, v interface{}) *Response {
 func (r *Response) populatePageValues(v interface{}) {
 	switch value := v.(type) {
 	case *searchResult:
-		r.StartAt = value.StartAt
-		r.MaxResults = value.MaxResults
-		r.Total = value.Total
-	case *groupMembersResult:
-		r.StartAt = value.StartAt
-		r.MaxResults = value.MaxResults
-		r.Total = value.Total
+		r.NextPageToken = value.NextPageToken
+		r.IsLast = value.IsLast
+	//case *groupMembersResult:
+	//	r.NextPageToken = value.NextPageToken
+	//	r.IsLast = value.IsLast
 	}
 }
