@@ -1,5 +1,3 @@
-github.com/andygrunwald/go-jira/v2 v2.0.0-20250706111204-51c7813d292d h1:YgPN1Enyjf1ECbsuwcqAtyomCC+vL2nLgD9TGnwbHXo=
-github.com/andygrunwald/go-jira/v2 v2.0.0-20250706111204-51c7813d292d/go.mod h1:PmolOmLs9fDr4F240qyXuTuurFxblZiQKTztY+xAmKw=
 github.com/fatih/structs v1.1.0 h1:Q7juDM0QtcnhCpeyLGQKyg4TOIghuNXrkL32pHAUMxo=
 github.com/fatih/structs v1.1.0/go.mod h1:9NiDSp5zOcgEDl+j00MP/WkGVPOlPRLejGD8Ga6PJ7M=
 github.com/golang-jwt/jwt/v4 v4.5.2 h1:YtQM7lnr8iZ+j5q71MGKkNw9Mn7AjHM68uc9g5fXeUI=

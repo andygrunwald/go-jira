@@ -5,6 +5,6 @@
 To run unit / example tests:
 
 ```bash
-cd $GOPATH/src/github.com/andygrunwald/go-jira
+cd $GOPATH/src/github.com/jplanckeel/go-jira
 make test
 ```

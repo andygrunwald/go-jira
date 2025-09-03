@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	jira "github.com/andygrunwald/go-jira/v2/cloud"
+	jira "github.com/jplanckeel/go-jira/v3/cloud"
 )
 
 func main() {
