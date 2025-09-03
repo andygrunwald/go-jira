@@ -12,30 +12,26 @@ import (
 // You may have usecase where you need to get all the issues according to jql
 // This is where this example comes in.
 func GetAllIssues(client *jira.Client, searchString string) ([]jira.Issue, error) {
-	last := 0
 	var issues []jira.Issue
-	for {
-		opt := &jira.SearchOptions{
-			MaxResults: 1000, // Max results can go up to 1000
-			StartAt:    last,
-		}
+	opt := &jira.SearchOptions{
+		MaxResults: 1000, // Max results can go up to 1000
+	}
 
+	for {
 		chunk, resp, err := client.Issue.Search(context.Background(), searchString, opt)
 		if err != nil {
 			return nil, err
 		}
 
-		total := resp.Total
-		if issues == nil {
-			issues = make([]jira.Issue, 0, total)
-		}
 		issues = append(issues, chunk...)
-		last = resp.StartAt + len(chunk)
-		if last >= total {
+
+		if resp.IsLast {
 			return issues, nil
 		}
-	}
 
+		// Set the next page token for the next iteration
+		opt.NextPageToken = resp.NextPageToken
+	}
 }
 
 func main() {
