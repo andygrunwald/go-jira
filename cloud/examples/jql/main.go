@@ -8,25 +8,19 @@ import (
 )
 
 func main() {
-	jiraClient, _ := jira.NewClient("https://issues.apache.org/jira/", nil)
+	tp := jira.BasicAuthTransport{
+		Username: "<username>",
+		APIToken: "<api-token>",
+	}
+	jiraClient, _ := jira.NewClient("https://go-jira-opensource.atlassian.net/", tp.Client())
 
 	// Running JQL query
-
-	jql := "project = Mesos and type = Bug and Status NOT IN (Resolved)"
+	jql := "type = Bug and Status NOT IN (Resolved)"
 	fmt.Printf("Usecase: Running a JQL query '%s'\n", jql)
-	issues, resp, err := jiraClient.Issue.Search(context.Background(), jql, nil)
-	if err != nil {
-		panic(err)
+	options := &jira.SearchOptionsV2{
+		Fields: []string{"*all"},
 	}
-	outputResponse(issues, resp)
-
-	fmt.Println("")
-	fmt.Println("")
-
-	// Running an empty JQL query to get all tickets
-	jql = ""
-	fmt.Printf("Usecase: Running an empty JQL query to get all tickets\n")
-	issues, resp, err = jiraClient.Issue.Search(context.Background(), jql, nil)
+	issues, resp, err := jiraClient.Issue.SearchV2JQL(context.Background(), jql, options)
 	if err != nil {
 		panic(err)
 	}
