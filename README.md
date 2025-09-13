@@ -1,8 +1,8 @@
 # go-jira
 
-[![GoDoc](https://pkg.go.dev/badge/github.com/andygrunwald/go-jira?utm_source=godoc)](https://pkg.go.dev/github.com/andygrunwald/go-jira)
-[![Build Status](https://github.com/andygrunwald/go-jira/actions/workflows/testing.yml/badge.svg)](https://github.com/andygrunwald/go-jira/actions/workflows/testing.yml)
-[![Go Report Card](https://img.shields.io/badge/go%20report-A+-brightgreen.svg?style=flat)](https://goreportcard.com/report/github.com/andygrunwald/go-jira)
+[![GoDoc](https://pkg.go.dev/badge/github.com/jplanckeel/go-jira?utm_source=godoc)](https://pkg.go.dev/github.com/jplanckeel/go-jira)
+[![Build Status](https://github.com/jplanckeel/go-jira/actions/workflows/testing.yml/badge.svg)](https://github.com/jplanckeel/go-jira/actions/workflows/testing.yml)
+[![Go Report Card](https://img.shields.io/badge/go%20report-A+-brightgreen.svg?style=flat)](https://goreportcard.com/report/github.com/jplanckeel/go-jira)
 
 [Go](https://go.dev/) client library for [Atlassian Jira](https://www.atlassian.com/software/jira).
 
@@ -21,11 +21,11 @@ The goals of v2 are:
 * being compliant with different kinds of Atlassian Jira products (on-premise vs. cloud)
 * remove flaws introduced during the early times of this library
 
-See our milestone [Road to v2](https://github.com/andygrunwald/go-jira/milestone/1) and provide feedback in [Development is kicking: Road to v2 🚀 #489](https://github.com/andygrunwald/go-jira/issues/489).
+See our milestone [Road to v2](https://github.com/jplanckeel/go-jira/milestone/1) and provide feedback in [Development is kicking: Road to v2 🚀 #489](https://github.com/jplanckeel/go-jira/issues/489).
 Attention: The current `main` branch represents the v2 development version - we treat this version as unstable and breaking changes are expected.
 
-**If you want to stay more stable, please use v1.\*** - See our [releases](https://github.com/andygrunwald/go-jira/releases).
-Latest stable release: [v1.16.0](https://github.com/andygrunwald/go-jira/releases/tag/v1.16.0)
+**If you want to stay more stable, please use v1.\*** - See our [releases](https://github.com/jplanckeel/go-jira/releases).
+Latest stable release: [v1.16.0](https://github.com/jplanckeel/go-jira/releases/tag/v1.16.0)
 
 ## Features
 
@@ -49,19 +49,19 @@ of Go are officially supported.
 It is go gettable
 
 ```sh
-go get github.com/andygrunwald/go-jira
+go get github.com/jplanckeel/go-jira
 ```
 
 ## API
 
-Please have a look at the [GoDoc documentation](https://pkg.go.dev/github.com/andygrunwald/go-jira) for a detailed API description.
+Please have a look at the [GoDoc documentation](https://pkg.go.dev/github.com/jplanckeel/go-jira) for a detailed API description.
 
 The [latest Jira REST API documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/) was the base document for this package.
 
 ## Examples
 
 Further a few examples how the API can be used.
-A few more examples are available in the [GoDoc examples section](https://pkg.go.dev/github.com/andygrunwald/go-jira#section-directories).
+A few more examples are available in the [GoDoc examples section](https://pkg.go.dev/github.com/jplanckeel/go-jira#section-directories).
 
 ### Get a single issue
 
@@ -72,7 +72,7 @@ package main
 
 import (
 	"fmt"
-	jira "github.com/andygrunwald/go-jira"
+	jira "github.com/jplanckeel/go-jira"
 )
 
 func main() {
@@ -137,7 +137,7 @@ Depending on your version of Jira, either of the above token authentication exam
 
 If you want to connect via OAuth to your Jira Cloud instance checkout the [example of using OAuth authentication with Jira in Go](https://gist.github.com/Lupus/edafe9a7c5c6b13407293d795442fe67) by [@Lupus](https://github.com/Lupus).
 
-For more details have a look at the [issue #56](https://github.com/andygrunwald/go-jira/issues/56).
+For more details have a look at the [issue #56](https://github.com/jplanckeel/go-jira/issues/56).
 
 ### Create an issue
 
@@ -148,7 +148,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/andygrunwald/go-jira"
+	"github.com/jplanckeel/go-jira"
 )
 
 func main() {
@@ -199,7 +199,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/andygrunwald/go-jira"
+	"github.com/jplanckeel/go-jira"
 )
 
 func main() {
@@ -239,7 +239,7 @@ func main() {
 Jira API has limit on maxResults it can return. You may have a usecase where you need to get all issues for given JQL.
 This example shows reference implementation of GetAllIssues function which does pagination on Jira API to get all the issues for given JQL.
 
-Please look at [Pagination Example](https://github.com/andygrunwald/go-jira/blob/main/cloud/examples/pagination/main.go)
+Please look at [Pagination Example](https://github.com/jplanckeel/go-jira/blob/main/cloud/examples/pagination/main.go)
 
 ### Call a not implemented API endpoint
 
@@ -252,7 +252,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/andygrunwald/go-jira"
+	"github.com/jplanckeel/go-jira"
 )
 
 func main() {
@@ -286,7 +286,7 @@ func main() {
 
 ## Implementations
 
-* [andygrunwald/jitic](https://github.com/andygrunwald/jitic) - The Jira Ticket Checker
+* [jplanckeel/jitic](https://github.com/jplanckeel/jitic) - The Jira Ticket Checker
 
 ## Development
 
@@ -318,13 +318,13 @@ We ❤️ PR's
 
 Contribution, in any kind of way, is highly welcome!
 It doesn't matter if you are not able to write code.
-Creating issues or holding talks and help other people to use [go-jira](https://github.com/andygrunwald/go-jira) is contribution, too!
+Creating issues or holding talks and help other people to use [go-jira](https://github.com/jplanckeel/go-jira) is contribution, too!
 A few examples:
 
 * Correct typos in the README / documentation
 * Reporting bugs
 * Implement a new feature or endpoint
-* Sharing the love of [go-jira](https://github.com/andygrunwald/go-jira) and help people to get use to it
+* Sharing the love of [go-jira](https://github.com/jplanckeel/go-jira) and help people to get use to it
 
 If you are new to pull requests, checkout [Collaborating on projects using issues and pull requests / Creating a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request).
 
@@ -377,7 +377,7 @@ git push --tags
 
 Manually copy/paste text from changelog (for this new version) into the release on Github.com. E.g.
 
-[https://github.com/andygrunwald/go-jira/releases/edit/v1.11.0](https://github.com/andygrunwald/go-jira/releases/edit/v1.11.0)
+[https://github.com/jplanckeel/go-jira/releases/edit/v1.11.0](https://github.com/jplanckeel/go-jira/releases/edit/v1.11.0)
 
 ## License
 

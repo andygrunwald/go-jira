@@ -1,4 +1,4 @@
-module github.com/andygrunwald/go-jira/v2
+module github.com/jplanckeel/go-jira/v3
 
 go 1.21
 

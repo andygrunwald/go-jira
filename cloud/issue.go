@@ -517,13 +517,23 @@ type CommentVisibility struct {
 // A request to a pages API will result in a values array wrapped in a JSON object with some paging metadata
 // Default Pagination options
 type SearchOptions struct {
-	// StartAt: The starting index of the returned projects. Base index: 0.
-	StartAt int `url:"startAt,omitempty"`
+	// FailFast: Fail this request early if we can't retrieve all field data.
+	FailFast bool `url:"failFast,omitempty"`
+	// FieldsByKeys: Reference fields by their key (rather than ID). The default is false.
+	FieldsByKeys bool `url:"fieldsByKeys,omitempty"`
 	// MaxResults: The maximum number of projects to return per page. Default: 50.
 	MaxResults int `url:"maxResults,omitempty"`
+	// ReconcileIssues: Strong consistency issue ids to be reconciled with search results. Accepts max 50 ids
+	econcileIssues []int `url:"reconcileIssues,omitempty"`
+	// JQL: A JQL query string to filter the results on. See https://confluence.atlassian.com/x/egORLQ for more details about JQL.
+	JQL string `url:"jql,omitempty"`
+	// NextPageToken: The token for a page to fetch that is not the first page. The first page has a nextPageToken of null. Use the nextPageToken to fetch the next page of issues.
+	NextPageToken string `url:"nextPageToken,omitempty"`
 	// Expand: Expand specific sections in the returned issues
 	Expand string `url:"expand,omitempty"`
-	Fields []string
+	// Properties: A list of up to 5 issue properties to include in the results. This parameter accepts a comma-separated list.
+	Properties []string `url:"properties,omitempty"`
+	Fields     []string
 	// ValidateQuery: The validateQuery param offers control over whether to validate and how strictly to treat the validation. Default: strict.
 	ValidateQuery string `url:"validateQuery,omitempty"`
 }
@@ -531,10 +541,9 @@ type SearchOptions struct {
 // searchResult is only a small wrapper around the Search (with JQL) method
 // to be able to parse the results
 type searchResult struct {
-	Issues     []Issue `json:"issues" structs:"issues"`
-	StartAt    int     `json:"startAt" structs:"startAt"`
-	MaxResults int     `json:"maxResults" structs:"maxResults"`
-	Total      int     `json:"total" structs:"total"`
+	IsLast        bool    `json:"isLast" structs:"isLast"`
+	NextPageToken string  `json:"nextPageToken" structs:"nextPageToken"`
+	Issues        []Issue `json:"issues" structs:"issues"`
 }
 
 // GetQueryOptions specifies the optional parameters for the Get Issue methods
@@ -1043,10 +1052,10 @@ func (s *IssueService) AddLink(ctx context.Context, issueLink *IssueLink) (*Resp
 // Jira API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
 //
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
-// This double check effort is done for v2 - Remove this two lines if this is completed.
+// This double check effort is done for v3 - Remove this two lines if this is completed.
 func (s *IssueService) Search(ctx context.Context, jql string, options *SearchOptions) ([]Issue, *Response, error) {
 	u := url.URL{
-		Path: "rest/api/2/search",
+		Path: "rest/api/3/search/jql",
 	}
 	uv := url.Values{}
 	if jql != "" {
@@ -1054,8 +1063,8 @@ func (s *IssueService) Search(ctx context.Context, jql string, options *SearchOp
 	}
 
 	if options != nil {
-		if options.StartAt != 0 {
-			uv.Add("startAt", strconv.Itoa(options.StartAt))
+		if options.NextPageToken != "" {
+			uv.Add("nextPageToken", options.NextPageToken)
 		}
 		if options.MaxResults != 0 {
 			uv.Add("maxResults", strconv.Itoa(options.MaxResults))
@@ -1095,7 +1104,7 @@ func (s *IssueService) Search(ctx context.Context, jql string, options *SearchOp
 func (s *IssueService) SearchPages(ctx context.Context, jql string, options *SearchOptions, f func(Issue) error) error {
 	if options == nil {
 		options = &SearchOptions{
-			StartAt:    0,
+			NextPageToken:    "",
 			MaxResults: 50,
 		}
 	}
@@ -1117,15 +1126,16 @@ func (s *IssueService) SearchPages(ctx context.Context, jql string, options *Sea
 		for _, issue := range issues {
 			err = f(issue)
 			if err != nil {
+	
 				return err
 			}
 		}
 
-		if resp.StartAt+resp.MaxResults >= resp.Total {
+		if resp.IsLast {
 			return nil
 		}
 
-		options.StartAt += resp.MaxResults
+		options.NextPageToken += resp.NextPageToken
 		issues, resp, err = s.Search(ctx, jql, options)
 		if err != nil {
 			return err

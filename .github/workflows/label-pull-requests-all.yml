@@ -19,7 +19,7 @@ jobs:
       - uses: actions/labeler@v5
         with:
           sync-labels: false
-          # Output of gh pr list --repo andygrunwald/go-jira --state open --limit 100 --json number --jq ".[].number"
+          # Output of gh pr list --repo jplanckeel/go-jira --state open --limit 100 --json number --jq ".[].number"
           pr-number: |
             695
             683
