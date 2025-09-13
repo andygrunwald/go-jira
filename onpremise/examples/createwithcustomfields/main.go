@@ -51,7 +51,9 @@ func main() {
 		},
 	}
 
-	issue, _, err := client.Issue.Create(context.Background(), &i)
+	issue, _, err := client.Issue.Create(context.Background(), &i, &jira.CreateIssueOptions{
+		UpdateHistory: true,
+	})
 	if err != nil {
 		panic(err)
 	}
