@@ -45,7 +45,7 @@ func TestBoardService_GetAllBoards_WithFilter(t *testing.T) {
 	testMux.HandleFunc(testapiEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, testapiEndpoint)
-		testRequestParams(t, r, map[string]string{"type": "scrum", "name": "Test", "startAt": "1", "maxResults": "10", "projectKeyOrId": "TE"})
+		testRequestParams(t, r, map[string]string{"type": "scrum", "name": "Test", "maxResults": "10", "projectKeyOrId": "TE"})
 		fmt.Fprint(w, string(raw))
 	})
 
@@ -54,7 +54,6 @@ func TestBoardService_GetAllBoards_WithFilter(t *testing.T) {
 		Name:           "Test",
 		ProjectKeyOrID: "TE",
 	}
-	boardsListOptions.StartAt = 1
 	boardsListOptions.MaxResults = 10
 
 	projects, _, err := testClient.Board.GetAllBoards(context.Background(), boardsListOptions)
