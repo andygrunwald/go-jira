@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     if: (github.actor != 'dependabot[bot]')
     steps:
-      - uses: actions/labeler@v5
+      - uses: actions/labeler@v6
         with:
           sync-labels: false
           # Output of gh pr list --repo andygrunwald/go-jira --state open --limit 100 --json number --jq ".[].number"
