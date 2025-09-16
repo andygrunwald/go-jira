@@ -991,14 +991,14 @@ func (s *IssueService) GetComment(ctx context.Context, issueID, commentID string
 		return nil, nil, err
 	}
 
-	responseComments := new(Comment)
-	resp, err := s.client.Do(req, &responseComments)
+	responseComment := new(Comment)
+	resp, err := s.client.Do(req, &responseComment)
 	if err != nil {
 		jerr := NewJiraError(resp, err)
 		return nil, resp, jerr
 	}
 
-	return responseComments, resp, nil
+	return responseComment, resp, nil
 }
 
 // GetComments retrieves all comments for a given issueID.
