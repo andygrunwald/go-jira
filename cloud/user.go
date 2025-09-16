@@ -209,11 +209,11 @@ func (s *UserService) GetCurrentUser(ctx context.Context) (*User, *Response, err
 	return &user, resp, nil
 }
 
-// GetAllUsers a list of all users, including active users, inactive users and previously deleted users that have an Atlassian account.
+// GetAllUsers returns a list of all users, including active users, inactive users and previously deleted users that have an Atlassian account.
 //
-// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-users/#api-rest-api-2-users-search-get
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-users/#api-rest-api-2-users-get
 func (s *UserService) GetAllUsers(ctx context.Context) ([]User, *Response, error) {
-	const apiEndpoint = "rest/api/2/users/search"
+	const apiEndpoint = "rest/api/2/users"
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
 	if err != nil {
 		return nil, nil, err
