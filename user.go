@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 )
 
 // UserService handles users for the Jira instance / API.
@@ -110,7 +110,7 @@ func (s *UserService) CreateWithContext(ctx context.Context, user *User) (*User,
 
 	responseUser := new(User)
 	defer resp.Body.Close()
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		e := fmt.Errorf("could not read the returned data")
 		return nil, resp, NewJiraError(resp, e)

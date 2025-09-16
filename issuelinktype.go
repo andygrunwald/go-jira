@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 )
 
 // IssueLinkTypeService handles issue link types for the Jira instance / API.
@@ -77,7 +77,7 @@ func (s *IssueLinkTypeService) CreateWithContext(ctx context.Context, linkType *
 
 	responseLinkType := new(IssueLinkType)
 	defer resp.Body.Close()
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		e := fmt.Errorf("could not read the returned data")
 		return nil, resp, NewJiraError(resp, e)

@@ -15,13 +15,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go: [ '1.18', '1.17' ]
+        go: [ '1.22', '1.21' ]
         os: [ 'windows-latest', 'ubuntu-latest', 'macOS-latest' ]
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go }}
 
@@ -33,9 +33,9 @@ jobs:
         run: make vet
 
       - name: Run staticcheck (Go ${{ matrix.go }})
-        uses: dominikh/staticcheck-action@v1.2.0
+        uses: dominikh/staticcheck-action@v1.4.0
         with:
-          version: "2022.1"
+          version: "2023.1"
           install-go: false
           cache-key: ${{ matrix.go }}
 

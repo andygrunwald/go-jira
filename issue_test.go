@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"reflect"
 	"strings"
 	"testing"
@@ -418,7 +418,7 @@ func TestIssueService_DownloadAttachment(t *testing.T) {
 	}
 	defer resp.Body.Close()
 
-	attachment, err := ioutil.ReadAll(resp.Body)
+	attachment, err := io.ReadAll(resp.Body)
 	if err != nil {
 		t.Error("Expected attachment text", err)
 	}
@@ -477,7 +477,7 @@ func TestIssueService_PostAttachment(t *testing.T) {
 			status = http.StatusNoContent
 		} else {
 			// Read the file into memory
-			data, err := ioutil.ReadAll(file)
+			data, err := io.ReadAll(file)
 			if err != nil {
 				status = http.StatusInternalServerError
 			}
@@ -823,7 +823,7 @@ func TestIssueService_GetTransitions(t *testing.T) {
 
 	testAPIEndpoint := "/rest/api/2/issue/123/transitions"
 
-	raw, err := ioutil.ReadFile("./mocks/transitions.json")
+	raw, err := os.ReadFile("./mocks/transitions.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -1787,7 +1787,7 @@ func TestIssueService_GetRemoteLinks(t *testing.T) {
 
 	testAPIEndpoint := "/rest/api/2/issue/123/remotelink"
 
-	raw, err := ioutil.ReadFile("./mocks/remote_links.json")
+	raw, err := os.ReadFile("./mocks/remote_links.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
