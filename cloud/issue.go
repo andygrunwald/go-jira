@@ -960,7 +960,7 @@ func (s *IssueService) UpdateIssue(ctx context.Context, jiraID string, data map[
 
 // AddComment adds a new comment to issueID.
 //
-// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-comments/#api-rest-api-3-issue-issueidorkey-comment-post
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-comments/#api-rest-api-2-issue-issueidorkey-comment-post
 //
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
 // This double check effort is done for v2 - Remove this two lines if this is completed.
@@ -983,7 +983,7 @@ func (s *IssueService) AddComment(ctx context.Context, issueID string, comment *
 
 // GetComment returns a comment for issueID and commentID.
 //
-// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-comments/#api-rest-api-3-issue-issueidorkey-comment-id-get
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-comments/#api-rest-api-2-issue-issueidorkey-comment-id-get
 func (s *IssueService) GetComment(ctx context.Context, issueID, commentID string) (*Comment, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, commentID)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -1003,7 +1003,7 @@ func (s *IssueService) GetComment(ctx context.Context, issueID, commentID string
 
 // GetComments retrieves all comments for a given issueID.
 //
-// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-comments/#api-rest-api-3-issue-issueidorkey-comment-get
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-comments/#api-rest-api-2-issue-issueidorkey-comment-get
 func (s *IssueService) GetComments(ctx context.Context, issueID string) (*Comments, *Response, error) {
 	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment", issueID)
 	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
@@ -1023,7 +1023,7 @@ func (s *IssueService) GetComments(ctx context.Context, issueID string) (*Commen
 
 // UpdateComment updates the body of a comment, identified by comment.ID, on the issueID.
 //
-// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-comments/#api-rest-api-3-issue-issueidorkey-comment-id-put
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-comments/#api-rest-api-2-issue-issueidorkey-comment-id-put
 //
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
 // This double check effort is done for v2 - Remove this two lines if this is completed.
