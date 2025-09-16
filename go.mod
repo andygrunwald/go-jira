@@ -1,6 +1,6 @@
 module github.com/andygrunwald/go-jira
 
-go 1.15
+go 1.21
 
 require (
 	github.com/fatih/structs v1.1.0
