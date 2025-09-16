@@ -209,6 +209,25 @@ func (s *UserService) GetCurrentUser(ctx context.Context) (*User, *Response, err
 	return &user, resp, nil
 }
 
+// GetAllUsers a list of all users, including active users, inactive users and previously deleted users that have an Atlassian account.
+//
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-users/#api-rest-api-2-users-search-get
+func (s *UserService) GetAllUsers(ctx context.Context) ([]User, *Response, error) {
+	const apiEndpoint = "rest/api/2/users/search"
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var users []User
+	resp, err := s.client.Do(req, &users)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+
+	return users, resp, nil
+}
+
 // WithMaxResults sets the max results to return
 func WithMaxResults(maxResults int) UserSearchF {
 	return func(s UserSearch) UserSearch {
@@ -268,7 +287,7 @@ func WithProperty(property string) UserSearchF {
 // Find searches for user info from Jira:
 // It can find users by email or display name using the query parameter
 //
-// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-user-search-get
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-user-search/#api-rest-api-2-user-search-get
 //
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
 // This double check effort is done for v2 - Remove this two lines if this is completed.
