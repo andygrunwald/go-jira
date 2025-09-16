@@ -418,7 +418,7 @@ func TestIssueService_DownloadAttachment(t *testing.T) {
 	}
 	defer resp.Body.Close()
 
-	attachment, err := ioutil.ReadAll(resp.Body)
+	attachment, err := io.ReadAll(resp.Body)
 	if err != nil {
 		t.Error("Expected attachment text", err)
 	}
@@ -477,7 +477,7 @@ func TestIssueService_PostAttachment(t *testing.T) {
 			status = http.StatusNoContent
 		} else {
 			// Read the file into memory
-			data, err := ioutil.ReadAll(file)
+			data, err := io.ReadAll(file)
 			if err != nil {
 				status = http.StatusInternalServerError
 			}

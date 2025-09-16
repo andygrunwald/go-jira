@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -904,7 +903,7 @@ func (s *IssueService) CreateWithContext(ctx context.Context, issue *Issue) (*Is
 
 	responseIssue := new(Issue)
 	defer resp.Body.Close()
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, resp, fmt.Errorf("could not read the returned data")
 	}

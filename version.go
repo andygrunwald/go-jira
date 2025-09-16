@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 )
 
 // VersionService handles Versions for the Jira instance / API.
@@ -68,7 +68,7 @@ func (s *VersionService) CreateWithContext(ctx context.Context, version *Version
 
 	responseVersion := new(Version)
 	defer resp.Body.Close()
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		e := fmt.Errorf("could not read the returned data")
 		return nil, resp, NewJiraError(resp, e)

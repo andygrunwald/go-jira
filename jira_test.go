@@ -3,7 +3,7 @@ package jira
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -172,7 +172,7 @@ func TestClient_NewRequest(t *testing.T) {
 	}
 
 	// Test that body was JSON encoded
-	body, _ := ioutil.ReadAll(req.Body)
+	body, _ := io.ReadAll(req.Body)
 	if got, want := string(body), outBody; got != want {
 		t.Errorf("NewRequest(%v) Body is %v, want %v", inBody, got, want)
 	}
@@ -196,7 +196,7 @@ func TestClient_NewRawRequest(t *testing.T) {
 	}
 
 	// Test that body was JSON encoded
-	body, _ := ioutil.ReadAll(req.Body)
+	body, _ := io.ReadAll(req.Body)
 	if got, want := string(body), outBody; got != want {
 		t.Errorf("NewRawRequest(%v) Body is %v, want %v", inBody, got, want)
 	}
@@ -386,7 +386,7 @@ func TestClient_Do_HTTPResponse(t *testing.T) {
 
 	req, _ := testClient.NewRequest("GET", "/", nil)
 	res, _ := testClient.Do(req, nil)
-	_, err := ioutil.ReadAll(res.Body)
+	_, err := io.ReadAll(res.Body)
 
 	if err != nil {
 		t.Errorf("Error on parsing HTTP Response = %v", err.Error())
