@@ -2,8 +2,8 @@ package jira
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -12,7 +12,7 @@ func TestIssueLinkTypeService_GetList(t *testing.T) {
 	defer teardown()
 	testAPIEndpoint := "/rest/api/2/issueLinkType"
 
-	raw, err := ioutil.ReadFile("./mocks/all_issuelinktypes.json")
+	raw, err := os.ReadFile("./mocks/all_issuelinktypes.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
