@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
+	"strconv"
 )
 
 // UserService handles users for the Jira instance / API.
@@ -209,6 +211,38 @@ func (s *UserService) GetCurrentUser(ctx context.Context) (*User, *Response, err
 	return &user, resp, nil
 }
 
+// GetAllUsers returns a list of all users, including active users, inactive users and previously deleted users that have an Atlassian account.
+//
+// JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-users/#api-rest-api-2-users-get
+func (s *UserService) GetAllUsers(ctx context.Context, options *SearchOptions) ([]User, *Response, error) {
+	u := url.URL{
+		Path: "rest/api/2/users",
+	}
+	uv := url.Values{}
+	if options != nil {
+		if options.StartAt != 0 {
+			uv.Add("startAt", strconv.Itoa(options.StartAt))
+		}
+		if options.MaxResults != 0 {
+			uv.Add("maxResults", strconv.Itoa(options.MaxResults))
+		}
+	}
+	u.RawQuery = uv.Encode()
+
+	req, err := s.client.NewRequest(ctx, http.MethodGet, u.String(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var users []User
+	resp, err := s.client.Do(req, &users)
+	if err != nil {
+		return nil, resp, NewJiraError(resp, err)
+	}
+
+	return users, resp, nil
+}
+
 // WithMaxResults sets the max results to return
 func WithMaxResults(maxResults int) UserSearchF {
 	return func(s UserSearch) UserSearch {
@@ -268,7 +302,7 @@ func WithProperty(property string) UserSearchF {
 // Find searches for user info from Jira:
 // It can find users by email or display name using the query parameter
 //
-// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-user-search-get
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-user-search/#api-rest-api-2-user-search-get
 //
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
 // This double check effort is done for v2 - Remove this two lines if this is completed.
