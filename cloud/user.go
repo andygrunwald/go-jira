@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
+	"strconv"
 )
 
 // UserService handles users for the Jira instance / API.
@@ -212,9 +214,22 @@ func (s *UserService) GetCurrentUser(ctx context.Context) (*User, *Response, err
 // GetAllUsers returns a list of all users, including active users, inactive users and previously deleted users that have an Atlassian account.
 //
 // JIRA API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-users/#api-rest-api-2-users-get
-func (s *UserService) GetAllUsers(ctx context.Context) ([]User, *Response, error) {
-	const apiEndpoint = "rest/api/2/users"
-	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
+func (s *UserService) GetAllUsers(ctx context.Context, options *SearchOptions) ([]User, *Response, error) {
+	u := url.URL{
+		Path: "rest/api/2/users",
+	}
+	uv := url.Values{}
+	if options != nil {
+		if options.StartAt != 0 {
+			uv.Add("startAt", strconv.Itoa(options.StartAt))
+		}
+		if options.MaxResults != 0 {
+			uv.Add("maxResults", strconv.Itoa(options.MaxResults))
+		}
+	}
+	u.RawQuery = uv.Encode()
+
+	req, err := s.client.NewRequest(ctx, http.MethodGet, u.String(), nil)
 	if err != nil {
 		return nil, nil, err
 	}
