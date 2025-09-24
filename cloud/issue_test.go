@@ -294,7 +294,7 @@ func TestIssueService_GetComments(t *testing.T) {
 			fmt.Fprint(w, str)
 		})
 
-		comments, _, err := testClient.Issue.GetComments(context.Background(), "10000", &SearchOptions{StartAt: 10, MaxResults: 20, Expand: "renderedBody", OrderBy: "created"})
+		comments, _, err := testClient.Issue.GetComments(context.Background(), "10000", &SearchOptions{StartAt: 10, MaxResults: 50, Expand: "renderedBody", OrderBy: "created"})
 		if comments == nil {
 			t.Fatal("Expected Comments. Comments are nil")
 		}
