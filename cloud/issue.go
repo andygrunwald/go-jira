@@ -984,9 +984,17 @@ func (s *IssueService) AddComment(ctx context.Context, issueID string, comment *
 // GetComment returns a comment for issueID and commentID.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-comments/#api-rest-api-2-issue-issueidorkey-comment-id-get
-func (s *IssueService) GetComment(ctx context.Context, issueID, commentID string) (*Comment, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, commentID)
-	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
+func (s *IssueService) GetComment(ctx context.Context, issueID, commentID string, options *SearchOptions) (*Comment, *Response, error) {
+	u := url.URL{
+		Path: fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, commentID),
+	}
+	uv := url.Values{}
+	if options != nil && options.Expand != "" {
+		uv.Set("expand", options.Expand)
+	}
+	u.RawQuery = uv.Encode()
+
+	req, err := s.client.NewRequest(ctx, http.MethodGet, u.String(), nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1004,9 +1012,17 @@ func (s *IssueService) GetComment(ctx context.Context, issueID, commentID string
 // GetComments retrieves all comments for a given issueID.
 //
 // Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-comments/#api-rest-api-2-issue-issueidorkey-comment-get
-func (s *IssueService) GetComments(ctx context.Context, issueID string) (*Comments, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment", issueID)
-	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil)
+func (s *IssueService) GetComments(ctx context.Context, issueID string, options *SearchOptions) (*Comments, *Response, error) {
+	u := url.URL{
+		Path: fmt.Sprintf("rest/api/2/issue/%s/comment", issueID),
+	}
+	uv := url.Values{}
+	if options != nil && options.Expand != "" {
+		uv.Set("expand", options.Expand)
+	}
+	u.RawQuery = uv.Encode()
+
+	req, err := s.client.NewRequest(ctx, http.MethodGet, u.String(), nil)
 	if err != nil {
 		return nil, nil, err
 	}

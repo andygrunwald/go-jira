@@ -208,14 +208,6 @@ func TestIssueService_AddComment(t *testing.T) {
 func TestIssueService_GetComment(t *testing.T) {
 	setup()
 	defer teardown()
-	testMux.HandleFunc("/rest/api/2/issue/10000/comment/10001", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, "/rest/api/2/issue/10000/comment/10001")
-
-		w.WriteHeader(http.StatusCreated)
-		fmt.Fprint(w, `{"self":"http://www.example.com/jira/rest/api/2/issue/10010/comment/10001","id":"10001","author":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget venenatis elit. Duis eu justo eget augue iaculis fermentum. Sed semper quam laoreet nisi egestas at posuere augue semper.","updateAuthor":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"created":"2016-03-16T04:22:37.356+0000","updated":"2016-03-16T04:22:37.356+0000","visibility":{"type":"role","value":"Administrators"}}`)
-	})
-
 	c := &Comment{
 		ID:   "10001",
 		Body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget venenatis elit. Duis eu justo eget augue iaculis fermentum. Sed semper quam laoreet nisi egestas at posuere augue semper.",
@@ -224,13 +216,40 @@ func TestIssueService_GetComment(t *testing.T) {
 			Value: "Administrators",
 		},
 	}
-	comment, _, err := testClient.Issue.GetComment(context.Background(), "10000", c.ID)
-	if comment == nil {
-		t.Error("Expected Comment. Comment is nil")
-	}
-	if err != nil {
-		t.Errorf("Error given: %s", err)
-	}
+	t.Run("get-comment", func(t *testing.T) {
+		testMux.HandleFunc("/rest/api/2/issue/10000/comment/10001", func(w http.ResponseWriter, r *http.Request) {
+			testMethod(t, r, http.MethodGet)
+			testRequestURL(t, r, "/rest/api/2/issue/10000/comment/10001")
+
+			w.WriteHeader(http.StatusCreated)
+			fmt.Fprint(w, `{"self":"http://www.example.com/jira/rest/api/2/issue/10010/comment/10001","id":"10001","author":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget venenatis elit. Duis eu justo eget augue iaculis fermentum. Sed semper quam laoreet nisi egestas at posuere augue semper.","updateAuthor":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"created":"2016-03-16T04:22:37.356+0000","updated":"2016-03-16T04:22:37.356+0000","visibility":{"type":"role","value":"Administrators"}}`)
+		})
+
+		comment, _, err := testClient.Issue.GetComment(context.Background(), "10000", c.ID, nil)
+		if comment == nil {
+			t.Error("Expected Comment. Comment is nil")
+		}
+		if err != nil {
+			t.Errorf("Error given: %s", err)
+		}
+	})
+	t.Run("get-comment-expanded", func(t *testing.T) {
+		testMux.HandleFunc("/rest/api/2/issue/10000/comment/10001?expand=renderedBody", func(w http.ResponseWriter, r *http.Request) {
+			testMethod(t, r, http.MethodGet)
+			testRequestURL(t, r, "/rest/api/2/issue/10000/comment/10001?expand=renderedBody")
+
+			w.WriteHeader(http.StatusCreated)
+			fmt.Fprint(w, `{"self":"http://www.example.com/jira/rest/api/2/issue/10010/comment/10001?expand=renderedBody","id":"10001","author":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget venenatis elit. Duis eu justo eget augue iaculis fermentum. Sed semper quam laoreet nisi egestas at posuere augue semper.","updateAuthor":{"self":"http://www.example.com/jira/rest/api/2/user?username=fred","name":"fred","displayName":"Fred F. User","active":false},"created":"2016-03-16T04:22:37.356+0000","updated":"2016-03-16T04:22:37.356+0000","visibility":{"type":"role","value":"Administrators"}}`)
+		})
+
+		comment, _, err := testClient.Issue.GetComment(context.Background(), "10000", c.ID, &SearchOptions{Expand: "renderedBody"})
+		if comment == nil {
+			t.Error("Expected Comment. Comment is nil")
+		}
+		if err != nil {
+			t.Errorf("Error given: %s", err)
+		}
+	})
 }
 
 func TestIssueService_GetComments(t *testing.T) {
@@ -246,24 +265,46 @@ func TestIssueService_GetComments(t *testing.T) {
 	}}}
 	b, _ := json.Marshal(expected)
 	str := fmt.Sprintf("%s\n", b)
-	testMux.HandleFunc("/rest/api/2/issue/10000/comment", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodGet)
-		testRequestURL(t, r, "/rest/api/2/issue/10000/comment")
+	t.Run("get-comments", func(t *testing.T) {
+		testMux.HandleFunc("/rest/api/2/issue/10000/comment", func(w http.ResponseWriter, r *http.Request) {
+			testMethod(t, r, http.MethodGet)
+			testRequestURL(t, r, "/rest/api/2/issue/10000/comment")
 
-		w.WriteHeader(http.StatusCreated)
-		fmt.Fprint(w, str)
+			w.WriteHeader(http.StatusCreated)
+			fmt.Fprint(w, str)
+		})
+
+		comments, _, err := testClient.Issue.GetComments(context.Background(), "10000", nil)
+		if comments == nil {
+			t.Fatal("Expected Comments. Comments are nil")
+		}
+		if len(comments.Comments) != 1 {
+			t.Errorf("Expected 1 Comment. Comments are %d", len(comments.Comments))
+		}
+		if err != nil {
+			t.Errorf("Error given: %s", err)
+		}
 	})
+	t.Run("get-comments-expanded", func(t *testing.T) {
+		testMux.HandleFunc("/rest/api/2/issue/10000/comment?expand=renderedBody", func(w http.ResponseWriter, r *http.Request) {
+			testMethod(t, r, http.MethodGet)
+			testRequestURL(t, r, "/rest/api/2/issue/10000/comment?expand=renderedBody")
 
-	comments, _, err := testClient.Issue.GetComments(context.Background(), "10000")
-	if comments == nil {
-		t.Fatal("Expected Comments. Comments are nil")
-	}
-	if len(comments.Comments) != 1 {
-		t.Errorf("Expected 1 Comment. Comments are %d", len(comments.Comments))
-	}
-	if err != nil {
-		t.Errorf("Error given: %s", err)
-	}
+			w.WriteHeader(http.StatusCreated)
+			fmt.Fprint(w, str)
+		})
+
+		comments, _, err := testClient.Issue.GetComments(context.Background(), "10000", &SearchOptions{Expand: "renderedBody"})
+		if comments == nil {
+			t.Fatal("Expected Comments. Comments are nil")
+		}
+		if len(comments.Comments) != 1 {
+			t.Errorf("Expected 1 Comment. Comments are %d", len(comments.Comments))
+		}
+		if err != nil {
+			t.Errorf("Error given: %s", err)
+		}
+	})
 }
 
 func TestIssueService_UpdateComment(t *testing.T) {
