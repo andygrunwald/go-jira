@@ -285,16 +285,16 @@ func TestIssueService_GetComments(t *testing.T) {
 			t.Errorf("Error given: %s", err)
 		}
 	})
-	t.Run("get-comments-expanded", func(t *testing.T) {
-		testMux.HandleFunc("/rest/api/2/issue/10000/comment?expand=renderedBody", func(w http.ResponseWriter, r *http.Request) {
+	t.Run("get-comments-with-options", func(t *testing.T) {
+		testMux.HandleFunc("/rest/api/2/issue/10000/comment?expand=renderedBody&maxResults=50&orderBy=created&startAt=10", func(w http.ResponseWriter, r *http.Request) {
 			testMethod(t, r, http.MethodGet)
-			testRequestURL(t, r, "/rest/api/2/issue/10000/comment?expand=renderedBody")
+			testRequestURL(t, r, "/rest/api/2/issue/10000/comment?expand=renderedBody&maxResults=50&orderBy=created&startAt=10")
 
 			w.WriteHeader(http.StatusCreated)
 			fmt.Fprint(w, str)
 		})
 
-		comments, _, err := testClient.Issue.GetComments(context.Background(), "10000", &SearchOptions{Expand: "renderedBody"})
+		comments, _, err := testClient.Issue.GetComments(context.Background(), "10000", &SearchOptions{StartAt: 10, MaxResults: 20, Expand: "renderedBody", OrderBy: "created"})
 		if comments == nil {
 			t.Fatal("Expected Comments. Comments are nil")
 		}

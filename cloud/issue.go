@@ -519,13 +519,15 @@ type CommentVisibility struct {
 type SearchOptions struct {
 	// StartAt: The starting index of the returned projects. Base index: 0.
 	StartAt int `url:"startAt,omitempty"`
-	// MaxResults: The maximum number of projects to return per page. Default: 50.
+	// MaxResults: The maximum number of projects to return per page. Default: 100.
 	MaxResults int `url:"maxResults,omitempty"`
 	// Expand: Expand specific sections in the returned issues
 	Expand string `url:"expand,omitempty"`
 	Fields []string
 	// ValidateQuery: The validateQuery param offers control over whether to validate and how strictly to treat the validation. Default: strict.
 	ValidateQuery string `url:"validateQuery,omitempty"`
+	// OrderBy: The field to order the results by. Default: null. Valid values: created, -created, +created
+	OrderBy string `url:"orderBy,omitempty"`
 }
 
 // SearchOptionsV2 specifies the parameters for the Jira Cloud-specific
@@ -1017,8 +1019,19 @@ func (s *IssueService) GetComments(ctx context.Context, issueID string, options 
 		Path: fmt.Sprintf("rest/api/2/issue/%s/comment", issueID),
 	}
 	uv := url.Values{}
-	if options != nil && options.Expand != "" {
-		uv.Set("expand", options.Expand)
+	if options != nil {
+		if options.StartAt != 0 {
+			uv.Add("startAt", strconv.Itoa(options.StartAt))
+		}
+		if options.MaxResults != 0 {
+			uv.Add("maxResults", strconv.Itoa(options.MaxResults))
+		}
+		if options.Expand != "" {
+			uv.Add("expand", options.Expand)
+		}
+		if options.OrderBy != "" {
+			uv.Add("orderBy", options.OrderBy)
+		}
 	}
 	u.RawQuery = uv.Encode()
 
