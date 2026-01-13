@@ -7,378 +7,7 @@ All notable changes to this project will be documented in this file. See [standa
 Version 2.0 is a bigger change with the main goal to make this library more reliable and future safe.
 See https://github.com/andygrunwald/go-jira/issues/489 for details.
 
-### Migration
-
-#### Split of clients
-
-We moved from 1 client that handles On-Premise and Cloud to 2 clients that handle either On-Premise or Cloud.
-Previously you used this library like:
-
-```go
-import (
-    "github.com/andygrunwald/go-jira"
-)
-```
-
-In the new version, you need to decide if you interact with the Jira On-Premise or Jira Cloud version.
-For the cloud version, you will import this library like
-
-```go
-import (
-	jira "github.com/andygrunwald/go-jira/cloud"
-)
-```
-
-For On-Premise it looks like
-
-```go
-import (
-	jira "github.com/andygrunwald/go-jira/onpremise"
-)
-```
-
-#### Init a new client
-
-The order of arguments in the `jira.NewClient` has changed:
-
-1. The base URL of your JIRA instance
-2. A HTTP client (optional)
-
-Before:
-
-```go
-jira.NewClient(nil, "https://issues.apache.org/jira/")
-```
-
-After:
-
-```go
-jira.NewClient("https://issues.apache.org/jira/", nil)
-```
-
-#### User Agent
-
-The client will identify itself via a UserAgent `go-jira/2.0.0`.
-
-#### `NewRawRequestWithContext` removed, `NewRawRequest` requires `context`
-
-The function `client.NewRawRequestWithContext()` has been removed.
-`client.NewRawRequest()` accepts now a context as the first argument.
-This is a drop in replacement.
-
-Before:
-
-```go
-client.NewRawRequestWithContext(context.Background(), "GET", .....)
-```
-
-After:
-
-```go
-client.NewRawRequest(context.Background(), "GET", .....)
-```
-
-For people who used `jira.NewRawRequest()`: You need to pass a context as the first argument.
-Like
-
-```go
-client.NewRawRequest(context.Background(), "GET", .....)
-```
-
-#### `NewRequestWithContext` removed, `NewRequest` requires `context`
-
-The function `client.NewRequestWithContext()` has been removed.
-`client.NewRequest()` accepts now a context as the first argument.
-This is a drop in replacement.
-
-Before:
-
-```go
-client.NewRequestWithContext(context.Background(), "GET", .....)
-```
-
-After:
-
-```go
-client.NewRequest(context.Background(), "GET", .....)
-```
-
-For people who used `jira.NewRequest()`: You need to pass a context as the first argument.
-Like
-
-```go
-client.NewRequest(context.Background(), "GET", .....)
-```
-
-#### `NewMultiPartRequestWithContext` removed, `NewMultiPartRequest` requires `context`
-
-The function `client.NewMultiPartRequestWithContext()` has been removed.
-`client.NewMultiPartRequest()` accepts now a context as the first argument.
-This is a drop in replacement.
-
-Before:
-
-```go
-client.NewMultiPartRequestWithContext(context.Background(), "GET", .....)
-```
-
-After:
-
-```go
-client.NewMultiPartRequest(context.Background(), "GET", .....)
-```
-
-For people who used `jira.NewMultiPartRequest()`: You need to pass a context as the first argument.
-Like
-
-```go
-client.NewMultiPartRequest(context.Background(), "GET", .....)
-```
-
-#### `context` is a first class citizen
-
-All API methods require a `context` as first argument.
-
-In the v1, some methods had a `...WithContext` suffix.
-These methods have been removed.
-
-If you used a service like
-
-```go
-client.Issue.CreateWithContext(ctx, ...)
-```
-
-the new call would be
-
-```go
-client.Issue.Create(ctx, ...)
-```
-
-If you used API calls without a context, like
-
-```go
-client.Issue.Create(...)
-```
-
-the new call would be
-
-```go
-client.Issue.Create(ctx, ...)
-```
-
-#### `BoardService.GetAllSprints` removed, `BoardService.GetAllSprintsWithOptions` renamed
-
-The function `client.BoardService.GetAllSprintsWithOptions()` has been renamed to `client.BoardService.GetAllSprints()`.
-
-##### If you used `client.BoardService.GetAllSprints()`:
-
-Before:
-
-```go
-client.Board.GetAllSprints(context.Background(), "123")
-```
-
-After:
-
-```go
-client.Board.GetAllSprints(context.Background(), "123", nil)
-```
-
-##### If you used `client.BoardService.GetAllSprintsWithOptions()`:
-
-Before:
-
-```go
-client.Board.GetAllSprintsWithOptions(context.Background(), 123, &GetAllSprintsOptions{State: "active,future"})
-```
-
-After:
-
-```go
-client.Board.GetAllSprints(context.Background(), 123, &GetAllSprintsOptions{State: "active,future"})
-```
-
-#### `GroupService.Get` removed, `GroupService.GetWithOptions` renamed
-
-The function `client.GroupService.GetWithOptions()` has been renamed to `client.GroupService.Get()`.
-
-##### If you used `client.GroupService.Get()`:
-
-Before:
-
-```go
-client.Group.Get(context.Background(), "default")
-```
-
-After:
-
-```go
-client.Group.Get(context.Background(), "default", nil)
-```
-
-##### If you used `client.GroupService.GetWithOptions()`:
-
-Before:
-
-```go
-client.Group.GetWithOptions(context.Background(), "default", &GroupSearchOptions{StartAt: 0, MaxResults: 2})
-```
-
-After:
-
-```go
-client.Group.Get(context.Background(), "default", &GroupSearchOptions{StartAt: 0, MaxResults: 2})
-```
-
-#### `Issue.Update` removed, `Issue.UpdateWithOptions` renamed
-
-The function `client.Issue.UpdateWithOptions()` has been renamed to `client.Issue.Update()`.
-
-##### If you used `client.Issue.Update()`:
-
-Before:
-
-```go
-client.Issue.Update(context.Background(), issue)
-```
-
-After:
-
-```go
-client.Issue.Update(context.Background(), issue, nil)
-```
-
-##### If you used `client.Issue.UpdateWithOptions()`:
-
-Before:
-
-```go
-client.Issue.UpdateWithOptions(context.Background(), issue, nil)
-```
-
-After:
-
-```go
-client.Issue.Update(context.Background(), issue, nil)
-```
-
-#### `Issue.GetCreateMeta` removed, `Issue.GetCreateMetaWithOptions` renamed
-
-The function `client.Issue.GetCreateMetaWithOptions()` has been renamed to `client.Issue.GetCreateMeta()`.
-
-##### If you used `client.Issue.GetCreateMeta()`:
-
-Before:
-
-```go
-client.Issue.GetCreateMeta(context.Background(), "SPN")
-```
-
-After:
-
-```go
-client.Issue.GetCreateMetaWithOptions(ctx, &GetQueryOptions{ProjectKeys: "SPN", Expand: "projects.issuetypes.fields"})
-```
-
-##### If you used `client.Issue.GetCreateMetaWithOptions()`:
-
-Before:
-
-```go
-client.Issue.GetCreateMetaWithOptions(ctx, &GetQueryOptions{ProjectKeys: "SPN", Expand: "projects.issuetypes.fields"})
-```
-
-After:
-
-```go
-client.Issue.GetCreateMeta(ctx, &GetQueryOptions{ProjectKeys: "SPN", Expand: "projects.issuetypes.fields"})
-```
-
-#### `Project.GetList` removed, `Project.ListWithOptions` renamed
-
-The function `client.Project.ListWithOptions()` has been renamed to `client.Project.GetAll()`.
-
-##### If you used `client.Project.GetList()`:
-
-Before:
-
-```go
-client.Project.GetList(context.Background())
-```
-
-After:
-
-```go
-client.Project.GetAll(context.Background(), nil)
-```
-
-##### If you used `client.Project.ListWithOptions()`:
-
-Before:
-
-```go
-client.Project.ListWithOptions(ctx, &GetQueryOptions{})
-```
-
-After:
-
-```go
-client.Project.GetAll(ctx, &GetQueryOptions{})
-```
-
-#### Cloud/Authentication: `BearerAuthTransport` removed, `PATAuthTransport` removed
-
-If you used `BearerAuthTransport` or `PATAuthTransport` for authentication, please replace it with `BasicAuthTransport`.
-
-Before:
-
-```go
-tp := jira.BearerAuthTransport{
-	Token: "token",
-}
-client, err := jira.NewClient("https://...", tp.Client())
-```
-
-or
-
-```go
-tp := jira.PATAuthTransport{
-	Token: "token",
-}
-client, err := jira.NewClient("https://...", tp.Client())
-```
-
-After:
-
-```go
-tp := jira.BasicAuthTransport{
-	Username: "username",
-	APIToken: "token",
-}
-client, err := jira.NewClient("https://...", tp.Client())
-```
-
-#### Cloud/Authentication: `BasicAuthTransport.Password` was renamed to `BasicAuthTransport.APIToken`
-
-Before:
-
-```go
-tp := jira.BasicAuthTransport{
-	Username: "username",
-	Password: "token",
-}
-client, err := jira.NewClient("https://...", tp.Client())
-```
-
-After:
-
-```go
-tp := jira.BasicAuthTransport{
-	Username: "username",
-	APIToken: "token",
-}
-client, err := jira.NewClient("https://...", tp.Client())
-```
+For detailed migration instructions from v1.x to v2.0, see [MIGRATE.md](MIGRATE.md).
 
 ### Breaking changes
 
@@ -421,10 +50,151 @@ client, err := jira.NewClient("https://...", tp.Client())
 * Development: Added `make` commands to collect (unit) test coverage
 * Internal: Replaced `io.ReadAll` and `json.Unmarshal` with `json.NewDecoder`
 
-### Changes
+## [1.17.0](https://github.com/andygrunwald/go-jira/compare/v1.16.1...v1.17.0) (2025-09-16)
+
+All changes in [#735](https://github.com/andygrunwald/go-jira/pull/735).
+
+### Breaking Changes
+
+* Minimum Go version increased from 1.15 to 1.21 (due to google/go-cmp dependency update)
+
+### Security
+
+* Updated github.com/golang-jwt/jwt/v4 v4.4.2 to v4.5.2 (CVE-2025-30204)
+
+### Maintenance
+
+* Replaced deprecated `ioutil.ReadFile` with `os.ReadFile`
+* Replaced deprecated `ioutil.ReadAll` with `io.ReadAll`
+* Replaced deprecated `ioutil.Discard` with `io.Discard`
+* Upgraded staticcheck v2022.1 to v2023.1
+* Code formatting updates (issue.go, metaissue.go, sprint.go)
+
+### Dependencies
+
+* github.com/google/go-cmp v0.5.8 to v0.7.0
+* github.com/golang-jwt/jwt/v4 v4.4.2 to v4.5.2
+
+### CI/CD
+
+* Upgraded actions/checkout from v3 to v5
+* Upgraded actions/setup-go from v3 to v6
+* Upgraded dominikh/staticcheck-action from v1.2 to v1.4
+
+## [1.16.1](https://github.com/andygrunwald/go-jira/compare/v1.16.0...v1.16.1) (2025-09-13)
+
+### Features
+
+* Added `IssueService.SearchV2JQL()` and `IssueService.SearchV2JQLWithContext()` to handle Atlassian's deprecation of `GET /rest/api/2/search` endpoint (effective October 31, 2024) ([#725](https://github.com/andygrunwald/go-jira/pull/725))
+
+*New contributor: @conor-naranjo*
+
+## [1.16.0](https://github.com/andygrunwald/go-jira/compare/v1.15.1...v1.16.0) (2022-07-08)
+
+### Features
+
+* Added example demonstrating how to add labels to issues ([#442](https://github.com/andygrunwald/go-jira/pull/442))
+
+### Maintenance
+
+* Test matrix expanded to include macOS ([#449](https://github.com/andygrunwald/go-jira/pull/449))
+* Deprecated Go v1.15 and Go v1.16; added Go v1.18 ([#449](https://github.com/andygrunwald/go-jira/pull/449))
+* Implemented nightly CI runs ([#449](https://github.com/andygrunwald/go-jira/pull/449))
+* Removed greetings workflow ([#450](https://github.com/andygrunwald/go-jira/pull/450))
+* Upgraded staticcheck action to v1.2.0 ([#451](https://github.com/andygrunwald/go-jira/pull/451))
+
+### Dependencies
+
+* github.com/golang-jwt/jwt/v4 v4.3.0 to v4.4.2 ([#443](https://github.com/andygrunwald/go-jira/pull/443), [#445](https://github.com/andygrunwald/go-jira/pull/445), [#464](https://github.com/andygrunwald/go-jira/pull/464))
+* github.com/google/go-cmp v0.5.7 to v0.5.8 ([#453](https://github.com/andygrunwald/go-jira/pull/453))
+* actions/checkout v2 to v3 ([#448](https://github.com/andygrunwald/go-jira/pull/448))
+* actions/cache v2 to v3.0.1 ([#447](https://github.com/andygrunwald/go-jira/pull/447))
+* actions/setup-go v2 to v3 ([#452](https://github.com/andygrunwald/go-jira/pull/452))
+
+*New contributor: @lucribas*
+
+## [1.15.1](https://github.com/andygrunwald/go-jira/compare/v1.15.0...v1.15.1) (2022-02-26)
+
+### Features
+
+* Added customer and request endpoints for Service Desk API ([#391](https://github.com/andygrunwald/go-jira/pull/391))
+* Added "environment" field to Issue struct ([#440](https://github.com/andygrunwald/go-jira/pull/440))
+* User module improvements ([#439](https://github.com/andygrunwald/go-jira/pull/439))
+
+### Bug Fixes
+
+* Added support for update section in DoTransitionWithPayload struct ([#423](https://github.com/andygrunwald/go-jira/pull/423))
+* Fixed resource leaks ([#399](https://github.com/andygrunwald/go-jira/pull/399))
+
+*New contributors: @CondensedTea, @nansuri, @metalbreeze, @iamjem, @dustin-decker*
+
+## [1.15.0](https://github.com/andygrunwald/go-jira/compare/v1.14.0...v1.15.0) (2022-02-18)
+
+### Features
+
+* Upgraded to JWT Library V4 ([#403](https://github.com/andygrunwald/go-jira/pull/403))
+* Added Bearer token support for OAuth 2.0 ([#397](https://github.com/andygrunwald/go-jira/pull/397))
+* Added Personal Access Token (PAT) authentication support ([#422](https://github.com/andygrunwald/go-jira/pull/422))
+* Added method for updating remote issue links by ID ([#411](https://github.com/andygrunwald/go-jira/pull/411))
+* Added support for ServiceDeskID as strings ([#419](https://github.com/andygrunwald/go-jira/pull/419))
+* Added missing min/max properties to BoardConfigurationColumn ([#430](https://github.com/andygrunwald/go-jira/pull/430))
+
+### Bug Fixes
+
+* Fixed missing struct omitempty tags in Parent struct ([#435](https://github.com/andygrunwald/go-jira/pull/435))
+
+### Documentation
+
+* Fixed import alias example in README ([#428](https://github.com/andygrunwald/go-jira/pull/428))
+
+### Dependencies
+
+* github.com/golang-jwt/jwt/v4 v4.1.0 to v4.3.0 ([#424](https://github.com/andygrunwald/go-jira/pull/424), [#438](https://github.com/andygrunwald/go-jira/pull/438))
+* github.com/google/go-cmp v0.5.6 to v0.5.7 ([#432](https://github.com/andygrunwald/go-jira/pull/432))
+
+## [1.14.0](https://github.com/andygrunwald/go-jira/compare/v1.13.0...v1.14.0) (2021-07-28)
+
+### Features
+
+* Added description field for component ([#365](https://github.com/andygrunwald/go-jira/pull/365))
+* Added Jira ServiceDesk support with organizations ([#342](https://github.com/andygrunwald/go-jira/pull/342))
+* Implemented delete issue link API ([#341](https://github.com/andygrunwald/go-jira/pull/341))
+* Added Items and Custom properties to FieldSchema ([#332](https://github.com/andygrunwald/go-jira/pull/332))
+* Added StartedAfter property to GetWorklogsQueryOptions ([#344](https://github.com/andygrunwald/go-jira/pull/344))
+
+### Bug Fixes
+
+* Fixed potential nil reference issues ([#342](https://github.com/andygrunwald/go-jira/pull/342))
+* Fixed context parameter propagation ([#363](https://github.com/andygrunwald/go-jira/pull/363))
+* Fixed variable total calculation in pagination example ([#354](https://github.com/andygrunwald/go-jira/pull/354))
+* Fixed boolean type handling for release versions ([#336](https://github.com/andygrunwald/go-jira/pull/336))
+* Fixed RemoteLinkStatus ([#303](https://github.com/andygrunwald/go-jira/pull/303))
+
+### Documentation
+
+* Updated examples to use accountID instead of deprecated username ([#374](https://github.com/andygrunwald/go-jira/pull/374))
+* Added example for creating issues with custom fields ([#358](https://github.com/andygrunwald/go-jira/pull/358))
+* Fixed examples/create response output ([#357](https://github.com/andygrunwald/go-jira/pull/357))
+* Added pagination example ([#354](https://github.com/andygrunwald/go-jira/pull/354))
+* Switched examples from deprecated terminal.ReadPassword to term.ReadPassword ([#359](https://github.com/andygrunwald/go-jira/pull/359))
+
+### Maintenance
+
+* CI/CD workflow cleanup ([#384](https://github.com/andygrunwald/go-jira/pull/384))
+* Added funding information ([#383](https://github.com/andygrunwald/go-jira/pull/383))
+* Upgraded to GitHub-native Dependabot ([#375](https://github.com/andygrunwald/go-jira/pull/375))
+* Resolved nogo tautological linting error ([#364](https://github.com/andygrunwald/go-jira/pull/364))
+* Updated Go versions in testing workflow ([#349](https://github.com/andygrunwald/go-jira/pull/349))
+
+### Dependencies
+
+* JWT library upgrade ([#387](https://github.com/andygrunwald/go-jira/pull/387))
+* github.com/google/go-cmp v0.3.0 to v0.5.6 ([#347](https://github.com/andygrunwald/go-jira/pull/347), [#360](https://github.com/andygrunwald/go-jira/pull/360), [#379](https://github.com/andygrunwald/go-jira/pull/379))
+* github.com/pkg/errors v0.8.0 to v0.9.1 ([#345](https://github.com/andygrunwald/go-jira/pull/345))
+* github.com/trivago/tgo v1.0.1 to v1.0.7 ([#346](https://github.com/andygrunwald/go-jira/pull/346))
+* github.com/fatih/structs v1.0.0 to v1.1.0 ([#348](https://github.com/andygrunwald/go-jira/pull/348))
 
 ## [1.13.0](https://github.com/andygrunwald/go-jira/compare/v1.11.1...v1.13.0) (2020-10-25)
-
 
 ### Features
 
@@ -438,7 +208,6 @@ client, err := jira.NewClient("https://...", tp.Client())
 * **project:** Add GitHub Actions testing workflow ([#289](https://github.com/andygrunwald/go-jira/issues/289)) ([80c0282](https://github.com/andygrunwald/go-jira/commit/80c02828ca9e4eb0e4a1877275baae14d330a2d9)), closes [#290](https://github.com/andygrunwald/go-jira/issues/290)
 * **project:** Add workflow to greet new contributors ([#288](https://github.com/andygrunwald/go-jira/issues/288)) ([c357b61](https://github.com/andygrunwald/go-jira/commit/c357b61a40f62a919ebd94a555390958f99c8db7))
 
-
 ### Bug Fixes
 
 * change millisecond time format ([8c77107](https://github.com/andygrunwald/go-jira/commit/8c77107df3757c4ec5eae6e9d7c018618e708bfa))
@@ -450,7 +219,6 @@ client, err := jira.NewClient("https://...", tp.Client())
 * removing the use of username field in searching for users ([#297](https://github.com/andygrunwald/go-jira/issues/297)) ([f50cb07](https://github.com/andygrunwald/go-jira/commit/f50cb07b297d79138b13e5ab49ea33965d32f5c1))
 
 ## [1.12.0](https://github.com/andygrunwald/go-jira/compare/v1.11.1...v1.12.0) (2019-12-14)
-
 
 ### Features
 
@@ -467,7 +235,6 @@ client, err := jira.NewClient("https://...", tp.Client())
 
 ## [1.11.0](https://github.com/andygrunwald/go-jira/compare/v1.10.0...v1.11.0) (2019-10-17)
 
-
 ### Features
 
 * Add AccountID and AccountType to GroupMember struct ([216e005](https://github.com/andygrunwald/go-jira/commit/216e0056d6385eba9d31cb37e6ff64314860d2cc))
@@ -479,7 +246,6 @@ client, err := jira.NewClient("https://...", tp.Client())
 * AddGetBoardConfiguration ([fd698c5](https://github.com/andygrunwald/go-jira/commit/fd698c57163f248f21285d5ebc6a3bb60d46694f))
 * Replace http.Client with interface for extensibility ([b59a65c](https://github.com/andygrunwald/go-jira/commit/b59a65c365dcefd42e135579e9b7ce9c9c006489))
 
-
 ### Bug Fixes
 
 * Fix fixversion description tag ([8383e2f](https://github.com/andygrunwald/go-jira/commit/8383e2f5f145d04f6bcdb47fb12a95b58bdcedfa))
@@ -487,34 +253,25 @@ client, err := jira.NewClient("https://...", tp.Client())
 
 # [1.10.0](https://github.com/andygrunwald/go-jira/compare/v1.9.0...v1.10.0) (2019-05-23)
 
-
 ### Bug Fixes
 
 * empty SearchOptions causing malformed request ([b3bf8c2](https://github.com/andygrunwald/go-jira/commit/b3bf8c2))
-
 
 ### Features
 
 * added DeleteAttachment ([e93c0e1](https://github.com/andygrunwald/go-jira/commit/e93c0e1))
 
-
-
 # [1.9.0](https://github.com/andygrunwald/go-jira/compare/v1.8.0...v1.9.0) (2019-05-19)
-
 
 ### Features
 
 * **issues:** Added support for AddWorklog and GetWorklogs ([1ebd7e7](https://github.com/andygrunwald/go-jira/commit/1ebd7e7))
 
-
-
 # [1.8.0](https://github.com/andygrunwald/go-jira/compare/v1.7.0...v1.8.0) (2019-05-16)
-
 
 ### Bug Fixes
 
 * Add PriorityService to the main ([8491cb0](https://github.com/andygrunwald/go-jira/commit/8491cb0))
-
 
 ### Features
 
