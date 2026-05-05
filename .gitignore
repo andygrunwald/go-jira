@@ -31,3 +31,6 @@ _testmain.go
 
 # Code coverage
 coverage.txt
+
+# AI
+.claude/
