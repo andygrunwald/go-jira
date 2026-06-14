@@ -25,12 +25,16 @@ func (s *IssueLinkTypeService) GetList(ctx context.Context) ([]IssueLinkType, *R
 		return nil, nil, err
 	}
 
-	linkTypeList := []IssueLinkType{}
+	type issueTypesRet struct {
+		IssueLinkTypes []IssueLinkType `json:"issueLinkTypes"`
+	}
+
+	linkTypeList := issueTypesRet{}
 	resp, err := s.client.Do(req, &linkTypeList)
 	if err != nil {
 		return nil, resp, NewJiraError(resp, err)
 	}
-	return linkTypeList, resp, nil
+	return linkTypeList.IssueLinkTypes, resp, nil
 }
 
 // Get gets info of a specific issue link type from Jira.
