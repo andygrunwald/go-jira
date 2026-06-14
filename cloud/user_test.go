@@ -282,3 +282,48 @@ func TestUserService_Find_SuccessParams(t *testing.T) {
 		t.Error("Expected user. User is nil")
 	}
 }
+
+func TestUserService_GetAllUsers_SuccessParams(t *testing.T) {
+	setup()
+	defer teardown()
+	t.Run("no-params", func(t *testing.T) {
+		testMux.HandleFunc("/rest/api/2/users", func(w http.ResponseWriter, r *http.Request) {
+			testMethod(t, r, http.MethodGet)
+			testRequestURL(t, r, "/rest/api/2/users")
+
+			fmt.Fprint(w, `[{"self":"http://www.example.com/jira/rest/api/2/users","key":"fred",
+        "name":"fred","emailAddress":"fred@example.com","avatarUrls":{"48x48":"http://www.example.com/jira/secure/useravatar?size=large&ownerId=fred",
+        "24x24":"http://www.example.com/jira/secure/useravatar?size=small&ownerId=fred","16x16":"http://www.example.com/jira/secure/useravatar?size=xsmall&ownerId=fred",
+        "32x32":"http://www.example.com/jira/secure/useravatar?size=medium&ownerId=fred"},"displayName":"Fred F. User","active":true,"timeZone":"Australia/Sydney","groups":{"size":3,"items":[
+        {"name":"jira-user","self":"http://www.example.com/jira/rest/api/2/group?groupname=jira-user"},{"name":"jira-admin",
+        "self":"http://www.example.com/jira/rest/api/2/group?groupname=jira-admin"},{"name":"important","self":"http://www.example.com/jira/rest/api/2/group?groupname=important"
+        }]},"applicationRoles":{"size":1,"items":[]},"expand":"groups,applicationRoles"}]`)
+		})
+
+		if user, _, err := testClient.User.GetAllUsers(context.Background(), nil); err != nil {
+			t.Errorf("Error given: %s", err)
+		} else if user == nil {
+			t.Error("Expected user. User is nil")
+		}
+	})
+	t.Run("with-params", func(t *testing.T) {
+		testMux.HandleFunc("/rest/api/2/users?maxResults=50&startAt=1", func(w http.ResponseWriter, r *http.Request) {
+			testMethod(t, r, http.MethodGet)
+			testRequestURL(t, r, "/rest/api/2/users?maxResults=50&startAt=1")
+
+			fmt.Fprint(w, `[{"self":"http://www.example.com/jira/rest/api/2/users?maxResults=50&startAt=1","key":"fred",
+        "name":"fred","emailAddress":"fred@example.com","avatarUrls":{"48x48":"http://www.example.com/jira/secure/useravatar?size=large&ownerId=fred",
+        "24x24":"http://www.example.com/jira/secure/useravatar?size=small&ownerId=fred","16x16":"http://www.example.com/jira/secure/useravatar?size=xsmall&ownerId=fred",
+        "32x32":"http://www.example.com/jira/secure/useravatar?size=medium&ownerId=fred"},"displayName":"Fred F. User","active":true,"timeZone":"Australia/Sydney","groups":{"size":3,"items":[
+        {"name":"jira-user","self":"http://www.example.com/jira/rest/api/2/group?groupname=jira-user"},{"name":"jira-admin",
+        "self":"http://www.example.com/jira/rest/api/2/group?groupname=jira-admin"},{"name":"important","self":"http://www.example.com/jira/rest/api/2/group?groupname=important"
+        }]},"applicationRoles":{"size":1,"items":[]},"expand":"groups,applicationRoles"}]`)
+		})
+
+		if user, _, err := testClient.User.GetAllUsers(context.Background(), &SearchOptions{StartAt: 1, MaxResults: 50}); err != nil {
+			t.Errorf("Error given: %s", err)
+		} else if user == nil {
+			t.Error("Expected user. User is nil")
+		}
+	})
+}
