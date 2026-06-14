@@ -519,13 +519,15 @@ type CommentVisibility struct {
 type SearchOptions struct {
 	// StartAt: The starting index of the returned projects. Base index: 0.
 	StartAt int `url:"startAt,omitempty"`
-	// MaxResults: The maximum number of projects to return per page. Default: 50.
+	// MaxResults: The maximum number of projects to return per page. Default: 100.
 	MaxResults int `url:"maxResults,omitempty"`
 	// Expand: Expand specific sections in the returned issues
 	Expand string `url:"expand,omitempty"`
 	Fields []string
 	// ValidateQuery: The validateQuery param offers control over whether to validate and how strictly to treat the validation. Default: strict.
 	ValidateQuery string `url:"validateQuery,omitempty"`
+	// OrderBy: The field to order the results by. Default: null. Valid values: created, -created, +created
+	OrderBy string `url:"orderBy,omitempty"`
 }
 
 // SearchOptionsV2 specifies the parameters for the Jira Cloud-specific
@@ -960,7 +962,7 @@ func (s *IssueService) UpdateIssue(ctx context.Context, jiraID string, data map[
 
 // AddComment adds a new comment to issueID.
 //
-// Jira API docs: https://docs.atlassian.com/jira/REST/latest/#api/2/issue-addComment
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-comments/#api-rest-api-2-issue-issueidorkey-comment-post
 //
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
 // This double check effort is done for v2 - Remove this two lines if this is completed.
@@ -981,9 +983,76 @@ func (s *IssueService) AddComment(ctx context.Context, issueID string, comment *
 	return responseComment, resp, nil
 }
 
+// GetComment returns a comment for issueID and commentID.
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-comments/#api-rest-api-2-issue-issueidorkey-comment-id-get
+func (s *IssueService) GetComment(ctx context.Context, issueID, commentID string, options *SearchOptions) (*Comment, *Response, error) {
+	u := url.URL{
+		Path: fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, commentID),
+	}
+	uv := url.Values{}
+	if options != nil && options.Expand != "" {
+		uv.Set("expand", options.Expand)
+	}
+	u.RawQuery = uv.Encode()
+
+	req, err := s.client.NewRequest(ctx, http.MethodGet, u.String(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	responseComment := new(Comment)
+	resp, err := s.client.Do(req, &responseComment)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
+	}
+
+	return responseComment, resp, nil
+}
+
+// GetComments retrieves all comments for a given issueID.
+//
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-comments/#api-rest-api-2-issue-issueidorkey-comment-get
+func (s *IssueService) GetComments(ctx context.Context, issueID string, options *SearchOptions) (*Comments, *Response, error) {
+	u := url.URL{
+		Path: fmt.Sprintf("rest/api/2/issue/%s/comment", issueID),
+	}
+	uv := url.Values{}
+	if options != nil {
+		if options.StartAt != 0 {
+			uv.Add("startAt", strconv.Itoa(options.StartAt))
+		}
+		if options.MaxResults != 0 {
+			uv.Add("maxResults", strconv.Itoa(options.MaxResults))
+		}
+		if options.Expand != "" {
+			uv.Add("expand", options.Expand)
+		}
+		if options.OrderBy != "" {
+			uv.Add("orderBy", options.OrderBy)
+		}
+	}
+	u.RawQuery = uv.Encode()
+
+	req, err := s.client.NewRequest(ctx, http.MethodGet, u.String(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	responseComments := new(Comments)
+	resp, err := s.client.Do(req, &responseComments)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
+	}
+
+	return responseComments, resp, nil
+}
+
 // UpdateComment updates the body of a comment, identified by comment.ID, on the issueID.
 //
-// Jira API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/comment-updateComment
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-comments/#api-rest-api-2-issue-issueidorkey-comment-id-put
 //
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
 // This double check effort is done for v2 - Remove this two lines if this is completed.
@@ -1010,7 +1079,7 @@ func (s *IssueService) UpdateComment(ctx context.Context, issueID string, commen
 
 // DeleteComment Deletes a comment from an issueID.
 //
-// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-api-3-issue-issueIdOrKey-comment-id-delete
+// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-comments/#api-rest-api-3-issue-issueidorkey-comment-id-delete
 //
 // TODO Double check this method if this works as expected, is using the latest API and the response is complete
 // This double check effort is done for v2 - Remove this two lines if this is completed.
