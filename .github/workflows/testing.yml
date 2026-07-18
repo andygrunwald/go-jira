@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         with:
           go-version: ${{ matrix.go }}
 
@@ -40,7 +40,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Setup Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v7
         with:
           go-version: ${{ matrix.go-version }}
 
@@ -60,7 +60,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Setup Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v7
         with:
           go-version: ${{ matrix.go-version }}
 
@@ -79,7 +79,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Setup Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v7
         with:
           go-version: ${{ matrix.go-version }}
 
