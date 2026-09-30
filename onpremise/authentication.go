@@ -74,6 +74,9 @@ func (s *AuthenticationService) AcquireSessionCookie(ctx context.Context, userna
 	session := new(Session)
 	resp, err := s.client.Do(req, session)
 	if err != nil {
+		if resp != nil {
+			resp.Body.Close()
+		}
 		return false, fmt.Errorf("auth at Jira instance failed (HTTP(S) request). %w", err)
 	}
 
@@ -130,10 +133,12 @@ func (s *AuthenticationService) Logout(ctx context.Context) error {
 	}
 
 	resp, err := s.client.Do(req, nil)
+	if resp != nil {
+		defer resp.Body.Close()
+	}
 	if err != nil {
 		return fmt.Errorf("error sending the logout request: %w", err)
 	}
-	defer resp.Body.Close()
 	if resp.StatusCode != 204 {
 		return fmt.Errorf("the logout was unsuccessful with status %d", resp.StatusCode)
 	}
@@ -163,10 +168,12 @@ func (s *AuthenticationService) GetCurrentUser(ctx context.Context) (*Session, e
 	}
 
 	resp, err := s.client.Do(req, nil)
+	if resp != nil {
+		defer resp.Body.Close()
+	}
 	if err != nil {
 		return nil, fmt.Errorf("error sending request to get user info: %w", err)
 	}
-	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("getting user info failed with status : %d", resp.StatusCode)
 	}

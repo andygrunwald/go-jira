@@ -320,3 +320,74 @@ func TestAuthenticationService_Logout_FailWithoutLogin(t *testing.T) {
 		t.Error("Expected not nil, got nil")
 	}
 }
+
+type roundTripperFunc func(*http.Request) (*http.Response, error)
+
+func (f roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) {
+	return f(r)
+}
+
+// closeTrackingBody records whether Close was called on the wrapped body.
+type closeTrackingBody struct {
+	io.ReadCloser
+	closed bool
+}
+
+func (b *closeTrackingBody) Close() error {
+	b.closed = true
+	return b.ReadCloser.Close()
+}
+
+func TestAuthenticationService_ErrorStatus_ClosesBody(t *testing.T) {
+	tests := []struct {
+		name string
+		call func(context.Context, *AuthenticationService) error
+	}{
+		{"AcquireSessionCookie", func(ctx context.Context, s *AuthenticationService) error {
+			_, err := s.AcquireSessionCookie(ctx, "foo", "bar")
+			return err
+		}},
+		{"Logout", func(ctx context.Context, s *AuthenticationService) error {
+			return s.Logout(ctx)
+		}},
+		{"GetCurrentUser", func(ctx context.Context, s *AuthenticationService) error {
+			_, err := s.GetCurrentUser(ctx)
+			return err
+		}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setup()
+			defer teardown()
+			testMux.HandleFunc("/rest/auth/1/session", func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusUnauthorized)
+			})
+
+			var body *closeTrackingBody
+			httpClient := &http.Client{Transport: roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+				resp, err := testServer.Client().Transport.RoundTrip(r)
+				if err != nil {
+					return nil, err
+				}
+				body = &closeTrackingBody{ReadCloser: resp.Body}
+				resp.Body = body
+				return resp, nil
+			})}
+			c, _ := NewClient(testServer.URL, httpClient)
+			// Logout and GetCurrentUser require an existing session.
+			c.session = &Session{}
+			c.Authentication.authType = authTypeSession
+
+			if err := tt.call(context.Background(), c.Authentication); err == nil {
+				t.Fatal("Expected error, got nil")
+			}
+			if body == nil {
+				t.Fatal("Expected a request to be sent")
+			}
+			if !body.closed {
+				t.Error("Expected response body to be closed")
+			}
+		})
+	}
+}

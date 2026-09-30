@@ -39,6 +39,7 @@ For detailed migration instructions from v1.x to v2.0, see [MIGRATE.md](MIGRATE.
 ### Bug Fixes
 
 * README: Fixed all (broken) links
+* On-Premise/Authentication: `AcquireSessionCookie`, `Logout` and `GetCurrentUser` now close the response body when Jira responds with a non-2xx status code
 
 ### API-Endpoints
 
