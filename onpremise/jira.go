@@ -283,6 +283,9 @@ func (c *Client) NewMultiPartRequest(ctx context.Context, method, urlStr string,
 
 // Do sends an API request and returns the API response.
 // The API response is JSON decoded and stored in the value pointed to by v, or returned as an error if an API error has occurred.
+//
+// If the API responds with a non-2xx status code, the response is returned together with the error so it can be inspected.
+// Caller must close resp.Body in that case, and whenever v is nil.
 func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 	httpResp, err := c.client.Do(req)
 	if err != nil {
