@@ -185,7 +185,7 @@ func (s *ServiceDeskService) ListCustomers(ctx context.Context, serviceDeskID in
 		return nil, nil, err
 	}
 
-	// this is an experiemntal endpoint
+	// this is an experimental endpoint
 	req.Header.Set("X-ExperimentalApi", "opt-in")
 
 	if options != nil {
