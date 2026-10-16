@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go: [ '1.23', '1.24' ]
+        go: [stable, oldstable]
         os: [ 'windows-latest', 'ubuntu-latest', 'macOS-latest' ]
     runs-on: ${{ matrix.os }}
 
@@ -33,7 +33,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go-version: [ '1.23', '1.24' ]
+        go-version: [stable, oldstable]
         os: [ 'windows-latest', 'ubuntu-latest', 'macOS-latest' ]
     runs-on: ${{ matrix.os }}
 
@@ -53,7 +53,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go-version: [ '1.23', '1.24' ]
+        go-version: [stable, oldstable]
         os: [ 'windows-latest', 'ubuntu-latest', 'macOS-latest' ]
     runs-on: ${{ matrix.os }}
 
@@ -72,7 +72,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go-version: [ '1.23', '1.24' ]
+        go-version: [stable, oldstable]
         os: [ 'windows-latest', 'ubuntu-latest', 'macOS-latest' ]
     runs-on: ${{ matrix.os }}
 
@@ -86,6 +86,7 @@ jobs:
       - name: Run staticcheck (Go ${{ matrix.go }})
         uses: dominikh/staticcheck-action@v1.4.1
         with:
-          version: "2025.1.1"
+          # renovate: datasource=github-releases depName=dominikh/go-tools
+          version: "2026.2.2"
           install-go: false
           cache-key: ${{ matrix.go-version }}-${{ matrix.os }}
