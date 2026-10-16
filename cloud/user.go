@@ -241,14 +241,6 @@ func WithInactive(inactive bool) UserSearchF {
 	}
 }
 
-// WithUsername sets the username to search
-func WithUsername(username string) UserSearchF {
-	return func(s UserSearch) UserSearch {
-		s = append(s, UserSearchParam{name: "username", value: username})
-		return s
-	}
-}
-
 // WithAccountId sets the account id to search
 func WithAccountId(accountId string) UserSearchF {
 	return func(s UserSearch) UserSearch {
@@ -283,7 +275,7 @@ func (s *UserService) Find(ctx context.Context, property string, tweaks ...UserS
 		search = f(search)
 	}
 
-	var queryString = ""
+	queryString := ""
 	for _, param := range search {
 		queryString += param.name + "=" + param.value + "&"
 	}
